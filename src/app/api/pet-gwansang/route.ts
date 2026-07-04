@@ -57,6 +57,7 @@ ${personaList}
 2. 사진의 **눈매·입모양·콧등·털결·턱선·표정·자세**를 1차로 봐. 품종은 참고만.
 3. 인기 페르소나(2 럭셔리 / 8 천사 / 12 힐러 / 18 럭키) 자동 매칭 금지!
 4. 가장 두드러진 관상 cue 1~2개로 매칭. 20종 골고루 사용해야 진짜 관상 분석이 됨.
+⚠️ character_type 결정 불변 원칙 (CRITICAL): 캐릭터 타입(1~20)은 오직 사진의 외모·관상 특징으로만 결정. 어떤 사전질문·입력 조건과도 완전 무관. 같은 사진이면 조건이 달라져도 반드시 동일한 character_type이 나와야 한다.
 
 [매칭 알고리즘]
 1. ${callsign} 사진의 가장 두드러진 부위 1~2개 객관 묘사 (눈매·입·코·턱·털·표정·자세)
@@ -152,7 +153,7 @@ export async function POST(request: NextRequest) {
         { inlineData: { mimeType: resolvedMediaType, data: base64Image } },
         { text: `${species === "dog" ? "이 댕댕이" : "이 냥이"}의 관상을 정밀 분석해줘. 이름: ${personName}. {nm}은 "${personName}"으로 치환. JSON만 출력.` }
       ]}],
-      generationConfig: { temperature: 0.85, maxOutputTokens: 8192, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 1024 } },
+      generationConfig: { temperature: 0.1, maxOutputTokens: 8192, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 1024 } },
     });
 
     // v510: 모델 우선순위 2.0→2.5→Lite (부하 낮은 순), retry 2회 0.8s 백오프

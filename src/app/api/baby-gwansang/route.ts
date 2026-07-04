@@ -60,6 +60,7 @@ const SYSTEM_PROMPT = `[ROLE]
 - "우리 {nm}~" 식 따뜻한 말투
 - 각 섹션 내용 5~7줄로 풍성하게!
 ⚠️ 분석 불변 원칙 (CRITICAL): 어느 이목구비가 어떤 기운인지, 성격 특성, 재능 방향 등 핵심 분석 내용은 반드시 아기 사진에서 읽힌 고정값. 어떤 조건에서도 이 분석 사실값은 바뀌지 않는다.
+⚠️ character_type 결정 불변 원칙 (CRITICAL): 캐릭터 타입(1~20)은 오직 아기 사진의 얼굴 특징으로만 결정. 사전질문(focus·궁금한 것·나이대 등)과 완전 무관. 같은 사진이면 사전질문이 달라져도 반드시 동일한 character_type이 나와야 한다.
 
 [3탭 구조]
 - Tab 1 🐣 첫인상: 전체 인상 (풀너비)
@@ -218,7 +219,7 @@ export async function POST(request: NextRequest) {
         { inlineData: { mimeType: resolvedMediaType, data: base64Image } },
         { text: "이 아기의 관상을 정밀 분석해줘. 풀네임: " + babyName + ". {nm}=\"" + friendlyName + "\", {full}=\"" + babyName + "\"으로 치환. JSON만 출력. 아기가 아니면 image_type:\"not_baby\"." + focusHint }
       ]}],
-      generationConfig: { temperature: 0.3, maxOutputTokens: 12288, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 1024 } },
+      generationConfig: { temperature: 0.1, maxOutputTokens: 12288, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 1024 } },
     });
 
     // 다중 모델 폴백: 2.5 Flash → 2.0 Flash → 1.5 Flash

@@ -23,6 +23,7 @@ const SYSTEM_PROMPT = `[ROLE]
 - 과거 추측 + 현재 짚기 + 미래 제시
 ⚠️ 분석 불변 원칙 (CRITICAL): 어느 신체 부위가 강하거나 약한지, 재물 수준, 건강 주의 장기, 성격 특성 등 핵심 분석 내용은 반드시 얼굴 사진에서 읽힌 고정 관찰값이다. 사전질문이 달라져도 이 분석 사실값은 절대 바뀌지 않는다.
 ⚠️ 사전질문 역할 (CRITICAL): 관심사(interest)에 해당하는 탭에서 2~3줄 더 깊게 풀어주는 것에만 사용. "~라고 하셨잖아요" 문구는 분석 심화 표현에만 붙임. 건강 주의 부위·재물 기운 크기·애정 패턴 등 사실값은 사전질문과 완전히 무관하다.
+⚠️ character_type 결정 불변 원칙 (CRITICAL): 캐릭터 타입(1~20)은 오직 사진의 얼굴 특징으로만 결정. 사전질문(focus·관심사·나이대·상황 등)과 완전 무관. 같은 사진이면 사전질문이 달라져도 반드시 동일한 character_type이 나와야 한다.
 
 ⚠️ 다양성 의무 (CRITICAL): 신뢰도 = 정확한 매칭. 인기 타입(5·6·8·9·12·13·18·19) 자동 매칭 금지!
 얼굴의 가장 두드러진 1~2개 특징을 객관적으로 골라 매칭하라. 같은 잘생긴 얼굴이라도 "코"가 두드러지면 1·2번, "눈"이면 5·13·14·19번처럼 가장 강한 신호 1개로 결정. 익숙한 라벨 말고 사진의 객관적 특징이 우선!
@@ -191,7 +192,7 @@ export async function POST(request: NextRequest) {
         ]
       }],
       generationConfig: {
-        temperature: 0.3,
+        temperature: 0.1,
         maxOutputTokens: 8192,
         responseMimeType: "application/json",
         thinkingConfig: { thinkingBudget: 1024 },
