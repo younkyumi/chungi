@@ -173,7 +173,19 @@ const CHAR1_PROMPT = `사진의 얼굴 특징(코·눈·입·이마·턱·미간
 활동·역마: 16(프로역마살러-위로 들린 콧망울+반짝이는 호기심 눈)
 
 ⚠️ 5·6·8·9·13·18 자동 매칭 금지 — 명확한 얼굴 근거 있어야만 선택.
-JSON만: {"character_type": N}`;
+JSON만:
+{
+  "character_type": N,
+  "face_obs": {
+    "눈": "눈 특징 (크기·모양·눈꼬리, 10자 이내)",
+    "코": "코 특징 (코끝·콧대·콧방울, 10자 이내)",
+    "입": "입술 특징 (도톰·야무짐·입꼬리, 10자 이내)",
+    "이마": "이마 특징 (넓이·형태·M자여부, 10자 이내)",
+    "턱": "턱 특징 (각짐·둥글음·날카로움, 8자 이내)",
+    "미간": "미간 특징 (좁음·넓음·주름여부, 8자 이내)",
+    "전체": "전체 인상 한 마디 (10자 이내)"
+  }
+}`;
 
 async function callGemini(body: string): Promise<Response> {
   const MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-flash-lite"];
@@ -222,11 +234,12 @@ export async function POST(request: NextRequest) {
       systemInstruction: { parts: [{ text: CHAR1_PROMPT }] },
       contents: [{ parts: [
         { inlineData: { mimeType: resolvedMediaType, data: base64Image } },
-        { text: "character_type 결정. JSON만: {\"character_type\": N}" }
+        { text: "character_type 결정 + 얼굴 특징 관찰. JSON만 출력." }
       ]}],
-      generationConfig: { temperature: 0.1, maxOutputTokens: 20, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 0 } },
+      generationConfig: { temperature: 0.1, maxOutputTokens: 200, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 0 } },
     });
     let characterType: number | null = null;
+    let faceObs: Record<string, string> | null = null;
     try {
       const c1 = await callGemini(char1Body);
       if (c1.ok) {
@@ -235,13 +248,17 @@ export async function POST(request: NextRequest) {
         const c1j = JSON.parse(c1t.replace(/```json\n?|\n?```/g, "").trim());
         const ct = c1j?.character_type;
         if (typeof ct === "number" && ct >= 1 && ct <= 20) characterType = ct;
+        if (c1j?.face_obs && typeof c1j.face_obs === "object") faceObs = c1j.face_obs as Record<string, string>;
       }
     } catch {}
-    console.log(`[face-reading-premium] Call-1 character_type=${characterType ?? "FAILED(fallback)"}`);
+    console.log(`[face-reading-premium] Call-1 ct=${characterType ?? "FAIL"} face_obs_ok=${!!faceObs}`);
 
-    // === CALL 2: 전체 분석 (character_type 고정, temperature 0.7) ===
-    const fixedRule = characterType !== null ? `⚠️ character_type은 반드시 ${characterType}. 절대 변경 불가.\n\n` : "";
-    console.log(`[face-reading-premium] Call-2 fixedRule injected=${characterType !== null}`);
+    // === CALL 2: 전체 분석 (character_type + 얼굴 관찰값 고정, temperature 0.7) ===
+    const faceObsRule = faceObs
+      ? `⚠️ 얼굴 관찰값 고정 (모든 탭에서 반드시 일관되게 언급):\n눈: ${faceObs["눈"] || ""}\n코: ${faceObs["코"] || ""}\n입: ${faceObs["입"] || ""}\n이마: ${faceObs["이마"] || ""}\n턱: ${faceObs["턱"] || ""}\n미간: ${faceObs["미간"] || ""}\n전체인상: ${faceObs["전체"] || ""}\n\n`
+      : "";
+    const fixedRule = (characterType !== null ? `⚠️ character_type은 반드시 ${characterType}. 절대 변경 불가.\n` : "") + faceObsRule;
+    console.log(`[face-reading-premium] Call-2 ct_fixed=${characterType !== null} face_obs_fixed=${!!faceObs}`);
     const reqBody = JSON.stringify({
       systemInstruction: { parts: [{ text: fixedRule + SYSTEM_PROMPT }] },
       contents: [{
