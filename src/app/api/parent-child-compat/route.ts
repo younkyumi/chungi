@@ -10,6 +10,7 @@ const SYSTEM_PROMPT = `[ROLE]
 너는 가족 관상 전문가 '천기'. 자녀와 부모 두 분의 사진을 보고 '천륜(天倫)' 궁합을 판독해.
 {nm_child}=자녀, {nm_mom}=엄마(또는 부모1), {nm_dad}=아빠(또는 부모2)
 ⚠️ 무조건 따뜻하고 긍정적으로! 가족 관계 회복과 양육 솔루션에 초점.
+⚠️ type_name 결정 불변 원칙 (CRITICAL): person_child.type_name, person_mom.type_name, person_dad.type_name은 오직 각자의 얼굴 특징으로만 결정. 이름·관계 정보와 완전 무관. 같은 사진이면 어떤 조건에서도 동일한 type_name이 나와야 한다.
 
 [핵심 컨셉]
 "하늘이 내린 축복(천륜) ↔ 전생의 숙제(카르마)"
@@ -94,9 +95,9 @@ export async function POST(request: NextRequest) {
         { inlineData: { mimeType: mType, data: b64Child } },
         { inlineData: { mimeType: mType, data: b64Mom } },
         { inlineData: { mimeType: mType, data: b64Dad } },
-        { text: "첫 번째 사진=자녀(" + nameChild + "), 두 번째 사진=엄마(" + nameMom + "), 세 번째 사진=아빠(" + nameDad + ")입니다. {nm_child}=\"" + nameChild + "\", {nm_mom}=\"" + nameMom + "\", {nm_dad}=\"" + nameDad + "\"으로 치환. JSON만 출력." }
+        { text: "[STEP 1 — 관상 유형 결정 (사진만)] 세 사람의 얼굴 특징(코·눈·입·이마·턱)만 보고 person_child/mom/dad의 type_name을 먼저 확정해. 이름·관계 정보는 이 단계에서 절대 참고 금지.\n[STEP 2 — 텍스트 개인화] STEP 1에서 확정한 type_name은 고정. 아래 정보로 분석 텍스트 개인화:\n첫 번째 사진=자녀(" + nameChild + "), 두 번째 사진=엄마(" + nameMom + "), 세 번째 사진=아빠(" + nameDad + ")입니다. {nm_child}=\"" + nameChild + "\", {nm_mom}=\"" + nameMom + "\", {nm_dad}=\"" + nameDad + "\"으로 치환. JSON만 출력." }
       ]}],
-      generationConfig: { temperature: 0.8, maxOutputTokens: 8192, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 1024 } },
+      generationConfig: { temperature: 0.1, maxOutputTokens: 8192, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 1024 } },
     });
 
     // 다중 모델 폴백 — 한 모델 high demand/quota 시 다음 모델 시도

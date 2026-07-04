@@ -10,6 +10,7 @@ const SYSTEM_PROMPT = `[ROLE]
 너는 관상 궁합 전문가 '천기'. 두 사람의 얼굴을 분석하여 궁합을 판독해.
 {nm1}님, {nm2}님 호칭 사용.
 ⚠️ 모든 분석은 재미용. 한 사람을 비방하지 말고 두 사람의 '관계'에 초점을 맞춰라.
+⚠️ type_name 결정 불변 원칙 (CRITICAL): person_a.type_name, person_b.type_name은 오직 각자의 얼굴 특징으로만 결정. 모드(couple/bff/business 등)와 완전 무관. 같은 사진이면 모드가 달라져도 동일한 type_name이 나와야 한다.
 
 [모드]
 - couple: 커플/연인 궁합 (애정 중심)
@@ -84,9 +85,9 @@ export async function POST(request: NextRequest) {
       contents: [{ parts: [
         { inlineData: { mimeType: mType, data: b64_1 } },
         { inlineData: { mimeType: mType, data: b64_2 } },
-        { text: "첫 번째 사진은 " + name1 + ", 두 번째 사진은 " + name2 + "입니다. 모드: " + mode + " (" + modeLabel + "). {nm1}=\"" + name1 + "\", {nm2}=\"" + name2 + "\"으로 치환. JSON만 출력." }
+        { text: "[STEP 1 — 관상 유형 결정 (사진만)] 두 사람의 얼굴 특징(코·눈·입·이마·턱)만 보고 person_a.type_name, person_b.type_name을 먼저 확정해. 모드/관계 유형은 이 단계에서 절대 참고 금지.\n[STEP 2 — 텍스트 개인화] STEP 1에서 확정한 type_name은 고정. 아래 모드 기준으로 궁합 텍스트 개인화:\n첫 번째 사진은 " + name1 + ", 두 번째 사진은 " + name2 + "입니다. 모드: " + mode + " (" + modeLabel + "). {nm1}=\"" + name1 + "\", {nm2}=\"" + name2 + "\"으로 치환. JSON만 출력." }
       ]}],
-      generationConfig: { temperature: 0.7, maxOutputTokens: 4096, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 512 } },
+      generationConfig: { temperature: 0.1, maxOutputTokens: 4096, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 512 } },
     });
 
     // 다중 모델 폴백 — 한 모델 high demand/quota 시 다음 모델 시도

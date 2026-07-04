@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
       systemInstruction: { parts: [{ text: getSystemPrompt(species as "dog" | "cat") }] },
       contents: [{ parts: [
         { inlineData: { mimeType: resolvedMediaType, data: base64Image } },
-        { text: `${species === "dog" ? "이 댕댕이" : "이 냥이"}의 관상을 정밀 분석해줘. 이름: ${personName}. {nm}은 "${personName}"으로 치환. JSON만 출력.` }
+        { text: `[STEP 1 — 캐릭터 결정 (사진만)] 사진의 외모·관상 특징(눈매·입·코·털·표정·자세)만 보고 character_type을 먼저 확정해. 아래 내용은 이 단계에서 절대 참고 금지.\n[STEP 2 — 텍스트 개인화] STEP 1에서 확정한 character_type은 고정. 분석 텍스트를 풍성하게 작성해:\n이름: ${personName}. {nm}은 "${personName}"으로 치환. JSON만 출력.` }
       ]}],
       generationConfig: { temperature: 0.1, maxOutputTokens: 8192, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 1024 } },
     });
