@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>행운로또번호 결과창 미리보기</title>
+<!--
+  출처: src/app/page.tsx
+  - LottoModal result JSX: 21173~21302행
+  - id="lotto-capture" (21173행)
+  - border: "1px solid rgba(212,175,55,0.3)" (골드)
+  - BrandLine: isLoggedIn→"사주 기반 행운 로또번호" / 비로그인→"오늘의 공통 행운 로또번호" (21176행)
+  - 제목: isLoggedIn→"✨ {name}님 사주 맞춤 행운번호" / 비로그인→"🎰 오늘의 공통 행운번호" (21180행)
+  - 로또볼: 44x44px circles with ballColor(n) 함수 (21192행)
+  - ✦ 표시: position:absolute, top:-4, right:-4, 14px circle, bg:#D4AF37 (21196행)
+  - 오행 기반 번호 근거: 3칸 grid (21200행)
+  - 오행별 행운 번호 범위 표 (21208행)
+  - 행운의 구매 시간 2x2 grid (#fffbe9 bg, rgba(212,175,55,0.4) border) (21218행)
+  - 비로그인 유도: bg:#fef9e7, button gradient D4AF37~B8942E (21240행)
+  - hash footer: #천기로또 #행운번호 #사주로또 #무료운세 (21260행)
+
+  ballColor 함수:
+  n<=10 → #ef4444(빨), n<=20 → #f97316(주황), n<=30 → #eab308(노랑), n<=40 → #22c55e(초록), else #3b82f6(파랑)
+
+  오행별 추천 구매 시간 (seed 기반):
+  목→"목요일 오전5~7시", 화→"화요일 낮11~1시", 토→"토요일 오후1~3시", 금→"금요일 저녁5~7시", 수→"수요일 밤9~11시"
+  오행별 추천 방향:
+  목→"동쪽", 화→"남쪽", 토→"중앙", 금→"서쪽", 수→"북쪽"
+-->
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#1A3C32;--gold:#D4AF37;--mist:#A8C4B8;}
+body{background:#1A3C32;font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;padding:20px;}
+.max-wrap{max-width:430px;margin:0 auto;}
+.white-card{background:#ffffff;border-radius:20px;overflow:hidden;border:1px solid rgba(212,175,55,0.3);box-shadow:0 10px 30px rgba(0,0,0,0.06);color:#333;margin-bottom:12px;}
+.brand-line-inner{font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;padding:10px 16px;text-align:center;border-bottom:1px solid #f0f0f0;}
+.hash-footer{display:flex;justify-content:space-between;padding:10px 16px;margin-top:14px;font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;border-top:1px solid #f0f0f0;}
+.gray-box{background:#f8f9fa;border-radius:12px;padding:12px 14px;margin-bottom:10px;}
+.lotto-ball{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;box-shadow:0 3px 8px rgba(0,0,0,0.2);position:relative;flex-shrink:0;}
+.star-mark{position:absolute;top:-4px;right:-4px;width:14px;height:14px;border-radius:50%;background:#D4AF37;display:flex;align-items:center;justify-content:center;font-size:7px;color:#fff;font-weight:900;}
+.cross-scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;}
+.cross-card{flex-shrink:0;width:100px;background:#fff;border-radius:12px;padding:10px 8px;border:1px solid rgba(212,175,55,0.4);text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+</style>
+</head>
+<body>
+<div class="max-wrap">
+
+<!-- ═══════════ 메인 결과 카드 id="lotto-capture" ═══════════ -->
+<!-- 샘플: 로그인 상태 (사주 맞춤 번호) -->
+<div class="white-card">
+  <!-- 헤더 (21175~21190행) -->
+  <div style="padding:10px 16px 0;text-align:center;">
+    <div class="brand-line-inner">사주 기반 행운 로또번호</div>
+    <div style="font-size:18px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;line-height:1.35;">✨ 홍길동님 사주 맞춤 행운번호</div>
+    <div style="font-size:10px;color:#888;font-weight:600;margin-top:6px;line-height:1.6;">
+      <div>👤 홍길동 : 1990.05.15. 午시생 · 양력 · 남성</div>
+      <div style="color:#aaa;">📅 2026-06-30 생성</div>
+    </div>
+  </div>
+
+  <!-- 로또볼 6개 (21192~21198행) -->
+  <!-- ballColor: 1~10=빨강, 11~20=주황, 21~30=노랑, 31~40=초록, 41~45=파랑 -->
+  <!-- ✦ 표시: 가장 행운 번호에만 (position absolute, top:-4, right:-4, 14px circle) -->
+  <div style="padding:20px 16px 16px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
+    <div class="lotto-ball" style="background:#ef4444;">7<div class="star-mark">✦</div></div>
+    <div class="lotto-ball" style="background:#f97316;">13</div>
+    <div class="lotto-ball" style="background:#eab308;">24</div>
+    <div class="lotto-ball" style="background:#22c55e;">31</div>
+    <div class="lotto-ball" style="background:#22c55e;">38</div>
+    <div class="lotto-ball" style="background:#3b82f6;">42</div>
+  </div>
+
+  <!-- 오행 기반 번호 근거 3칸 그리드 (21200행) -->
+  <div style="padding:0 16px 14px;">
+    <div style="font-size:10px;color:#7A5C00;font-weight:800;letter-spacing:1.5px;margin-bottom:8px;">✦ 오행 기반 번호 근거</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+      <!-- 일간 오행 기운 -->
+      <div class="gray-box" style="text-align:center;margin-bottom:0;padding:10px 8px;">
+        <div style="font-size:16px;margin-bottom:4px;">🌳</div>
+        <div style="font-size:9px;font-weight:800;color:#4CAF50;margin-bottom:3px;">목(木)</div>
+        <div style="font-size:9px;color:#555;line-height:1.5;">일간 기운<br/>1,2,3...</div>
+      </div>
+      <!-- 생년 오행 -->
+      <div class="gray-box" style="text-align:center;margin-bottom:0;padding:10px 8px;">
+        <div style="font-size:16px;margin-bottom:4px;">🔥</div>
+        <div style="font-size:9px;font-weight:800;color:#ff6b6b;margin-bottom:3px;">화(火)</div>
+        <div style="font-size:9px;color:#555;line-height:1.5;">생년 기운<br/>7,8,9...</div>
+      </div>
+      <!-- 보완 오행 -->
+      <div class="gray-box" style="text-align:center;margin-bottom:0;padding:10px 8px;">
+        <div style="font-size:16px;margin-bottom:4px;">💧</div>
+        <div style="font-size:9px;font-weight:800;color:#1A237E;margin-bottom:3px;">수(水)</div>
+        <div style="font-size:9px;color:#555;line-height:1.5;">보완 기운<br/>31,32...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 오행별 행운 번호 범위 표 (21208행) -->
+  <div style="padding:0 16px 14px;">
+    <div style="font-size:10px;color:#7A5C00;font-weight:800;letter-spacing:1.5px;margin-bottom:8px;">✦ 오행별 행운 번호 범위</div>
+    <div style="border:1px solid rgba(212,175,55,0.2);border-radius:10px;overflow:hidden;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;background:#fffbe9;padding:6px 8px;border-bottom:1px solid rgba(212,175,55,0.15);">
+        <span style="font-size:9px;font-weight:800;color:#7A5C00;">오행</span>
+        <span style="font-size:9px;font-weight:800;color:#7A5C00;text-align:center;">번호 범위</span>
+        <span style="font-size:9px;font-weight:800;color:#7A5C00;text-align:right;">색상</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;padding:5px 8px;border-bottom:1px solid #f0f0f0;font-size:9px;color:#555;">
+        <span>🌳 목(木)</span><span style="text-align:center;">1~9</span><span style="text-align:right;color:#4CAF50;">초록</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;padding:5px 8px;border-bottom:1px solid #f0f0f0;font-size:9px;color:#555;">
+        <span>🔥 화(火)</span><span style="text-align:center;">7~15</span><span style="text-align:right;color:#ff6b6b;">빨강</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;padding:5px 8px;border-bottom:1px solid #f0f0f0;font-size:9px;color:#555;">
+        <span>🪨 토(土)</span><span style="text-align:center;">13~23</span><span style="text-align:right;color:#FF8F00;">주황</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;padding:5px 8px;border-bottom:1px solid #f0f0f0;font-size:9px;color:#555;">
+        <span>⚙️ 금(金)</span><span style="text-align:center;">21~32</span><span style="text-align:right;color:#9E9E9E;">회색</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;padding:5px 8px;font-size:9px;color:#555;">
+        <span>💧 수(水)</span><span style="text-align:center;">31~45</span><span style="text-align:right;color:#1A237E;">파랑</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 행운의 구매 시간 2x2 그리드 (21218행) -->
+  <!-- bg:#fffbe9, border:rgba(212,175,55,0.4) -->
+  <div style="padding:0 16px 14px;">
+    <div style="font-size:10px;color:#7A5C00;font-weight:800;letter-spacing:1.5px;margin-bottom:8px;">✦ 행운의 구매 시간</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#fffbe9;border:1px solid rgba(212,175,55,0.4);border-radius:10px;padding:10px 12px;">
+        <div style="font-size:9px;font-weight:800;color:#7A5C00;margin-bottom:4px;">🕐 추천 시간</div>
+        <!-- 목 일간 기준 -->
+        <div style="font-size:10px;color:#333;font-weight:700;line-height:1.5;">목요일<br/>오전 5~7시</div>
+      </div>
+      <div style="background:#fffbe9;border:1px solid rgba(212,175,55,0.4);border-radius:10px;padding:10px 12px;">
+        <div style="font-size:9px;font-weight:800;color:#7A5C00;margin-bottom:4px;">🧭 추천 방향</div>
+        <!-- 목 일간 기준 -->
+        <div style="font-size:10px;color:#333;font-weight:700;line-height:1.5;">동쪽<br/>방향 판매점</div>
+      </div>
+      <div style="background:#fffbe9;border:1px solid rgba(212,175,55,0.4);border-radius:10px;padding:10px 12px;">
+        <div style="font-size:9px;font-weight:800;color:#7A5C00;margin-bottom:4px;">🎯 구매 방법</div>
+        <div style="font-size:10px;color:#333;font-weight:700;line-height:1.5;">직접 수동<br/>선택 구매</div>
+      </div>
+      <div style="background:#fffbe9;border:1px solid rgba(212,175,55,0.4);border-radius:10px;padding:10px 12px;">
+        <div style="font-size:9px;font-weight:800;color:#7A5C00;margin-bottom:4px;">💡 행운 팁</div>
+        <div style="font-size:10px;color:#333;font-weight:700;line-height:1.5;">나무 소재<br/>지갑 사용</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 해시태그 푸터 -->
+  <div class="hash-footer">
+    <span>#천기로또 #행운번호 #사주로또 #무료운세</span>
+    <span style="font-weight:600;">🌐 천기.kr</span>
+  </div>
+</div>
+
+<!-- ─── 비로그인 유도 버전 참고 (21240행~) ─── -->
+<!-- bg:#fef9e7, button gradient D4AF37~B8942E -->
+<div style="background:#fef9e7;border-radius:16px;padding:18px 16px;margin-bottom:12px;border:1px solid rgba(212,175,55,0.3);text-align:center;">
+  <div style="font-size:13px;font-weight:900;color:#1A3C32;margin-bottom:6px;">🔓 사주 맞춤 번호로 업그레이드</div>
+  <div style="font-size:11px;color:#555;line-height:1.7;margin-bottom:12px;">로그인하면 내 사주 일간 오행에 맞는<br/>개인 맞춤 행운 번호를 받을 수 있어요!</div>
+  <button style="padding:12px 24px;background:linear-gradient(135deg,#D4AF37,#B8942E);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;">무료로 로그인하기</button>
+</div>
+
+<!-- 광고배너 2x2 -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(212,175,55,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">☯️</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">내 사주?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">사주 풀이 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(155,143,212,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">🌅</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">오늘 운세?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">오늘운세 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(95,196,158,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">🌸</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">이달의 운세?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">이달의운세 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(199,21,133,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">📸</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">내 관상짤?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">관상짤 →</div>
+  </div>
+</div>
+
+<!-- ResultActions -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+  <button style="padding:12px;background:#f8f9fa;border:1px solid #eee;border-radius:12px;font-size:12px;font-weight:700;color:#333;cursor:pointer;">📸 이미지 저장</button>
+  <button style="padding:12px;background:#f8f9fa;border:1px solid #eee;border-radius:12px;font-size:12px;font-weight:700;color:#333;cursor:pointer;">🔗 공유하기</button>
+</div>
+
+<!-- 이것도 해볼래요 -->
+<div style="margin-bottom:10px;">
+  <div style="font-size:11px;font-weight:700;color:#A8C4B8;margin-bottom:6px;">✨ 이것도 해볼래요?</div>
+  <div class="cross-scroll">
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">☯️</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">사주 풀이</div><div style="font-size:9px;font-weight:700;color:#B8942E;">980원</div></div>
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">🌅</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">오늘의 운세</div><div style="font-size:9px;font-weight:700;color:#B8942E;">무료</div></div>
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">🌸</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">이달의 운세</div><div style="font-size:9px;font-weight:700;color:#B8942E;">무료</div></div>
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">🎯</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">수비학</div><div style="font-size:9px;font-weight:700;color:#B8942E;">무료</div></div>
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">🃏</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">오늘의 타로</div><div style="font-size:9px;font-weight:700;color:#B8942E;">무료</div></div>
+  </div>
+</div>
+
+<!-- 버튼 -->
+<button style="width:100%;padding:14px;background:#D4AF37;color:#1A3C32;border:none;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;">확인 완료</button>
+
+</div>
+</body>
+</html>

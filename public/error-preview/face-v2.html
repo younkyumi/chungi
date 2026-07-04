@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>에러 6종 — 관상짤·내관상·궁합 7종</title>
+<link rel="stylesheet" href="./_style-v2.css">
+</head>
+<body>
+<h1>📸 관상짤·내관상보기·관상궁합 7종 — 에러 6종</h1>
+<div class="sub">정식 이름 (gwansang_types.json + extraTypes)</div>
+<a href="./index.html" class="nav-back">← 미리보기 목록으로</a>
+
+<div id="root"></div>
+
+<script>
+const BRAND = "🔮 천기(天機) 오리지널 | 익명님 내 관상보기 리포트";
+const HASHTAGS_BASE = "#천기관상 #내관상보기 #익명";
+const ERRORS = [
+  {id:21, label:"동물·사물·풍경 (NON_HUMAN)", name:"🐾 인간계 이탈상", quote:"🐾 혹시... 상대방이 츄르 좋아해? 인간이 아니잖아!",
+   detail:"AI도 당황해서 식은땀 흘리는 중. 종족이 다르다구! 아무리 뜯어봐도 주민등록증 대신 동물병원 인식표가 어울릴 상이야. 사람 얼굴 정면 사진으로 다시 올려주거나, 우리 댕냥이는 댕댕상·냥냥상으로 가서 만나줘! 🐶🐱",
+   guide:["사람 얼굴 정면 (눈·코·입 다 보이게)","동물 사진은 댕댕상·냥냥상에서!"], tag:"#인간계이탈상"},
+  {id:22, label:"흐릿함·어두움 (GHOST_MODE)", name:"👻 전설의 고향상", quote:"👻 관상을 보라니까 심령사진을... 기가 너무 세다!",
+   detail:'초점 나감 + 흔들림 = AI 서버 기절 삐뽀삐뽀 🚨 이건 관상이 아니라 미스터리 공포 영화 포스터에서 본 바이브인데? 사진 초점이 안 맞아서, 들어오려던 돈과 재물도 길을 잃고 돌아갈 지경이야. 제발 밝은 곳에서 정면으로 찍은 "원본"을 다시 올려줘! 📸',
+   guide:["흔들림 없는 선명한 사진","밝은 조명 + 카메라 정면 응시"], tag:"#전설의고향상"},
+  {id:23, label:"다중 인물 (MULTI)", name:"👥 분신술 장인상", quote:"👥 혹시 분신술 쓰세요? 사람이 너무 많아!",
+   detail:"앗, 잠깐만! 사진에 기가 센 분들이 너무 많이 모여 있어서 우리 천기 AI 도사님 동공에 지진이 났어! ㅋㅋㅋ 진짜로 영혼까지 털어보고 싶은 '단 한 명'의 큼직한 정면 얼굴만 빡! 집중해서 다시 올려줘. 1:1 과외처럼 아주 딥하고 은밀하게 분석해 줄게! 🔍👥",
+   guide:["한 명만 크게 (단체 사진 X)","얼굴이 화면 1/2 이상 차지하게"], tag:"#분신술장인상"},
+  {id:24, label:"아기 (BABY)", name:"👶 천하무적 뽀시래기상", quote:"👶 너무 귀여워서 AI 심장 녹아내림 🫠",
+   detail:'와... 이건 관상을 볼 게 아니라 일단 무조건 우쭈쭈부터 냅다 해줘야 하는 거 아니야? 아직 얼굴에 세상의 찌든 풍파가 1도 묻지 않은, 그야말로 순도 200% 무해한 뽀시래기잖아! 우리 아기는 "우리 아기 관상"으로 가서 만나줘! 🍼👶',
+   guide:["어른(만 13세 이상) 얼굴로 다시 시도",'아기는 "우리 아기 관상"에서!'], tag:"#뽀시래기상"},
+  {id:25, label:"마스크·선글라스 (MASKED)", name:"🕶️ 신비주의 철벽보안상", quote:"🕶️ 철벽 방어! 얼굴을 보여줘야 관상을 보지!",
+   detail:"앗! 혹시 이 분 직업이 국가정보원 비밀 요원이야? 선글라스나 마스크로 얼굴을 꽁꽁 숨겨놔서, 천하의 천기 AI도 눈코입을 찾다가 결국 백기를 들었어! 자신감 있게 이마부터 턱끝까지 훤히 드러난, 쌩얼에 가까운 정면 사진으로 다시 승부수를 띄워줘! 😎🕵️",
+   guide:["마스크·선글라스·모자 다 벗기","이마부터 턱까지 다 보이게"], tag:"#철벽보안상"},
+  {id:26, label:"일러스트·캐릭터 (ILLUSTRATION)", name:"🎨 2차원 종이인간상", quote:"🎨 모니터 뚫고 나온 매력? (근데 진짜 그림이네)",
+   detail:"와, 이 분(?) 매력 진짜 미치긴 했는데... 안타깝게도 주민등록증 대신 모니터나 만화책 속에 살고 계시는 분이구먼! ㅋㅋㅋ 천기 도사님은 3D 현실 세계에서 숨 쉬고 마라탕 먹는 '진짜 인간'의 관상만 봐줄 수 있어. 진짜로 너랑 썸탈 현실 세계 인간의 사진을 다시 올려줘! 📺💖",
+   guide:["실제 사람 사진 (만화·일러스트 X)","AI 생성·합성 사진도 X"], tag:"#종이인간상"},
+];
+const root = document.getElementById('root');
+ERRORS.forEach(e => {
+  root.insertAdjacentHTML('beforeend', `
+    <div class="item">
+      <div class="item-label">━━ ${e.id}. ${e.label} ━━</div>
+      <div class="card">
+        <div class="brand">${BRAND}</div>
+        <div class="err-banner">
+          <div class="err-title">⚠️ ERROR!! ERROR!!</div>
+          <div class="err-sub">사진을 인식 할 수 없습니다.</div>
+        </div>
+        <div class="illust"><img src="/gwansang-cards/gwansang (${e.id}).png" alt=""></div>
+        <div class="body">
+          <div class="char-name">${e.name}</div>
+          <div class="char-quote">"${e.quote}"</div>
+          <div class="char-detail">${e.detail}</div>
+        </div>
+        <div class="guide">
+          <div class="guide-title">📸 사진 다시 올리기 가이드</div>
+          ${e.guide.map(g => `<div class="guide-row">• ${g}</div>`).join('')}
+          <div class="guide-row ok">✓ 결제 완료 — 추가 결제 없이 재시도 가능</div>
+          <div class="guide-row warn">⚠️ 화면을 나가면 다시 올릴 수 없습니다</div>
+        </div>
+        <div class="hashtags">
+          <span>${HASHTAGS_BASE} ${e.tag}</span>
+          <span>🌐 천기.kr</span>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn-primary">📸 사진 다시 올리기</button>
+        <button class="btn-ghost">닫기</button>
+      </div>
+    </div>
+  `);
+});
+</script>
+</body>
+</html>

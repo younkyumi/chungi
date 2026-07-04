@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎰 행운 로또번호 결과 점검본</title>
+<style>
+  body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#ece6da;margin:0;padding:18px;color:#222;}
+  h1{text-align:center;color:#1A3C32;}
+  h2{max-width:1280px;margin:34px auto 10px;color:#1A3C32;border-left:6px solid #D4AF37;padding-left:10px;font-size:18px;}
+  .note{max-width:920px;margin:0 auto 18px;background:#fff;border-radius:12px;padding:14px 18px;font-size:13px;line-height:1.85;box-shadow:0 4px 14px rgba(0,0,0,.06);}
+  .note b{color:#b91c1c;}
+  .note .var{color:#1d72b8;font-weight:800;}
+  .note .pool{color:#B8942E;font-weight:800;}
+  table.sum{max-width:920px;margin:0 auto 24px;border-collapse:collapse;background:#fff;font-size:12.5px;box-shadow:0 4px 14px rgba(0,0,0,.06);width:100%;}
+  table.sum th,table.sum td{border:1px solid #e3dccb;padding:6px 9px;text-align:left;vertical-align:top;}
+  table.sum th{background:#1A3C32;color:#fff;}
+  table.sum tr:nth-child(even){background:#faf7f0;}
+  .wrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:18px;max-width:1280px;margin:0 auto;}
+  /* ── 결과 카드 (앱의 흰색 캡쳐카드 모사) ── */
+  .card{background:#fff;border-radius:18px;padding:0;overflow:hidden;box-shadow:0 8px 22px rgba(0,0,0,.08);border:1px solid rgba(212,175,55,.35);}
+  .chead{padding:12px 16px 6px;text-align:center;}
+  .brand{font-size:10px;letter-spacing:2px;color:#B8942E;font-weight:700;margin-bottom:4px;}
+  .ctitle{font-size:18px;font-weight:900;color:#1A3C32;line-height:1.35;}
+  .cmeta{font-size:10px;color:#888;font-weight:600;margin-top:6px;line-height:1.6;}
+  .cmeta .grey{color:#aaa;}
+  .ohline{padding:12px 16px 4px;text-align:center;font-size:12px;color:#555;line-height:1.7;font-weight:600;}
+  .ohline .sub{font-size:10px;color:#888;margin-top:3px;font-weight:600;}
+  .balls{padding:14px 16px 16px;background:#fafafa;display:flex;justify-content:center;gap:5px;}
+  .ball{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;position:relative;box-shadow:0 2px 8px rgba(0,0,0,.18);}
+  .ball .star{position:absolute;top:-4px;right:-4px;width:14px;height:14px;border-radius:50%;background:#D4AF37;color:#fff;font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;}
+  .sect{padding:12px 16px;border-top:1px solid #f3efe6;}
+  .lbl{font-size:11px;font-weight:700;color:#7A5C00;letter-spacing:1.5px;margin-bottom:8px;}
+  .basis-grid{display:grid;gap:6px;}
+  .basis-box{border-radius:10px;padding:10px 8px;text-align:center;}
+  .basis-box .bnums{display:flex;gap:4px;justify-content:center;margin-bottom:6px;flex-wrap:wrap;}
+  .bnum{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;}
+  .basis-box .btit{font-size:11px;font-weight:800;margin-bottom:4px;}
+  .basis-box .bdesc{font-size:10.5px;color:#555;line-height:1.55;}
+  .range-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+  .range-row .rlabel{font-size:12px;width:54px;flex-shrink:0;}
+  .range-row .rnums{flex:1;display:flex;gap:4px;flex-wrap:wrap;}
+  .range-row .rn{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700;}
+  .range-row .dom{font-size:9px;padding:2px 7px;border-radius:8px;background:#e8fdf4;color:#059669;font-weight:800;}
+  .buy-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .buy-box{background:#fffbe9;border:1px solid rgba(212,175,55,.4);border-radius:10px;padding:12px;text-align:center;}
+  .buy-box .bh{font-size:10px;color:#B8942E;font-weight:700;margin-bottom:4px;}
+  .buy-box .bv{font-size:13px;color:#1A3C32;font-weight:800;line-height:1.4;}
+  .login-cta{padding:12px 16px;}
+  .login-cta .inner{background:#fef9e7;border:1px solid rgba(212,175,55,.3);border-radius:12px;padding:12px;text-align:center;}
+  .login-cta .t{font-size:12px;font-weight:700;color:#D4AF37;margin-bottom:4px;}
+  .login-cta .d{font-size:10px;color:#888;line-height:1.6;}
+  .foot{padding:10px 16px;font-size:9px;color:#aaa;line-height:1.6;text-align:center;}
+  .hash{display:flex;justify-content:space-between;padding:10px 16px;font-size:9px;color:#aaa;font-weight:600;border-top:1px solid #f0f0f0;}
+  /* 공 색 (한국 6/45 공식) */
+  .y{background:#fbc400;color:#000;} .b{background:#69c8f2;color:#000;}
+  .r{background:#FF3B30;color:#fff;} .g{background:#888;color:#fff;} .gr{background:#80bf38;color:#000;}
+  .const{color:#1d72b8;font-weight:800;}
+  em{color:#B8942E;font-style:normal;font-weight:800;}
+  .pool-block{max-width:1280px;margin:0 auto 18px;background:#fff;border-radius:14px;padding:16px 20px;box-shadow:0 4px 14px rgba(0,0,0,.06);}
+  .pool-block ul{margin:6px 0 0;padding-left:20px;line-height:1.9;font-size:13px;}
+  .pool-block code{background:#f4efe2;padding:1px 6px;border-radius:5px;font-size:12px;}
+  .badge{display:inline-block;font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px;margin-bottom:6px;}
+  .badge.off{background:#eef1f0;color:#555;} .badge.on{background:#e8fdf4;color:#059669;}
+</style>
+</head>
+<body>
+<h1>🎰 행운 로또번호 결과 점검본</h1>
+
+<div class="note">
+  <b>📌 점검 목적</b> — 앱의 <b>행운 로또번호(무료)</b> 결과 화면에 나오는 <b>모든 정적 텍스트 가짓수</b>를 한 화면에 펼쳤어. 직접 읽고 오타·어색한 문구를 잡아줘.<br><br>
+  <b>가짓수를 가르는 분기 변수는 단 2개:</b><br>
+  ① <span class="var">로그인 여부 (isLoggedIn)</span> — 비로그인 = 오늘의 <b>공통 번호</b>(오행 토 고정) / 로그인 = <b>사주 맞춤 번호</b>(오행 근거·번호범위·기운설명 추가).<br>
+  ② <span class="var">사주 일간 오행 (dominant)</span> — 로그인 시 생년월일로 <code>_getDominantOhang</code> 계산 → <span class="pool">목·화·토·금·수</span> 5가지. 이 값이 헤더 "기운" 문구, "오행 기반 번호 근거" 설명문, "주(主)" 표시 행, 해시태그 <code>#{오행}기운</code>을 바꿔.<br><br>
+  ⚠️ <b>번호 6개 자체는 날짜 시드 랜덤</b>(<code>_seededRng</code> + 매일 자정 갱신)이라 텍스트 점검 대상이 아니야. 아래 카드의 공 번호는 <b>예시</b>일 뿐, 실제 당첨/문구와 무관해. <span class="const">파란 글씨</span>=분기로 바뀌는 부분, <em>골드 글씨</em>=오행별 고유 설명.<br><br>
+  <b>따라서 대표 결과 카드 = 비로그인 1종 + 로그인 5오행 = 총 6종.</b> 그 아래에 정적 텍스트 풀(인트로 5항목·분석중 4문구·오행 설명 5·번호범위 5·구매시간 고정값·면책)을 전수로 첨부했어.
+</div>
+
+<table class="sum">
+  <thead><tr><th>#</th><th>케이스</th><th>오행(dominant)</th><th>맞춤 섹션 표시?</th><th>헤더 타이틀</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>비로그인 (공통)</td><td>토 (고정)</td><td>❌ (구매시간만)</td><td>🎰 오늘의 공통 행운번호</td></tr>
+    <tr><td>2</td><td>로그인 · 목 일간</td><td>목(木)</td><td>✅ 전체</td><td>✨ {이름}님 사주 맞춤 행운번호</td></tr>
+    <tr><td>3</td><td>로그인 · 화 일간</td><td>화(火)</td><td>✅ 전체</td><td>✨ {이름}님 사주 맞춤 행운번호</td></tr>
+    <tr><td>4</td><td>로그인 · 토 일간</td><td>토(土)</td><td>✅ 전체</td><td>✨ {이름}님 사주 맞춤 행운번호</td></tr>
+    <tr><td>5</td><td>로그인 · 금 일간</td><td>금(金)</td><td>✅ 전체</td><td>✨ {이름}님 사주 맞춤 행운번호</td></tr>
+    <tr><td>6</td><td>로그인 · 수 일간</td><td>수(水)</td><td>✅ 전체</td><td>✨ {이름}님 사주 맞춤 행운번호</td></tr>
+  </tbody>
+</table>
+
+<h2>📇 대표 결과 카드 6종</h2>
+<div class="wrap" id="wrap"></div>
+
+<h2>🗂️ 정적 텍스트 풀 (전수 점검)</h2>
+<div id="pools"></div>
+
+<script>
+// ───────── 코드에서 추출한 원본 데이터 (page.tsx) ─────────
+const OHANG={
+  목:{hex:"#4CAF50",label:"목(木)",lucky:[3,8,13,18,23,28,33,38,43]},
+  화:{hex:"#ff6b6b",label:"화(火)",lucky:[1,7,12,17,22,27,32,37,42]},
+  토:{hex:"#FF8F00",label:"토(土)",lucky:[5,10,15,20,25,30,35,40,45]},
+  금:{hex:"#9E9E9E",label:"금(金)",lucky:[4,9,14,19,24,29,34,39,44]},
+  수:{hex:"#1A237E",label:"수(水)",lucky:[2,6,11,16,21,26,31,36,41]},
+};
+// explainMap (오행 기반 번호 근거) — page.tsx 21190~
+const EXPLAIN={
+  목:{title:"🌳 나무(목) 기운",desc:"{이름}님 사주에 잘 맞는 숫자. 새로운 시작·도전·성장. 끝자리 3·8 행운"},
+  화:{title:"🔥 불(화) 기운",desc:"열정·표현력 살리는 숫자. 추진력 ↑. 끝자리 2·7 행운"},
+  토:{title:"⛰️ 흙(토) 기운",desc:"안정·재물 부르는 숫자. 차근차근 자산운. 끝자리 5·0 행운"},
+  금:{title:"⚔️ 쇠(금) 기운",desc:"결단력·정리·돈 회수에 강함. 끝자리 4·9 행운"},
+  수:{title:"💧 물(수) 기운",desc:"지혜·직관·흐름의 숫자. 마음 끌림 정답. 끝자리 1·6 행운"},
+};
+const NAME="규미";
+
+// 로또 공 색 (한국 6/45 공식: 1~10 노랑 / 11~20 파랑 / 21~30 빨강 / 31~40 회색 / 41~45 초록)
+function ballCls(n){return n<=10?'y':n<=20?'b':n<=30?'r':n<=40?'g':'gr';}
+function ballHTML(n,lucky){return `<div class="ball ${ballCls(n)}">${n}${lucky?'<span class="star">✦</span>':''}</div>`;}
+function bnumHTML(n){return `<span class="bnum ${ballCls(n)}">${n}</span>`;}
+
+// 데모용 고정 예시 번호 (실제는 시드 랜덤 — 텍스트 점검과 무관) + 오행 행운번호 분류
+// 각 오행마다 lucky 4개 + regular 2개 정도로 구성한 "예시" 세트
+const DEMO={
+  토:[5,15,23,30,38,40],   // 공통(비로그인)·토 케이스 공용 예시
+  목:[3,8,18,22,33,41],
+  화:[1,12,17,27,29,42],
+  금:[4,9,19,24,34,44],
+  수:[2,11,16,26,31,36],
+};
+
+function card(c){
+  const{isLoggedIn,oh}=c;
+  const info=OHANG[oh];
+  const nums=DEMO[oh];
+  // 어떤 번호가 lucky(✦)인지 — 해당 오행 lucky 풀에 들면 표시 (데모용 단순화)
+  const luckyset=new Set(info.lucky);
+  const ballsHtml=nums.map(n=>ballHTML(n,isLoggedIn&&luckyset.has(n))).join('');
+
+  // 오행 기반 번호 근거 — lucky로 잡힌 번호를 오행별 그룹핑 (데모는 dominant 한 그룹으로)
+  const luckyNums=nums.filter(n=>luckyset.has(n));
+  const ex=EXPLAIN[oh];
+
+  let basisSect='', rangeSect='', ohLine='', cta='';
+  if(isLoggedIn){
+    ohLine=`<div class="ohline">${NAME}님은 오늘 <strong style="color:${info.hex};font-size:13px;">${info.label} 기운</strong>이 강해요
+      <div class="sub">아래 번호 중 ✦ 표시는 오늘 기운에 맞는 행운 번호</div></div>`;
+    // 근거 박스
+    basisSect=`<div class="sect">
+      <div class="lbl">☯️ 오행 기반 번호 근거</div>
+      <div style="font-size:11px;color:${info.hex};font-weight:700;margin-bottom:10px;">✦ 오행 행운 번호 ${luckyNums.length}개 포함 — 매일 조금씩 달라져요</div>
+      <div class="basis-grid" style="grid-template-columns:1fr;">
+        <div class="basis-box" style="background:${info.hex}08;border:1px solid ${info.hex}30;">
+          <div class="bnums">${luckyNums.map(bnumHTML).join('')}</div>
+          <div class="btit" style="color:${info.hex};">${ex.title}</div>
+          <div class="bdesc">${ex.desc.replace('{이름}',NAME)}</div>
+        </div>
+      </div></div>`;
+    // 오행별 번호 범위 (5행 전부 표시, dominant에 주(主))
+    let rows='';
+    for(const k of Object.keys(OHANG)){
+      const ii=OHANG[k];const isDom=k===oh;
+      rows+=`<div class="range-row">
+        <span class="rlabel" style="color:${ii.hex};font-weight:${isDom?800:600};">${ii.label}</span>
+        <div class="rnums">${ii.lucky.slice(0,5).map(n=>`<span class="rn" style="background:${ii.hex}15;color:${ii.hex};border:1px solid ${ii.hex}40;">${n}</span>`).join('')}<span style="font-size:10px;color:#aaa;align-self:center;">...</span></div>
+        ${isDom?'<span class="dom">주(主)</span>':''}
+      </div>`;
+    }
+    rangeSect=`<div class="sect"><div class="lbl">✦ 오행별 행운 번호 범위</div>${rows}</div>`;
+  }else{
+    cta=`<div class="login-cta"><div class="inner">
+      <div class="t">✦ 내 사주 맞춤 번호 받기</div>
+      <div class="d">지금은 공통 번호예요. 로그인하면 <strong style="color:#333;">내 사주 오행 기반 맞춤 번호</strong>를 받을 수 있어요!</div>
+    </div></div>`;
+  }
+
+  return `<div class="card">
+    <div class="chead">
+      <div class="brand">${isLoggedIn?"사주 기반 행운 로또번호":"오늘의 공통 행운 로또번호"}</div>
+      <div class="ctitle">${isLoggedIn?`✨ ${NAME}님 사주 맞춤 행운번호`:"🎰 오늘의 공통 행운번호"}</div>
+      <div class="cmeta">${isLoggedIn?`<div>👤 ${NAME} : 1995-03-21 · 09:30생 · 양력 · 여성</div>`:''}<div class="grey">2026.06.12 14:08 검사</div></div>
+    </div>
+    ${ohLine}
+    <div class="balls">${ballsHtml}</div>
+    ${basisSect}
+    ${rangeSect}
+    <div class="sect"><div class="lbl">🕐 행운의 구매 시간</div>
+      <div class="buy-grid">
+        <div class="buy-box"><div class="bh">📅 추천 시간</div><div class="bv">목요일<br>오후 3~5시</div></div>
+        <div class="buy-box"><div class="bh">🧭 추천 방향</div><div class="bv">동쪽 방향<br>편의점</div></div>
+      </div>
+    </div>
+    ${cta}
+    <div class="foot">⚠️ 본 서비스는 재미와 참고용이며, 당첨을 보장하지 않습니다.<br>로또 구매 및 투자에 대한 책임은 이용자 본인에게 있습니다.</div>
+    <div class="hash"><span>#천기운세 #무료운세 #로또 #행운번호 #사주오행 #${oh}기운</span><span>🌐 천기.kr</span></div>
+  </div>`;
+}
+
+const CASES=[
+  {isLoggedIn:false,oh:"토",tag:"① 비로그인 (공통)"},
+  {isLoggedIn:true,oh:"목",tag:"② 로그인 · 목"},
+  {isLoggedIn:true,oh:"화",tag:"③ 로그인 · 화"},
+  {isLoggedIn:true,oh:"토",tag:"④ 로그인 · 토"},
+  {isLoggedIn:true,oh:"금",tag:"⑤ 로그인 · 금"},
+  {isLoggedIn:true,oh:"수",tag:"⑥ 로그인 · 수"},
+];
+document.getElementById('wrap').innerHTML=CASES.map(c=>
+  `<div><div style="font-weight:800;color:#1A3C32;margin-bottom:6px;font-size:13px;">${c.tag}</div>${card(c)}</div>`
+).join('');
+
+// ───────── 정적 텍스트 풀 전수 ─────────
+const INTRO_FEATURES=[
+  {icon:"☯️",title:"사주 오행 기반 분석",desc:"생년월일 사주의 오행 에너지를 기반으로 번호 추출"},
+  {icon:"🔢",title:"매주 새로운 행운 번호",desc:"1일 1회 무료, 매일 갱신되는 맞춤 번호 제공"},
+  {icon:"🕐",title:"행운의 구매 시간 안내",desc:"오행 흐름에 따른 최적의 구매 시간·방향 제시"},
+  {icon:"🔒",title:"로그인 시 맞춤 번호",desc:"내 사주 데이터 기반 개인 맞춤 행운 번호 제공"},
+  {icon:"🎯",title:"재미와 참고용",desc:"동양 철학 기반의 재미있는 행운 번호 서비스"},
+];
+const ANALYZING_MSGS=["🎰 오행 기운을 정렬하는 중…","✨ 행운 번호 6개 추리는 중…","🕐 행운의 구매 시간 계산 중…","🔮 결과 카드 만드는 중…"];
+
+let poolHtml='';
+
+poolHtml+=`<div class="pool-block">
+  <div class="badge off">INTRO 설명팝업</div>
+  <div style="font-size:12px;color:#888;margin-bottom:4px;">제목: <em>🎰 사주 기반 행운 번호</em> · 부제: "내 사주 오행의 기운으로 뽑아내는 / 세상에 단 하나뿐인 행운 번호"</div>
+  <div style="font-size:12px;color:#888;margin-bottom:4px;">하단 칩: <span class="const">✦ 무료 매일 1회</span> · <span class="const">🎰 매일 자정 갱신</span></div>
+  <ul>${INTRO_FEATURES.map(f=>`<li><b>${f.icon} ${f.title}</b> — ${f.desc}</li>`).join('')}</ul>
+  <div style="font-size:12px;color:#888;margin-top:8px;">메인 버튼: "내 사주에 맞는 로또번호 받기 (무료) →"</div>
+</div>`;
+
+poolHtml+=`<div class="pool-block">
+  <div class="badge off">SHUFFLE (슬롯머신) 화면</div>
+  <ul>
+    <li>제목: <span class="const">{로그인:✨ 내 사주 맞춤 행운번호 / 비로그인:🎰 오늘의 공통 행운번호}</span></li>
+    <li>부제: "{오늘날짜} · 마음이 끌릴 때 멈추세요"</li>
+    <li>안내: "🎰 오행 기운으로 번호를 뽑는 중…" / "✦ 끌리는 순간에 멈춤 버튼을 누르세요"</li>
+    <li>버튼: "🛑 멈추기" · "← 이전" · "닫기"</li>
+  </ul>
+</div>`;
+
+poolHtml+=`<div class="pool-block">
+  <div class="badge off">ANALYZING (분석중 5초) 회전 문구 4종</div>
+  <div style="font-size:12px;color:#888;margin-bottom:4px;">제목 "🎰 행운 로또번호 분석중" / 부제 "잠시만요, 사주 오행으로 번호를 정리하고 있어요"</div>
+  <ul>${ANALYZING_MSGS.map(m=>`<li><em>${m}</em></li>`).join('')}</ul>
+</div>`;
+
+poolHtml+=`<div class="pool-block">
+  <div class="badge on">오행 기반 번호 근거 — 설명문 5종 (오행별 고유)</div>
+  <table class="sum" style="margin:8px 0 0;">
+    <thead><tr><th>오행</th><th>제목</th><th>설명</th></tr></thead>
+    <tbody>${Object.keys(EXPLAIN).map(k=>`<tr><td style="color:${OHANG[k].hex};font-weight:800;">${OHANG[k].label}</td><td><em>${EXPLAIN[k].title}</em></td><td>${EXPLAIN[k].desc.replace('{이름}','{이름}')}</td></tr>`).join('')}</tbody>
+  </table>
+</div>`;
+
+poolHtml+=`<div class="pool-block">
+  <div class="badge on">오행별 행운 번호 범위 (lucky 풀 전체)</div>
+  <table class="sum" style="margin:8px 0 0;">
+    <thead><tr><th>오행</th><th>행운 번호 풀 (9개)</th></tr></thead>
+    <tbody>${Object.keys(OHANG).map(k=>`<tr><td style="color:${OHANG[k].hex};font-weight:800;">${OHANG[k].label}</td><td>${OHANG[k].lucky.join(', ')}</td></tr>`).join('')}</tbody>
+  </table>
+  <div style="font-size:11px;color:#888;margin-top:6px;">※ 결과 화면엔 앞 5개만 노출(<code>.slice(0,5)</code>) + "..." / dominant 오행에 <span class="const">주(主)</span> 뱃지</div>
+</div>`;
+
+poolHtml+=`<div class="pool-block">
+  <div class="badge off">🕐 행운의 구매 시간 — 고정값 (분기 없음)</div>
+  <ul>
+    <li>📅 추천 시간: <b>목요일 오후 3~5시</b> (하드코딩, 오행/날짜 무관 고정)</li>
+    <li>🧭 추천 방향: <b>동쪽 방향 편의점</b> (하드코딩 고정)</li>
+  </ul>
+</div>`;
+
+poolHtml+=`<div class="pool-block">
+  <div class="badge off">비로그인 전용 — 로그인 유도 박스</div>
+  <ul>
+    <li>제목: "✦ 내 사주 맞춤 번호 받기"</li>
+    <li>본문: "지금은 공통 번호예요. 로그인하면 <b>내 사주 오행 기반 맞춤 번호</b>를 받을 수 있어요!"</li>
+    <li>버튼: "로그인하고 맞춤 번호 받기 →"</li>
+  </ul>
+</div>`;
+
+poolHtml+=`<div class="pool-block">
+  <div class="badge off">푸터 (전 케이스 공통)</div>
+  <ul>
+    <li>면책: "⚠️ 본 서비스는 재미와 참고용이며, 당첨을 보장하지 않습니다. 로또 구매 및 투자에 대한 책임은 이용자 본인에게 있습니다."</li>
+    <li>해시태그: "#천기운세 #무료운세 #로또 #행운번호 #사주오행 <span class="const">#{오행}기운</span>" · "🌐 천기.kr"</li>
+  </ul>
+</div>`;
+
+document.getElementById('pools').innerHTML=poolHtml;
+</script>
+</body>
+</html>

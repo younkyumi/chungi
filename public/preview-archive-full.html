@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>천기 기록소 — 모든 인증서 수집 완료 미리보기</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#0e2921;color:#fff;font-family:'Pretendard','Noto Serif KR',sans-serif;display:flex;justify-content:center;padding:20px;}
+.wrap{max-width:420px;width:100%;}
+
+.page-hd{padding:6px 0 14px;}
+.page-title{font-size:20px;font-weight:900;margin-bottom:4px;color:#D4AF37;}
+.page-sub{font-size:11px;color:rgba(168,196,184,0.8);}
+
+.sec-hd{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:rgba(255,255,255,0.04);border-radius:12px;border:1px solid rgba(212,175,55,0.15);margin-bottom:12px;cursor:pointer;}
+.sec-hd-l{display:flex;align-items:center;gap:10px;}
+.sec-hd-icon{font-size:18px;}
+.sec-hd-title{font-size:14px;font-weight:800;color:#fff;}
+.sec-hd-sub{font-size:9px;color:rgba(168,196,184,0.6);margin-top:1px;}
+.sec-hd-r{display:flex;align-items:center;gap:6px;}
+.sec-hd-count{font-size:10px;font-weight:700;color:#D4AF37;}
+.sec-hd-arrow{font-size:14px;color:#D4AF37;}
+
+.tier-label{font-size:10px;font-weight:800;letter-spacing:1px;margin-bottom:8px;}
+.tier-label.lux{color:#D4AF37;}
+.tier-label.sp{color:#C0C0C8;}
+.tier-label.gd{color:#c9a04e;}
+
+.cert-grid{display:grid;gap:8px;margin-bottom:14px;}
+.cert-grid.g3{grid-template-columns:1fr 1fr 1fr;}
+.cert-grid.g4{grid-template-columns:repeat(4,1fr);}
+
+.cert-card{border-radius:14px;padding:14px 6px;text-align:center;position:relative;}
+.cert-card.lux{background:linear-gradient(135deg,#1A3C32,#2d5f4d 50%,#1A3C32);border:2px double #D4AF37;box-shadow:0 4px 14px rgba(212,175,55,0.25);}
+.cert-card.sp{background:linear-gradient(135deg,#1A3C32,#2d5f4d 50%,#1A3C32);border:2px double #C0C0C8;box-shadow:0 4px 14px rgba(192,192,200,0.2);}
+.cert-card.gd{background:linear-gradient(135deg,#fdf6e3,#fff8eb 40%,#f5e6cc);border:2px double #c9a04e;box-shadow:0 4px 14px rgba(201,160,78,0.2);}
+
+.cert-check{position:absolute;top:6px;right:6px;width:14px;height:14px;border-radius:50%;background:#059669;display:flex;align-items:center;justify-content:center;}
+.cert-check span{font-size:8px;color:#fff;font-weight:900;}
+.cert-ic{font-size:28px;margin-bottom:4px;}
+.cert-name{font-size:8px;font-weight:700;line-height:1.3;}
+.cert-svc{font-size:7px;margin-top:2px;opacity:0.7;}
+
+.cert-card.lux .cert-name{color:#D4AF37;}
+.cert-card.lux .cert-svc{color:rgba(212,175,55,0.7);}
+.cert-card.sp .cert-name{color:#E8E8EC;}
+.cert-card.sp .cert-svc{color:#C0C0C8;}
+.cert-card.gd .cert-name{color:#8b6f1c;}
+.cert-card.gd .cert-svc{color:#a88d52;}
+
+/* 캐릭터 카테고리 박스 - 무지개 색상 */
+.charcat{border-radius:14px;padding:14px;margin-bottom:10px;border:2px solid;}
+.charcat-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.charcat-title{font-size:12px;font-weight:900;}
+.charcat-count{font-size:10px;font-weight:800;padding:3px 10px;border-radius:12px;color:#fff;}
+.chargrid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+.chargrid.g4{grid-template-columns:repeat(4,1fr);}
+.charslot{text-align:center;}
+.charbox{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 4px;position:relative;border:1px solid;}
+.charbox.on{box-shadow:0 0 8px rgba(255,255,255,0.4);}
+.charbox .dot{position:absolute;bottom:-2px;right:-2px;width:12px;height:12px;border-radius:50%;background:#059669;display:flex;align-items:center;justify-content:center;}
+.charbox .dot span{font-size:7px;color:#fff;font-weight:900;}
+.charname{font-size:7px;font-weight:600;line-height:1.2;}
+
+.hint{background:rgba(212,175,55,0.08);border:1px dashed rgba(212,175,55,0.35);border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:11px;color:#D4AF37;line-height:1.6;text-align:center;}
+
+.summary{background:linear-gradient(135deg,rgba(212,175,55,0.15),rgba(212,175,55,0.05));border:1px solid rgba(212,175,55,0.35);border-radius:14px;padding:18px 14px;margin-top:20px;margin-bottom:30px;text-align:center;}
+.summary .big{font-size:18px;font-weight:900;color:#D4AF37;margin-bottom:6px;font-family:'Noto Serif KR',serif;}
+.summary .mid{font-size:11px;color:rgba(255,255,255,0.85);line-height:1.7;margin-bottom:6px;}
+.summary .star{font-size:14px;font-weight:900;color:#FFD700;margin-top:4px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="page-hd">
+  <div class="page-title">📋 기록소</div>
+  <div class="page-sub">인물별 운세 기록 · 탭해서 결과 보기</div>
+</div>
+
+<div class="hint">🎉 <b>게스트 데모 — 모든 인증서/캐릭터 수집 완료한 모습 미리보기</b><br>실제로는 각 서비스 이용 시 하나씩 채워집니다!</div>
+
+<!-- 📜 인증서 컬렉션 -->
+<div class="sec-hd">
+  <div class="sec-hd-l">
+    <span class="sec-hd-icon">📜</span>
+    <div>
+      <div class="sec-hd-title">인증서 컬렉션</div>
+      <div class="sec-hd-sub">💎 LUXURY 3 · ✨ SPECIAL 3 · 🏅 GOLD 7 = 13종</div>
+    </div>
+  </div>
+  <div class="sec-hd-r">
+    <span class="sec-hd-count">13/13 ✓</span>
+    <span class="sec-hd-arrow">▾</span>
+  </div>
+</div>
+
+<!-- 💎 LUXURY -->
+<div class="tier-label lux">💎 LUXURY (인증서)</div>
+<div class="cert-grid g3">
+  <div class="cert-card lux"><div class="cert-check"><span>✓</span></div><div class="cert-ic">🧠</div><div class="cert-name">천재성 인증서</div><div class="cert-svc">뇌과학분석</div></div>
+  <div class="cert-card lux"><div class="cert-check"><span>✓</span></div><div class="cert-ic">🌊</div><div class="cert-name">파동 명품 인증서</div><div class="cert-svc">파동성명학</div></div>
+  <div class="cert-card lux"><div class="cert-check"><span>✓</span></div><div class="cert-ic">🏆</div><div class="cert-name">황금 유전자 결합 인증서</div><div class="cert-svc">2세 예측</div></div>
+</div>
+
+<!-- ✨ SPECIAL -->
+<div class="tier-label sp">✨ SPECIAL (인증서 + 캐릭터)</div>
+<div class="cert-grid g3">
+  <div class="cert-card sp"><div class="cert-check"><span>✓</span></div><div class="cert-ic">🪞</div><div class="cert-name">운명의 관상 인증서</div><div class="cert-svc">내 관상보기</div></div>
+  <div class="cert-card sp"><div class="cert-check"><span>✓</span></div><div class="cert-ic">👑</div><div class="cert-name">천상의 관상 인증서</div><div class="cert-svc">우리 아기 관상</div></div>
+  <div class="cert-card sp"><div class="cert-check"><span>✓</span></div><div class="cert-ic">🐾</div><div class="cert-name">반려동물 운명 인증서</div><div class="cert-svc">댕댕상·냥냥상</div></div>
+</div>
+
+<!-- 🏅 GOLD -->
+<div class="tier-label gd">🏅 GOLD (궁합 인증서)</div>
+<div class="cert-grid g4">
+  <div class="cert-card gd"><div class="cert-check"><span>✓</span></div><div class="cert-ic">👪</div><div class="cert-name">천륜 가족</div></div>
+  <div class="cert-card gd"><div class="cert-check"><span>✓</span></div><div class="cert-ic">🐕‍🦺</div><div class="cert-name">집사 인연</div></div>
+  <div class="cert-card gd"><div class="cert-check"><span>✓</span></div><div class="cert-ic">👯</div><div class="cert-name">천생 베프</div></div>
+  <div class="cert-card gd"><div class="cert-check"><span>✓</span></div><div class="cert-ic">💑</div><div class="cert-name">운명 연인</div></div>
+</div>
+<div class="cert-grid g4" style="grid-template-columns:repeat(3,1fr);">
+  <div class="cert-card gd"><div class="cert-check"><span>✓</span></div><div class="cert-ic">💼</div><div class="cert-name">사업 콤비</div></div>
+  <div class="cert-card gd"><div class="cert-check"><span>✓</span></div><div class="cert-ic">⚡</div><div class="cert-name">상극 판독</div></div>
+  <div class="cert-card gd"><div class="cert-check"><span>✓</span></div><div class="cert-ic">🌟</div><div class="cert-name">운명의 최애</div></div>
+</div>
+
+<div style="height:16px;"></div>
+
+<!-- 🎴 캐릭터 카드 컬렉션 -->
+<div class="sec-hd">
+  <div class="sec-hd-l">
+    <span class="sec-hd-icon">🎴</span>
+    <div>
+      <div class="sec-hd-title">캐릭터 카드 컬렉션</div>
+      <div class="sec-hd-sub">관상 20 · 아기 20 · 댕댕 20 · 냥냥 20 · 초상화 20 · 전생 25 · 기질도 16 · 수비학 12</div>
+    </div>
+  </div>
+  <div class="sec-hd-r">
+    <span class="sec-hd-count">153/153 ✓</span>
+    <span class="sec-hd-arrow">▾</span>
+  </div>
+</div>
+
+<!-- 🔴 관상짤 & 내관상 -->
+<div class="charcat" style="background:rgba(255,107,107,0.1);border-color:#ff6b6b;">
+  <div class="charcat-hd"><div class="charcat-title" style="color:#ff6b6b;">🔴 관상짤 & 내관상보기</div><div class="charcat-count" style="background:#ff6b6b;">20 / 20 ✓</div></div>
+  <div class="chargrid">
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,107,0.15);border-color:#ff6b6b;">🐸<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6b6b;">황금손 미다스</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,107,0.15);border-color:#ff6b6b;">🐷<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6b6b;">강남 건물주</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,107,0.15);border-color:#ff6b6b;">🐹<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6b6b;">지갑 수호신</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,107,0.15);border-color:#ff6b6b;">🦢<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6b6b;">도파민 플렉서</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,107,0.15);border-color:#ff6b6b;">🦊<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6b6b;">유죄 인간폭스</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,107,0.15);border-color:#ff6b6b;">🦌<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6b6b;">얼굴천재</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,107,0.15);border-color:#ff6b6b;">🐦‍⬛<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6b6b;">워커홀릭</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,107,0.15);border-color:#ff6b6b;">🐕<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6b6b;">순도100%</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,107,0.15);border-color:#ff6b6b;">🦉<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6b6b;">인간 챗GPT</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,107,0.15);border-color:#ff6b6b;">🦁<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6b6b;">갓벽한 대장</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,107,0.15);border-color:#ff6b6b;">🐗<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6b6b;">알빠노</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,107,0.15);border-color:#ff6b6b;">🐑<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6b6b;">무해한 힐러</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,107,0.15);border-color:#ff6b6b;">🐉<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6b6b;">영앤리치</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,107,0.15);border-color:#ff6b6b;">🐭<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6b6b;">디테일변태</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,107,0.15);border-color:#ff6b6b;">🦚<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6b6b;">미친감성</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,107,0.15);border-color:#ff6b6b;">🐦<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6b6b;">프로역마살</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,107,0.15);border-color:#ff6b6b;">🐿️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6b6b;">쩝쩝박사</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,107,0.15);border-color:#ff6b6b;">🐕<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6b6b;">럭키비키</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,107,0.15);border-color:#ff6b6b;">🐱<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6b6b;">인간알고리즘</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,107,0.15);border-color:#ff6b6b;">🐯<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6b6b;">겉바속촉</div></div>
+  </div>
+</div>
+
+<!-- 🟠 아기관상 -->
+<div class="charcat" style="background:rgba(255,159,67,0.1);border-color:#ff9f43;">
+  <div class="charcat-hd"><div class="charcat-title" style="color:#ff9f43;">🟠 아기관상</div><div class="charcat-count" style="background:#ff9f43;">20 / 20 ✓</div></div>
+  <div class="chargrid">
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,159,67,0.15);border-color:#ff9f43;">☀️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff9f43;">꼬마 태양</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,159,67,0.15);border-color:#ff9f43;">🐷<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff9f43;">아기돼지</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,159,67,0.15);border-color:#ff9f43;">🐹<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff9f43;">알뜰 햄찌</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,159,67,0.15);border-color:#ff9f43;">🦢<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff9f43;">아기 학</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,159,67,0.15);border-color:#ff9f43;">🦊<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff9f43;">아기 여우</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,159,67,0.15);border-color:#ff9f43;">🦌<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff9f43;">꽃사슴</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,159,67,0.15);border-color:#ff9f43;">🐧<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff9f43;">똑똑 펭귄</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,159,67,0.15);border-color:#ff9f43;">🐶<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff9f43;">포근 강아지</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,159,67,0.15);border-color:#ff9f43;">🦉<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff9f43;">아기 부엉이</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,159,67,0.15);border-color:#ff9f43;">🦁<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff9f43;">꼬마 사자왕</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,159,67,0.15);border-color:#ff9f43;">🐗<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff9f43;">뚝심 베이비</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,159,67,0.15);border-color:#ff9f43;">🐑<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff9f43;">포근 양</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,159,67,0.15);border-color:#ff9f43;">🐲<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff9f43;">아기 용</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,159,67,0.15);border-color:#ff9f43;">🐭<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff9f43;">똘똘이</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,159,67,0.15);border-color:#ff9f43;">🦋<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff9f43;">나비 베이비</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,159,67,0.15);border-color:#ff9f43;">🕊️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff9f43;">아기 새</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,159,67,0.15);border-color:#ff9f43;">🐿️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff9f43;">먹보 다람쥐</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,159,67,0.15);border-color:#ff9f43;">🍀<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff9f43;">클로버</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,159,67,0.15);border-color:#ff9f43;">🌟<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff9f43;">별빛 아기</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,159,67,0.15);border-color:#ff9f43;">🐯<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff9f43;">아기 호랑이</div></div>
+  </div>
+</div>
+
+<!-- 🟡 댕댕상 -->
+<div class="charcat" style="background:rgba(250,212,95,0.15);border-color:#fad45f;">
+  <div class="charcat-hd"><div class="charcat-title" style="color:#8b6f1c;">🟡 댕댕상</div><div class="charcat-count" style="background:#fad45f;color:#5a4316;">20 / 20 ✓</div></div>
+  <div class="chargrid">
+    <div class="charslot"><div class="charbox on" style="background:rgba(250,212,95,0.2);border-color:#fad45f;">💰<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#8b6f1c;">불독</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(250,212,95,0.2);border-color:#fad45f;">🏦<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#8b6f1c;">골든리트리버</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(250,212,95,0.2);border-color:#fad45f;">🧮<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#8b6f1c;">시바견</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(250,212,95,0.2);border-color:#fad45f;">💃<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#8b6f1c;">아프간하운드</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(250,212,95,0.2);border-color:#fad45f;">😏<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#8b6f1c;">포메라니안</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(250,212,95,0.2);border-color:#fad45f;">✨<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#8b6f1c;">사모예드</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(250,212,95,0.2);border-color:#fad45f;">🏃<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#8b6f1c;">보더콜리</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(250,212,95,0.2);border-color:#fad45f;">🤗<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#8b6f1c;">비숑프리제</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(250,212,95,0.2);border-color:#fad45f;">🧠<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#8b6f1c;">푸들</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(250,212,95,0.2);border-color:#fad45f;">👑<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#8b6f1c;">저먼셰퍼드</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(250,212,95,0.2);border-color:#fad45f;">🐺<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#8b6f1c;">진돗개</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(250,212,95,0.2);border-color:#fad45f;">💕<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#8b6f1c;">카발리에</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(250,212,95,0.2);border-color:#fad45f;">🎩<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#8b6f1c;">도베르만</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(250,212,95,0.2);border-color:#fad45f;">🔍<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#8b6f1c;">닥스훈트</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(250,212,95,0.2);border-color:#fad45f;">🎨<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#8b6f1c;">코카스파니엘</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(250,212,95,0.2);border-color:#fad45f;">🌍<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#8b6f1c;">허스키</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(250,212,95,0.2);border-color:#fad45f;">🍖<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#8b6f1c;">비글</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(250,212,95,0.2);border-color:#fad45f;">🍀<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#8b6f1c;">시츄</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(250,212,95,0.2);border-color:#fad45f;">🖥️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#8b6f1c;">슈나우저</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(250,212,95,0.2);border-color:#fad45f;">😤<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#8b6f1c;">치와와</div></div>
+  </div>
+</div>
+
+<!-- 🟢 냥냥상 -->
+<div class="charcat" style="background:rgba(88,214,141,0.1);border-color:#58d68d;">
+  <div class="charcat-hd"><div class="charcat-title" style="color:#058a52;">🟢 냥냥상</div><div class="charcat-count" style="background:#58d68d;">20 / 20 ✓</div></div>
+  <div class="chargrid">
+    <div class="charslot"><div class="charbox on" style="background:rgba(88,214,141,0.15);border-color:#58d68d;">💰<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#058a52;">재패니즈밥테일</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(88,214,141,0.15);border-color:#58d68d;">🏦<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#058a52;">페르시안</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(88,214,141,0.15);border-color:#58d68d;">🧮<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#058a52;">코숏</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(88,214,141,0.15);border-color:#58d68d;">💃<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#058a52;">벵갈</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(88,214,141,0.15);border-color:#58d68d;">😏<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#058a52;">샴</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(88,214,141,0.15);border-color:#58d68d;">✨<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#058a52;">러시안블루</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(88,214,141,0.15);border-color:#58d68d;">🏃<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#058a52;">아비시니안</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(88,214,141,0.15);border-color:#58d68d;">🤗<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#058a52;">랙돌</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(88,214,141,0.15);border-color:#58d68d;">🧠<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#058a52;">오리엔탈숏헤어</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(88,214,141,0.15);border-color:#58d68d;">👑<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#058a52;">노르웨이숲</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(88,214,141,0.15);border-color:#58d68d;">🐺<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#058a52;">터키시앙고라</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(88,214,141,0.15);border-color:#58d68d;">💕<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#058a52;">버먼</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(88,214,141,0.15);border-color:#58d68d;">🎩<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#058a52;">브리티시숏헤어</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(88,214,141,0.15);border-color:#58d68d;">🔍<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#058a52;">스코티시폴드</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(88,214,141,0.15);border-color:#58d68d;">🎨<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#058a52;">소말리</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(88,214,141,0.15);border-color:#58d68d;">🌍<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#058a52;">오시캣</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(88,214,141,0.15);border-color:#58d68d;">🍖<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#058a52;">엑조틱숏헤어</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(88,214,141,0.15);border-color:#58d68d;">🍀<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#058a52;">삼색냥</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(88,214,141,0.15);border-color:#58d68d;">🖥️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#058a52;">싱가푸라</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(88,214,141,0.15);border-color:#58d68d;">😤<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#058a52;">스핑크스</div></div>
+  </div>
+</div>
+
+<!-- 🔵 조선 초상화 -->
+<div class="charcat" style="background:rgba(72,219,251,0.1);border-color:#48dbfb;">
+  <div class="charcat-hd"><div class="charcat-title" style="color:#0ea5c4;">🔵 조선 초상화</div><div class="charcat-count" style="background:#48dbfb;">20 / 20 ✓</div></div>
+  <div class="chargrid">
+    <div class="charslot"><div class="charbox on" style="background:rgba(72,219,251,0.15);border-color:#48dbfb;">👑<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#0ea5c4;">왕</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(72,219,251,0.15);border-color:#48dbfb;">🗡️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#0ea5c4;">무관</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(72,219,251,0.15);border-color:#48dbfb;">📜<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#0ea5c4;">선비</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(72,219,251,0.15);border-color:#48dbfb;">🎭<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#0ea5c4;">광대</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(72,219,251,0.15);border-color:#48dbfb;">🏯<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#0ea5c4;">궁녀</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(72,219,251,0.15);border-color:#48dbfb;">⚔️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#0ea5c4;">장군</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(72,219,251,0.15);border-color:#48dbfb;">🎓<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#0ea5c4;">학자</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(72,219,251,0.15);border-color:#48dbfb;">🧙<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#0ea5c4;">도사</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(72,219,251,0.15);border-color:#48dbfb;">🏹<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#0ea5c4;">의적</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(72,219,251,0.15);border-color:#48dbfb;">🎨<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#0ea5c4;">화공</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(72,219,251,0.15);border-color:#48dbfb;">💊<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#0ea5c4;">어의</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(72,219,251,0.15);border-color:#48dbfb;">📿<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#0ea5c4;">승려</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(72,219,251,0.15);border-color:#48dbfb;">🎵<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#0ea5c4;">악사</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(72,219,251,0.15);border-color:#48dbfb;">🛡️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#0ea5c4;">호위무사</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(72,219,251,0.15);border-color:#48dbfb;">👨‍🌾<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#0ea5c4;">농부</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(72,219,251,0.15);border-color:#48dbfb;">🧭<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#0ea5c4;">역관</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(72,219,251,0.15);border-color:#48dbfb;">🍶<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#0ea5c4;">주모</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(72,219,251,0.15);border-color:#48dbfb;">📦<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#0ea5c4;">보부상</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(72,219,251,0.15);border-color:#48dbfb;">🎪<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#0ea5c4;">기생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(72,219,251,0.15);border-color:#48dbfb;">⚖️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#0ea5c4;">사또</div></div>
+  </div>
+</div>
+
+<!-- 🟣 전생 운세 -->
+<div class="charcat" style="background:rgba(95,95,212,0.12);border-color:#5f5fd4;">
+  <div class="charcat-hd"><div class="charcat-title" style="color:#5f5fd4;">🟣 전생 운세</div><div class="charcat-count" style="background:#5f5fd4;">25 / 25 ✓</div></div>
+  <div class="chargrid">
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">01<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">02<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">03<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">04<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">05<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">06<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">07<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">08<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">09<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">10<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">11<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">12<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">13<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">14<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">15<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">16<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">17<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">18<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">19<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">20<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">21<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">22<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">23<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">24<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(95,95,212,0.15);border-color:#5f5fd4;font-size:16px;">25<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#5f5fd4;">전생</div></div>
+  </div>
+</div>
+
+<!-- 🟪 기질도 -->
+<div class="charcat" style="background:rgba(165,105,189,0.12);border-color:#a569bd;">
+  <div class="charcat-hd"><div class="charcat-title" style="color:#a569bd;">🟪 기질도</div><div class="charcat-count" style="background:#a569bd;">16 / 16 ✓</div></div>
+  <div class="chargrid g4">
+    <div class="charslot"><div class="charbox on" style="background:rgba(165,105,189,0.15);border-color:#a569bd;font-size:14px;">☯️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#a569bd;">기질1</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(165,105,189,0.15);border-color:#a569bd;font-size:14px;">☯️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#a569bd;">기질2</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(165,105,189,0.15);border-color:#a569bd;font-size:14px;">☯️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#a569bd;">기질3</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(165,105,189,0.15);border-color:#a569bd;font-size:14px;">☯️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#a569bd;">기질4</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(165,105,189,0.15);border-color:#a569bd;font-size:14px;">☯️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#a569bd;">기질5</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(165,105,189,0.15);border-color:#a569bd;font-size:14px;">☯️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#a569bd;">기질6</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(165,105,189,0.15);border-color:#a569bd;font-size:14px;">☯️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#a569bd;">기질7</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(165,105,189,0.15);border-color:#a569bd;font-size:14px;">☯️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#a569bd;">기질8</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(165,105,189,0.15);border-color:#a569bd;font-size:14px;">☯️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#a569bd;">기질9</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(165,105,189,0.15);border-color:#a569bd;font-size:14px;">☯️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#a569bd;">기질10</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(165,105,189,0.15);border-color:#a569bd;font-size:14px;">☯️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#a569bd;">기질11</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(165,105,189,0.15);border-color:#a569bd;font-size:14px;">☯️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#a569bd;">기질12</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(165,105,189,0.15);border-color:#a569bd;font-size:14px;">☯️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#a569bd;">기질13</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(165,105,189,0.15);border-color:#a569bd;font-size:14px;">☯️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#a569bd;">기질14</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(165,105,189,0.15);border-color:#a569bd;font-size:14px;">☯️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#a569bd;">기질15</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(165,105,189,0.15);border-color:#a569bd;font-size:14px;">☯️<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#a569bd;">기질16</div></div>
+  </div>
+</div>
+
+<!-- 🌸 수비학 -->
+<div class="charcat" style="background:rgba(255,107,173,0.12);border-color:#ff6bad;">
+  <div class="charcat-hd"><div class="charcat-title" style="color:#ff6bad;">🌸 수비학 소울넘버</div><div class="charcat-count" style="background:#ff6bad;">12 / 12 ✓</div></div>
+  <div class="chargrid g4">
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,173,0.15);border-color:#ff6bad;font-size:18px;font-weight:900;">1<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6bad;">1번</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,173,0.15);border-color:#ff6bad;font-size:18px;font-weight:900;">2<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6bad;">2번</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,173,0.15);border-color:#ff6bad;font-size:18px;font-weight:900;">3<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6bad;">3번</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,173,0.15);border-color:#ff6bad;font-size:18px;font-weight:900;">4<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6bad;">4번</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,173,0.15);border-color:#ff6bad;font-size:18px;font-weight:900;">5<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6bad;">5번</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,173,0.15);border-color:#ff6bad;font-size:18px;font-weight:900;">6<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6bad;">6번</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,173,0.15);border-color:#ff6bad;font-size:18px;font-weight:900;">7<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6bad;">7번</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,173,0.15);border-color:#ff6bad;font-size:18px;font-weight:900;">8<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6bad;">8번</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,173,0.15);border-color:#ff6bad;font-size:18px;font-weight:900;">9<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6bad;">9번</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,173,0.15);border-color:#ff6bad;font-size:18px;font-weight:900;">11<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6bad;">마스터</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,173,0.15);border-color:#ff6bad;font-size:18px;font-weight:900;">22<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6bad;">마스터</div></div>
+    <div class="charslot"><div class="charbox on" style="background:rgba(255,107,173,0.15);border-color:#ff6bad;font-size:18px;font-weight:900;">33<div class="dot"><span>✓</span></div></div><div class="charname" style="color:#ff6bad;">마스터</div></div>
+  </div>
+</div>
+
+<div style="height:16px;"></div>
+
+<!-- 🃏 조선 타로 -->
+<div class="sec-hd">
+  <div class="sec-hd-l">
+    <span class="sec-hd-icon">🃏</span>
+    <div>
+      <div class="sec-hd-title">조선 타로카드 컬렉션</div>
+      <div class="sec-hd-sub">메이저 아르카나 22 · 완드/컵/소드/펜타클 각 14 = 78장</div>
+    </div>
+  </div>
+  <div class="sec-hd-r">
+    <span class="sec-hd-count">78 / 78 ✓</span>
+    <span class="sec-hd-arrow">▸</span>
+  </div>
+</div>
+
+<!-- 📊 최종 달성 박스 -->
+<div class="summary">
+  <div class="big">🏆 천기 마스터 달성!</div>
+  <div class="mid"><b>📊 총 244종 수집 완료!</b><br>(13 인증서 + 153 캐릭터 + 78 타로)</div>
+  <div class="star">⭐⭐⭐⭐⭐</div>
+</div>
+
+</div>
+</body>
+</html>

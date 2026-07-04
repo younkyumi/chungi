@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>에러 12종 — 부모·자식 관상 궁합</title>
+<link rel="stylesheet" href="./_style-v2.css">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<style>
+  .section-h{color:#FFD700;font-size:15px;font-weight:900;text-align:center;margin:24px 0 12px;padding:10px;background:rgba(212,175,55,0.12);border-radius:10px;border:1px solid rgba(212,175,55,0.3);}
+  .section-desc{color:rgba(255,255,255,0.6);font-size:11px;text-align:center;margin-bottom:18px;}
+</style>
+</head>
+<body>
+<h1>👪 부모·자식 관상 궁합 — 에러 12종 (자녀 6 + 부모 6)</h1>
+<div class="sub">자녀 사진 에러 → /baby-cards/ | 부모 사진 에러 → /gwansang-cards/</div>
+<a href="./index.html" class="nav-back">← 미리보기 목록으로</a>
+
+<div class="section-h">👶 자녀 사진 에러 6종 (baby-cards 21~26)</div>
+<div class="section-desc">자녀 자리에 어른·동물·흐릿한 사진 등을 올렸을 때</div>
+<div id="root-child"></div>
+
+<div class="section-h">🧑 부모 사진 에러 6종 (gwansang-cards 21~26)</div>
+<div class="section-desc">부모 자리에 아기·동물·흐릿한 사진 등을 올렸을 때</div>
+<div id="root-parent"></div>
+
+<script>
+const BRAND_CHILD = "🔮 천기(天機) 오리지널 | 부모·자식 관상 궁합 — 자녀 사진 에러";
+const BRAND_PARENT = "🔮 천기(天機) 오리지널 | 부모·자식 관상 궁합 — 부모 사진 에러";
+const HASH_BASE = "#천기관상 #부모자식궁합";
+
+const CHILD_ERRORS = [
+  {id:21, label:"동물 (NON_BABY)", name:'🐾 "나도 아기예요!" 멍냥이', quote:"자녀 자리에 사람이 아닌 것 같아요!",
+   detail:"우리 자녀의 얼굴 사진을 올려줘야 해요! 만약 댕댕이·냥이라면 댕댕상·냥냥상으로 가주세요. 사랑스러운 우리 아기 얼굴 정면 사진으로 다시 올려주면 천기 AI가 부모님과의 천륜 궁합을 정밀 분석해드릴게요! 🍼",
+   guide:["자녀 얼굴 정면 사진","동물은 댕댕상·냥냥상에서!"], tag:"#멍냥이"},
+  {id:22, label:"흐릿함 (BLURRY)", name:'🌫️ "안개 속 아기" 흐릿이', quote:"자녀 사진이 너무 어둡거나 흐려요!",
+   detail:"아기들은 가만히 안 있죠~ 자녀 사진이 흔들렸거나 초점이 안 맞아서 천기 AI가 이목구비를 못 잡았어요. 자고 있을 때나 평온한 순간의 정면 사진으로 다시 올려주시면, 부모님과의 천륜 궁합을 정밀 분석해드릴게요! 👶✨",
+   guide:["밝은 곳에서 자녀 얼굴 정면 큼직하게","자고 있을 때 또는 평온한 순간 추천"], tag:"#흐릿이"},
+  {id:23, label:"여러 명 (MULTI)", name:'👶👶 "누구를 볼까요?" 쌍둥이 소동', quote:"자녀 자리에 아기가 여러 명이에요!",
+   detail:"자녀 사진에 여러 명이 함께 있어서 어느 아기를 부모님과 매칭해야 할지 헷갈려요! 다둥이 부모님이라면 한 명씩 따로 분석받으세요. 한 명만 큼직하게 정면 사진으로 다시 올려주세요 👶",
+   guide:["자녀 한 명만 크게","얼굴이 화면 절반 이상"], tag:"#쌍둥이소동"},
+  {id:24, label:"어른 (ADULT)", name:'🧑 "자녀가 아니잖아요!" 어른이', quote:"자녀 자리에 어른 사진이 올라왔어요! 😂",
+   detail:'자녀 사진에 세월의 흔적이 보이는데? 부모·자식 관상 궁합의 "자녀" 자리는 만 6세 이하 베이비 전용이에요! 어른 자녀라면 "커플 관상 궁합"으로 가시면 정밀 분석해드려요. 우리 아기 얼굴 정면 사진으로 다시 올려주세요 🍼',
+   guide:["만 6세 이하 자녀 얼굴",'성인 자녀는 "커플 관상 궁합"에서!'], tag:"#어른이"},
+  {id:25, label:"얼굴 가림 (MASKED)", name:'🙈 "얼굴이 숨었어요!" 숨바꼭질', quote:"자녀 얼굴이 잘 안 보여요!",
+   detail:"턱받이·모자·마스크로 자녀 얼굴이 가려져서 천기 AI가 이목구비를 찾다가 포기했어요 ㅋㅋ 자녀 얼굴이 이마부터 턱까지 훤히 보이는 정면 사진으로 다시 올려주세요! 👶",
+   guide:["모자·턱받이로 가린 부분 없게","얼굴 전체 다 보이게"], tag:"#숨바꼭질"},
+  {id:26, label:"일러스트 (ILLUSTRATION)", name:'🎨 "그림 속 아기" 만화왕', quote:"자녀 자리에 실제 아기 사진을 올려주세요!",
+   detail:"와 이 캐릭터 너무 귀엽긴 한데... 천기 도사님은 진짜 우리 아기와 부모님의 천륜만 봐줄 수 있어요! 만화·일러스트·AI 합성 X. 진짜 자녀 사진으로 다시 올려주세요 📸",
+   guide:["실제 자녀 사진 (그림·일러스트 X)","AI 생성·합성 사진도 X"], tag:"#만화왕"},
+];
+
+const PARENT_ERRORS = [
+  {id:21, label:"동물·사물·풍경 (NON_HUMAN)", name:"🐾 인간계 이탈상", quote:"🐾 부모 자리에 동물이 있어요! 인간이 아니잖아!",
+   detail:"AI도 당황해서 식은땀 흘리는 중. 종족이 다르다구! 부모님 자리에 아무리 뜯어봐도 주민등록증 대신 동물병원 인식표가 어울릴 상이야. 부모님 얼굴 정면 사진으로 다시 올려주거나, 댕냥이는 펫집사 궁합으로 가서 만나줘! 🐶🐱",
+   guide:["부모 얼굴 정면 (눈·코·입 다 보이게)","동물 사진은 펫집사 궁합에서!"], tag:"#인간계이탈상"},
+  {id:22, label:"흐릿함·어두움 (GHOST_MODE)", name:"👻 전설의 고향상", quote:"👻 부모 사진이 너무 흐려요! 기가 너무 세!",
+   detail:'초점 나감 + 흔들림 = AI 서버 기절 삐뽀삐뽀 🚨 부모님 사진인데 미스터리 공포 영화 포스터 바이브야! 사진 초점이 안 맞아서, 부모님과 아이의 천륜 인연도 길을 잃을 지경이야. 밝은 곳에서 정면으로 찍은 "원본" 부모 사진을 다시 올려줘! 📸',
+   guide:["흔들림 없는 선명한 부모 사진","밝은 조명 + 카메라 정면 응시"], tag:"#전설의고향상"},
+  {id:23, label:"다중 인물 (MULTI)", name:"👥 분신술 장인상", quote:"👥 부모 자리에 사람이 너무 많아!",
+   detail:"앗! 부모 사진에 기가 센 분들이 너무 많이 모여 있어서 우리 천기 AI 도사님 동공에 지진이 났어! ㅋㅋㅋ 아빠 한 분이든 엄마 한 분이든, 자녀와 천륜을 보고 싶은 '단 한 명'의 부모님 큼직한 정면 얼굴만 빡! 집중해서 다시 올려줘! 🔍👥",
+   guide:["부모 한 명만 크게 (단체 사진 X)","얼굴이 화면 1/2 이상 차지하게"], tag:"#분신술장인상"},
+  {id:24, label:"아기 (BABY)", name:"👶 천하무적 뽀시래기상", quote:"👶 부모 자리에 아기가? 너무 귀여워서 AI 심장 녹아내림 🫠",
+   detail:'와... 부모 자리에 또 아기가 있네? 이건 천륜 분석이 아니라 일단 무조건 우쭈쭈부터 해줘야 하는 거 아니야? 아직 얼굴에 세상의 풍파가 1도 묻지 않은 순도 200% 뽀시래기잖아! 부모 자리에는 만 13세 이상 어른 사진을 올려줘. 자녀끼리 궁합은 아직 지원 안 해! 🍼👶',
+   guide:["부모는 만 13세 이상 어른 얼굴","자녀 자리에 또 다른 자녀? 미지원"], tag:"#뽀시래기상"},
+  {id:25, label:"마스크·선글라스 (MASKED)", name:"🕶️ 신비주의 철벽보안상", quote:"🕶️ 부모님 얼굴이 가려졌어요!",
+   detail:"앗! 혹시 이 부모님 직업이 국가정보원 비밀 요원이야? 선글라스·마스크로 얼굴을 꽁꽁 숨겨놔서, 천하의 천기 AI도 천륜을 못 읽었어! 자녀와의 인연을 보려면, 자신감 있게 이마부터 턱끝까지 훤히 드러난 부모 정면 사진으로 다시 승부수를 띄워줘! 😎🕵️",
+   guide:["부모 얼굴 가리지 말기","이마부터 턱까지 다 보이게"], tag:"#철벽보안상"},
+  {id:26, label:"일러스트·캐릭터 (ILLUSTRATION)", name:"🎨 2차원 종이인간상", quote:"🎨 부모 자리에 그림? (근데 진짜 그림이네)",
+   detail:"와, 이 부모님(?) 매력 진짜 미치긴 했는데... 안타깝게도 주민등록증 대신 모니터나 만화책 속에 살고 계시는 분이구먼! ㅋㅋㅋ 천기 도사님은 3D 현실 세계에서 숨 쉬고 자녀랑 같이 마라탕 먹는 '진짜 부모님'의 천륜만 봐줄 수 있어. 진짜 부모님 사진을 다시 올려줘! 📺💖",
+   guide:["실제 부모 사진 (만화·일러스트 X)","AI 생성·합성 사진도 X"], tag:"#종이인간상"},
+];
+
+function render(rootId, errors, brand, basePath){
+  const root = document.getElementById(rootId);
+  errors.forEach(e => {
+    root.insertAdjacentHTML('beforeend', `
+      <div class="item">
+        <div class="item-label">━━ ${e.id}. ${e.label} ━━</div>
+        <div class="card">
+          <div class="brand">${brand}</div>
+          <div class="err-banner">
+            <div class="err-title">⚠️ ERROR!! ERROR!!</div>
+            <div class="err-sub">사진을 인식 할 수 없습니다.</div>
+          </div>
+          <div class="illust"><img src="${basePath}${e.id}).png?nocache" alt=""></div>
+          <div class="body">
+            <div class="char-name">${e.name}</div>
+            <div class="char-quote">"${e.quote}"</div>
+            <div class="char-detail">${e.detail}</div>
+          </div>
+          <div class="guide">
+            <div class="guide-title">📸 사진 다시 올리기 가이드</div>
+            ${e.guide.map(g => `<div class="guide-row">• ${g}</div>`).join('')}
+            <div class="guide-row ok">✓ 결제 완료 — 추가 결제 없이 재시도 가능</div>
+            <div class="guide-row warn">⚠️ 화면을 나가면 다시 올릴 수 없습니다</div>
+          </div>
+          <div class="hashtags">
+            <span>${HASH_BASE} ${e.tag}</span>
+            <span>🌐 천기.kr</span>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn-primary">📸 사진 다시 올리기</button>
+          <button class="btn-ghost">닫기</button>
+        </div>
+      </div>
+    `);
+  });
+}
+
+render('root-child', CHILD_ERRORS, BRAND_CHILD, '/baby-cards/baby (');
+render('root-parent', PARENT_ERRORS, BRAND_PARENT, '/gwansang-cards/gwansang (');
+</script>
+</body>
+</html>

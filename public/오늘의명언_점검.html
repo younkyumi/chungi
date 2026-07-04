@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📜 오늘의 명언 풀 결과 점검본</title>
+<style>
+  body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#ece6da;margin:0;padding:18px;color:#222;}
+  h1{text-align:center;color:#1A3C32;}
+  .note{max-width:900px;margin:0 auto 18px;background:#fff;border-radius:12px;padding:14px 18px;font-size:13px;line-height:1.85;box-shadow:0 4px 14px rgba(0,0,0,.06);}
+  .note b{color:#b91c1c;}
+  .note .ok{color:#16a34a;}
+  table.sum{max-width:980px;margin:0 auto 24px;border-collapse:collapse;background:#fff;font-size:12.5px;box-shadow:0 4px 14px rgba(0,0,0,.06);}
+  table.sum th,table.sum td{border:1px solid #e3dccb;padding:6px 9px;text-align:left;}
+  table.sum th{background:#1A3C32;color:#fff;}
+  table.sum tr:nth-child(even){background:#faf7f0;}
+  table.sum .ad td{color:#9CA3AF;font-style:italic;}
+  .cnt-pill{font-weight:800;color:#16a34a;}
+  .layout{max-width:900px;margin:0 auto 26px;background:#fff;border-radius:14px;padding:16px 20px;box-shadow:0 4px 14px rgba(0,0,0,.06);font-size:12.5px;line-height:1.8;}
+  .layout h3{margin:0 0 8px;color:#1A3C32;font-size:15px;}
+  .layout .const{color:#1d72b8;font-weight:700;}
+  .layout code{background:#f4f5f7;border-radius:5px;padding:2px 6px;font-size:11.5px;}
+  .wrap{max-width:920px;margin:0 auto;display:flex;flex-direction:column;gap:22px;}
+  .book{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 8px 22px rgba(0,0,0,.08);border:1px solid #e3dccb;}
+  .book-hd{padding:16px 20px;color:#fff;}
+  .book-hd .cover{font-size:30px;}
+  .book-hd .ttl{font-size:20px;font-weight:900;margin-top:4px;}
+  .book-hd .auth{font-size:12.5px;opacity:.92;margin-top:2px;}
+  .book-hd .tag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:2px;margin-top:8px;background:rgba(255,255,255,.18);border-radius:20px;padding:3px 10px;}
+  .book-hd .meta{font-size:11px;opacity:.85;margin-top:8px;}
+  .book-hd .meta code{background:rgba(255,255,255,.15);border-radius:4px;padding:1px 5px;font-size:10.5px;}
+  .qlist{padding:6px 20px 16px;}
+  .qrow{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px dashed #ece4d2;}
+  .qrow:last-child{border-bottom:none;}
+  .qnum{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:#1A3C32;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+  .qtext{font-size:15px;line-height:1.7;font-weight:700;color:#1A3C32;word-break:keep-all;font-family:'Noto Serif KR','Batang',serif;}
+  .qattr{font-size:11px;color:#aaa;font-style:italic;margin-top:2px;}
+  .adbox{padding:18px 20px;color:#6b7280;font-size:12.5px;line-height:1.8;}
+  .adbox b{color:#374151;}
+  .lockbadge{display:inline-block;font-size:10px;font-weight:700;background:#fef3c7;color:#92400e;border-radius:5px;padding:1px 6px;margin-left:6px;}
+</style>
+</head>
+<body>
+<h1>📜 오늘의 명언 — 풀 결과 점검본</h1>
+
+<div class="note">
+  <b>📌 무료 콘텐츠 · "오늘의 명언" 전수 점검본.</b> 직접 읽으며 오타·어색한 문구·중복을 잡아주세요.<br>
+  • <b>가짓수의 정체</b>: 책을 고르면, 그 책의 명언 배열에서 <b>날짜 시드(seededRng) 기반으로 매일 한 문장</b>이 자동 선택돼 결과 카드에 한 줄 떠요. (<code>_getQuote()</code> → <code>seed = 연*10000+월*100+일 + bookId.length*77</code>) 그래서 <b>가짓수 = 전체 책의 모든 명언 문장</b>. 아래에 책별로 전부 나열했어요.<br>
+  • <span class="ok"><b>총 명언 문장 수: 75개</b></span> (실제 도서 10권). + <b>협찬(AD) 도서 2칸</b>은 quotes 비어있음(명언 0개) → 클릭 시 협업문의 이메일.<br>
+  • <b>로그인 분기</b>: <code>locked:true</code> 책(천기 제외 9권 전부)은 <b>비로그인 시 잠금🔒</b> — "로그인하면 모든 책의 명언을 볼 수 있어요!" 알럿. 천기의 말씀만 <code>locked:false</code>(=기본/비로그인 열람 가능).<br>
+  • <b>날짜 분기</b>: 같은 책이라도 <b>날짜가 바뀌면 다른 명언</b>이 떠요(자정 갱신). 인물 선택은 없음(<code>NO_PERSON_TODAY=["quote"]</code>).<br>
+  • 결과 카드의 정적 텍스트(헤더·해시태그·푸터 등)는 모든 책 공통 → 맨 위 "결과 레이아웃" 섹션에 1번만 정리했어요.
+</div>
+
+<h3 style="max-width:900px;margin:0 auto 8px;color:#1A3C32;">▣ 책별 명언 개수 요약</h3>
+<table class="sum">
+  <thead><tr><th>#</th><th>표지</th><th>책 제목</th><th>저자</th><th>태그</th><th>잠금</th><th>명언 수</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>🔮</td><td>천기의 말씀</td><td>천기(天機)</td><td>오늘의 추천</td><td>열림(기본)</td><td class="cnt-pill">15</td></tr>
+    <tr><td>2</td><td>📜</td><td>논어 (論語)</td><td>공자 (孔子)</td><td>고전</td><td>🔒 잠금</td><td class="cnt-pill">8</td></tr>
+    <tr><td>3</td><td>☯️</td><td>도덕경 (道德經)</td><td>노자 (老子)</td><td>고전</td><td>🔒 잠금</td><td class="cnt-pill">7</td></tr>
+    <tr><td>4</td><td>🏮</td><td>명심보감 (明心寶鑑)</td><td>추적 (고려 말)</td><td>처세</td><td>🔒 잠금</td><td class="cnt-pill">6</td></tr>
+    <tr><td>5</td><td>🍃</td><td>채근담 (菜根譚)</td><td>홍자성 (명나라)</td><td>인생</td><td>🔒 잠금</td><td class="cnt-pill">5</td></tr>
+    <tr><td>6</td><td>🏛️</td><td>명상록 (Meditations)</td><td>마르쿠스 아우렐리우스</td><td>철학</td><td>🔒 잠금</td><td class="cnt-pill">6</td></tr>
+    <tr><td>7</td><td>⚔️</td><td>이순신 난중일기</td><td>이순신 (1545~1598)</td><td>역사</td><td>🔒 잠금</td><td class="cnt-pill">5</td></tr>
+    <tr><td>8</td><td>👑</td><td>세종대왕 어록</td><td>세종대왕 (1397~1450)</td><td>왕도</td><td>🔒 잠금</td><td class="cnt-pill">8</td></tr>
+    <tr><td>9</td><td>🎨</td><td>신사임당 이야기</td><td>신사임당 (1504~1551)</td><td>여류·어머니</td><td>🔒 잠금</td><td class="cnt-pill">8</td></tr>
+    <tr><td>10</td><td>🌿</td><td>퇴계 이황 명언집</td><td>이황 (1501~1570)</td><td>성리학</td><td>🔒 잠금</td><td class="cnt-pill">8</td></tr>
+    <tr class="ad"><td>AD1</td><td>📚</td><td>협찬 도서 자리</td><td>협업 문의 환영</td><td>AD</td><td>열림</td><td>0 (빈 슬롯)</td></tr>
+    <tr class="ad"><td>AD2</td><td>📖</td><td>협찬 도서 자리</td><td>협업 문의 환영</td><td>AD</td><td>열림</td><td>0 (빈 슬롯)</td></tr>
+    <tr><td colspan="6" style="text-align:right;font-weight:800;background:#1A3C32;color:#fff;">합계 (실제 도서 10권)</td><td class="cnt-pill" style="background:#1A3C32;">75</td></tr>
+  </tbody>
+</table>
+
+<div class="layout">
+  <h3>▣ 결과 레이아웃 — 모든 책 공통 정적 텍스트</h3>
+  결과 카드에 책마다 동일하게 들어가는 고정 문구입니다. (아래 책별 카드에는 명언 본문만 나열하고 이 공통 텍스트는 생략했어요.)<br><br>
+  • 상단 브랜드: <span class="const">오늘의 명언</span> / 제목 <span class="const">📜 오늘의 명언</span><br>
+  • 날짜줄: <span class="const">{오늘 날짜} · 매일 자정에 새로운 명언</span><br>
+  • 태그줄: <span class="const">✦ {책 태그} ✦</span> · 책 제목 · 저자<br>
+  • 명언 박스: 큰 따옴표(<code>“ ”</code>) 안에 그날의 명언 1줄<br>
+  • 명언 아래: <span class="const">— {저자} —</span><br>
+  • 해시태그 푸터: <span class="const">#천기운세 #무료운세 #오늘의명언 #좋은글 #동양고전</span> &nbsp; <span class="const">🌐 천기.kr</span><br>
+  • 하단 섹션(공통): "✦ 다른 명언도 볼까요?" 책 탭 · 광고 퍼널(오늘운세/오늘의 타로/사주 풀이/관상짤) · "✨ 이것도 해볼래요?" · 굿즈("오늘의 명언 굿즈 · 좋은 글귀가 새겨진 아이템") · 닫기 버튼 <span class="const">오늘도 좋은 하루 ✨</span><br>
+  • 인트로(설명팝업) 진입 버튼: <span class="const">오늘의 명언들 보기 (무료) →</span><br>
+  • 분석중 메시지(4종 회전): <span class="const">「{책 제목}」 펼치는 중... 📖 / 오늘의 한 줄 찾는 중... 🔍 / 마음에 닿는 명언 고르는 중... ✨ / 결과 정리 중... 📜</span>
+</div>
+
+<div class="wrap">
+
+  <div class="book">
+    <div class="book-hd" style="background:linear-gradient(135deg,#7a5c10,#b8922e);">
+      <div class="cover">🔮</div>
+      <div class="ttl">천기의 말씀 <span class="lockbadge" style="background:#dcfce7;color:#166534;">기본·열림</span></div>
+      <div class="auth">천기(天機)</div>
+      <div class="tag">✦ 오늘의 추천 ✦</div>
+      <div class="meta">id <code>chungi</code> · accent <code>#E8C87A</code> · 명언 15개</div>
+    </div>
+    <div class="qlist">
+      <div class="qrow"><div class="qnum">1</div><div><div class="qtext">하늘은 스스로 돕는 자를 돕는다</div></div></div>
+      <div class="qrow"><div class="qnum">2</div><div><div class="qtext">달도 차면 기울고, 기울면 다시 찬다</div></div></div>
+      <div class="qrow"><div class="qnum">3</div><div><div class="qtext">강물도 흐르다 보면 바다에 닿는다</div></div></div>
+      <div class="qrow"><div class="qnum">4</div><div><div class="qtext">밤이 가장 어두울 때 새벽이 온다</div></div></div>
+      <div class="qrow"><div class="qnum">5</div><div><div class="qtext">꽃이 피는 데는 각자의 시간이 있어요</div></div></div>
+      <div class="qrow"><div class="qnum">6</div><div><div class="qtext">서두르지 않아도 당신의 차례는 반드시 와요</div></div></div>
+      <div class="qrow"><div class="qnum">7</div><div><div class="qtext">지금 이 순간이 남은 인생 중 가장 젊은 때다</div></div></div>
+      <div class="qrow"><div class="qnum">8</div><div><div class="qtext">오늘 하루, 당신은 충분히 잘하고 있어요</div></div></div>
+      <div class="qrow"><div class="qnum">9</div><div><div class="qtext">진심은 반드시 통한다</div></div></div>
+      <div class="qrow"><div class="qnum">10</div><div><div class="qtext">별은 가장 어두운 밤에 가장 밝게 빛나요</div></div></div>
+      <div class="qrow"><div class="qnum">11</div><div><div class="qtext">작은 불씨 하나가 세상을 밝힐 수 있어요</div></div></div>
+      <div class="qrow"><div class="qnum">12</div><div><div class="qtext">비가 내린 후에 땅이 더 단단해지는 법이에요</div></div></div>
+      <div class="qrow"><div class="qnum">13</div><div><div class="qtext">쉬어가는 것도 앞으로 나아가는 방법이에요</div></div></div>
+      <div class="qrow"><div class="qnum">14</div><div><div class="qtext">당신이 걷는 모든 길이 결국 당신의 것이 돼요</div></div></div>
+      <div class="qrow"><div class="qnum">15</div><div><div class="qtext">모든 끝은 새로운 시작이에요</div></div></div>
+    </div>
+  </div>
+
+  <div class="book">
+    <div class="book-hd" style="background:linear-gradient(135deg,#5c4a1a,#a8862a);">
+      <div class="cover">📜</div>
+      <div class="ttl">논어 (論語) <span class="lockbadge">🔒 비로그인 잠금</span></div>
+      <div class="auth">공자 (孔子)</div>
+      <div class="tag">✦ 고전 ✦</div>
+      <div class="meta">id <code>confucius</code> · accent <code>#F5DEB3</code> · 명언 8개</div>
+    </div>
+    <div class="qlist">
+      <div class="qrow"><div class="qnum">1</div><div><div class="qtext">배우고 때때로 익히면 또한 기쁘지 아니한가</div></div></div>
+      <div class="qrow"><div class="qnum">2</div><div><div class="qtext">아는 것을 안다 하고, 모르는 것을 모른다 하는 것이 앎이다</div></div></div>
+      <div class="qrow"><div class="qnum">3</div><div><div class="qtext">군자는 말은 느리게 하고 행동은 민첩하게 한다</div></div></div>
+      <div class="qrow"><div class="qnum">4</div><div><div class="qtext">스스로를 이기는 것이 강한 것이다</div></div></div>
+      <div class="qrow"><div class="qnum">5</div><div><div class="qtext">허물을 고치지 않는 것이 진짜 허물이다</div></div></div>
+      <div class="qrow"><div class="qnum">6</div><div><div class="qtext">과함은 모자람과 같다</div></div></div>
+      <div class="qrow"><div class="qnum">7</div><div><div class="qtext">인(仁)이란 사람을 사랑하는 것이다</div></div></div>
+      <div class="qrow"><div class="qnum">8</div><div><div class="qtext">날마다 스스로를 세 가지로 살펴라</div></div></div>
+    </div>
+  </div>
+
+  <div class="book">
+    <div class="book-hd" style="background:linear-gradient(135deg,#2f5d3e,#4a8c63);">
+      <div class="cover">☯️</div>
+      <div class="ttl">도덕경 (道德經) <span class="lockbadge">🔒 비로그인 잠금</span></div>
+      <div class="auth">노자 (老子)</div>
+      <div class="tag">✦ 고전 ✦</div>
+      <div class="meta">id <code>laotzu</code> · accent <code>#A8D5B5</code> · 명언 7개</div>
+    </div>
+    <div class="qlist">
+      <div class="qrow"><div class="qnum">1</div><div><div class="qtext">천 리 길도 한 걸음부터 시작된다</div></div></div>
+      <div class="qrow"><div class="qnum">2</div><div><div class="qtext">아는 자는 말하지 않고, 말하는 자는 알지 못한다</div></div></div>
+      <div class="qrow"><div class="qnum">3</div><div><div class="qtext">부드러운 것이 단단한 것을 이긴다</div></div></div>
+      <div class="qrow"><div class="qnum">4</div><div><div class="qtext">만족할 줄 아는 자는 부자다</div></div></div>
+      <div class="qrow"><div class="qnum">5</div><div><div class="qtext">남을 아는 것은 지혜요, 자신을 아는 것은 밝음이다</div></div></div>
+      <div class="qrow"><div class="qnum">6</div><div><div class="qtext">가장 좋은 것은 물과 같다</div></div></div>
+      <div class="qrow"><div class="qnum">7</div><div><div class="qtext">무위(無爲)하되 이루지 못하는 것이 없다</div></div></div>
+    </div>
+  </div>
+
+  <div class="book">
+    <div class="book-hd" style="background:linear-gradient(135deg,#9c5e10,#d4882a);">
+      <div class="cover">🏮</div>
+      <div class="ttl">명심보감 (明心寶鑑) <span class="lockbadge">🔒 비로그인 잠금</span></div>
+      <div class="auth">추적 (고려 말)</div>
+      <div class="tag">✦ 처세 ✦</div>
+      <div class="meta">id <code>myungsim</code> · accent <code>#FFB347</code> · 명언 6개</div>
+    </div>
+    <div class="qlist">
+      <div class="qrow"><div class="qnum">1</div><div><div class="qtext">하루라도 책을 읽지 않으면 입 속에 가시가 돋는다</div></div></div>
+      <div class="qrow"><div class="qnum">2</div><div><div class="qtext">남의 허물은 보지 말고 자신의 허물을 보라</div></div></div>
+      <div class="qrow"><div class="qnum">3</div><div><div class="qtext">은혜는 오래 기억하고 원한은 빨리 잊어라</div></div></div>
+      <div class="qrow"><div class="qnum">4</div><div><div class="qtext">한 번의 분노로 천 가지 일을 그르친다</div></div></div>
+      <div class="qrow"><div class="qnum">5</div><div><div class="qtext">말이 많으면 반드시 실수가 따른다</div></div></div>
+      <div class="qrow"><div class="qnum">6</div><div><div class="qtext">한 집안이 화목하면 만사가 이루어진다</div></div></div>
+    </div>
+  </div>
+
+  <div class="book">
+    <div class="book-hd" style="background:linear-gradient(135deg,#2e7d32,#5cb85c);">
+      <div class="cover">🍃</div>
+      <div class="ttl">채근담 (菜根譚) <span class="lockbadge">🔒 비로그인 잠금</span></div>
+      <div class="auth">홍자성 (명나라)</div>
+      <div class="tag">✦ 인생 ✦</div>
+      <div class="meta">id <code>chaekeumdams</code> · accent <code>#90EE90</code> · 명언 5개</div>
+    </div>
+    <div class="qlist">
+      <div class="qrow"><div class="qnum">1</div><div><div class="qtext">역경 속에서 얻은 교훈은 평생의 자산이다</div></div></div>
+      <div class="qrow"><div class="qnum">2</div><div><div class="qtext">물이 너무 맑으면 고기가 없고, 사람이 너무 꼼꼼하면 친구가 없다</div></div></div>
+      <div class="qrow"><div class="qnum">3</div><div><div class="qtext">화는 느리게 내고, 생각은 깊이 하라</div></div></div>
+      <div class="qrow"><div class="qnum">4</div><div><div class="qtext">욕심을 줄이면 마음이 넓어진다</div></div></div>
+      <div class="qrow"><div class="qnum">5</div><div><div class="qtext">사람의 마음은 거울과 같아 자주 닦아야 한다</div></div></div>
+    </div>
+  </div>
+
+  <div class="book">
+    <div class="book-hd" style="background:linear-gradient(135deg,#6b4a8c,#9d7bc4);">
+      <div class="cover">🏛️</div>
+      <div class="ttl">명상록 (Meditations) <span class="lockbadge">🔒 비로그인 잠금</span></div>
+      <div class="auth">마르쿠스 아우렐리우스</div>
+      <div class="tag">✦ 철학 ✦</div>
+      <div class="meta">id <code>aurelius</code> · accent <code>#DDA0DD</code> · 명언 6개</div>
+    </div>
+    <div class="qlist">
+      <div class="qrow"><div class="qnum">1</div><div><div class="qtext">당신이 통제할 수 없는 것에 시간을 낭비하지 마라</div></div></div>
+      <div class="qrow"><div class="qnum">2</div><div><div class="qtext">장애물이 길을 막는 것이 아니라, 장애물이 곧 길이다</div></div></div>
+      <div class="qrow"><div class="qnum">3</div><div><div class="qtext">오늘이 마지막 날인 것처럼 살되, 영원히 살 것처럼 배워라</div></div></div>
+      <div class="qrow"><div class="qnum">4</div><div><div class="qtext">지금 이 순간에 집중하라</div></div></div>
+      <div class="qrow"><div class="qnum">5</div><div><div class="qtext">가장 좋은 복수는 상대방처럼 되지 않는 것이다</div></div></div>
+      <div class="qrow"><div class="qnum">6</div><div><div class="qtext">당신이 생각하는 대로 당신의 삶이 만들어진다</div></div></div>
+    </div>
+  </div>
+
+  <div class="book">
+    <div class="book-hd" style="background:linear-gradient(135deg,#2a4a8c,#5481cf);">
+      <div class="cover">⚔️</div>
+      <div class="ttl">이순신 난중일기 <span class="lockbadge">🔒 비로그인 잠금</span></div>
+      <div class="auth">이순신 (1545~1598)</div>
+      <div class="tag">✦ 역사 ✦</div>
+      <div class="meta">id <code>seonjong</code> · accent <code>#6495ED</code> · 명언 5개</div>
+    </div>
+    <div class="qlist">
+      <div class="qrow"><div class="qnum">1</div><div><div class="qtext">살고자 하면 죽을 것이요, 죽고자 하면 살 것이다</div></div></div>
+      <div class="qrow"><div class="qnum">2</div><div><div class="qtext">두려움을 이기는 것이 진짜 용기다</div></div></div>
+      <div class="qrow"><div class="qnum">3</div><div><div class="qtext">신에게는 아직 열두 척의 배가 남아 있습니다</div></div></div>
+      <div class="qrow"><div class="qnum">4</div><div><div class="qtext">모든 것이 나로부터 시작된다</div></div></div>
+      <div class="qrow"><div class="qnum">5</div><div><div class="qtext">지금 이 고통이 결국 나를 더 강하게 만든다</div></div></div>
+    </div>
+  </div>
+
+  <div class="book">
+    <div class="book-hd" style="background:linear-gradient(135deg,#8c6a10,#daa520);">
+      <div class="cover">👑</div>
+      <div class="ttl">세종대왕 어록 <span class="lockbadge">🔒 비로그인 잠금</span></div>
+      <div class="auth">세종대왕 (1397~1450)</div>
+      <div class="tag">✦ 왕도 ✦</div>
+      <div class="meta">id <code>sejong</code> · accent <code>#DAA520</code> · 명언 8개</div>
+    </div>
+    <div class="qlist">
+      <div class="qrow"><div class="qnum">1</div><div><div class="qtext">백성은 나라의 근본이요, 근본이 단단해야 나라가 평안하다</div></div></div>
+      <div class="qrow"><div class="qnum">2</div><div><div class="qtext">임금이 백성을 버리면 하늘이 임금을 버린다</div></div></div>
+      <div class="qrow"><div class="qnum">3</div><div><div class="qtext">어리석은 백성이 이르고자 할 바가 있어도 제 뜻을 능히 펴지 못하는 이가 많으니라</div></div></div>
+      <div class="qrow"><div class="qnum">4</div><div><div class="qtext">책을 볼 때 의심나는 대목을 만나면 반드시 토의하여 이치를 밝혀라</div></div></div>
+      <div class="qrow"><div class="qnum">5</div><div><div class="qtext">게으름은 가난의 어머니요, 근면은 부귀의 아버지다</div></div></div>
+      <div class="qrow"><div class="qnum">6</div><div><div class="qtext">나이 든 사람을 공경함은 곧 하늘을 공경함이라</div></div></div>
+      <div class="qrow"><div class="qnum">7</div><div><div class="qtext">천하의 일은 오직 사람에게 달렸나니, 사람의 쓰임을 잘 할 뿐이다</div></div></div>
+      <div class="qrow"><div class="qnum">8</div><div><div class="qtext">어진 이를 쓰면 나라가 흥하고, 간사한 이를 쓰면 나라가 어지러워진다</div></div></div>
+    </div>
+  </div>
+
+  <div class="book">
+    <div class="book-hd" style="background:linear-gradient(135deg,#a04a64,#e6a4b4);">
+      <div class="cover">🎨</div>
+      <div class="ttl">신사임당 이야기 <span class="lockbadge">🔒 비로그인 잠금</span></div>
+      <div class="auth">신사임당 (1504~1551)</div>
+      <div class="tag">✦ 여류·어머니 ✦</div>
+      <div class="meta">id <code>shinsaimdang</code> · accent <code>#E6A4B4</code> · 명언 8개</div>
+    </div>
+    <div class="qlist">
+      <div class="qrow"><div class="qnum">1</div><div><div class="qtext">정성이 없으면 이루어지는 것이 없다</div></div></div>
+      <div class="qrow"><div class="qnum">2</div><div><div class="qtext">남을 탓하기 전에 먼저 자신을 돌아보라</div></div></div>
+      <div class="qrow"><div class="qnum">3</div><div><div class="qtext">그림은 마음의 거울이요, 글은 사람의 길이다</div></div></div>
+      <div class="qrow"><div class="qnum">4</div><div><div class="qtext">여자라고 학문을 버리지 말라, 배움이 곧 삶이다</div></div></div>
+      <div class="qrow"><div class="qnum">5</div><div><div class="qtext">어머니의 품 안에 큰 사람이 자라난다</div></div></div>
+      <div class="qrow"><div class="qnum">6</div><div><div class="qtext">가정은 작은 나라요, 어머니는 그 나라의 근원이다</div></div></div>
+      <div class="qrow"><div class="qnum">7</div><div><div class="qtext">꽃도 때가 있어야 피듯, 사람도 자기 때를 기다릴 줄 알아야 한다</div></div></div>
+      <div class="qrow"><div class="qnum">8</div><div><div class="qtext">자식의 앞에 사랑을 심되, 엄격함을 잊지 마라</div></div></div>
+    </div>
+  </div>
+
+  <div class="book">
+    <div class="book-hd" style="background:linear-gradient(135deg,#1f5e22,#2E7D32);">
+      <div class="cover">🌿</div>
+      <div class="ttl">퇴계 이황 명언집 <span class="lockbadge">🔒 비로그인 잠금</span></div>
+      <div class="auth">이황 (1501~1570)</div>
+      <div class="tag">✦ 성리학 ✦</div>
+      <div class="meta">id <code>toegye</code> · accent <code>#2E7D32</code> · 명언 8개</div>
+    </div>
+    <div class="qlist">
+      <div class="qrow"><div class="qnum">1</div><div><div class="qtext">사람에게 배움은 하루라도 없어서는 안 된다</div></div></div>
+      <div class="qrow"><div class="qnum">2</div><div><div class="qtext">마음을 수양하는 데 경(敬)보다 귀한 것이 없다</div></div></div>
+      <div class="qrow"><div class="qnum">3</div><div><div class="qtext">처음엔 어렵지만 지속하면 쉬워진다</div></div></div>
+      <div class="qrow"><div class="qnum">4</div><div><div class="qtext">군자는 말보다 행동이 앞선다</div></div></div>
+      <div class="qrow"><div class="qnum">5</div><div><div class="qtext">작은 일에도 정성을 다하면 큰 일이 이루어진다</div></div></div>
+      <div class="qrow"><div class="qnum">6</div><div><div class="qtext">일상이 곧 도(道)이다 — 특별한 것에서만 진리를 구하지 마라</div></div></div>
+      <div class="qrow"><div class="qnum">7</div><div><div class="qtext">내 마음을 닦는 것이 곧 세상을 닦는 것이다</div></div></div>
+      <div class="qrow"><div class="qnum">8</div><div><div class="qtext">하늘은 스스로를 닦는 자를 돕는다</div></div></div>
+    </div>
+  </div>
+
+  <div class="book">
+    <div class="book-hd" style="background:linear-gradient(135deg,#6b7280,#9CA3AF);">
+      <div class="cover">📚 / 📖</div>
+      <div class="ttl">협찬 도서 자리 (AD 슬롯 ×2)</div>
+      <div class="auth">협업 문의 환영</div>
+      <div class="tag">✦ AD ✦</div>
+      <div class="meta">id <code>ad1</code> / <code>ad2</code> · <code>isAd:true</code> · 명언 0개 (quotes 빈 배열)</div>
+    </div>
+    <div class="adbox">
+      <b>빈 협찬 슬롯 2칸.</b> 명언 결과가 없고, 탭에서 <b>"협찬 문의 📧"</b>로 표시돼요. 클릭 시 확인창:<br>
+      "📚 이 자리에 책을 올려보세요!&nbsp; 협찬·협업 문의를 이메일로 보내시겠습니까? (listenstudio.inc@gmail.com)" → mailto 발송.<br>
+      <code>isAd:false</code>로 바꾸고 quotes를 채우면 실제 도서로 승격됩니다.
+    </div>
+  </div>
+
+</div>
+
+<div class="note" style="margin-top:24px;">
+  <b>※ 점검 메모.</b> 위 75개 문장은 코드 <code>_QUOTE_BOOKS</code> 배열에서 그대로 추출했어요(2026-06 기준). 같은 명언이 다른 책에 의도치 않게 중복되거나, 출처(저자/연도) 표기, 띄어쓰기·맞춤법을 함께 봐주세요. 비슷한 취지로 눈여겨볼 곳: 천기 #1 "하늘은 스스로 돕는 자를 돕는다" ↔ 퇴계 #8 "하늘은 스스로를 닦는 자를 돕는다"(유사 표현, 의도된 변주인지 확인).
+</div>
+
+</body>
+</html>

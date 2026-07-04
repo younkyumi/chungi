@@ -1,0 +1,63 @@
+<style>
+    :root {
+        --deep-forest: #0B1A0B; /* 더 깊은 딥그린 */
+        --matte-gold: #B89C6A;   /* 채도를 낮춘 고급스러운 골드 */
+        --glass-bg: rgba(255, 255, 255, 0.03);
+    }
+
+    /* 촌스러움을 없애는 핵심: 여백과 블러 */
+    .premium-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px); /* 글래스모피즘 효과 */
+        border: 1px solid rgba(184, 156, 106, 0.2);
+        border-radius: 40px; /* 더 둥글게 해서 세련되게 */
+        padding: 40px 30px;
+        color: #fff;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    }
+
+    /* 제목 폰트: 럭셔리 세리프 강조 */
+    .premium-title {
+        font-family: 'Playfair Display', serif; /* 우아한 세리프체 */
+        font-size: 32px;
+        font-weight: 700;
+        letter-spacing: -1px;
+        background: linear-gradient(180deg, #E0C080 0%, #B89C6A 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* 버튼: 쨍한 그라데이션 대신 은은한 빛 */
+    .premium-btn {
+        background: transparent;
+        border: 1px solid var(--matte-gold);
+        color: var(--matte-gold);
+        padding: 18px;
+        border-radius: 100px;
+        font-size: 16px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        transition: all 0.3s;
+    }
+
+    .premium-btn:hover {
+        background: var(--matte-gold);
+        color: var(--deep-forest);
+    }
+</style>
+
+<div class="premium-card">
+    <div style="text-align: center; margin-bottom: 40px;">
+        <span style="font-size: 12px; letter-spacing: 4px; color: var(--matte-gold); opacity: 0.8;">CHUNGI ORIGINALS</span>
+        <h1 class="premium-title">THE DESTINY</h1>
+    </div>
+
+    <div style="margin-bottom: 30px; padding: 20px; border-top: 1px solid rgba(184, 156, 106, 0.1);">
+        <p style="font-size: 14px; opacity: 0.6; margin-bottom: 10px;">궁합 리포트 | 비즈니스 파트너</p>
+        <h2 style="font-size: 20px; font-weight: 400; line-height: 1.6;">
+            "두 사람의 기운이 만나<br><span style="color: var(--matte-gold);">거대한 부의 파동</span>을 일으킵니다."
+        </h2>
+    </div>
+
+    <button class="premium-btn">Check Analysis</button>
+</div>

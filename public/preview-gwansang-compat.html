@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>천기 관상 궁합 / 비즈니스 궁합 미리보기</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#1A3C32;font-family:'Pretendard','Noto Serif KR',sans-serif;display:flex;flex-direction:column;align-items:center;padding:20px;gap:30px;}
+h1{color:#D4AF37;font-size:16px;text-align:center;}
+.sep{width:100%;max-width:420px;height:1px;background:rgba(212,175,55,0.2);}
+
+.card{background:#fff;border-radius:20px;overflow:hidden;border:1px solid rgba(201,167,78,0.3);box-shadow:0 10px 30px rgba(0,0,0,0.1);color:#333;max-width:420px;width:100%;}
+.header{padding:16px;text-align:center;border-bottom:1px solid #f0f0f0;}
+.header .sub{font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;}
+.header .title{font-size:16px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR',serif;margin-top:4px;}
+.header .price{font-size:10px;color:#888;margin-top:4px;}
+.header .price s{opacity:0.5;}
+
+/* 스캔 영역 */
+.scan{position:relative;width:100%;height:180px;background:rgba(0,0,0,0.03);overflow:hidden;border-bottom:1px solid #f0f0f0;display:flex;}
+.scan .slot{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-right:1px solid #f0f0f0;}
+.scan .slot:last-child{border-right:none;}
+.scan .slot .photo{width:64px;height:64px;border-radius:50%;background:#eee;display:flex;align-items:center;justify-content:center;font-size:28px;border:2px solid #ddd;}
+.scan .slot .name{font-size:11px;font-weight:700;color:#1A3C32;}
+.scan .laser{position:absolute;width:100%;height:3px;background:linear-gradient(90deg,transparent,#C9A74E,transparent);box-shadow:0 0 15px #C9A74E;animation:laserScan 3s infinite ease-in-out;z-index:2;}
+.scan .connect{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:28px;z-index:3;animation:pulse 1.5s infinite;}
+
+/* 점수 */
+.score-area{padding:16px;text-align:center;border-bottom:1px solid #f0f0f0;background:#fafafa;}
+.score-area .big{font-size:32px;font-weight:900;color:#D4AF37;}
+.score-area .label{font-size:12px;color:#888;margin-top:2px;}
+.score-area .chem-name{font-size:13px;font-weight:800;color:#1A3C32;margin-top:6px;}
+
+/* 스탯 바 */
+.stat-bar{display:flex;justify-content:center;gap:8px;padding:10px 16px;background:#fafafa;border-bottom:1px solid #f0f0f0;}
+.stat-bar .stat{font-size:9px;font-weight:700;padding:3px 10px;border-radius:20px;}
+
+/* 개별 관상 */
+.indiv{padding:16px;}
+.indiv-card{background:#f8f9fa;border-radius:12px;padding:14px;margin-bottom:10px;border-left:4px solid #1A3C32;}
+.indiv-card .person{font-size:11px;font-weight:800;color:#1A3C32;margin-bottom:4px;}
+.indiv-card .type{font-size:12px;font-weight:700;color:#D4AF37;margin-bottom:4px;}
+.indiv-card .desc{font-size:11px;color:#555;line-height:1.7;}
+
+/* 궁합 분석 */
+.compat{padding:0 16px 16px;}
+.compat-card{border-radius:12px;padding:14px;margin-bottom:8px;}
+.compat-card .label{font-size:11px;font-weight:800;margin-bottom:6px;}
+.compat-card .body{font-size:11px;color:#444;line-height:1.7;}
+
+.tags{font-size:8px;color:#bbb;padding:0 16px 16px;display:flex;justify-content:space-between;}
+
+/* 비즈니스 전용 */
+.biz-stat{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px 12px;}
+.biz-stat .item{background:#f8f9fa;border-radius:10px;padding:10px;text-align:center;border:1px solid #eee;}
+.biz-stat .item .val{font-size:18px;font-weight:900;color:#1A3C32;}
+.biz-stat .item .lbl{font-size:9px;color:#888;margin-top:2px;}
+
+@keyframes laserScan{0%{top:0%;opacity:0}20%{opacity:1}80%{opacity:1}100%{top:100%;opacity:0}}
+@keyframes pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:1}50%{transform:translate(-50%,-50%) scale(1.2);opacity:0.7}}
+</style>
+</head>
+<body>
+
+<h1>💑 관상 궁합 (커플/베프) 결과 카드</h1>
+<div class="sep"></div>
+
+<div class="card">
+  <div class="header">
+    <div class="sub">🔮 천기(天機) 오리지널 | 관상 궁합 리포트</div>
+    <div class="title">윤규미 × 건우 궁합</div>
+    <div class="price"><s>1,960원</s> → 1,480원</div>
+  </div>
+
+  <!-- 스캔 -->
+  <div class="scan">
+    <div class="laser"></div>
+    <div class="slot">
+      <div class="photo"><img src="/윤규미.jfif" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt=""></div>
+      <div class="name">윤규미</div>
+    </div>
+    <div class="connect">💖</div>
+    <div class="slot">
+      <div class="photo">👤</div>
+      <div class="name">건우</div>
+    </div>
+  </div>
+
+  <!-- 궁합 점수 -->
+  <div class="score-area">
+    <div class="big">98점</div>
+    <div class="label">환상의 커플</div>
+    <div class="chem-name">"전생의 연인, 현생의 껌딱지"</div>
+  </div>
+
+  <!-- 스탯 -->
+  <div class="stat-bar">
+    <span class="stat" style="background:#fff0f3;color:#e03131;border:1px solid #ffe0e6;">❤️ 애정 98%</span>
+    <span class="stat" style="background:#f0e6ff;color:#7c3aed;border:1px solid #e8d5f5;">🔥 열정 95%</span>
+    <span class="stat" style="background:#e8fdf4;color:#059669;border:1px solid #b2f5ea;">🤝 신뢰 88%</span>
+  </div>
+
+  <!-- A 관상 -->
+  <div class="indiv">
+    <div class="indiv-card">
+      <div class="person">👤 윤규미의 관상</div>
+      <div class="type">"사랑에 올인하는 사슴 눈망울 상"</div>
+      <div class="desc">감수성이 풍부하여 한 번 빠지면 간 쓸개 다 내주는 타입. 눈꼬리가 살짝 올라가 있어 지기 싫어하는 자존심이 연애에도 나타나지만, 한번 마음 주면 끝까지 가는 올인형.</div>
+    </div>
+    <!-- B 관상 -->
+    <div class="indiv-card">
+      <div class="person">👤 건우의 관상</div>
+      <div class="type">"의리 있고 묵직한 소나무 상"</div>
+      <div class="desc">겉으론 무뚝뚝해도 속은 말랑한 츤데레 스타일. 턱선이 발달해 말년운과 자식운이 매우 좋습니다. 한번 정 주면 끝까지 지키는 우직한 타입.</div>
+    </div>
+  </div>
+
+  <!-- 궁합 분석 -->
+  <div class="compat">
+    <div class="compat-card" style="background:#fff5f5;border-left:4px solid #e03131;">
+      <div class="label" style="color:#e03131;">💕 애정 궁합</div>
+      <div class="body">규미님의 예민함을 건우님의 턱선(포용력)이 감싸 안아주는 완벽한 상보적 관계! 좋을 땐 천국, 싸울 땐 조선시대 전란 수준이지만 결국 화해할 수밖에 없는 치명적 끌림.</div>
+    </div>
+    <div class="compat-card" style="background:#f0f4ff;border-left:4px solid #4263eb;">
+      <div class="label" style="color:#4263eb;">🧠 성격 궁합</div>
+      <div class="body">규미님이 불 지르면 건우님이 물 끼얹는 식의 완벽한 브레이크 역할. 한 명이 사고치면 한 명이 뒷수습하는 환장의 콤비.</div>
+    </div>
+    <div class="compat-card" style="background:#fff8eb;border-left:4px solid #b45309;">
+      <div class="label" style="color:#b45309;">💰 재물 궁합</div>
+      <div class="body">둘이 합치면 돈이 모이는 구조. 규미님의 직관적 투자 감각 + 건우님의 꼼꼼한 관리력이 만나면 통장이 알아서 불어남.</div>
+    </div>
+    <div class="compat-card" style="background:#f0fff4;border-left:4px solid #059669;">
+      <div class="label" style="color:#059669;">🔮 천기의 조언</div>
+      <div class="body">"규미님, 화날 때 입 밖으로 내뱉기 전에 3초만 참으세요. 건우님은 말수가 적을 뿐이지 다 듣고 있어요. 이 3초가 두 분의 50년을 결정합니다."</div>
+    </div>
+  </div>
+
+  <div class="tags">
+    <span>#천기궁합 #98점 #환상의커플 #전생의연인</span>
+    <span style="font-weight:600;color:#ccc;">🌐 천기.kr</span>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<h1>💼 비즈니스 관상 궁합 결과 카드</h1>
+<div class="sep"></div>
+
+<div class="card">
+  <div class="header">
+    <div class="sub">🔮 천기(天機) 오리지널 | 비즈니스 궁합 리포트</div>
+    <div class="title">윤규미 × 건우 사업 궁합</div>
+    <div class="price"><s>1,960원</s> → 1,480원</div>
+  </div>
+
+  <!-- 스캔 -->
+  <div class="scan">
+    <div class="laser"></div>
+    <div class="slot">
+      <div class="photo"><img src="/윤규미.jfif" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt=""></div>
+      <div class="name">윤규미 (대표)</div>
+    </div>
+    <div class="connect">🤝</div>
+    <div class="slot">
+      <div class="photo">👤</div>
+      <div class="name">건우 (파트너)</div>
+    </div>
+  </div>
+
+  <!-- 시너지 점수 -->
+  <div class="score-area">
+    <div class="big">A+</div>
+    <div class="label">유니콘 제조기</div>
+    <div class="chem-name">"조선 팔도 상권 씹어먹을 황금 조합"</div>
+  </div>
+
+  <!-- 비즈 스탯 -->
+  <div class="biz-stat">
+    <div class="item"><div class="val" style="color:#D4AF37;">300%</div><div class="lbl">💰 수익 시너지</div></div>
+    <div class="item"><div class="val" style="color:#059669;">95%</div><div class="lbl">🤝 신뢰 지수</div></div>
+    <div class="item"><div class="val" style="color:#4A90D9;">A+</div><div class="lbl">📊 실행력 합</div></div>
+    <div class="item"><div class="val" style="color:#e03131;">12%</div><div class="lbl">⚠️ 리스크</div></div>
+  </div>
+
+  <!-- 개별 관상 -->
+  <div class="indiv">
+    <div class="indiv-card">
+      <div class="person">📊 윤규미 (대표)의 사업 관상</div>
+      <div class="type">"판을 짜는 예리한 책사 상"</div>
+      <div class="desc">콧대가 오뚝하고 미간이 넓어 분석력이 뛰어남. 전략을 세우고 지시하는 CEO형. 재물 그릇이 크지만 돈을 쓰는 속도도 빠름.</div>
+    </div>
+    <div class="indiv-card">
+      <div class="person">📊 건우 (파트너)의 사업 관상</div>
+      <div class="type">"돈 냄새 기가 막히게 맡는 거상 상"</div>
+      <div class="desc">콧방울에 살집이 있어 재물을 가두는 힘이 강함. 현장에서 결과를 만들어내는 실행형 COO. 신뢰가 무기인 타입.</div>
+    </div>
+  </div>
+
+  <!-- 사업 궁합 분석 -->
+  <div class="compat">
+    <div class="compat-card" style="background:#fffbeb;border-left:4px solid #D4AF37;">
+      <div class="label" style="color:#D4AF37;">💰 금전 시너지</div>
+      <div class="body">규미님이 길을 닦고 건우님이 황금을 줍는 격. 같이 사업 안 하면 국가적 손실! 둘이 만나면 100원이 1,000원 되는 구조.</div>
+    </div>
+    <div class="compat-card" style="background:#f0f4ff;border-left:4px solid #4A90D9;">
+      <div class="label" style="color:#4A90D9;">🎯 역할 분담</div>
+      <div class="body">규미님 = 전략가 CEO (아이디어 + 방향). 건우님 = 불도저 COO (실행 + 영업). 이 역할이 뒤바뀌면 사업이 삐걱거림.</div>
+    </div>
+    <div class="compat-card" style="background:#fde8e8;border-left:4px solid #DC3545;">
+      <div class="label" style="color:#DC3545;">⚠️ 리스크 요인</div>
+      <div class="body">둘 다 관상에 정(情)이 많아 돈 이야기는 반드시 문서로! 구두 약속은 나중에 독이 됩니다. 계약서가 우정을 지킵니다.</div>
+    </div>
+    <div class="compat-card" style="background:#f0fff4;border-left:4px solid #059669;">
+      <div class="label" style="color:#059669;">🔮 천기의 비즈니스 조언</div>
+      <div class="body">"규미님은 큰 그림을, 건우님은 디테일을 맡으세요. 매출 목표는 함께 세우되, 경비 관리는 건우님에게 맡기면 돈이 샐 일이 없습니다."</div>
+    </div>
+  </div>
+
+  <div class="tags">
+    <span>#천기비즈니스궁합 #A+ #유니콘제조기 #황금조합</span>
+    <span style="font-weight:600;color:#ccc;">🌐 천기.kr</span>
+  </div>
+</div>
+
+</body>
+</html>

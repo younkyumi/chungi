@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        :root {
+            --bg-deep-green: #1A3D1A;
+            --point-gold: #C9A74E;
+            --paper-white: #F8F9F2; /* 한지 느낌의 화이트 */
+            --ink-black: #1A1A1A;
+        }
+
+        .joseon-popup {
+            background-color: var(--bg-deep-green);
+            color: white;
+            border: 2px solid var(--point-gold);
+            border-radius: 24px;
+            padding: 40px 30px;
+            text-align: center;
+            max-width: 420px;
+            font-family: 'Noto Serif KR', serif;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 전통 문양 배경 오버레이 */
+        .joseon-popup::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('https://www.transparenttextures.com/patterns/natural-paper.png');
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .header-tag {
+            font-size: 13px;
+            color: var(--point-gold);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .main-title {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 25px;
+            line-height: 1.3;
+        }
+
+        /* [Visual] Before & After 변신 애니메이션 영역 */
+        .portrait-preview {
+            position: relative;
+            width: 100%;
+            height: 240px;
+            background: #000;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--point-gold);
+            margin-bottom: 30px;
+        }
+
+        .face-modern {
+            position: absolute;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            opacity: 0.5;
+        }
+
+        .face-joseon {
+            position: absolute;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: 5;
+            animation: transformFade 4s infinite ease-in-out;
+            border-radius: 20px;
+        }
+
+        /* 붓터치 스캔 라인 */
+        .brush-stroke {
+            position: absolute;
+            width: 100%; height: 10px;
+            background: rgba(201, 167, 78, 0.4);
+            filter: blur(5px);
+            z-index: 10;
+            animation: brushMove 4s infinite linear;
+        }
+
+        /* 특징 리스트 */
+        .info-list {
+            text-align: left;
+            background: rgba(0,0,0,0.2);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            font-family: 'Spoqa Han Sans Neo', sans-serif;
+        }
+
+        .info-item {
+            font-size: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-item b { color: var(--point-gold); }
+
+        /* 하단 액션 버튼 */
+        .btn-draw {
+            background: linear-gradient(180deg, #D29C44 0%, #AA7B30 100%);
+            color: white;
+            width: 100%;
+            padding: 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        }
+
+        @keyframes transformFade {
+            0%, 10% { opacity: 0; clip-path: inset(0 100% 0 0); }
+            50%, 90% { opacity: 1; clip-path: inset(0 0 0 0); }
+            100% { opacity: 0; }
+        }
+
+        @keyframes brushMove {
+            0% { top: 0%; }
+            50% { top: 100%; }
+            100% { top: 0%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="joseon-popup">
+    <div class="header-tag">천기 AI 화공(畵工)</div>
+    <h1 class="main-title">조선시대에 태어났다면<br>나는 어떤 신분이었을까?</h1>
+
+    <div class="portrait-preview">
+        <div class="brush-stroke"></div>
+        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=1000" class="face-modern">
+        <img src="https://img.freepik.com/premium-photo/korean-king-portrait-style-traditional-painting_9311-123.jpg" class="face-joseon">
+    </div>
+
+    <div class="info-list">
+        <div class="info-item">🖌️ <b>1:1 맞춤 화풍:</b> 붓끝이 살아있는 리얼 초상화</div>
+        <div class="info-item">📜 <b>조선시대 신분 판독:</b> 왕부터 거상까지 내 신분 확인</div>
+        <div class="info-item">✨ <b>전생 시나리오:</b> 내 얼굴에 숨겨진 500년 전 이야기</div>
+    </div>
+
+    <p style="font-size: 13px; color: #8A9F8A; margin-bottom: 25px;">
+        지금 사진을 올려, 당신의 **조선시대 도플갱어**를 만나보세요.
+    </p>
+
+    <button class="btn-draw">
+        조선시대 내 모습 확인하기 (380원) →
+    </button>
+    <p style="font-size: 11px; opacity: 0.6; margin-top: 15px;">오늘 하루 안보기 | 닫기</p>
+</div>
+
+</body>
+</html>

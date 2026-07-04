@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📅 이달의 운세 (무료) 전체 가짓수 점검본</title>
+<style>
+  body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#ece6da;margin:0;padding:18px;color:#222;}
+  h1{text-align:center;color:#1A3C32;margin-bottom:6px;}
+  h2{max-width:1180px;margin:34px auto 12px;color:#7A5C00;border-bottom:2px solid #D4AF37;padding-bottom:6px;font-size:18px;}
+  h2 .cnt{font-size:12px;color:#888;font-weight:600;margin-left:8px;}
+  .note{max-width:1180px;margin:0 auto 18px;background:#fff;border-radius:12px;padding:14px 18px;font-size:13px;line-height:1.85;box-shadow:0 4px 14px rgba(0,0,0,.06);}
+  .note b{color:#b91c1c;}
+  .note .var{color:#1d72b8;font-weight:800;}
+  .note .fix{color:#B8942E;font-weight:800;}
+  table{max-width:1180px;margin:0 auto 8px;border-collapse:collapse;background:#fff;font-size:12.5px;box-shadow:0 4px 14px rgba(0,0,0,.06);width:100%;}
+  th,td{border:1px solid #e3dccb;padding:7px 10px;text-align:left;vertical-align:top;line-height:1.6;}
+  th{background:#1A3C32;color:#fff;}
+  tr:nth-child(even){background:#faf7f0;}
+  .idx{text-align:center;color:#888;width:36px;}
+  .star{color:#D4AF37;letter-spacing:1px;white-space:nowrap;}
+  .score{font-weight:900;color:#D4AF37;text-align:center;width:54px;}
+  .good{color:#2E7D32;font-weight:700;}
+  .warn{color:#B71C1C;font-weight:700;}
+  .mid{color:#7A5C00;font-weight:700;}
+  .oh-mok{color:#2E7D32;font-weight:800;}.oh-hwa{color:#B71C1C;font-weight:800;}
+  .oh-to{color:#E65100;font-weight:800;}.oh-geum{color:#616161;font-weight:800;}.oh-su{color:#1A237E;font-weight:800;}
+  .kw{display:inline-block;background:#f3eefe;border:1px solid #d6c8f5;border-radius:8px;padding:4px 9px;margin:3px;font-weight:700;color:#7c3aed;}
+  .sect-note{max-width:1180px;margin:0 auto 10px;font-size:12px;color:#666;line-height:1.7;}
+  .sect-note code{background:#f0ece2;padding:1px 5px;border-radius:4px;color:#7A5C00;}
+  .wide{max-width:1180px;margin:0 auto;}
+</style>
+</head>
+<body>
+<h1>📅 이달의 운세 (무료 · monthly_unse) 전체 가짓수 점검본</h1>
+<div class="note">
+  <b>📌 목적</b> — 천기 <b>무료 "이달의 운세"</b> 결과팝업에 들어가는 <u>모든 텍스트 가짓수</u>를 한 화면에 펼쳐 오타·어색한 문구·버그를 잡기 위한 정적 점검본이에요. 코드(<code>src/app/page.tsx</code> 21319~21815, <code>MonthlyUnseModal</code>)에서 텍스트를 그대로 옮겼어요.<br>
+  <span class="var">파란 글씨/표</span> = <b>분기(가짓수) 변수</b> — 사주 일간 오행·월·점수구간·시드에 따라 달라지는 부분. <span class="fix">골드</span> = 고정 문구.<br>
+  ⚠️ 실제 화면은 시드(날짜+이름)로 <b>각 배열에서 1개씩</b> 뽑아 조합돼요. 여기서는 점검을 위해 <b>배열 전체를 나열</b>했어요. 한 사용자가 한 번에 보는 건 각 표에서 1행씩이에요.<br>
+  ⚠️ <b>주의</b> — 이건 점검용 HTML이라 실제 앱 스타일(화이트카드·골드)과 1:1 동일하지 않아요. 텍스트 내용 점검용이에요.
+</div>
+
+<div class="note">
+  <b>🔢 가짓수 구조 요약</b><br>
+  ① <span class="var">이달 헤드라인+종합점수</span> : 5종 (★2~5) → 점수 = (별/5)×100<br>
+  ② <span class="var">영역별 운</span> : 5영역(총운·재물·애정·건강·직업) × 각 4단계 = 20문구<br>
+  ③ <span class="var">이달 절기</span> : 날짜로 24절기 중 1개 자동 매칭<br>
+  ④ <span class="var">키워드 TOP 3</span> : 22개 키워드 풀에서 시드로 3개<br>
+  ⑤ <span class="var">주차별 흐름</span> : 일간 오행 5종(목·화·토·금·수) × 4주차 = 20문구 <b>(로그인 시에만 노출, 비로그인은 🔒 잠금)</b><br>
+  ⑥ <span class="var">운명의 날</span> : 이름+연월 시드로 좋은날 4 / 주의날 2 자동 계산 (문구는 고정)<br>
+  ⑦ <span class="fix">1~12월 한 해 흐름</span> : 길[1,2,4,5,6,9,10,12] / 주의[3,7,11] / 보통 — 고정 (로그인+토정비결 매칭 시에만 노출)<br>
+  ⑧ <span class="var">Do & Don't</span> : Do 20개 / Don't 20개 풀에서 각 1개<br>
+  ⑨ <span class="var">천기의 한마디</span> : 14개 풀에서 1개<br>
+  <b>비로그인 vs 로그인</b> : 비로그인은 일간 "토" 고정·주차별 흐름 잠금·토정비결/1~12월 미노출. 로그인은 생년월일로 일간 오행 산출.
+</div>
+
+<!-- ① 헤드라인 -->
+<h2>① 이달 헤드라인 + 종합점수 <span class="cnt">(5종)</span></h2>
+<div class="sect-note">시드(연·월·로그인여부)로 1개 선택. 종합점수 = <code>round((star/5)*100)</code>. 별점은 <code>★ n개 + ☆ (5-n)개</code>로 표시.</div>
+<div class="wide"><table>
+<thead><tr><th class="idx">#</th><th>별점</th><th class="score">점수</th><th>헤드라인 문구</th></tr></thead>
+<tbody id="t-head"></tbody>
+</table></div>
+
+<!-- ② 영역별 운 -->
+<h2>② 이달의 영역별 운 <span class="cnt">(5영역 × 4단계 = 20)</span></h2>
+<div class="sect-note">각 영역마다 점수(2~5) 1개를 시드로 뽑아 별점·한줄평·바그래프로 표시. 점수 색: <span class="good">4~5 초록</span> / <span class="mid">3 골드</span> / <span class="warn">2 빨강</span>.</div>
+<div class="wide"><table>
+<thead><tr><th>영역</th><th class="score">점수</th><th>별점</th><th>한줄평</th></tr></thead>
+<tbody id="t-area"></tbody>
+</table></div>
+
+<!-- ③ 절기 -->
+<h2>③ 이달 절기 <span class="cnt">(24절기 자동 매칭)</span></h2>
+<div class="sect-note">오늘 날짜(월·일)로 해당 절기 1개를 자동 표시. 아래는 코드의 경계값 기준 24절기 전체.</div>
+<div class="wide"><table>
+<thead><tr><th class="idx">#</th><th>절기</th><th>대략 시기(월/일 경계)</th></tr></thead>
+<tbody id="t-jeolgi"></tbody>
+</table></div>
+
+<!-- ④ 키워드 -->
+<h2>④ 이달의 키워드 TOP 3 <span class="cnt">(22개 풀에서 3개)</span></h2>
+<div class="sect-note">시드(날짜+이름)로 풀에서 distinct 3개 추출. 아래는 풀 전체 — 이모지·표기 점검용.</div>
+<div class="wide" id="kw-pool" style="background:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 4px 14px rgba(0,0,0,.06);"></div>
+
+<!-- ⑤ 주차별 흐름 -->
+<h2>⑤ 주차별 흐름 <span class="cnt">(일간 오행 5종 × 4주차 = 20)</span></h2>
+<div class="sect-note"><b>로그인 시에만</b> 일간 오행(목·화·토·금·수)에 따라 4주차 문구 노출. 비로그인은 🔒 "사주 입력 후 …" 잠금박스 + 로그인 버튼.</div>
+<div class="wide"><table>
+<thead><tr><th>일간 오행</th><th>1주차</th><th>2주차</th><th>3주차</th><th>4주차</th></tr></thead>
+<tbody id="t-week"></tbody>
+</table></div>
+
+<!-- ⑥ 운명의 날 -->
+<h2>⑥ 이달 운명의 날 <span class="cnt">(날짜는 시드 계산 / 문구 고정)</span></h2>
+<div class="sect-note">이름+연월 시드로 좋은날 4개·주의날 2개를 그 달 날짜 안에서 계산. 날짜는 매번 달라지지만 <b>설명 문구는 고정</b>.</div>
+<div class="wide"><table>
+<thead><tr><th>구분</th><th>고정 설명 문구</th></tr></thead>
+<tbody>
+<tr><td class="good">🌟 좋은 날 (4일)</td><td>중요한 결정·계약·만남에 추천. 새 시작에 길한 날.</td></tr>
+<tr><td class="warn">⚠️ 주의할 날 (2일)</td><td>이 날은 큰 결정 보류. 충돌 회피 + 무리한 약속 자제.</td></tr>
+</tbody>
+</table></div>
+
+<!-- ⑦ 1~12월 흐름 -->
+<h2>⑦ 1~12월 한 해 흐름 <span class="cnt">(고정 · 로그인+토정비결 매칭 시 노출)</span></h2>
+<div class="sect-note">고정 분류 — 길: 1,2,4,5,6,9,10,12 / 주의: 3,7,11 / 그 외 보통. 이번 달은 골드 강조. 다른 달 클릭 시 월별 운세(980원) 유도.</div>
+<div class="wide"><table>
+<thead><tr><th class="idx">월</th><th>분류</th></tr></thead>
+<tbody id="t-12month"></tbody>
+</table></div>
+
+<!-- ⑧ Do & Don't -->
+<h2>⑧ 이달 Do &amp; Don't <span class="cnt">(Do 20 / Don't 20)</span></h2>
+<div class="sect-note">시드로 Do 1개·Don't 1개 추출. 아래는 풀 전체.</div>
+<div class="wide" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+  <table><thead><tr><th class="idx">#</th><th class="good">✅ Do</th></tr></thead><tbody id="t-do"></tbody></table>
+  <table><thead><tr><th class="idx">#</th><th class="warn">🚫 Don't</th></tr></thead><tbody id="t-dont"></tbody></table>
+</div>
+
+<!-- ⑨ 천기의 한마디 -->
+<h2>⑨ 천기의 한마디 <span class="cnt">(14종)</span></h2>
+<div class="sect-note">시드로 1개 선택. <code>{이름}님</code> 자리에 사용자/인물 이름이 들어가요. (아래는 "규미" 예시)</div>
+<div class="wide"><table>
+<thead><tr><th class="idx">#</th><th>문구</th></tr></thead>
+<tbody id="t-msg"></tbody>
+</table></div>
+
+<script>
+const NAME="규미";
+const starStr=n=>"★".repeat(n)+"☆".repeat(5-n);
+const ohClass={목:"oh-mok",화:"oh-hwa",토:"oh-to",금:"oh-geum",수:"oh-su"};
+const ohHanja={목:"木",화:"火",토:"土",금:"金",수:"水"};
+
+// ① 헤드라인 (page.tsx _MONTH_HEADLINES)
+const HEADLINES=[
+ {star:5,text:"이달은 모든 기운이 당신 편이에요!"},
+ {star:4,text:"꾸준히 해온 일이 결실을 맺기 시작해요"},
+ {star:4,text:"좋은 흐름이 이어지는 달이에요"},
+ {star:3,text:"안정 속에 작은 기회가 숨어있어요"},
+ {star:2,text:"충전하며 준비하는 달이에요"},
+];
+const th=document.getElementById('t-head');
+HEADLINES.forEach((h,i)=>{
+  th.insertAdjacentHTML('beforeend',`<tr><td class="idx">${i+1}</td><td class="star">${starStr(h.star)}</td><td class="score">${Math.round(h.star/5*100)}</td><td>"${h.text}"</td></tr>`);
+});
+
+// ② 영역별 (page.tsx _MONTH_AREAS + _MONTH_MSGS)
+const AREAS=[{a:"✨ 총운",k:"총운"},{a:"💰 재물",k:"재물"},{a:"💕 애정",k:"애정"},{a:"🌿 건강",k:"건강"},{a:"💼 직업",k:"직업"}];
+const MSGS={
+ 총운:[[2,"쉬어가는 달"],[3,"안정적으로 흘러가는 달"],[4,"긍정적인 흐름의 달"],[5,"이달 가장 빛나는 기운!"]],
+ 재물:[[2,"지출 줄이고 저축 집중"],[3,"현상 유지가 최선인 달"],[4,"뜻밖의 수입 기회가 보여요"],[5,"재물운 활짝! 투자도 좋아요"]],
+ 애정:[[2,"오해 쌓이기 쉬운 달"],[3,"평온한 관계 유지되는 달"],[4,"설레는 인연이 가까워지는 달"],[5,"사랑의 기운이 넘치는 달!"]],
+ 건강:[[2,"피로 누적 주의"],[3,"평소 루틴 유지하기 좋은 달"],[4,"활력 넘치는 달, 운동 시작 딱"],[5,"몸과 마음 최상의 컨디션!"]],
+ 직업:[[2,"실수 주의, 꼼꼼히 확인"],[3,"꾸준히 하면 인정받는 달"],[4,"좋은 기회가 찾아오는 달"],[5,"커리어 전환점이 될 수 있는 달!"]],
+};
+const ta=document.getElementById('t-area');
+AREAS.forEach(({a,k})=>{
+  MSGS[k].forEach(([sc,txt],j)=>{
+    const cls=sc>=4?"good":sc>=3?"mid":"warn";
+    ta.insertAdjacentHTML('beforeend',`<tr><td>${j===0?'<b>'+a+'</b>':''}</td><td class="score">${sc}</td><td class="star">${starStr(sc)}</td><td class="${cls}">${txt}</td></tr>`);
+  });
+});
+
+// ③ 절기 (page.tsx 인라인 IIFE 경계값)
+const JEOLGI=[
+ ["대한","~2/3 (연초)"],["입춘","2/4~2/18"],["우수","2/19~3/5"],["경칩","3/6~3/20"],
+ ["춘분","3/21~4/4"],["청명","4/5~4/19"],["곡우","4/20~5/5"],["입하","5/6~5/20"],
+ ["소만","5/21~6/5"],["망종","6/6~6/20"],["하지","6/21~7/6"],["소서","7/7~7/22"],
+ ["대서","7/23~8/7"],["입추","8/8~8/22"],["처서","8/23~9/7"],["백로","9/8~9/22"],
+ ["추분","9/23~10/7"],["한로","10/8~10/22"],["상강","10/23~11/6"],["입동","11/7~11/21"],
+ ["소설","11/22~12/6"],["대설","12/7~12/21"],["동지","12/22~1/5"],["소한","1/6~1/19, 대한 1/20~"],
+];
+const tj=document.getElementById('t-jeolgi');
+JEOLGI.forEach((j,i)=>tj.insertAdjacentHTML('beforeend',`<tr><td class="idx">${i+1}</td><td><b>${j[0]}</b></td><td>${j[1]}</td></tr>`));
+
+// ④ 키워드 (page.tsx KW_DATA)
+const KW_DATA={"성장":"🌱","결실":"🍎","도약":"🦘","안정":"🏛️","전환":"🔄","조화":"🕊️","희망":"🌅","결단":"⚔️","축복":"🎊","집중":"🎯","교류":"🤝","휴식":"🌙","개척":"🚀","수확":"🌾","내실":"💎","변화":"🌪️","인연":"💞","재정비":"📋","비상":"🛫","뿌리":"🌳","돌파":"💥","꽃피움":"🌸"};
+const kp=document.getElementById('kw-pool');
+Object.entries(KW_DATA).forEach(([w,e])=>kp.insertAdjacentHTML('beforeend',`<span class="kw">${e} ${w}</span>`));
+
+// ⑤ 주차별 (page.tsx _WEEK_ADVICE)
+const WEEK={
+ 목:{w1:"첫째 주는 새로운 시작에 좋은 기운이에요. 목(木) 기운이 상승해 창의적인 아이디어가 떠올라요.",w2:"둘째 주는 인간관계에서 좋은 소식이 있을 수 있어요. 협력과 소통에 집중하면 좋아요.",w3:"셋째 주는 재물운이 조심스러운 시기예요. 큰 지출보다 저축에 집중하세요.",w4:"넷째 주는 건강 관리에 특히 신경 쓰세요. 충분한 휴식이 다음 달 에너지가 돼요."},
+ 화:{w1:"첫째 주는 화(火) 기운이 폭발적으로 상승해요. 열정을 쏟을 프로젝트를 시작하기 딱 좋아요.",w2:"둘째 주는 애정운이 특히 좋아요. 관심 있는 사람에게 먼저 다가가보세요.",w3:"셋째 주는 직업운이 상승하는 시기예요. 중요한 미팅이나 발표는 이 주에 잡으세요.",w4:"넷째 주는 에너지를 정리하고 충전하는 시간이에요. 무리하지 말고 여유를 가지세요."},
+ 토:{w1:"첫째 주는 재물운이 강한 시기예요. 토(土)의 안정적인 에너지로 현명한 투자 결정을 내릴 수 있어요.",w2:"둘째 주는 가족이나 가까운 사람과의 관계에 집중하기 좋아요.",w3:"셋째 주는 새로운 도전보다 기존에 하던 일을 완성하는 데 집중하세요.",w4:"넷째 주는 건강한 식습관과 생활 루틴을 점검하기 좋은 시기예요."},
+ 금:{w1:"첫째 주는 금(金) 기운의 예리함이 빛나는 시기예요. 중요한 결정을 내리기 좋아요.",w2:"둘째 주는 직업 관련 좋은 소식이 있을 수 있어요. 적극적으로 나서보세요.",w3:"셋째 주는 재물운이 상승하는 시기예요. 계획했던 투자를 실행하기 좋아요.",w4:"넷째 주는 인간관계를 정리하고 진짜 중요한 사람들에게 집중하는 시간이에요."},
+ 수:{w1:"첫째 주는 수(水) 기운의 지혜와 직관이 빛나는 시기예요. 중요한 통찰이 올 수 있어요.",w2:"둘째 주는 건강운이 특히 좋아요. 새로운 운동이나 건강 루틴을 시작하기 좋아요.",w3:"셋째 주는 감정적으로 예민해질 수 있어요. 명상이나 산책으로 마음을 다스리세요.",w4:"넷째 주는 창의적인 활동에 집중하면 좋은 결과가 나와요."},
+};
+const tw=document.getElementById('t-week');
+["목","화","토","금","수"].forEach(o=>{
+  const a=WEEK[o];
+  tw.insertAdjacentHTML('beforeend',`<tr><td class="${ohClass[o]}">${o}(${ohHanja[o]})</td><td>${a.w1}</td><td>${a.w2}</td><td>${a.w3}</td><td>${a.w4}</td></tr>`);
+});
+
+// ⑦ 1~12월
+const GOOD=[1,2,4,5,6,9,10,12], CAUT=[3,7,11];
+const t12=document.getElementById('t-12month');
+for(let mo=1;mo<=12;mo++){
+  const cls=GOOD.includes(mo)?"good":CAUT.includes(mo)?"warn":"mid";
+  const lbl=GOOD.includes(mo)?"길":CAUT.includes(mo)?"주의":"보통";
+  t12.insertAdjacentHTML('beforeend',`<tr><td class="idx">${mo}월</td><td class="${cls}">${lbl}</td></tr>`);
+}
+
+// ⑧ Do & Don't
+const DOS=["새 시작·새 도전","사람 관계 다지기","미뤄둔 일 정리","건강 루틴 만들기","공부·자기계발","돈 관리 점검","청소·정리정돈","감사 일기","천천히 깊게","꾸준한 운동","책 한 권 완독","마음 비우기","목표 한 가지 정하기","오랜 친구에게 연락","집안 정돈","새 취미 시도","월간 회고","자기 칭찬 한 줄","일찍 자기","아침형 루틴"];
+const DONTS=["충동 결정·큰 지출","무리한 약속","감정적 충돌","과로·번아웃","비교·자책","SNS 과몰입","미루기 습관","불필요한 모임","과식·야식","부정 표현","과거 매달림","급한 판단","자기 비하","무책임한 약속","과한 카페인","수면 부족","미해결 갈등 방치","부정 뉴스 몰입","약속 미루기","과한 다이어트"];
+const tdo=document.getElementById('t-do'),tdont=document.getElementById('t-dont');
+DOS.forEach((d,i)=>tdo.insertAdjacentHTML('beforeend',`<tr><td class="idx">${i+1}</td><td>${d}</td></tr>`));
+DONTS.forEach((d,i)=>tdont.insertAdjacentHTML('beforeend',`<tr><td class="idx">${i+1}</td><td>${d}</td></tr>`));
+
+// ⑨ 천기의 한마디
+const MSGS_LIST=[
+ "이번 달은 천천히 가도 괜찮은 달이에요. 서두르지 않아도 결국 도착해요.",
+ "이번 달은 작게 시작해서 크게 키워가는 흐름. 첫 발을 두려워하지 마세요.",
+ "흐르는 강물처럼 자연스럽게. 거스르지 말고 흐름을 타세요.",
+ "사람과의 인연이 가장 큰 자산이 되는 달. 먼저 다가가세요.",
+ "안에서 다지는 시간. 밖으로 나서기보다 내실을 채울 때.",
+ "이번 달 작은 변화가 다음 달 큰 도약의 발판이 돼요.",
+ "직관을 믿으세요. 머리보다 가슴이 정답을 알고 있어요.",
+ "멈춰 서서 돌아볼 때예요. 지나온 길에서 답이 보여요.",
+ "새로운 만남이 인생의 전환점이 될 수 있는 달.",
+ "욕심을 내려놓을 때 더 큰 기회가 와요.",
+ "노력한 만큼 돌려받는 달. 결실의 달콤함을 누리세요.",
+ "작은 친절이 큰 인연을 만드는 달. 따뜻한 마음 잊지 마세요.",
+ "도전 앞에서 망설이지 마세요. 이번 달 운이 당신 편이에요.",
+ "마음의 평화가 가장 큰 재산. 무리하지 말고 자신을 돌보세요.",
+];
+const tm=document.getElementById('t-msg');
+MSGS_LIST.forEach((m,i)=>tm.insertAdjacentHTML('beforeend',`<tr><td class="idx">${i+1}</td><td>"${NAME}님, ${m}"</td></tr>`));
+</script>
+</body>
+</html>

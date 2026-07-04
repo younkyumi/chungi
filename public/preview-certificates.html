@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>천기 인증서 컬렉션 12종 미리보기</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#1A3C32;font-family:'Pretendard','Noto Serif KR',sans-serif;display:flex;flex-direction:column;align-items:center;padding:20px;gap:20px;}
+h1{color:#D4AF37;font-size:16px;text-align:center;font-family:'Noto Serif KR',serif;}
+h2{color:#fff;font-size:11px;text-align:center;background:rgba(255,255,255,0.08);padding:6px 14px;border-radius:10px;max-width:420px;width:100%;}
+.tier{color:#D4AF37;font-size:13px;font-weight:900;text-align:center;margin-top:10px;letter-spacing:2px;}
+.cert-wrap{max-width:420px;width:100%;padding:0 16px;}
+
+/* 럭셔리 (미드나잇그린+골드) */
+.cert-lux{background:linear-gradient(135deg,#1A3C32,#2d5f4d 50%,#1A3C32);border:3px double #D4AF37;border-radius:18px;padding:32px 20px 28px;text-align:center;position:relative;box-shadow:0 10px 30px rgba(212,175,55,0.25);overflow:hidden;margin-bottom:16px;}
+.cert-lux .corner{position:absolute;font-size:16px;color:#D4AF37;opacity:0.5;}
+.cert-lux .hd{font-size:10px;letter-spacing:4px;color:#D4AF37;font-weight:700;margin-bottom:6px;}
+.cert-lux .sub{font-size:9px;color:#D4AF37;font-style:italic;opacity:0.8;margin-bottom:20px;}
+.cert-lux .icon-wrap{width:90px;height:90px;margin:0 auto 16px;border-radius:50%;background:rgba(212,175,55,0.1);border:3px solid #D4AF37;display:flex;align-items:center;justify-content:center;font-size:44px;box-shadow:0 6px 20px rgba(212,175,55,0.3);}
+.cert-lux .label{font-size:9px;color:#D4AF37;letter-spacing:2px;font-weight:600;margin-bottom:10px;}
+.cert-lux .title{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:900;white-space:nowrap;letter-spacing:-1px;color:#D4AF37;line-height:1.3;text-shadow:0 0 15px rgba(212,175,55,0.4);margin-bottom:16px;}
+.cert-lux .body{font-size:11px;color:#fff;line-height:1.8;opacity:0.85;margin-bottom:20px;word-break:keep-all;padding:0 8px;}
+.cert-lux .tags{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;}
+.cert-lux .tag{font-size:9px;font-weight:800;color:#D4AF37;background:rgba(212,175,55,0.15);border:1px solid rgba(212,175,55,0.4);padding:4px 10px;border-radius:20px;}
+.cert-lux .stamp{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:10px;}
+.cert-lux .stamp-line{height:1px;width:50px;background:#D4AF37;opacity:0.3;}
+.cert-lux .stamp-icon{width:40px;height:40px;border:2px solid #D4AF37;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(212,175,55,0.1);}
+.cert-lux .sig{font-size:8px;color:#D4AF37;opacity:0.7;font-style:italic;}
+
+/* 골드 (따뜻한 베이지+앤틱골드) */
+.cert-gold{background:linear-gradient(135deg,#fdf6e3,#fff8eb 40%,#f5e6cc);border:3px double #c9a04e;border-radius:18px;padding:32px 20px 28px;text-align:center;position:relative;box-shadow:0 10px 30px rgba(201,160,78,0.2);overflow:hidden;margin-bottom:16px;}
+.cert-gold .corner{position:absolute;font-size:16px;color:#c9a04e;opacity:0.6;}
+.cert-gold .hd{font-size:10px;letter-spacing:4px;color:#8b6f1c;font-weight:700;margin-bottom:6px;}
+.cert-gold .sub{font-size:9px;color:#c9a04e;font-style:italic;margin-bottom:20px;}
+.cert-gold .icon-wrap{width:90px;height:90px;margin:0 auto 16px;border-radius:50%;background:#fff;border:3px solid #c9a04e;display:flex;align-items:center;justify-content:center;font-size:44px;box-shadow:0 6px 20px rgba(201,160,78,0.3);}
+.cert-gold .label{font-size:9px;color:#8b6f1c;letter-spacing:2px;font-weight:600;margin-bottom:10px;}
+.cert-gold .title{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:900;white-space:nowrap;letter-spacing:-1px;color:#5a4316;line-height:1.3;text-shadow:0 2px 8px rgba(201,160,78,0.2);margin-bottom:16px;}
+.cert-gold .body{font-size:11px;color:#5a4316;line-height:1.8;opacity:0.9;margin-bottom:20px;word-break:keep-all;padding:0 8px;}
+.cert-gold .tags{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;}
+.cert-gold .tag{font-size:9px;font-weight:800;color:#c9a04e;background:#fffdf5;border:1px solid #e6d5a8;padding:4px 10px;border-radius:20px;}
+.cert-gold .stamp{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:10px;}
+.cert-gold .stamp-line{height:1px;width:50px;background:#c9a04e;opacity:0.4;}
+.cert-gold .stamp-icon{width:40px;height:40px;border:2px solid #c92a2a;border-radius:6px;display:flex;align-items:center;justify-content:center;background:#fff5f5;transform:rotate(-4deg);}
+.cert-gold .sig{font-size:8px;color:#8b6f1c;opacity:0.7;font-style:italic;}
+
+/* 스페셜 = 다크그린 + 실버 (인증서 + 캐릭터 카드 통합) */
+.cert-special{background:linear-gradient(135deg,#1A3C32,#2d5f4d 50%,#1A3C32);border:3px double #C0C0C8;border-radius:18px;padding:32px 20px 28px;text-align:center;position:relative;box-shadow:0 10px 30px rgba(192,192,200,0.2);overflow:hidden;margin-bottom:16px;}
+.cert-special .corner{position:absolute;font-size:16px;color:#C0C0C8;opacity:0.5;}
+.cert-special .hd{font-size:10px;letter-spacing:4px;color:#C0C0C8;font-weight:700;margin-bottom:6px;}
+.cert-special .sub{font-size:9px;color:#C0C0C8;font-style:italic;opacity:0.85;margin-bottom:20px;}
+.cert-special .icon-wrap{width:90px;height:90px;margin:0 auto 16px;border-radius:50%;background:rgba(192,192,200,0.08);border:3px solid #C0C0C8;display:flex;align-items:center;justify-content:center;font-size:44px;overflow:hidden;box-shadow:0 6px 20px rgba(192,192,200,0.3);}
+.cert-special .icon-wrap img{width:100%;height:100%;object-fit:cover;}
+.cert-special .label{font-size:9px;color:#C0C0C8;letter-spacing:2px;font-weight:600;margin-bottom:10px;}
+.cert-special .title{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:900;white-space:nowrap;letter-spacing:-1px;color:#E8E8EC;line-height:1.3;text-shadow:0 0 15px rgba(192,192,200,0.4);margin-bottom:16px;}
+.cert-special .body{font-size:11px;color:#fff;line-height:1.8;opacity:0.85;margin-bottom:20px;word-break:keep-all;padding:0 8px;}
+.cert-special .tags{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;}
+.cert-special .tag{font-size:9px;font-weight:800;color:#C0C0C8;background:rgba(192,192,200,0.12);border:1px solid rgba(192,192,200,0.35);padding:4px 10px;border-radius:20px;}
+.cert-special .stamp{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:10px;}
+.cert-special .stamp-line{height:1px;width:50px;background:#C0C0C8;opacity:0.3;}
+.cert-special .stamp-icon{width:40px;height:40px;border:2px solid #C0C0C8;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(192,192,200,0.08);}
+.cert-special .sig{font-size:8px;color:#C0C0C8;opacity:0.7;font-style:italic;}
+
+.ct{top:12px;left:12px;}.ct2{top:12px;right:12px;}.cb{bottom:12px;left:12px;}.cb2{bottom:12px;right:12px;}
+</style>
+</head>
+<body>
+
+<h1>📜 천기 인증서 컬렉션 13종</h1>
+<h2>포켓몬카드처럼 모으는 재미! 💎 럭셔리 3종 · ✨ 스페셜 3종 · 🏅 골드 7종</h2>
+<div style="text-align:center;color:#aaa;font-size:10px;margin-top:-8px;">(수비학·관상짤 등 캐릭터 카드는 별도 "캐릭터 컬렉션 🌈" 에서 모아보기)</div>
+
+<!-- ━━━ 럭셔리 등급 (3종) ━━━ -->
+<div class="tier">💎 LUXURY — 럭셔리 등급</div>
+
+<!-- 1. 뇌과학분석 -->
+<div class="cert-wrap"><div class="cert-lux">
+  <div class="corner ct">✦</div><div class="corner ct2">✦</div><div class="corner cb">✦</div><div class="corner cb2">✦</div>
+  <div class="hd">CHUNGI ORIGINALS</div>
+  <div class="sub">— Brain Science Certificate —</div>
+  <div class="icon-wrap">🧠</div>
+  <div class="label">— CERTIFIED GENIUS —</div>
+  <div class="title">"천재성 인증서"</div>
+  <div class="body">이마의 산근과 눈빛의 깊이에서 읽어낸 <b>S등급 두뇌</b>의 소유자. 논리적 사고력과 창의적 직관이 공존하는 희귀한 뇌 구조를 지녔습니다.</div>
+  <div class="tags"><span class="tag">#S등급두뇌</span><span class="tag">#IQ상위1%</span><span class="tag">#천재형</span></div>
+  <div class="stamp"><div class="stamp-line"></div><div class="stamp-icon"><div style="text-align:center;"><div style="font-size:7px;color:#D4AF37;font-weight:700;line-height:1;">天機</div><div style="font-size:11px;font-weight:900;color:#D4AF37;line-height:1;margin-top:2px;">認證</div></div></div><div class="stamp-line"></div></div>
+  <div class="sig">홍길동 · 天機 PREMIUM · No. 2025-B001</div>
+  <div class="sig" style="margin-top:3px;">— 천기 (天機) 봉인 · 천기.kr —</div>
+</div></div>
+
+<!-- 2. 파동성명학 -->
+<div class="cert-wrap"><div class="cert-lux">
+  <div class="corner ct">✦</div><div class="corner ct2">✦</div><div class="corner cb">✦</div><div class="corner cb2">✦</div>
+  <div class="hd">CHUNGI ORIGINALS</div>
+  <div class="sub">— Wave Energy Certificate —</div>
+  <div class="icon-wrap">🌊</div>
+  <div class="label">— NAME ENERGY VERIFIED —</div>
+  <div class="title">"파동 명품 인증서"</div>
+  <div class="body">이름의 음파 진동이 <b>황금 파동 주파수</b>와 일치합니다. 이 이름이 가진 에너지 파장은 부와 명예를 끌어당기는 희귀한 공명 패턴입니다.</div>
+  <div class="tags"><span class="tag">#황금파동</span><span class="tag">#명품이름</span><span class="tag">#에너지A+</span></div>
+  <div class="stamp"><div class="stamp-line"></div><div class="stamp-icon"><div style="text-align:center;"><div style="font-size:7px;color:#D4AF37;font-weight:700;line-height:1;">天機</div><div style="font-size:11px;font-weight:900;color:#D4AF37;line-height:1;margin-top:2px;">認證</div></div></div><div class="stamp-line"></div></div>
+  <div class="sig">홍길동 · 天機 PREMIUM · No. 2025-W002</div>
+  <div class="sig" style="margin-top:3px;">— 천기 (天機) 봉인 · 천기.kr —</div>
+</div></div>
+
+<!-- 3. 2세 얼굴 & 운명 예측 -->
+<div class="cert-wrap"><div class="cert-lux">
+  <div class="corner ct">✦</div><div class="corner ct2">✦</div><div class="corner cb">✦</div><div class="corner cb2">✦</div>
+  <div class="hd">CHUNGI ORIGINALS</div>
+  <div class="sub">— Premium DNA Certificate —</div>
+  <div class="icon-wrap">🧬</div>
+  <div class="label">— THIS BABY IS —</div>
+  <div class="title">"황금 유전자의 기적"</div>
+  <div style="display:flex;justify-content:space-around;align-items:center;margin-bottom:16px;background:rgba(212,175,55,0.08);border:1px solid rgba(212,175,55,0.25);border-radius:12px;padding:12px 8px;">
+    <div style="text-align:center;flex:1;"><div style="font-size:7px;color:#D4AF37;font-weight:700;">총점</div><div style="font-size:22px;font-weight:900;color:#D4AF37;font-family:'Noto Serif KR',serif;">98</div></div>
+    <div style="width:1px;height:30px;background:rgba(212,175,55,0.3);"></div>
+    <div style="text-align:center;flex:1;"><div style="font-size:7px;color:#D4AF37;font-weight:700;">등급</div><div style="font-size:22px;font-weight:900;color:#D4AF37;font-family:'Noto Serif KR',serif;">S</div></div>
+    <div style="width:1px;height:30px;background:rgba(212,175,55,0.3);"></div>
+    <div style="text-align:center;flex:1;"><div style="font-size:7px;color:#D4AF37;font-weight:700;">IQ</div><div style="font-size:22px;font-weight:900;color:#D4AF37;font-family:'Noto Serif KR',serif;">145+</div></div>
+  </div>
+  <div class="body">엄마의 <b>총명함</b>과 아빠의 <b>강직함</b>이 만나 S등급 유전자를 타고난 천상의 아이입니다.</div>
+  <div class="tags"><span class="tag">#황금유전자</span><span class="tag">#S등급</span><span class="tag">#IQ145+</span><span class="tag">#청출어람</span></div>
+  <div class="stamp"><div class="stamp-line"></div><div class="stamp-icon"><div style="text-align:center;"><div style="font-size:7px;color:#D4AF37;font-weight:700;line-height:1;">天機</div><div style="font-size:11px;font-weight:900;color:#D4AF37;line-height:1;margin-top:2px;">認證</div></div></div><div class="stamp-line"></div></div>
+  <div class="sig">김건우 · 天機 PREMIUM · No. 2025-D003</div>
+  <div class="sig" style="margin-top:3px;">— 천기 (天機) 봉인 · 천기.kr —</div>
+</div></div>
+
+<!-- ━━━ 스페셜 등급 (3종 · 다크그린+실버) ━━━ -->
+<div class="tier" style="color:#C0C0C8;">✨ SPECIAL — 스페셜 등급 (인증서 + 캐릭터)</div>
+
+<!-- 4-1. 내관상보기 -->
+<div class="cert-wrap"><div class="cert-special">
+  <div class="corner ct">❀</div><div class="corner ct2">❀</div><div class="corner cb">❀</div><div class="corner cb2">❀</div>
+  <div class="hd">CHUNGI ORIGINALS</div>
+  <div class="sub">— Face Reading Certificate —</div>
+  <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(192,192,200,0.12);border:1px solid rgba(192,192,200,0.35);border-radius:20px;padding:6px 16px;margin-bottom:16px;">
+    <span style="font-size:11px;color:#E8E8EC;letter-spacing:1px;">⭐⭐⭐⭐</span>
+    <span style="font-size:11px;font-weight:900;color:#E8E8EC;">88</span>
+    <span style="font-size:8px;color:#C0C0C8;opacity:0.5;">|</span>
+    <span style="font-size:11px;font-weight:900;color:#E8E8EC;">A</span>
+    <span style="font-size:8px;color:#C0C0C8;opacity:0.5;">|</span>
+    <span style="font-size:9px;color:#C0C0C8;font-weight:700;">상위 12%</span>
+  </div>
+  <div class="icon-wrap">🐸</div>
+  <div class="label">— THIS PERSON IS —</div>
+  <div class="title">"황금손 미다스상"</div>
+  <div style="font-size:11px;color:#E8E8EC;background:rgba(192,192,200,0.1);padding:5px 12px;border-radius:14px;display:inline-block;margin-bottom:6px;font-weight:600;">"손대는 것마다 돈이 되는 상"</div>
+  <div style="font-weight:800;color:#FFD6D6;font-size:11px;margin-bottom:14px;">👉 코끝이 옹골차서 재물 그릇 역대급!</div>
+  <div class="body"><b style="color:#E8E8EC;">윤규미</b>님은 코끝이 야무지고 눈빛에 깊이가 있는 <b style="color:#E8E8EC;">재복 타고난 A등급</b> 관상입니다. 인복과 재물이 함께 깃든 귀한 얼굴이니 자신감을 가지세요.</div>
+  <div style="display:flex;gap:6px;margin-bottom:14px;">
+    <div style="flex:1;background:rgba(192,192,200,0.08);border:1px solid rgba(255,200,200,0.3);border-radius:10px;padding:8px 4px;"><div style="font-size:9px;font-weight:800;color:#FFD6D6;">💕 찰떡</div><div style="font-size:10px;font-weight:800;color:#E8E8EC;margin-top:3px;">무해한 힐러상</div></div>
+    <div style="flex:1;background:rgba(192,192,200,0.08);border:1px solid rgba(192,192,200,0.3);border-radius:10px;padding:8px 4px;"><div style="font-size:9px;font-weight:800;color:#C0C0C8;">⚡ 상극</div><div style="font-size:10px;font-weight:800;color:#E8E8EC;margin-top:3px;">알빠노 마이웨이상</div></div>
+  </div>
+  <div class="tags"><span class="tag">#A등급</span><span class="tag">#상위12%</span><span class="tag">#재물그릇大</span><span class="tag">#황금손미다스</span></div>
+  <div class="stamp"><div class="stamp-line"></div><div class="stamp-icon"><div style="text-align:center;"><div style="font-size:6px;color:#C0C0C8;font-weight:700;line-height:1;">天機</div><div style="font-size:10px;font-weight:900;color:#C0C0C8;line-height:1;margin-top:2px;">認證</div></div></div><div class="stamp-line"></div></div>
+  <div class="sig">윤규미 · 天機 SILVER · No. 2026-F042</div>
+  <div class="sig" style="margin-top:3px;">— 천기 (天機) 봉인 · 천기.kr —</div>
+</div></div>
+
+<!-- 4-2. 우리 아기 관상 -->
+<div class="cert-wrap"><div class="cert-special">
+  <div class="corner ct">❀</div><div class="corner ct2">❀</div><div class="corner cb">❀</div><div class="corner cb2">❀</div>
+  <div class="hd">CHUNGI ORIGINALS</div>
+  <div class="sub">— Baby Character Card —</div>
+  <div class="icon-wrap">👶</div>
+  <div class="label">— THIS BABY IS —</div>
+  <div class="title">"세상을 밝히는 꼬마 태양"</div>
+  <div class="body"><b style="color:#E8E8EC;">하은이</b>는 타고난 기질 자체가 <b>존귀</b>하고 <b>대귀</b>한 복덩이입니다. 사랑으로 키우면 <b style="color:#E8E8EC;">세상을 바꿀 사람</b>이 될 상입니다.</div>
+  <div class="tags"><span class="tag">#존귀</span><span class="tag">#총명</span><span class="tag">#대귀</span><span class="tag">#인복</span></div>
+  <div class="stamp"><div class="stamp-line"></div><div class="stamp-icon"><div style="text-align:center;"><div style="font-size:6px;color:#C0C0C8;font-weight:700;line-height:1;">天機</div><div style="font-size:10px;font-weight:900;color:#C0C0C8;line-height:1;margin-top:2px;">認證</div></div></div><div class="stamp-line"></div></div>
+  <div class="sig">김하은 · 天機 SILVER · No. 2026-B004</div>
+  <div class="sig" style="margin-top:3px;">— 천기 (天機) 봉인 · 천기.kr —</div>
+</div></div>
+
+<!-- 4-3. 멍상·냥상 -->
+<div class="cert-wrap"><div class="cert-special">
+  <div class="corner ct">🐾</div><div class="corner ct2">🐾</div><div class="corner cb">🐾</div><div class="corner cb2">🐾</div>
+  <div class="hd">CHUNGI ORIGINALS</div>
+  <div class="sub">— Pet Destiny Card —</div>
+  <div class="icon-wrap">🐶</div>
+  <div class="label">— THIS PET IS —</div>
+  <div class="title">"우주 최강 댕댕이"</div>
+  <div class="body"><b style="color:#E8E8EC;">뽀삐</b>는 전생에 <b>조선 궁중의 어의</b>였던 영혼. 주인을 치유하는 힐러의 기운이 온몸에서 뿜어져 나옵니다.</div>
+  <div class="tags"><span class="tag">#힐러댕댕</span><span class="tag">#전생어의</span><span class="tag">#치유력만점</span></div>
+  <div class="stamp"><div class="stamp-line"></div><div class="stamp-icon"><div style="text-align:center;"><div style="font-size:6px;color:#C0C0C8;font-weight:700;line-height:1;">天機</div><div style="font-size:10px;font-weight:900;color:#C0C0C8;line-height:1;margin-top:2px;">認證</div></div></div><div class="stamp-line"></div></div>
+  <div class="sig">뽀삐 · 天機 SILVER · No. 2026-P005</div>
+  <div class="sig" style="margin-top:3px;">— 천기 (天機) 봉인 · 천기.kr —</div>
+</div></div>
+
+
+<!-- ━━━ 골드 등급 (7종) ━━━ -->
+<div class="tier">🏅 GOLD — 골드 등급</div>
+
+<!-- 6. 부모·자식 궁합 -->
+<div class="cert-wrap"><div class="cert-gold">
+  <div class="corner ct">❀</div><div class="corner ct2">❀</div><div class="corner cb">❀</div><div class="corner cb2">❀</div>
+  <div class="hd">CHUNGI ORIGINALS</div>
+  <div class="sub">— Family Bond Certificate —</div>
+  <div class="icon-wrap">👪</div>
+  <div class="label">— FAMILY CHEMISTRY —</div>
+  <div class="title">"천륜 가족 인증서"</div>
+  <div class="body">부모와 자녀 사이의 <b>천륜(天倫)</b>의 끈이 매우 강합니다. 서로의 기운이 보완하는 <b style="color:#c9a04e;">최상의 가족 조합</b>입니다.</div>
+  <div class="tags"><span class="tag">#천륜가족</span><span class="tag">#궁합95%</span><span class="tag">#보완형</span></div>
+  <div class="stamp"><div class="stamp-line"></div><div class="stamp-icon"><div style="text-align:center;"><div style="font-size:6px;color:#c92a2a;font-weight:700;line-height:1;">天機</div><div style="font-size:10px;font-weight:900;color:#c92a2a;line-height:1;margin-top:2px;">認證</div></div></div><div class="stamp-line"></div></div>
+  <div class="sig">김하은 가족 · 天機 ORIGINAL · No. 2025-F006</div>
+  <div class="sig" style="margin-top:3px;">— 천기 (天機) 봉인 · 천기.kr —</div>
+</div></div>
+
+<!-- 7. 커플 궁합 -->
+<div class="cert-wrap"><div class="cert-gold">
+  <div class="corner ct">❀</div><div class="corner ct2">❀</div><div class="corner cb">❀</div><div class="corner cb2">❀</div>
+  <div class="hd">CHUNGI ORIGINALS</div>
+  <div class="sub">— Soulmate Certificate —</div>
+  <div class="icon-wrap">💑</div>
+  <div class="label">— DESTINED LOVERS —</div>
+  <div class="title">"운명 연인 인증서"</div>
+  <div class="body">두 사람의 관상에서 읽은 <b>애정 온도 92°</b>. 전생에서 이어진 인연이 현생에서 꽃피는 <b style="color:#c9a04e;">천생연분</b>입니다.</div>
+  <div class="tags"><span class="tag">#천생연분</span><span class="tag">#애정92°</span><span class="tag">#전생인연</span></div>
+  <div class="stamp"><div class="stamp-line"></div><div class="stamp-icon"><div style="text-align:center;"><div style="font-size:6px;color:#c92a2a;font-weight:700;line-height:1;">天機</div><div style="font-size:10px;font-weight:900;color:#c92a2a;line-height:1;margin-top:2px;">認證</div></div></div><div class="stamp-line"></div></div>
+  <div class="sig">규미 ♥ 진순 · 天機 ORIGINAL · No. 2025-L007</div>
+  <div class="sig" style="margin-top:3px;">— 천기 (天機) 봉인 · 천기.kr —</div>
+</div></div>
+
+<!-- 8. 베프 궁합 -->
+<div class="cert-wrap"><div class="cert-gold">
+  <div class="corner ct">❀</div><div class="corner ct2">❀</div><div class="corner cb">❀</div><div class="corner cb2">❀</div>
+  <div class="hd">CHUNGI ORIGINALS</div>
+  <div class="sub">— Best Friend Certificate —</div>
+  <div class="icon-wrap">👯</div>
+  <div class="label">— BORN TO BE BESTIES —</div>
+  <div class="title">"천생 베프 인증서"</div>
+  <div class="body">두 사람의 우정 지수 <b>98%</b>. 서로의 약점을 채워주는 <b style="color:#c9a04e;">천생 베프</b>, 이 인연은 다음 생에서도 이어집니다.</div>
+  <div class="tags"><span class="tag">#천생베프</span><span class="tag">#우정98%</span><span class="tag">#영혼단짝</span></div>
+  <div class="stamp"><div class="stamp-line"></div><div class="stamp-icon"><div style="text-align:center;"><div style="font-size:6px;color:#c92a2a;font-weight:700;line-height:1;">天機</div><div style="font-size:10px;font-weight:900;color:#c92a2a;line-height:1;margin-top:2px;">認證</div></div></div><div class="stamp-line"></div></div>
+  <div class="sig">규미 & 영희 · 天機 ORIGINAL · No. 2025-B008</div>
+  <div class="sig" style="margin-top:3px;">— 천기 (天機) 봉인 · 천기.kr —</div>
+</div></div>
+
+<!-- 9. 비즈니스 궁합 -->
+<div class="cert-wrap"><div class="cert-gold">
+  <div class="corner ct">❀</div><div class="corner ct2">❀</div><div class="corner cb">❀</div><div class="corner cb2">❀</div>
+  <div class="hd">CHUNGI ORIGINALS</div>
+  <div class="sub">— Business Partner Certificate —</div>
+  <div class="icon-wrap">💼</div>
+  <div class="label">— POWER COMBO —</div>
+  <div class="title">"사업 콤비 인증서"</div>
+  <div class="body">두 사람의 비즈니스 시너지 <b>A+등급</b>. 서로의 능력이 곱하기가 되는 <b style="color:#c9a04e;">황금 파트너십</b>을 인증합니다.</div>
+  <div class="tags"><span class="tag">#황금콤비</span><span class="tag">#시너지A+</span><span class="tag">#대박파트너</span></div>
+  <div class="stamp"><div class="stamp-line"></div><div class="stamp-icon"><div style="text-align:center;"><div style="font-size:6px;color:#c92a2a;font-weight:700;line-height:1;">天機</div><div style="font-size:10px;font-weight:900;color:#c92a2a;line-height:1;margin-top:2px;">認證</div></div></div><div class="stamp-line"></div></div>
+  <div class="sig">규미 & 철수 · 天機 ORIGINAL · No. 2025-Z009</div>
+  <div class="sig" style="margin-top:3px;">— 천기 (天機) 봉인 · 천기.kr —</div>
+</div></div>
+
+<!-- 10. 악연·상극 궁합 -->
+<div class="cert-wrap"><div class="cert-gold" style="background:linear-gradient(135deg,#f5f0f0,#fff5f5 40%,#fdf0f0);border-color:#c92a2a;">
+  <div class="corner ct" style="color:#c92a2a;">⚡</div><div class="corner ct2" style="color:#c92a2a;">⚡</div><div class="corner cb" style="color:#c92a2a;">⚡</div><div class="corner cb2" style="color:#c92a2a;">⚡</div>
+  <div class="hd" style="color:#8b1c1c;">CHUNGI ORIGINALS</div>
+  <div class="sub" style="color:#c92a2a;">— Nemesis Report Certificate —</div>
+  <div class="icon-wrap" style="border-color:#c92a2a;">⚡</div>
+  <div class="label" style="color:#8b1c1c;">— DANGER LEVEL —</div>
+  <div class="title" style="color:#8b1c1c;">"상극 판독 인증서"</div>
+  <div class="body" style="color:#5a1616;">두 사람의 상극 지수 <b>위험</b>. 재물운이 충돌하고 성격 마찰이 강합니다. <b style="color:#c92a2a;">적당한 거리</b>가 서로를 살립니다.</div>
+  <div class="tags"><span class="tag" style="color:#c92a2a;background:#fff0f0;border-color:#ffe0e0;">#상극주의</span><span class="tag" style="color:#c92a2a;background:#fff0f0;border-color:#ffe0e0;">#재물충돌</span><span class="tag" style="color:#c92a2a;background:#fff0f0;border-color:#ffe0e0;">#거리두기</span></div>
+  <div class="stamp"><div class="stamp-line" style="background:#c92a2a;"></div><div class="stamp-icon"><div style="text-align:center;"><div style="font-size:6px;color:#c92a2a;font-weight:700;line-height:1;">天機</div><div style="font-size:10px;font-weight:900;color:#c92a2a;line-height:1;margin-top:2px;">認證</div></div></div><div class="stamp-line" style="background:#c92a2a;"></div></div>
+  <div class="sig" style="color:#8b1c1c;">규미 ⚡ 상대 · 天機 ORIGINAL · No. 2025-E010</div>
+  <div class="sig" style="margin-top:3px;color:#8b1c1c;">— 천기 (天機) 봉인 · 천기.kr —</div>
+</div></div>
+
+<!-- 11. 최애 관상 궁합 -->
+<div class="cert-wrap"><div class="cert-gold" style="background:linear-gradient(135deg,#fff8f0,#fff0f8 40%,#fdf0ff);border-color:#e056fd;">
+  <div class="corner ct" style="color:#e056fd;">🌟</div><div class="corner ct2" style="color:#e056fd;">🌟</div><div class="corner cb" style="color:#e056fd;">🌟</div><div class="corner cb2" style="color:#e056fd;">🌟</div>
+  <div class="hd" style="color:#a020c0;">CHUNGI ORIGINALS</div>
+  <div class="sub" style="color:#e056fd;">— Ultimate Bias Certificate —</div>
+  <div class="icon-wrap" style="border-color:#e056fd;">🌟</div>
+  <div class="label" style="color:#a020c0;">— DESTINED FAN —</div>
+  <div class="title" style="color:#7b2d8e;">"운명의 최애 인증서"</div>
+  <div class="body" style="color:#5a1670;">나와 최애의 운명적 궁합 <b>97%</b>. 전생에 스승과 제자였을 확률이 높으며, <b style="color:#a020c0;">영혼이 끌리는 인연</b>입니다.</div>
+  <div class="tags"><span class="tag" style="color:#a020c0;background:#fdf0ff;border-color:#f0d0ff;">#운명의팬</span><span class="tag" style="color:#a020c0;background:#fdf0ff;border-color:#f0d0ff;">#궁합97%</span><span class="tag" style="color:#a020c0;background:#fdf0ff;border-color:#f0d0ff;">#전생인연</span></div>
+  <div class="stamp"><div class="stamp-line" style="background:#e056fd;"></div><div class="stamp-icon"><div style="text-align:center;"><div style="font-size:6px;color:#c92a2a;font-weight:700;line-height:1;">天機</div><div style="font-size:10px;font-weight:900;color:#c92a2a;line-height:1;margin-top:2px;">認證</div></div></div><div class="stamp-line" style="background:#e056fd;"></div></div>
+  <div class="sig" style="color:#7b2d8e;">규미 ♡ 차은우 · 天機 ORIGINAL · No. 2025-S011</div>
+  <div class="sig" style="margin-top:3px;color:#7b2d8e;">— 천기 (天機) 봉인 · 천기.kr —</div>
+</div></div>
+
+<!-- 12. 멍상냥상 주인궁합 -->
+<div class="cert-wrap"><div class="cert-gold">
+  <div class="corner ct">🐾</div><div class="corner ct2">🐾</div><div class="corner cb">🐾</div><div class="corner cb2">🐾</div>
+  <div class="hd">CHUNGI ORIGINALS</div>
+  <div class="sub">— Pet & Owner Bond Certificate —</div>
+  <div class="icon-wrap" style="font-size:36px;">🐕‍🦺</div>
+  <div class="label">— PAWFECT MATCH —</div>
+  <div class="title">"집사 인연 인증서"</div>
+  <div class="body"><b style="color:#7c3aed;">뽀삐</b>와 <b style="color:#7c3aed;">규미</b>의 집사 궁합 <b>99%</b>. 전생에서 함께했던 인연이 이번 생에서도 만났습니다. <b>운명의 집사</b>!</div>
+  <div class="tags"><span class="tag">#운명의집사</span><span class="tag">#궁합99%</span><span class="tag">#전생인연</span></div>
+  <div class="stamp"><div class="stamp-line"></div><div class="stamp-icon"><div style="text-align:center;"><div style="font-size:6px;color:#c92a2a;font-weight:700;line-height:1;">天機</div><div style="font-size:10px;font-weight:900;color:#c92a2a;line-height:1;margin-top:2px;">認證</div></div></div><div class="stamp-line"></div></div>
+  <div class="sig">뽀삐 & 규미 · 天機 ORIGINAL · No. 2025-O012</div>
+  <div class="sig" style="margin-top:3px;">— 천기 (天機) 봉인 · 천기.kr —</div>
+</div></div>
+
+<!-- ━━━ 캐릭터 컬렉션 🌈 (무지개 7종) ━━━ -->
+<div class="tier" style="background:linear-gradient(90deg,#ff6b6b,#ff9f43,#fad45f,#58d68d,#48dbfb,#5f27cd,#a55eea);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:900;">🌈 CHARACTER COLLECTION — 캐릭터 카드 수집</div>
+<div class="cert-wrap">
+  <div style="text-align:center;color:#aaa;font-size:10px;margin-bottom:14px;padding:0 16px;">각 서비스별 캐릭터 카드를 모아 완성하는 컬렉션 (빨주노초파남보 7계열)</div>
+
+  <style>
+    .charcat{background:var(--cc-bg);border:3px solid var(--cc-border);border-radius:18px;padding:18px 14px;margin-bottom:12px;position:relative;box-shadow:0 6px 20px rgba(0,0,0,0.15);}
+    .charcat-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+    .charcat-title{font-size:14px;font-weight:900;color:#fff;}
+    .charcat-count{font-size:11px;color:rgba(255,255,255,0.85);font-weight:700;background:rgba(0,0,0,0.2);padding:3px 10px;border-radius:12px;}
+    .charcat-sub{font-size:10px;color:rgba(255,255,255,0.85);margin-bottom:10px;}
+    .charcat-dots{display:flex;gap:4px;flex-wrap:wrap;}
+    .dot{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:800;}
+    .dot.on{background:rgba(255,255,255,0.9);color:#333;box-shadow:0 0 10px rgba(255,255,255,0.6);}
+  </style>
+
+  <!-- 🔴 관상짤 (20종) -->
+  <div class="charcat" style="--cc-bg:rgba(255,107,107,0.15);--cc-border:#ff6b6b;">
+    <div class="charcat-hd"><div class="charcat-title">📸 관상짤 & 내관상보기</div><div class="charcat-count">8 / 20</div></div>
+    <div class="charcat-sub">소개팅에서 본 그 사람, 무슨 상일까?</div>
+    <div class="charcat-dots">
+      <div class="dot on">1</div><div class="dot on">2</div><div class="dot">3</div><div class="dot on">4</div><div class="dot">5</div><div class="dot on">6</div><div class="dot">7</div><div class="dot on">8</div><div class="dot">9</div><div class="dot on">10</div><div class="dot">11</div><div class="dot on">12</div><div class="dot">13</div><div class="dot on">14</div><div class="dot">15</div><div class="dot">16</div><div class="dot">17</div><div class="dot">18</div><div class="dot">19</div><div class="dot">20</div>
+    </div>
+  </div>
+
+  <!-- 🟠 아기 관상 (20종) -->
+  <div class="charcat" style="--cc-bg:rgba(255,159,67,0.15);--cc-border:#ff9f43;">
+    <div class="charcat-hd"><div class="charcat-title">🍼 우리 아기 관상</div><div class="charcat-count">3 / 20</div></div>
+    <div class="charcat-sub">우리 아기 어떤 꼬마 별로 태어났을까?</div>
+    <div class="charcat-dots">
+      <div class="dot on">1</div><div class="dot">2</div><div class="dot on">3</div><div class="dot">4</div><div class="dot">5</div><div class="dot">6</div><div class="dot on">7</div><div class="dot">8</div><div class="dot">9</div><div class="dot">10</div><div class="dot">11</div><div class="dot">12</div><div class="dot">13</div><div class="dot">14</div><div class="dot">15</div><div class="dot">16</div><div class="dot">17</div><div class="dot">18</div><div class="dot">19</div><div class="dot">20</div>
+    </div>
+  </div>
+
+  <!-- 🟡 멍상·냥상 (20종) -->
+  <div class="charcat" style="--cc-bg:rgba(250,212,95,0.18);--cc-border:#fad45f;">
+    <div class="charcat-hd"><div class="charcat-title" style="color:#5a4316;">🐶 멍상·냥상</div><div class="charcat-count" style="color:#5a4316;background:rgba(0,0,0,0.1);">5 / 20</div></div>
+    <div class="charcat-sub" style="color:#6a5316;">우리 댕댕이/냥이의 전생은?</div>
+    <div class="charcat-dots">
+      <div class="dot on">1</div><div class="dot">2</div><div class="dot on">3</div><div class="dot on">4</div><div class="dot">5</div><div class="dot on">6</div><div class="dot">7</div><div class="dot on">8</div><div class="dot">9</div><div class="dot">10</div><div class="dot">11</div><div class="dot">12</div><div class="dot">13</div><div class="dot">14</div><div class="dot">15</div><div class="dot">16</div><div class="dot">17</div><div class="dot">18</div><div class="dot">19</div><div class="dot">20</div>
+    </div>
+  </div>
+
+  <!-- 🟢 조선초상화 (20종) -->
+  <div class="charcat" style="--cc-bg:rgba(88,214,141,0.15);--cc-border:#58d68d;">
+    <div class="charcat-hd"><div class="charcat-title">👑 조선 초상화</div><div class="charcat-count">2 / 20</div></div>
+    <div class="charcat-sub">내가 조선시대에 태어났다면?</div>
+    <div class="charcat-dots">
+      <div class="dot on">1</div><div class="dot">2</div><div class="dot on">3</div><div class="dot">4</div><div class="dot">5</div><div class="dot">6</div><div class="dot">7</div><div class="dot">8</div><div class="dot">9</div><div class="dot">10</div><div class="dot">11</div><div class="dot">12</div><div class="dot">13</div><div class="dot">14</div><div class="dot">15</div><div class="dot">16</div><div class="dot">17</div><div class="dot">18</div><div class="dot">19</div><div class="dot">20</div>
+    </div>
+  </div>
+
+  <!-- 🔵 전생 유형 (25종) -->
+  <div class="charcat" style="--cc-bg:rgba(72,219,251,0.15);--cc-border:#48dbfb;">
+    <div class="charcat-hd"><div class="charcat-title">♾️ 전생 유형</div><div class="charcat-count">4 / 25</div></div>
+    <div class="charcat-sub">내 영혼이 전생에 누구였을까?</div>
+    <div class="charcat-dots">
+      <div class="dot on">1</div><div class="dot">2</div><div class="dot on">3</div><div class="dot">4</div><div class="dot on">5</div><div class="dot">6</div><div class="dot on">7</div><div class="dot">8</div><div class="dot">9</div><div class="dot">10</div><div class="dot">11</div><div class="dot">12</div><div class="dot">13</div><div class="dot">14</div><div class="dot">15</div><div class="dot">16</div><div class="dot">17</div><div class="dot">18</div><div class="dot">19</div><div class="dot">20</div><div class="dot">21</div><div class="dot">22</div><div class="dot">23</div><div class="dot">24</div><div class="dot">25</div>
+    </div>
+  </div>
+
+  <!-- 🟣 기질도 (16종) -->
+  <div class="charcat" style="--cc-bg:rgba(95,39,205,0.18);--cc-border:#5f27cd;">
+    <div class="charcat-hd"><div class="charcat-title">🧬 기질도 (MBTI+오행)</div><div class="charcat-count">1 / 16</div></div>
+    <div class="charcat-sub">MBTI+오행의 궁극의 기질 유형</div>
+    <div class="charcat-dots">
+      <div class="dot on">1</div><div class="dot">2</div><div class="dot">3</div><div class="dot">4</div><div class="dot">5</div><div class="dot">6</div><div class="dot">7</div><div class="dot">8</div><div class="dot">9</div><div class="dot">10</div><div class="dot">11</div><div class="dot">12</div><div class="dot">13</div><div class="dot">14</div><div class="dot">15</div><div class="dot">16</div>
+    </div>
+  </div>
+
+  <!-- 🌸 수비학 (12종 - 보라끝에서 핑크로) -->
+  <div class="charcat" style="--cc-bg:rgba(165,94,234,0.18);--cc-border:#a55eea;">
+    <div class="charcat-hd"><div class="charcat-title">🔢 수비학 소울넘버</div><div class="charcat-count">1 / 12</div></div>
+    <div class="charcat-sub">내 영혼의 숫자 = 우주의 주파수</div>
+    <div class="charcat-dots">
+      <div class="dot on">1</div><div class="dot">2</div><div class="dot">3</div><div class="dot">4</div><div class="dot">5</div><div class="dot">6</div><div class="dot">7</div><div class="dot">8</div><div class="dot">9</div><div class="dot">11</div><div class="dot">22</div><div class="dot">33</div>
+    </div>
+  </div>
+
+  <div style="text-align:center;color:#aaa;font-size:10px;margin-top:18px;padding-bottom:20px;">
+    총 133종 · 현재 24종 수집 (18%) · 포켓몬처럼 모아보자!
+  </div>
+</div>
+
+</body>
+</html>

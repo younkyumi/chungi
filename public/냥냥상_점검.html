@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐱 냥냥상 결과 전수 점검본</title>
+<style>
+  body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#ece6da;margin:0;padding:18px;color:#222;}
+  h1{text-align:center;color:#1A3C32;}
+  h2{max-width:1280px;margin:28px auto 12px;color:#1A3C32;border-left:6px solid #B8942E;padding-left:10px;}
+  .note{max-width:920px;margin:0 auto 18px;background:#fff;border-radius:12px;padding:14px 18px;font-size:13px;line-height:1.85;box-shadow:0 4px 14px rgba(0,0,0,.06);}
+  .note b{color:#b91c1c;}
+  .note .gold{color:#B8942E;font-weight:800;}
+  .note .gray{color:#666;font-weight:800;}
+  table.sum{max-width:1100px;margin:0 auto 24px;border-collapse:collapse;background:#fff;font-size:12.5px;box-shadow:0 4px 14px rgba(0,0,0,.06);}
+  table.sum th,table.sum td{border:1px solid #e3dccb;padding:6px 9px;text-align:left;}
+  table.sum th{background:#1A3C32;color:#fff;}
+  table.sum tr:nth-child(even){background:#faf7f0;}
+  .trait-pill{font-weight:800;color:#16a34a;}
+  .wrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:16px;max-width:1320px;margin:0 auto;}
+  .card{background:#fff;border-radius:18px;padding:0;overflow:hidden;box-shadow:0 8px 22px rgba(0,0,0,.08);border:1px solid #e3dccb;}
+  .top{background:linear-gradient(135deg,#1A3C32,#2d5f4d);color:#fff;padding:14px 18px;display:flex;gap:12px;align-items:center;}
+  .top .ph{width:54px;height:54px;border-radius:12px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;border:1px dashed rgba(255,255,255,.3);}
+  .top .big{font-size:19px;font-weight:900;}
+  .top .tr{font-size:11px;color:#F4E0A0;margin-top:3px;font-weight:700;}
+  .sect{padding:11px 18px;border-bottom:1px solid #f0ece2;font-size:13px;line-height:1.75;}
+  .sect .lbl{font-size:10px;font-weight:800;color:#7A5C00;letter-spacing:1px;margin-bottom:5px;}
+  .match{padding:11px 18px;border-bottom:1px solid #f0ece2;display:flex;gap:10px;}
+  .match .box{flex:1;border-radius:10px;padding:8px 10px;font-size:12px;}
+  .match .best{background:#fff5f5;border:1px solid #ffccd0;}
+  .match .worst{background:#f8f9fa;border:1px solid #e6d5a8;}
+  .errcard{border:1px solid #fecaca;}
+  .errcard .top{background:linear-gradient(135deg,#b91c1c,#7f1d1d);}
+  em{color:#B8942E;font-style:normal;font-weight:800;}
+  .const{color:#1d72b8;font-weight:800;}
+  .ph-banner{background:#f0ece2;color:#888;font-size:11px;text-align:center;padding:7px;border-bottom:1px solid #e3dccb;}
+  .common-box{max-width:1280px;margin:0 auto 16px;background:#fff;border-radius:14px;padding:16px 20px;box-shadow:0 4px 14px rgba(0,0,0,.06);font-size:13px;line-height:1.8;}
+  .common-box h3{margin:0 0 8px;color:#1A3C32;}
+  .common-box ul{margin:4px 0 12px;padding-left:20px;}
+  .common-box li{margin-bottom:3px;}
+  .flag{max-width:1280px;margin:0 auto 16px;background:#fff7ed;border:2px solid #fb923c;border-radius:14px;padding:16px 20px;font-size:13px;line-height:1.85;}
+  .flag h3{margin:0 0 8px;color:#c2410c;}
+  .flag b{color:#b91c1c;}
+</style>
+</head>
+<body>
+<h1>🐱 냥냥상 결과 전수 점검본</h1>
+
+<div class="note">
+  <b>📌 점검 목적</b> — 냥냥상(고양이 펫 관상) 결과 팝업에서 나올 수 있는 <b>모든 가짓수</b>를 한 페이지에 펼쳐 오타·버그·어색한 문구를 잡기 위한 정적 점검본이에요. 실제 분석을 돌리지 않고 코드의 고정 데이터만 그대로 옮겼어요.<br>
+  <span class="gold">골드 글씨</span> = <b>유형(페르소나)마다 고유한 텍스트</b> (이름·키워드·관상 cue·trait). 종마다 달라야 의미 있어요.<br>
+  <span class="gray">회색/검정 글씨</span> = <b>20종 공통 고정문</b> (탭 구조·소제목·인증서 틀 등). 본문 문장은 AI가 매번 새로 생성하므로 여기엔 <b>틀(라벨·구조)</b>만 표시했어요.<br>
+  🖼️ 캐릭터 사진은 모두 <b>placeholder(이모지/회색칸)</b> 예요. (실제로는 <code>/cat-cards/cat (N).png</code> 일러스트)<br>
+  ⚠️ 참고: 냥냥상 도감 <b>'참고 품종'</b> 필드는 v676에서 도감 화면에선 삭제됐어요. 단, API 프롬프트(<code>breed_hint_cat</code>)에는 아직 남아 매칭 보조로 쓰여서, 점검 참고용으로만 회색 작게 표시했어요.
+</div>
+
+<div class="note">
+  <b>🔢 가짓수 구조</b><br>
+  · <b>정상 유형 20종</b> (character_type 1~20) — 각 유형 = [첫인상 · 성격 · 인연 · 재물 · 건강 · 케어비방] 6개 섹션(탭)<br>
+  · <b>에러 카드 4종</b> (type_id 21~24) — 대상 아님 / 흐림 / 여러 마리 / 얼굴 가림<br>
+  · 합계 노출 화면: 인트로 → 점수/등급 → 6탭 본문 → 반려동물 운명 인증서 → 광고배너 → 20종 도감
+</div>
+
+<table class="sum" id="sumtable">
+<thead><tr><th>#</th><th>유형 이름</th><th>이모지</th><th>trait(키워드)</th><th>관상 cue (매칭 근거)</th><th>찰떡↔안맞</th></tr></thead>
+<tbody></tbody>
+</table>
+
+<h2>① 정상 유형 20종 — 유형별 카드</h2>
+<div class="wrap" id="wrap"></div>
+
+<h2>② 에러 카드 4종 (type_id 21~24)</h2>
+<div class="wrap" id="errwrap"></div>
+
+<h2>③ 20종 공통 고정 구조 (회색 = 매번 동일)</h2>
+
+<div class="common-box">
+  <h3>🐱 인트로 화면 — 10개 기능 안내 (고정 문구)</h3>
+  <ul id="introlist"></ul>
+  <div style="font-size:12px;color:#666;">하단: "🐱 20종 냥이 캐릭터 중 1종 매칭" + 10×2 일러스트 그리드 + "우리 냥이는 어떤 캐릭터일까? ✨"</div>
+  <div style="font-size:12px;color:#666;margin-top:6px;">메인 버튼: <b>"우리 주인님 관상 보기 (980원) →"</b> / 닫기</div>
+</div>
+
+<div class="common-box">
+  <h3>📑 결과 6탭 — 라벨·소제목·박스 구조 (본문은 AI 생성)</h3>
+  <ul>
+    <li><b>탭0 🐱 첫인상</b> — "우리 OO, 처음 뵙겠습니다" / 🔍 AI 킬포인트 / 📖 우리 냥이 스토리 / 칩(🏷️유형명·💖매력%)</li>
+    <li><b>탭1 🧠 성격</b> — 성격 본문 / 👺 겉 vs 속 / ✅ 강점 3 · ⚠️ 주의 포인트 3</li>
+    <li><b>탭2 💰 재물</b> — 재물운 본문 (없으면 "재물 풀이 데이터가 없어요")</li>
+    <li><b>탭3 🩺 건강</b> — 건강운 본문 (없으면 "건강 풀이 데이터가 없어요")</li>
+    <li><b>탭4 💕 인연</b> — 인연 본문 / 💕 찰떡 친구 · ⚡ 안 맞는 친구 (유형별 1:1 고정 매칭) / 🤝 어울리는 집사 유형</li>
+    <li><b>탭5 🍀 집사를 위한 케어 비방</b> — 📅 이번 주 냥이에게 / 💌 OO이 집사에게 / 🔮 천기의 한마디</li>
+  </ul>
+  <div style="font-size:12px;color:#666;">상단 점수 박스: <b>OO점 · ★별 · 상위N%</b> + 등급칩(S 💎명품 / A ✨귀한 / B 💕사랑스러운 / C 🌸특별한 냥이) + 💖매력%</div>
+  <div style="font-size:12px;color:#666;margin-top:4px;">푸터 해시태그(고정): <b>#천기관상 #냥냥상 #(이름) #(유형명)</b> · 🌐 천기.kr</div>
+</div>
+
+<div class="common-box">
+  <h3>🐾 반려동물 운명 인증서 (고정 틀)</h3>
+  <div style="font-size:12px;color:#444;line-height:1.85;">
+    CHUNGI ORIGINALS / — Cat Face Reading Certificate — / 점수·등급·상위% 배지 / 큰 캐릭터 일러스트(placeholder) / — THIS CAT IS — / "유형명" / 인증 본문(AI <code>cert_body</code>, 폴백문 있음) / 해시태그칩 4개(AI <code>cert_tags</code>, 폴백 #복덩이 #순둥이 #천사 #행운) / 天機認證 도장 / No. 연도-C+번호
+  </div>
+</div>
+
+<h2>④ 점검 중 발견한 의심 지점</h2>
+<div class="flag">
+  <h3>⚠️ 이모지 불일치 (유형 3종 시스템에서 같은 유형인데 이모지가 다름)</h3>
+  결과 탭4 '찰떡/안 맞는 친구' 박스에 쓰이는 <code>allTypes</code> 배열의 이모지가, API 페르소나 정의 및 도감 그리드의 이모지와 일부 어긋나요. 사용자가 도감에서 찾을 때 혼동될 수 있어요.
+  <ul>
+    <li><b>2번 럭셔리 금수저상</b> — API/도감 🏦 vs 탭4 💎</li>
+    <li><b>3번 야무진 알뜰상</b> — API/도감 🧮 vs 탭4 💸</li>
+    <li><b>5번 홀리는 매혹가상</b> — API/도감 😏 vs 탭4 💋</li>
+    <li><b>6번 비주얼 갓상</b> — API/도감 ✨ vs 탭4 😍</li>
+  </ul>
+  <div style="font-size:12px;color:#666;">※ 7~20번 및 1번은 세 곳 모두 동일. 의도된 차이가 아니라면 통일 검토 필요.</div>
+</div>
+
+<script>
+// ── API route.ts PET_PERSONAS (정상 1~20) — 고유 데이터(골드) ─────────
+const PERSONAS=[
+ {id:1, e:"💰", trait:"재물형",  name:"돈복 부자상",          gw:"코가 발달하고 입꼬리가 올라간 자신감 있는 표정. 단단하고 야무진 얼굴 윤곽", breed:"재패니즈밥테일·먼치킨"},
+ {id:2, e:"🏦", trait:"부자형",  name:"럭셔리 금수저상",       gw:"풍성하고 윤기 나는 털, 늠름한 자태, 여유로운 눈빛", breed:"페르시안·메인쿤"},
+ {id:3, e:"🧮", trait:"절약형",  name:"야무진 알뜰상",         gw:"작고 다부진 체구, 또렷한 눈, 야무지게 다물어진 입", breed:"코리안숏헤어·봄베이"},
+ {id:4, e:"🎨", trait:"예술형",  name:"감성 아티스트상",       gw:"우아한 자태, 긴 털·독특한 무늬, 깊은 눈빛", breed:"벵갈·이집션마우"},
+ {id:5, e:"😏", trait:"매력형",  name:"홀리는 매혹가상",       gw:"길고 살짝 위로 올라간 눈매, 도도한 표정, 매끈한 윤곽", breed:"샴·발리니즈"},
+ {id:6, e:"✨", trait:"미모형",  name:"비주얼 갓상",          gw:"황금비율 얼굴, 또렷한 이목구비, 아름다운 털결", breed:"러시안블루·차트룩스"},
+ {id:7, e:"🏃", trait:"근면형",  name:"갓생러 워커홀릭상",     gw:"활동적인 체형, 똘똘하고 빛나는 눈빛, 쫑긋한 귀", breed:"아비시니안·오시캣"},
+ {id:8, e:"🤗", trait:"순수형",  name:"세상 순한 천사상",      gw:"둥근 얼굴, 선한 눈매, 부드럽게 처진 귀", breed:"랙돌·렉스"},
+ {id:9, e:"🧠", trait:"지능형",  name:"한 방에 마스터 천재상", gw:"또렷하고 영리한 눈빛, 곱슬·정돈된 털, 집중된 표정", breed:"오리엔탈숏·발리니즈"},
+ {id:10,e:"👑", trait:"리더형",  name:"카리스마 대장상",       gw:"큰 체구, 단단한 턱, 위엄 있는 자세, 정면을 바라보는 눈", breed:"노르웨이숲·메인쿤"},
+ {id:11,e:"🐺", trait:"독립형",  name:"마이웨이 야성상",       gw:"야성적이고 강인한 외모, 강한 눈빛, 곧추선 자세", breed:"터키시앙고라·시베리안"},
+ {id:12,e:"💕", trait:"힐러형",  name:"옆에 있어 주는 힐러상", gw:"부드러운 눈매, 처진 귀, 따뜻하고 푸근한 표정", breed:"버먼·랙돌"},
+ {id:13,e:"🎩", trait:"CEO형",   name:"도도한 보스상",        gw:"도도하고 시크한 표정, 매끈한 털, 절제된 동작", breed:"브리티시숏헤어·스코티시폴드"},
+ {id:14,e:"🔍", trait:"장인형",  name:"디테일 변태 장인상",    gw:"길쭉한 코·작고 예리한 눈, 한 곳을 응시하는 표정", breed:"스코티시폴드·코니시렉스"},
+ {id:15,e:"🌧️", trait:"감성형", name:"비오는 날 감성상",      gw:"우수에 찬 깊은 눈빛, 긴 귀·털, 우아하고 차분한 자세", breed:"소말리·메인쿤"},
+ {id:16,e:"🌍", trait:"역마형",  name:"어디든 달려가는 모험상", gw:"늑대같은 외모, 강렬한 눈색·푸른 눈, 활발한 자세", breed:"오시캣·벵갈"},
+ {id:17,e:"🍖", trait:"식도락형", name:"쩝쩝 박사 먹방상",      gw:"통통한 볼·도톰한 입술, 발달된 코, 식탐 가득한 표정", breed:"엑조틱숏·브리티시숏"},
+ {id:18,e:"🍀", trait:"행운형",  name:"만나면 행운 오는 럭키상", gw:"둥글고 환한 인상, 복스러운 얼굴, 밝은 눈빛", breed:"삼색냥(캘리코)·해피냥"},
+ {id:19,e:"🖥️", trait:"분석형", name:"패턴 분석왕상",         gw:"짙은 눈썹·콧수염 라인, 똑똑하고 차분한 눈빛", breed:"싱가푸라·아비시니안"},
+ {id:20,e:"😤", trait:"츤데레형", name:"안 좋아하는 척 츤데레상", gw:"작은 체구·까칠한 표정, 도도한 눈빛이지만 섬세한 주름", breed:"스핑크스·코니시렉스"},
+];
+
+// 도감 그리드 표시명 (page.tsx 26229~) — 실제 묘종명
+const DEX_NAME={1:"재패니즈밥테일",2:"페르시안",3:"코숏",4:"벵갈",5:"샴",6:"러시안블루",7:"아비시니안",8:"랙돌",9:"오리엔탈숏헤어",10:"노르웨이숲",11:"터키시앙고라",12:"버먼",13:"브리티시숏헤어",14:"스코티시폴드",15:"소말리",16:"오시캣",17:"엑조틱숏헤어",18:"삼색냥",19:"싱가푸라",20:"스핑크스"};
+
+// 탭4 찰떡/안맞 1:1 고정 매칭 (page.tsx PET_MATCH 12183~)
+const MATCH={1:{b:18,w:7},2:{b:13,w:11},3:{b:19,w:6},4:{b:12,w:10},5:{b:8,w:14},6:{b:15,w:3},7:{b:10,w:1},8:{b:5,w:13},9:{b:11,w:18},10:{b:7,w:4},11:{b:2,w:9},12:{b:4,w:20},13:{b:8,w:2},14:{b:9,w:5},15:{b:6,w:17},16:{b:11,w:18},17:{b:1,w:15},18:{b:1,w:16},19:{b:3,w:14},20:{b:14,w:12}};
+const byId=id=>PERSONAS.find(p=>p.id===id)||{e:"",name:"?"};
+
+// 요약표
+const tb=document.querySelector('#sumtable tbody');
+PERSONAS.forEach(p=>{
+  const m=MATCH[p.id];
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td>${p.id}</td><td>${p.name}</td><td style="font-size:18px">${p.e}</td><td class="trait-pill">${p.trait}</td><td style="font-size:11px;color:#555">${p.gw}</td><td style="font-size:11px">${byId(m.b).e}${byId(m.b).name} ↔ ${byId(m.w).e}${byId(m.w).name}</td>`;
+  tb.appendChild(tr);
+});
+
+// 유형 카드
+const wrap=document.getElementById('wrap');
+PERSONAS.forEach(p=>{
+  const m=MATCH[p.id];const best=byId(m.b),worst=byId(m.w);
+  const c=document.createElement('div');
+  c.className='card';
+  c.innerHTML=`
+   <div class="top">
+     <div class="ph">🐱</div>
+     <div><div class="big">${p.id}. <em>${p.e} ${p.name}</em></div><div class="tr">[<em>${p.trait}</em>] · 도감명 ${DEX_NAME[p.id]}</div></div>
+   </div>
+   <div class="ph-banner">🖼️ 캐릭터 일러스트 자리 (/cat-cards/cat (${p.id}).png) — placeholder</div>
+   <div class="sect"><div class="lbl">🔍 관상 cue (매칭 근거 · 골드)</div><em>${p.gw}</em></div>
+   <div class="sect"><div class="lbl">🐾 참고 품종 (API breed_hint · 도감엔 미표시)</div><span style="color:#999;font-size:12px">${p.breed}</span></div>
+   <div class="sect"><div class="lbl">🏷️ 인증서/칩 표기</div>🏷️ <em>${p.name}</em> · 트레잇칩 <em>#${p.trait}</em></div>
+   <div class="match">
+     <div class="box best"><div style="font-size:10px;color:#c92a2a;font-weight:800;margin-bottom:4px">💕 찰떡 친구</div>${best.e} <b>${best.name}</b></div>
+     <div class="box worst"><div style="font-size:10px;color:#8b6f1c;font-weight:800;margin-bottom:4px">⚡ 안 맞는 친구</div>${worst.e} <b>${worst.name}</b></div>
+   </div>
+   <div class="sect" style="border-bottom:none"><div class="lbl">📑 이 유형도 동일하게 6탭 생성</div><span style="color:#666;font-size:12px">첫인상·성격·인연·재물·건강·케어비방 — 본문은 AI가 이 trait/cue를 바탕으로 매번 생성 (위 ③ 구조 참고)</span></div>
+  `;
+  wrap.appendChild(c);
+});
+
+// 에러 카드 4종 (page.tsx errMap 11863~, 냥냥상 = isDog false 분기)
+const ERRORS=[
+ {id:21,title:'🐾 "냐옹! 고양이가 아니에요!"',msg:'우리 냥이 사진을 올려줘야 해요! 만약 사람이라면 "내 관상보기"로, 아기라면 "우리 아기 관상"으로 가주세요. 사랑스러운 우리 냥이 얼굴 정면 사진으로 다시 올려주면 천기 AI가 정밀 분석해드릴게요! 🐱',guide:["우리 냥이 얼굴 정면",'사람·아기는 "내 관상보기"·"우리 아기 관상"에서!'],tag:"#냥냥상"},
+ {id:22,title:'🌫️ "흐릿해서 안 보여요!"',msg:'우리 냥이들은 가만히 안 있죠~ 사진이 흔들렸거나 초점이 안 맞아서 천기 AI가 이목구비를 못 잡았어요. 골골송 부르며 누워있는 평온한 순간 정면 사진으로 다시 올려주시면, 우리 냥이의 타고난 매력과 운명을 정밀 분석해드릴게요! 🐱✨',guide:["밝은 곳 + 정면 얼굴","뒷모습·옆얼굴·눈 감은 사진 X"],tag:"#냥냥상"},
+ {id:23,title:'🐱🐱 "누구를 볼까요?"',msg:'여러 마리가 함께 있어서 어느 냥이를 분석해드려야 할지 헷갈려요! 다둥이 가족이라면 한 마리씩 따로 사진 올려서 각자의 매력 분석받으세요. 큼직하게 한 마리 정면 사진으로 다시 올려주세요 🐾',guide:["한 마리만 크게","얼굴이 화면 절반 이상"],tag:"#냥냥상"},
+ {id:24,title:'🙈 "얼굴이 숨었어요!"',msg:'선글라스·안경·모자·종이봉투·옷·이불로 얼굴이 가려져서 천기 AI가 이목구비를 찾다가 포기했어요 ㅋㅋ 우리 냥이 얼굴이 눈·코·입 훤히 보이는 정면 사진으로 다시 올려주세요! 🐱',guide:["눈·코·입 다 보이게","선글라스·안경·모자·코스튬 X","종이봉투·옷·이불 가림 X"],tag:"#냥냥상"},
+];
+const ew=document.getElementById('errwrap');
+ERRORS.forEach(er=>{
+  const c=document.createElement('div');
+  c.className='card errcard';
+  c.innerHTML=`
+   <div class="top"><div class="ph">⚠️</div><div><div class="big">type_id ${er.id}</div><div class="tr" style="color:#fecaca">${er.title}</div></div></div>
+   <div class="ph-banner">⚠️ ERROR!! ERROR!! · 사진을 인식 할 수 없습니다. · 일러스트(/cat-cards/cat (${er.id}).png) placeholder</div>
+   <div class="sect"><div class="lbl">제목</div><b>${er.title}</b></div>
+   <div class="sect"><div class="lbl">본문 메시지</div>${er.msg}</div>
+   <div class="sect"><div class="lbl">📸 사진 다시 올리기 가이드</div>${er.guide.map(g=>"• "+g).join("<br>")}</div>
+   <div class="sect" style="border-bottom:none"><div class="lbl">해시태그</div>#천기관상 ${er.tag} #반려묘</div>
+  `;
+  ew.appendChild(c);
+});
+
+// 인트로 10개 기능 (page.tsx 11910~, isDog false)
+const INTRO=[
+ ["🐾","우리 냥이 첫인상","품종 기반 전체 기운, 타고난 아우라"],
+ ["🧠","성격 & 기질 분석","20종 품종 의인화 유형 매칭"],
+ ["💰","집사의 재물운 연결","냥이 기운이 끌어오는 복"],
+ ["🩺","건강 & 에너지","체질, 활력 레벨, 주의 포인트"],
+ ["💕","집사와의 인연","전생부터 이어진 궁합 지수"],
+ ["🎯","판타지 클래스 비유","힐러/전사/마법사 등 RPG 매칭"],
+ ["🍀","맞춤 묘생 비방","수호 아이템, 행운 컬러"],
+ ["✨","천기의 한마디","우리 냥이만을 위한 운명 메시지"],
+ ["🐱","냥냥 캐릭터 카드","20종 중 1종 매칭! 나만의 인증서"],
+ ["📋","반려동물 운명 인증서","기록소에 저장되는 특별한 인증서"],
+];
+const il=document.getElementById('introlist');
+INTRO.forEach(f=>{const li=document.createElement('li');li.innerHTML=`<b>${f[0]} ${f[1]}</b> — ${f[2]}`;il.appendChild(li);});
+</script>
+</body>
+</html>

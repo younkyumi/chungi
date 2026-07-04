@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>태몽해몽 결과창 미리보기</title>
+<!--
+  출처: src/app/page.tsx
+  - DreamModal mode="taemong" result JSX: 19981~20244행
+  - id="taemong-capture" (19970행, mode="taemong")
+  - border:1px solid rgba(212,175,55,0.3) (19970행)
+  - BrandLine: "AI 태몽 정밀 분석" (19972행)
+  - 제목: "🌙 말씀하신 태몽 정밀 분석" (19973행)
+  - PAGE 1 inner white card: background:#fff, borderRadius:16, boxShadow:0 2px 10px rgba(0,0,0,0.06), margin:"4px 10px 12px" (19983행)
+  - 태몽 입력 박스: linear-gradient(135deg,#fef9c3 0%,#fff 60%,#fdf4ff 100%), border:2px solid #fde68a (19986행)
+  - 도장: border:2.5px solid #c92a2a, borderRadius:50%, width:54, height:54, rotate(-8deg), 天機 胎夢 (19988~19993행)
+  - 성별 박스 딸: background:#fdf2f8, border:1.5px solid #f9a8d4 (20011행)
+  - 성별 박스 아들: background:#eff6ff, border:1.5px solid #93c5fd
+  - 성별 박스 미정: background:#fefce8, border:1.5px solid #fde047
+  - 신뢰도 bar 딸: linear-gradient(90deg,#ff8fa3,#ec4899) / 아들: linear-gradient(90deg,#6495ed,#3b82f6) (20031행)
+  - 한줄해몽: bg:#f8f9fa, padding:10px 14px, borderRadius:12 (20041행)
+  - 상세해몽: bg:#f8f9fa (20047행)
+  - 태몽 핵심 신호: bg:#f8f9fa, borderLeft:4px solid #D4AF37 (20051행)
+  - 요소 분석: bg:#fafafa, border:1px solid #eee, borderRadius:10 (20060행)
+  - PAGE 2 inner white card: 탭 3개 grid 1fr 1fr 1fr (20082~20090행)
+  - 탭 활성: background:#1A3C32, color:#fff / 비활성: transparent, border:1px solid #ddd (20087행)
+  - PAGE 3 inner white card BrandLine: "AI 태몽 정밀 분석 · 상세" (20094행)
+  - 탭0 타고난 기질: 오행(#054D95)+기질chip(#fef9e7/#7A5C00)+부모인연(#c2410c)+전생인연(#6b21a8) (20097~20131행)
+  - 탭1 미래의 흐름: 학업(#7A5C00)+인연(#7e22ce)+직업(#7A5C00) (20134~20161행)
+  - 탭2 육아 처방전: 이름방향+태명(bg:#f8f9fa)+태교(#166534)+양육(#7A5C00)+후기(#7e22ce)+영혼첫인사(bg:#fff7ed)+천기한마디(무지개) (20163~20237행)
+  - hash: #천기태몽 #태몽해몽 #{nm} #{gender} #{title} (20241행)
+-->
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#1A3C32;--gold:#D4AF37;}
+body{background:#1A3C32;font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;padding:20px;}
+.max-wrap{max-width:430px;margin:0 auto;}
+.outer-card{background:#ffffff;border-radius:20px;overflow:hidden;border:1px solid rgba(212,175,55,0.3);box-shadow:0 10px 30px rgba(0,0,0,0.06);color:#333;margin-bottom:12px;}
+.inner-card{background:#fff;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,0.06);overflow:hidden;margin:4px 10px 12px;}
+.brand-line-inner{font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;padding:10px 16px;text-align:center;border-bottom:1px solid #f0f0f0;}
+.hash-footer{display:flex;justify-content:space-between;padding:10px 16px 12px;margin-top:8px;font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;border-top:1px solid #f0f0f0;flex-wrap:wrap;gap:4px;}
+.gray-box{background:#f8f9fa;border-radius:12px;padding:10px 14px;margin-bottom:8px;}
+.tab-btn{padding:9px 4px;border-radius:10px;font-weight:700;cursor:pointer;font-size:11px;text-align:center;}
+.tab-active{background:#1A3C32;border:1px solid #1A3C32;color:#fff;}
+.tab-inactive{background:transparent;border:1px solid #ddd;color:#1A3C32;}
+</style>
+</head>
+<body>
+<div class="max-wrap">
+
+<!-- 전체 외부 카드 (id="taemong-capture") -->
+<div class="outer-card" id="taemong-capture">
+
+  <!-- 헤더 -->
+  <div style="padding:10px 16px 8px;text-align:center;">
+    <div class="brand-line-inner">AI 태몽 정밀 분석</div>
+    <div style="font-size:18px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;line-height:1.35;">🌙 말씀하신 태몽 정밀 분석</div>
+    <div style="font-size:10px;color:#888;font-weight:600;margin-top:6px;line-height:1.6;">
+      <div>👤 홍길동 : 1990-07-15 양력 · 여</div>
+      <div style="color:#aaa;">📅 2026-06-30 분석</div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━ PAGE 1 내부 흰 카드 ━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="inner-card">
+
+    <!-- 태몽 입력 박스 + 도장 -->
+    <div style="padding:14px 16px 6px;">
+      <div style="position:relative;background:linear-gradient(135deg,#fef9c3 0%,#fff 60%,#fdf4ff 100%);border:2px solid #fde68a;border-radius:16px;padding:18px 18px 16px;box-shadow:0 6px 20px rgba(212,175,55,0.12);overflow:hidden;">
+        <!-- 도장: 天機 胎夢 — border:#c92a2a, 원형 54x54, rotate(-8deg) -->
+        <div style="position:absolute;top:14px;right:14px;width:54px;height:54px;border:2.5px solid #c92a2a;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.85);transform:rotate(-8deg);box-shadow:0 2px 8px rgba(201,42,42,0.18);font-family:'Noto Serif KR','Batang',serif;">
+          <div style="text-align:center;">
+            <div style="font-size:8px;color:#c92a2a;font-weight:800;line-height:1;">天機</div>
+            <div style="font-size:14px;font-weight:900;color:#c92a2a;line-height:1;margin-top:2px;">胎夢</div>
+          </div>
+        </div>
+        <div style="font-size:9px;color:#7A5C00;letter-spacing:2px;font-weight:800;margin-bottom:8px;">✦ 말씀하신 태몽</div>
+        <div style="font-size:13px;color:#1A3C32;line-height:1.75;font-style:italic;margin-bottom:14px;word-break:keep-all;padding-right:60px;">"활짝 핀 연꽃 위에 작은 용이 앉아 있었어요. 연꽃이 점점 더 크게 피어나면서 빛이 났어요."</div>
+        <div style="display:flex;align-items:center;gap:10px;padding-top:12px;border-top:1px dashed #fde68a;">
+          <span style="font-size:32px;filter:drop-shadow(0 2px 6px rgba(212,175,55,0.4));">🪷</span>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:16px;font-weight:900;color:#7A5C00;font-family:'Noto Serif KR','Batang',serif;letter-spacing:1px;">연꽃 위 용 태몽</div>
+            <div style="font-size:11px;color:#92400e;font-weight:600;margin-top:2px;">아이가 보낸 첫 인사</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 성별 예측 헤더 -->
+    <div style="padding:16px 16px 4px;text-align:center;">
+      <div style="font-size:16px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;letter-spacing:-0.3px;">👶 우리 아이 성별 예측</div>
+      <div style="font-size:10px;color:#888;font-style:italic;margin-top:3px;">태몽이 전하는 첫 소식</div>
+    </div>
+
+    <!-- 성별 예측 박스 (딸 샘플: bg:#fdf2f8, border:1.5px solid #f9a8d4) -->
+    <div style="margin:4px 16px 14px;padding:18px 16px 16px;border-radius:14px;background:#fdf2f8;border:1.5px solid #f9a8d4;text-align:center;">
+      <div style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(255,255,255,0.7);border-radius:20px;font-size:10px;font-weight:800;color:#be185d;letter-spacing:0.5px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,0.06);">📬 새 가족 소식이 도착했어요</div>
+      <div style="font-size:36px;margin-bottom:6px;letter-spacing:2px;line-height:1.2;">👩‍🍼 💞 👶🏻</div>
+      <div style="background:rgba(255,255,255,0.75);border-radius:16px;padding:14px 16px;margin-bottom:10px;box-shadow:0 4px 14px rgba(0,0,0,0.06);border:1px solid rgba(255,255,255,0.9);">
+        <div style="font-size:13px;color:#444;line-height:1.5;margin-bottom:6px;">천기 AI가 전해드려요</div>
+        <div style="font-size:18px;font-weight:900;color:#9d174d;letter-spacing:-0.3px;margin-bottom:8px;font-family:'Noto Serif KR','Batang',serif;">"딸이 올 거예요"</div>
+        <!-- 신뢰도 progress bar (딸: pink gradient) -->
+        <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:4px;">
+          <span style="font-size:10px;font-weight:700;color:#666;">신뢰도</span>
+          <span style="font-size:22px;font-weight:900;color:#be185d;letter-spacing:-0.5px;line-height:1;">82%</span>
+        </div>
+        <div style="height:5px;width:100%;max-width:160px;margin:0 auto;background:rgba(0,0,0,0.06);border-radius:99px;overflow:hidden;">
+          <div style="height:100%;width:82%;background:linear-gradient(90deg,#ff8fa3,#ec4899);border-radius:99px;box-shadow:0 0 8px rgba(236,72,153,0.4);"></div>
+        </div>
+      </div>
+      <div style="font-size:9px;color:#888;margin-top:8px;letter-spacing:0.3px;">※ 태몽 해석은 전통 풀이 참고용이에요</div>
+    </div>
+
+    <!-- 한줄 해몽 -->
+    <div style="padding:12px 16px;">
+      <div style="font-size:12px;font-weight:800;color:#333;margin-bottom:6px;">🌙 한줄 해몽: "🪷 태몽 신호"</div>
+      <div style="font-size:13px;font-weight:700;color:#1A3C32;line-height:1.65;background:#f8f9fa;padding:10px 14px;border-radius:12px;">연꽃은 순수하고 아름다운 영혼을 상징해요. 용은 성취와 명예를 의미하며, 이 태몽은 출중한 재능을 가진 귀한 아이가 올 신호예요.</div>
+    </div>
+
+    <!-- 상세 해몽 -->
+    <div style="padding:12px 16px;">
+      <div style="font-size:12px;font-weight:800;color:#333;margin-bottom:6px;">🔮 상세 해몽: "태몽의 메시지"</div>
+      <div style="font-size:11px;color:#555;line-height:1.85;word-break:keep-all;background:#f8f9fa;padding:10px 14px;border-radius:12px;">연꽃은 진흙 속에서 피어나는 꽃으로, 어떤 환경에서도 빛을 발하는 영혼을 의미해요. 용이 연꽃 위에 앉아 있다는 것은 이 아이가 타고난 귀함과 재능을 가졌다는 신호예요. 연꽃이 점점 더 크게 피어나는 장면은 아이의 능력이 세월이 갈수록 더 크게 꽃필 것을 예언해요. 예술·학문 두 방면에서 두각을 나타낼 가능성이 높아요.</div>
+    </div>
+
+    <!-- 태몽 핵심 신호: bg:#f8f9fa, borderLeft:4px solid #D4AF37 -->
+    <div style="padding:0 16px 4px;">
+      <div style="font-size:11px;color:#374151;line-height:1.85;padding:12px 14px;background:#f8f9fa;border-radius:10px;border-left:4px solid #D4AF37;">
+        <strong style="color:#7A5C00;">태몽이 전하는 핵심 신호:</strong> 이 태몽은 단순한 무의식 작용이 아니라, 세상에 오기 전 영혼이 부모님께 미리 보내는 인사예요. 꿈 속의 강렬했던 한 장면(색·움직임·감정)이 아이의 평생 정체성과 가장 깊이 연결됩니다. 잊기 전에 그 장면을 메모해두세요.
+      </div>
+    </div>
+
+    <!-- 태몽 속 요소 분석 -->
+    <div style="padding:12px 16px;">
+      <div style="font-size:11px;font-weight:700;color:#7A5C00;letter-spacing:1.5px;margin-bottom:8px;">✦ 태몽 속 요소 분석</div>
+      <div style="display:grid;grid-template-columns:1fr;gap:6px;">
+        <div style="display:flex;align-items:center;gap:10px;background:#fafafa;border:1px solid #eee;border-radius:10px;padding:10px 12px;">
+          <span style="font-size:22px;flex-shrink:0;">🪷</span>
+          <div style="flex:1;">
+            <div style="font-size:12px;font-weight:800;color:#1A3C32;margin-bottom:2px;">연꽃</div>
+            <div style="font-size:11px;color:#666;line-height:1.6;word-break:keep-all;">청정함·아름다움·영적 능력의 상징. 어떤 환경에서도 빛을 잃지 않는 영혼을 의미해요.</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;background:#fafafa;border:1px solid #eee;border-radius:10px;padding:10px 12px;">
+          <span style="font-size:22px;flex-shrink:0;">🐉</span>
+          <div style="flex:1;">
+            <div style="font-size:12px;font-weight:800;color:#1A3C32;margin-bottom:2px;">용 (작은)</div>
+            <div style="font-size:11px;color:#666;line-height:1.6;word-break:keep-all;">성취와 권위를 상징하되, 작은 용은 아직 가능성이 무한하다는 뜻. 성장 잠재력이 큰 아이예요.</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;background:#fafafa;border:1px solid #eee;border-radius:10px;padding:10px 12px;">
+          <span style="font-size:22px;flex-shrink:0;">✨</span>
+          <div style="flex:1;">
+            <div style="font-size:12px;font-weight:800;color:#1A3C32;margin-bottom:2px;">빛 (꽃에서 나오는)</div>
+            <div style="font-size:11px;color:#666;line-height:1.6;word-break:keep-all;">재능이 세상에 드러나는 상징. 숨겨진 능력이 점점 더 빛나게 된다는 좋은 신호예요.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 한 끗 차이 태몽 -->
+    <div style="padding:12px 16px;">
+      <div style="font-size:12px;font-weight:800;color:#333;margin-bottom:6px;">💡 한 끗 차이 태몽: "키워드 하나로 달라져요"</div>
+      <div class="gray-box">
+        <div style="font-size:11px;font-weight:700;color:#7A5C00;margin-bottom:4px;">👉 연꽃이 지는 모습이었다면?</div>
+        <div style="font-size:11px;color:#555;line-height:1.85;">전성기를 쓰고 평온하게 은퇴하는 삶. 화려함보다 내면의 깊이를 선택하는 영혼이에요.</div>
+      </div>
+      <div class="gray-box">
+        <div style="font-size:11px;font-weight:700;color:#7A5C00;margin-bottom:4px;">👉 용이 아닌 봉황이었다면?</div>
+        <div style="font-size:11px;color:#555;line-height:1.85;">예술·문학 방면에서 천재성을 보이는 아이. 봉황은 문예와 우아함의 극치를 상징해요.</div>
+      </div>
+      <div class="gray-box" style="margin-bottom:0;">
+        <div style="font-size:11px;font-weight:700;color:#7A5C00;margin-bottom:4px;">👉 연꽃이 물 위에 떠 있었다면?</div>
+        <div style="font-size:11px;color:#555;line-height:1.85;">감성·직관이 더욱 풍부한 아이. 물+연꽃 조합은 예술가·치유사 기질의 대표 태몽이에요.</div>
+      </div>
+    </div>
+  </div><!-- END PAGE 1 -->
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━ PAGE 2 내부 흰 카드 — 탭 네비게이션 ━━━━━━━━━━━━━━━━━━━━ -->
+  <div style="background:#fff;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,0.06);overflow:hidden;margin:0 10px 12px;padding:4px 0;">
+    <div style="text-align:center;padding:14px 16px 4px;font-size:11px;color:#D4AF37;font-weight:700;">👇 아래 탭을 눌러 자세한 풀이를 확인하세요!</div>
+    <!-- 탭 3개: grid 1fr 1fr 1fr -->
+    <div style="padding:0 16px 8px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;">
+      <div class="tab-btn tab-active">🌱 타고난 기질</div>
+      <div class="tab-btn tab-inactive">🌟 미래의 흐름</div>
+      <div class="tab-btn tab-inactive">🍼 육아 처방전</div>
+    </div>
+  </div><!-- END PAGE 2 -->
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━ PAGE 3 내부 흰 카드 — 탭 0: 타고난 기질 ━━━━━━━━━━━━━━━━━━━━ -->
+  <div style="background:#fff;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,0.06);overflow:hidden;margin:0 10px 4px;">
+    <div style="padding:10px 16px 2px;text-align:center;">
+      <div class="brand-line-inner">AI 태몽 정밀 분석 · 상세</div>
+    </div>
+
+    <!-- 탭0: 아이 영혼의 오행 -->
+    <div style="padding:14px 16px;">
+      <div style="font-size:13px;color:#054D95;letter-spacing:1px;font-weight:800;margin-bottom:8px;">☯️ 아이 영혼의 오행</div>
+      <div style="font-size:11px;color:#555;line-height:1.85;">태몽의 주요 이미지가 의미하는 오행 기운은 <strong style="color:#054D95;">음(陰) 기운이 풍부한 수(水)·금(金)</strong> 계열이에요. 영혼의 색깔은 <strong>분홍·연보라</strong>로 표현되며, 이 색을 유아기 환경(이불·벽지·옷)에 자연스럽게 노출시키면 타고난 기운이 더 잘 발현돼요.<br/><br/>사주에 부족할 수 있는 기운: <strong>화(火) — 표현력·열정</strong>. 이 부분은 이름·취미·생활습관으로 자연스럽게 보강해주세요.</div>
+    </div>
+
+    <!-- 아이 기질 예측 -->
+    <div style="padding:12px 16px;">
+      <div style="font-size:13px;color:#7A5C00;letter-spacing:1.2px;font-weight:800;margin-bottom:10px;">✦ 아이의 기질 예측</div>
+      <!-- 기질 chips: bg:#fef9e7, color:#7A5C00, border:rgba(212,175,55,0.25) -->
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;">
+        <span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#fef9e7;color:#7A5C00;border:1px solid rgba(212,175,55,0.25);font-weight:600;">섬세함</span>
+        <span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#fef9e7;color:#7A5C00;border:1px solid rgba(212,175,55,0.25);font-weight:600;">예술적 감수성</span>
+        <span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#fef9e7;color:#7A5C00;border:1px solid rgba(212,175,55,0.25);font-weight:600;">직관력</span>
+        <span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#fef9e7;color:#7A5C00;border:1px solid rgba(212,175,55,0.25);font-weight:600;">공감 능력</span>
+        <span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#fef9e7;color:#7A5C00;border:1px solid rgba(212,175,55,0.25);font-weight:600;">완벽주의</span>
+      </div>
+      <div style="font-size:11px;color:#555;line-height:1.85;">타고난 강점은 <strong>섬세한 공감 능력과 예술적 감수성, 사람의 마음을 빠르게 알아채는 직관</strong>이에요. 학교·사회에서 인정받는 가장 큰 무기가 될 거예요.<br/>주의할 점은 <strong>감정에 너무 깊게 빠질 때, 자기 마음을 표현 못 하고 쌓아둘 위험</strong> — 어릴 때부터 부모가 부드럽게 균형을 잡아주면 잘 자라요.</div>
+    </div>
+
+    <!-- 부모와의 인연 패턴 -->
+    <div style="padding:12px 16px;">
+      <div style="font-size:13px;color:#c2410c;letter-spacing:1px;font-weight:800;margin-bottom:6px;">👪 부모와의 인연 패턴</div>
+      <div style="font-size:11px;color:#555;line-height:1.85;">태몽을 꾼 부모와 아이의 영혼은 <strong style="color:#c2410c;">아빠와 미묘한 끌림</strong>으로 연결돼 있어요. 처음 안았을 때, 우는 패턴, 진정시키는 사람의 차이로 분명히 보일 거예요.<br/><br/>이번 생에 아이가 부모에게 가져다주는 선물은 <strong>새로운 시각·잊고 있던 기쁨·인생 후반의 의미</strong>예요. 동시에 부모는 아이에게 <strong>안정감·세상에 대한 신뢰·자존감</strong>을 주는 가장 큰 스승이 돼요.</div>
+    </div>
+
+    <!-- 전생 인연 풀이 -->
+    <div style="padding:12px 16px;">
+      <div style="font-size:13px;color:#6b21a8;letter-spacing:1px;font-weight:800;margin-bottom:6px;">🔮 전생 인연 풀이</div>
+      <div style="font-size:11px;color:#555;line-height:1.85;">이 태몽의 주인공은 전생부터 부모와 깊은 인연으로 연결된 영혼이에요. 특히 <strong style="color:#6b21a8;">전생에 부모님과 같은 길을 걸었던 영혼</strong>이 다시 한 가족으로 만난 거예요. 이 아이는 부모님께 큰 위로와 기쁨을 가져다주는 존재가 될 거예요.<br/><br/>전생의 주된 무대는 <strong>고려 말 사대부의 안채</strong>로 추정돼요. 그때 못다 한 일·못다 한 사랑을 이번 생에 마무리하러 왔어요.</div>
+    </div>
+
+    <!-- hash footer 탭0 -->
+    <div class="hash-footer">
+      <span>#천기태몽 #태몽해몽 #홍길동 #딸 #연꽃위용태몽</span>
+      <span style="font-weight:600;">🌐 천기.kr</span>
+    </div>
+  </div><!-- END PAGE 3 탭0 -->
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━ PAGE 3 탭 1: 미래의 흐름 (참고 표시용) ━━━━━━━━━━━━━━━━━━━━ -->
+  <div style="background:#fff;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,0.06);overflow:hidden;margin:0 10px 12px;">
+    <div style="padding:0 16px 8px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-top:8px;">
+      <div class="tab-btn tab-inactive">🌱 타고난 기질</div>
+      <div class="tab-btn tab-active">🌟 미래의 흐름</div>
+      <div class="tab-btn tab-inactive">🍼 육아 처방전</div>
+    </div>
+    <div style="padding:2px 16px 2px;text-align:center;">
+      <div style="font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;padding:6px 0;border-bottom:1px solid #f0f0f0;">AI 태몽 정밀 분석 · 상세</div>
+    </div>
+
+    <!-- 탭1: 학업·재능 발현 시기 -->
+    <div style="padding:12px 16px;">
+      <div style="font-size:13px;color:#7A5C00;letter-spacing:1.2px;font-weight:800;margin-bottom:10px;">📚 학업·재능 발현 시기</div>
+      <div style="font-size:11px;color:#555;line-height:1.95;">
+        <strong>3~5세:</strong> 호기심 폭발기. 한 가지에 푹 빠지는 모습이 보이면 그 분야가 평생 재능. 강요보다 다양한 자극을.<br/>
+        <strong>7~9세:</strong> 첫 두각을 드러내는 시기. 언어·예술·읽기·그림 중 한 분야 빛이 나요.<br/>
+        <strong>13~15세:</strong> 정체성 형성기. 친구 관계가 학업보다 중요해지는 시기. 부모는 한 발 물러서서 신뢰로 지지.<br/>
+        <strong>18~22세:</strong> 진로 결정의 황금기. 본인의 직관을 따라가도록 — 부모의 기대보다 아이의 끌림이 정답.
+      </div>
+    </div>
+
+    <!-- 인연·결혼 패턴 -->
+    <div style="padding:12px 16px;">
+      <div style="font-size:13px;color:#7e22ce;letter-spacing:1px;font-weight:800;margin-bottom:6px;">💕 인연·결혼 패턴</div>
+      <div style="font-size:11px;color:#555;line-height:1.85;">미래 배우자는 <strong style="color:#7e22ce;">든든하고 유머 있는 균형 잡힌 사람</strong>일 가능성이 높아요. 만남 시기는 <strong>25~29세</strong>가 가장 자연스러워요.<br/><br/>연애 패턴은 <strong>한번 마음을 주면 깊고 진지한 스타일</strong>이라 친구처럼 시작해 연인이 되는 흐름이 잘 맞아요. 결혼 후엔 가정을 매우 소중히 여기는 모습을 보여줘요.</div>
+    </div>
+
+    <!-- 직업·사명 예측 -->
+    <div style="padding:12px 16px;">
+      <div style="font-size:13px;color:#7A5C00;letter-spacing:1px;font-weight:800;margin-bottom:6px;">💼 직업·사명 예측</div>
+      <div style="font-size:11px;color:#555;line-height:1.85;">잘 맞을 직업: <strong>예술·교육·심리·디자인·콘텐츠 (사람 마음을 다루는 일)</strong>.<br/><br/>이번 생의 사명은 <strong>세상에 따뜻함·아름다움을 더하는 영향력 있는 사람</strong>이 되는 것. 어릴 때부터 이 메시지를 자주 들려주면 자존감이 높아져요.</div>
+    </div>
+
+    <!-- hash footer 탭1 -->
+    <div class="hash-footer">
+      <span>#천기태몽 #태몽해몽 #홍길동 #딸 #연꽃위용태몽</span>
+      <span style="font-weight:600;">🌐 천기.kr</span>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━ PAGE 3 탭 2: 육아 처방전 ━━━━━━━━━━━━━━━━━━━━ -->
+  <div style="background:#fff;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,0.06);overflow:hidden;margin:0 10px 12px;">
+    <div style="padding:0 16px 8px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-top:8px;">
+      <div class="tab-btn tab-inactive">🌱 타고난 기질</div>
+      <div class="tab-btn tab-inactive">🌟 미래의 흐름</div>
+      <div class="tab-btn tab-active">🍼 육아 처방전</div>
+    </div>
+    <div style="padding:2px 16px 2px;text-align:center;">
+      <div style="font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;padding:6px 0;border-bottom:1px solid #f0f0f0;">AI 태몽 정밀 분석 · 상세</div>
+    </div>
+
+    <!-- 이름 방향 제안 -->
+    <div style="padding:12px 16px;">
+      <div style="font-size:13px;color:#7A5C00;letter-spacing:1px;font-weight:800;margin-bottom:6px;">✦ 이름 방향 제안</div>
+      <div style="font-size:11px;color:#555;line-height:1.85;margin-bottom:8px;">수(水)·금(金) 기운을 보강하는 이름이 좋아요. 자음으로는 'ㅇ·ㅎ'(수), 'ㅅ·ㅈ·ㅊ'(금) 계열이 어울려요. 발음할 때 부드럽고 맑은 느낌이 드는 이름이 아이의 성정과 잘 맞아요.</div>
+      <!-- 태명 추천 -->
+      <div style="font-size:11px;font-weight:800;color:#7A5C00;margin-bottom:6px;">🍼 우리 아기 태명 추천</div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:10px;background:#f8f9fa;border-radius:10px;padding:9px 12px;">
+          <span style="font-size:13px;font-weight:900;color:#1A3C32;flex-shrink:0;min-width:46px;">연이</span>
+          <span style="font-size:10.5px;color:#666;line-height:1.5;word-break:keep-all;">태몽의 연꽃에서 따온 이름. 순수하고 아름다운 영혼을 담아요.</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;background:#f8f9fa;border-radius:10px;padding:9px 12px;">
+          <span style="font-size:13px;font-weight:900;color:#1A3C32;flex-shrink:0;min-width:46px;">빛솔</span>
+          <span style="font-size:10.5px;color:#666;line-height:1.5;word-break:keep-all;">연꽃에서 빛이 났던 장면에서. 밝고 곧게 자라길 바라는 마음을 담아요.</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;background:#f8f9fa;border-radius:10px;padding:9px 12px;">
+          <span style="font-size:13px;font-weight:900;color:#1A3C32;flex-shrink:0;min-width:46px;">용화</span>
+          <span style="font-size:10.5px;color:#666;line-height:1.5;word-break:keep-all;">용과 연꽃(화)을 합친 이름. 성취와 아름다움을 모두 가진 아이로 자라길.</span>
+        </div>
+      </div>
+      <div style="font-size:10px;color:#888;line-height:1.7;padding:9px 11px;background:#f9fafb;border-radius:9px;border:1px solid #eee;">💡 <strong>작명 팁:</strong> 부족한 오행 자음을 둘째 글자에 넣고, 받침은 부드럽게(ㄴ·ㄹ·ㅁ·ㅇ). 한자 뜻보다 <strong>매일 불릴 때의 발음 파동</strong>이 더 큰 영향을 줘요. 정밀 분석은 「🌊 파동 성명학」에서.</div>
+    </div>
+
+    <!-- 임신·태교 가이드 -->
+    <div style="padding:12px 16px;">
+      <div style="font-size:13px;color:#166534;letter-spacing:1px;font-weight:800;margin-bottom:6px;">🌿 임신·태교 가이드</div>
+      <div style="font-size:11px;color:#555;line-height:1.85;">
+        <strong style="color:#166534;">좋은 활동:</strong> 피아노 연주·꽃 가꾸기·예술 작품 감상 — 섬세한 감수성을 키워줘요.<br/>
+        <strong style="color:#166534;">피해야 할 것:</strong> 큰 소음·자극적인 영상·과한 스트레스 — 아이의 기질에 영향을 줘요.<br/>
+        <strong style="color:#166534;">행운 컬러:</strong> 핑크·연노랑 (방·옷·소품에 활용)<br/>
+        <strong style="color:#166534;">좋은 음식:</strong> 석류·연근·유자차 (고운 피부·차분한 정서)<br/>
+        <strong style="color:#166534;">금기 행동:</strong> 이사·큰 가구 옮기기는 안정기 이후로. 부정적 감정의 영화·소설 자제.
+      </div>
+    </div>
+
+    <!-- 시기별 양육 핵심 -->
+    <div style="padding:12px 16px;">
+      <div style="font-size:13px;color:#7A5C00;letter-spacing:1.2px;font-weight:800;margin-bottom:10px;">📅 시기별 양육 핵심</div>
+      <div style="font-size:11px;color:#555;line-height:1.95;">
+        <strong>~100일:</strong> 자주 안아주기. 영혼이 부모의 체온·심장 소리에 안정감을 익히는 결정적 시기.<br/>
+        <strong>돌(1년):</strong> 돌잡이의 첫 선택이 평생 흥미의 씨앗. 「🎲 돌잡이 시뮬레이션」으로 미리 그려보세요.<br/>
+        <strong>3~4세:</strong> 자기주장 폭발기. "왜?" 질문에 짜증내지 말고 함께 답을 찾아주세요.<br/>
+        <strong>5~7세:</strong> 사회성 형성기. 친구 사귀는 패턴 관찰 — 인복의 원형이 여기서 만들어져요.<br/>
+        <strong>10세 전후:</strong> 자존감의 기초 완성. 이때까지 받은 칭찬 vs 비교의 비율이 평생 자아상.
+      </div>
+    </div>
+
+    <!-- 같은 태몽 꾼 부모님들 -->
+    <div style="padding:12px 16px;">
+      <div style="font-size:13px;color:#7e22ce;letter-spacing:1px;font-weight:800;margin-bottom:6px;">👥 같은 태몽 꾼 부모님들</div>
+      <div style="font-size:11px;color:#555;line-height:1.85;font-style:italic;">
+        · "정말 태몽 그대로 닮았어요. 신기해요!" — 1년 전 회원 A<br/>
+        · "아이가 지금 4살인데 태몽 풀이대로 정말 섬세하고 예술적이에요" — 회원 B<br/>
+        · "친정엄마한테 보여드렸더니 옛날 태몽 풀이랑 똑같다고 놀라셨어요" — 회원 C<br/>
+        <span style="font-size:9px;color:#aaa;font-style:normal;">※ 천기 태몽 회원 익명 사례 발췌</span>
+      </div>
+    </div>
+
+    <!-- 영혼의 첫 인사 구분선 -->
+    <div style="padding:18px 16px 4px;text-align:center;border-top:1px solid #f0f0f0;">
+      <div style="font-size:15px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;letter-spacing:-0.3px;">💌 영혼의 첫 인사</div>
+      <div style="font-size:10px;color:#888;font-style:italic;margin-top:3px;">세상에 오기 전 부모님께</div>
+    </div>
+
+    <!-- 영혼 첫인사: bg:#fff7ed -->
+    <div style="padding:12px 16px;background:#fff7ed;">
+      <div style="font-size:13px;color:#c2410c;letter-spacing:1px;font-weight:800;margin-bottom:6px;">💌 영혼이 부모님께 보내는 인사</div>
+      <div style="font-size:11.5px;color:#5a4316;line-height:1.95;font-style:italic;">"엄마, 아빠. 저는 따뜻함이 흐르는 두 분을 보고 왔어요. 제 마음이 너무 섬세해서 가끔 흔들릴 거예요. 그때 그저 곁에 있어주세요. 저는 두 분을 닮은 사람이 될 거예요."<br/><br/>
+        <span style="font-style:normal;color:#7A5C00;">— 영혼의 첫 인사 (천기가 받아 적은 메시지)</span>
+      </div>
+    </div>
+
+    <!-- 천기의 한마디 (무지개 박스) -->
+    <div style="margin:14px 16px;border-radius:16px;padding:1.5px;background-image:linear-gradient(135deg,#ffb8b8,#ffd9a8,#b8e0c8,#bcd6f0,#cdc5e8);box-shadow:0 4px 14px rgba(155,143,212,0.08);">
+      <div style="background:#fafbfd;border-radius:14.5px;padding:20px 18px;text-align:center;">
+        <div style="font-size:13px;color:#1A3C32;letter-spacing:1.5px;font-weight:900;margin-bottom:10px;">🔮 천기의 한마디</div>
+        <div style="font-size:13px;color:#1A3C32;font-weight:700;line-height:1.85;word-break:keep-all;font-family:'Noto Serif KR','Batang',serif;">"이 태몽을 받은 부모님께 — 아이는 이미 당신을 선택했어요. 두려움보다 설렘으로 맞이하세요. 사랑이 가득한 태교가 가장 큰 선물입니다. 10년 후, 20년 후 이 풀이를 다시 읽어보시면 깜짝 놀라실 거예요. 천기는 미리 알고 있었답니다. 🌟"</div>
+      </div>
+    </div>
+
+    <!-- hash footer 탭2 (PAGE 3 하단) -->
+    <div class="hash-footer">
+      <span>#천기태몽 #태몽해몽 #홍길동 #딸 #연꽃위용태몽</span>
+      <span style="font-weight:600;">🌐 천기.kr</span>
+    </div>
+  </div><!-- END PAGE 3 탭2 -->
+
+</div><!-- END outer-card (딸 케이스) -->
+
+<!-- ─── 아들 케이스 ─── -->
+<div class="outer-card" style="margin-top:24px;">
+  <div style="padding:10px 0 12px;text-align:center;border-bottom:1px solid #f0f0f0;margin:0 16px;">
+    <div style="font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;margin-bottom:6px;">AI 태몽 정밀 분석 — 아들 케이스</div>
+    <div style="font-size:18px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;line-height:1.35;">🌙 말씀하신 태몽 정밀 분석</div>
+    <div style="font-size:10px;color:#888;font-weight:600;margin-top:6px;line-height:1.6;">
+      <div>👤 홍길동 / 김예진 (1990-05-15 · 1992-08-22)</div>
+      <div style="color:#aaa;">📅 2026-07-01 분석</div>
+    </div>
+  </div>
+
+  <!-- 태몽 입력 박스 -->
+  <div style="margin:12px 16px 0;padding:14px 16px;border-radius:14px;background:linear-gradient(135deg,#fef9c3 0%,#fff 60%,#fdf4ff 100%);border:2px solid #fde68a;">
+    <div style="font-size:9px;color:#7A5C00;letter-spacing:2px;font-weight:800;margin-bottom:8px;">✦ 말씀하신 태몽</div>
+    <div style="font-size:16px;font-weight:900;color:#7A5C00;font-family:'Noto Serif KR','Batang',serif;letter-spacing:1px;">호랑이 올라타는 태몽</div>
+  </div>
+
+  <!-- 성별 예측 헤더 -->
+  <div style="padding:16px 16px 4px;text-align:center;">
+    <div style="font-size:16px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;letter-spacing:-0.3px;">👶 우리 아이 성별 예측</div>
+    <div style="font-size:10px;color:#888;font-style:italic;margin-top:3px;">태몽이 전하는 첫 소식</div>
+  </div>
+
+  <!-- 성별 예측 박스: 아들 (bg:#eff6ff, border:1.5px solid #93c5fd) -->
+  <div style="margin:4px 16px 14px;padding:18px 16px 16px;border-radius:14px;background:#eff6ff;border:1.5px solid #93c5fd;text-align:center;">
+    <div style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(255,255,255,0.7);border-radius:20px;font-size:10px;font-weight:800;color:#1e40af;letter-spacing:0.5px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,0.06);">📬 새 가족 소식이 도착했어요</div>
+    <div style="font-size:36px;margin-bottom:6px;letter-spacing:2px;line-height:1.2;">👨‍🍼 💙 👶🏻</div>
+    <div style="background:rgba(255,255,255,0.75);border-radius:16px;padding:14px 16px;margin-bottom:10px;box-shadow:0 4px 14px rgba(0,0,0,0.06);border:1px solid rgba(255,255,255,0.9);">
+      <div style="font-size:13px;color:#444;line-height:1.5;margin-bottom:6px;">천기 AI가 전해드려요</div>
+      <!-- 아들: "아들이 올 거예요" color:#1e40af -->
+      <div style="font-size:18px;font-weight:900;color:#1e40af;letter-spacing:-0.3px;margin-bottom:8px;font-family:'Noto Serif KR','Batang',serif;">"아들이 올 거예요"</div>
+      <!-- 신뢰도 bar 아들: linear-gradient(90deg,#6495ed,#3b82f6) -->
+      <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:4px;">
+        <span style="font-size:10px;font-weight:700;color:#666;">신뢰도</span>
+        <span style="font-size:22px;font-weight:900;color:#1d4ed8;letter-spacing:-0.5px;line-height:1;">76%</span>
+      </div>
+      <div style="height:5px;width:100%;max-width:160px;margin:0 auto;background:rgba(0,0,0,0.06);border-radius:99px;overflow:hidden;">
+        <div style="height:100%;width:76%;background:linear-gradient(90deg,#6495ed,#3b82f6);border-radius:99px;box-shadow:0 0 8px rgba(59,130,246,0.4);"></div>
+      </div>
+    </div>
+    <div style="font-size:9px;color:#888;margin-top:8px;letter-spacing:0.3px;">※ 태몽 해석은 전통 풀이 참고용이에요</div>
+  </div>
+
+  <!-- 한줄 해몽 -->
+  <div style="padding:12px 16px;">
+    <div style="font-size:12px;font-weight:800;color:#333;margin-bottom:6px;">🌙 한줄 해몽: "🐯 태몽 신호"</div>
+    <div style="font-size:13px;font-weight:700;color:#1A3C32;line-height:1.65;background:#f8f9fa;padding:10px 14px;border-radius:12px;">호랑이는 용맹·권위·수호의 상징이에요. 이 태몽은 강인하고 기개 넘치는 아들이 올 신호예요.</div>
+  </div>
+
+  <!-- 전생 인연 (아들 버전) -->
+  <div style="padding:0 16px 12px;">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;letter-spacing:1.5px;margin-bottom:8px;">✦ 전생 인연</div>
+    <div style="background:#eff6ff;border-radius:10px;padding:12px 14px;">
+      <!-- 아들: "전생에 부모님께 큰 신세를 진 인연" (요약:아빠와 더 강한 결속) -->
+      <div style="font-size:12px;color:#1e40af;font-weight:700;line-height:1.65;word-break:keep-all;">전생에 부모님께 큰 신세를 진 인연 — 이번 생에 갚으러 온 귀한 영혼이에요. 아빠와 더 강한 결속을 이루며 성장할 거예요.</div>
+    </div>
+  </div>
+
+  <!-- 해시태그 -->
+  <div style="display:flex;justify-content:space-between;font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;padding:10px 16px;border-top:1px solid #f0f0f0;">
+    <span>#천기태몽 #태몽해몽 #홍길동 #아들 #호랑이올라타는태몽</span>
+    <span style="font-weight:600;">🌐 천기.kr</span>
+  </div>
+</div>
+
+<!-- ─── 미정 케이스 ─── -->
+<div class="outer-card" style="margin-top:24px;">
+  <div style="padding:10px 0 12px;text-align:center;border-bottom:1px solid #f0f0f0;margin:0 16px;">
+    <div style="font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;margin-bottom:6px;">AI 태몽 정밀 분석 — 미정 케이스</div>
+    <div style="font-size:18px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;line-height:1.35;">🌙 말씀하신 태몽 정밀 분석</div>
+    <div style="font-size:10px;color:#888;font-weight:600;margin-top:6px;line-height:1.6;">
+      <div>👤 홍길동 / 김예진 (1990-05-15 · 1992-08-22)</div>
+      <div style="color:#aaa;">📅 2026-07-01 분석</div>
+    </div>
+  </div>
+
+  <!-- 태몽 입력 박스 -->
+  <div style="margin:12px 16px 0;padding:14px 16px;border-radius:14px;background:linear-gradient(135deg,#fef9c3 0%,#fff 60%,#fdf4ff 100%);border:2px solid #fde68a;">
+    <div style="font-size:9px;color:#7A5C00;letter-spacing:2px;font-weight:800;margin-bottom:8px;">✦ 말씀하신 태몽</div>
+    <div style="font-size:16px;font-weight:900;color:#7A5C00;font-family:'Noto Serif KR','Batang',serif;letter-spacing:1px;">별이 하나 떨어지는 태몽</div>
+  </div>
+
+  <!-- 성별 예측 헤더 -->
+  <div style="padding:16px 16px 4px;text-align:center;">
+    <div style="font-size:16px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;letter-spacing:-0.3px;">👶 우리 아이 성별 예측</div>
+    <div style="font-size:10px;color:#888;font-style:italic;margin-top:3px;">태몽이 전하는 첫 소식</div>
+  </div>
+
+  <!-- 성별 예측 박스: 미정 (bg:#fefce8, border:1.5px solid #fde047) — bar 없음 -->
+  <div style="margin:4px 16px 14px;padding:18px 16px 16px;border-radius:14px;background:#fefce8;border:1.5px solid #fde047;text-align:center;">
+    <div style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(255,255,255,0.7);border-radius:20px;font-size:10px;font-weight:800;color:#854d0e;letter-spacing:0.5px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,0.06);">🌟 성별 예측 불확실</div>
+    <div style="font-size:36px;margin-bottom:6px;letter-spacing:2px;line-height:1.2;">⭐ 🌙 ✨</div>
+    <div style="background:rgba(255,255,255,0.75);border-radius:16px;padding:14px 16px;margin-bottom:10px;box-shadow:0 4px 14px rgba(0,0,0,0.06);border:1px solid rgba(255,255,255,0.9);">
+      <div style="font-size:13px;color:#444;line-height:1.5;margin-bottom:6px;">천기 AI가 전해드려요</div>
+      <!-- 미정: color:#854d0e, bar 없음 -->
+      <div style="font-size:18px;font-weight:900;color:#854d0e;letter-spacing:-0.3px;margin-bottom:8px;font-family:'Noto Serif KR','Batang',serif;">"성별 신호가 아직 불명확해요"</div>
+      <div style="font-size:11px;color:#92400e;line-height:1.6;word-break:keep-all;">이 태몽은 성별보다 아이의 특별한 재능과 인연에 더 집중하고 있어요. 아들·딸 모두 동일하게 복을 가져올 귀한 신호예요.</div>
+    </div>
+    <div style="font-size:9px;color:#888;margin-top:8px;letter-spacing:0.3px;">※ 태몽 해석은 전통 풀이 참고용이에요</div>
+  </div>
+
+  <!-- 한줄 해몽 -->
+  <div style="padding:12px 16px;">
+    <div style="font-size:12px;font-weight:800;color:#333;margin-bottom:6px;">🌙 한줄 해몽: "⭐ 태몽 신호"</div>
+    <div style="font-size:13px;font-weight:700;color:#1A3C32;line-height:1.65;background:#f8f9fa;padding:10px 14px;border-radius:12px;">별이 하늘에서 내려오는 태몽은 하늘의 뜻을 받은 귀한 인연이 찾아온다는 신호예요. 성별보다 아이의 깊은 영적 에너지가 강하게 느껴지는 태몽이에요.</div>
+  </div>
+
+  <!-- 전생 인연 (미정 버전) -->
+  <div style="padding:0 16px 12px;">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;letter-spacing:1.5px;margin-bottom:8px;">✦ 전생 인연</div>
+    <div style="background:#fefce8;border-radius:10px;padding:12px 14px;">
+      <div style="font-size:12px;color:#854d0e;font-weight:700;line-height:1.65;word-break:keep-all;">하늘에서 선택받은 인연 — 부모님께 특별한 가르침을 주러 온 영혼이에요. 성별과 무관하게 이 아이는 부모님의 삶을 크게 변화시킬 거예요.</div>
+    </div>
+  </div>
+
+  <!-- 해시태그 -->
+  <div style="display:flex;justify-content:space-between;font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;padding:10px 16px;border-top:1px solid #f0f0f0;">
+    <span>#천기태몽 #태몽해몽 #홍길동 #미정 #별이하나떨어지는태몽</span>
+    <span style="font-weight:600;">🌐 천기.kr</span>
+  </div>
+</div>
+
+<!-- 광고배너 2x2 -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(212,175,55,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">💭</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">꿈해몽도 해봐요</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">꿈해몽 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(212,175,55,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">🍼</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">우리 아기 관상</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">우리아기관상 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(95,196,158,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">☯️</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">사주 풀이</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">사주풀이 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(212,175,55,0.25);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">📅</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">이달의 운세</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">이달의운세 →</div>
+  </div>
+</div>
+
+<!-- ResultActions -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+  <button style="padding:12px;background:#f8f9fa;border:1px solid #eee;border-radius:12px;font-size:12px;font-weight:700;color:#333;cursor:pointer;">📸 이미지 저장</button>
+  <button style="padding:12px;background:#f8f9fa;border:1px solid #eee;border-radius:12px;font-size:12px;font-weight:700;color:#333;cursor:pointer;">🔗 공유하기</button>
+</div>
+
+<button style="width:100%;padding:14px;background:#D4AF37;color:#1A3C32;border:none;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;">확인 완료</button>
+
+</div>
+</body>
+</html>

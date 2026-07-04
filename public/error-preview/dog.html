@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>에러 4종 — 댕댕상</title>
+<link rel="stylesheet" href="./_style.css?v=4">
+</head>
+<body>
+<h1>🐶 댕댕상 — 에러 4종</h1>
+<div class="sub">정식 errMap (page.tsx 11195~) — 캐릭터 이름 X, 메시지만 · /dog-cards/dog (21~24).png</div>
+<a href="./index.html" class="nav-back">← 미리보기 목록으로</a>
+
+<div id="root"></div>
+
+<script>
+const BRAND = "🔮 천기(天機) 오리지널 | 우리 댕댕이 관상 리포트";
+const HASHTAGS_BASE = "#천기관상 #댕댕상 #반려견";
+const ERRORS = [
+  {id:21, label:"강아지가 아님 (NOT_DOG)", title:'🐾 "멍멍! 강아지가 아니에요!"', msg:"강아지 정면 사진을 올려주세요 📸",
+   guide:["우리 댕댕이 얼굴 정면",'사람·아기는 "내 관상보기"·"우리 아기 관상"에서!'], tag:"#댕댕상"},
+  {id:22, label:"흐릿함 (BLURRY)", title:'🌫️ "흐릿해서 안 보여요!"', msg:"밝고 선명한 사진으로 다시 올려주세요",
+   guide:["밝은 곳 + 정면 얼굴","간식으로 시선 고정 추천"], tag:"#댕댕상"},
+  {id:23, label:"여러 마리 (MULTI)", title:'🐕🐕 "누구를 볼까요?"', msg:"한 마리씩 올려주세요",
+   guide:["한 마리만 크게","얼굴이 화면 절반 이상"], tag:"#댕댕상"},
+  {id:24, label:"얼굴 가림 (HIDDEN_FACE)", title:'🙈 "얼굴이 숨었어요!"', msg:"얼굴이 잘 보이는 정면 사진으로 다시 올려주세요",
+   guide:["눈·코·입 다 보이게","종이봉투·옷·이불 가림 X"], tag:"#댕댕상"},
+];
+const root = document.getElementById('root');
+ERRORS.forEach(e => {
+  root.insertAdjacentHTML('beforeend', `
+    <div class="item">
+      <div class="item-label">━━ ${e.id}. ${e.label} ━━</div>
+      <div class="card">
+        <div class="brand">${BRAND}</div>
+        <div class="err-banner">
+          <div class="err-title">⚠️ ERROR!! ERROR!!</div>
+          <div class="err-sub">사진을 인식 할 수 없습니다.</div>
+        </div>
+        <div class="illust"><img src="/dog-cards/dog (${e.id}).png?v=1" alt=""></div>
+        <div class="body">
+          <div class="char-name">${e.title}</div>
+          <div class="char-detail">${e.msg}</div>
+        </div>
+        <div class="guide">
+          <div class="guide-title">📸 사진 다시 올리기 가이드</div>
+          ${e.guide.map(g => `<div class="guide-row">• ${g}</div>`).join('')}
+          <div class="guide-row ok">✓ 결제 완료 — 추가 결제 없이 재시도 가능</div>
+          <div class="guide-row warn">⚠️ 화면을 나가면 다시 올릴 수 없습니다</div>
+        </div>
+        <div class="hashtags">
+          <span>${HASHTAGS_BASE} ${e.tag}</span>
+          <span>🌐 천기.kr</span>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn-primary">📸 사진 다시 올리기</button>
+        <button class="btn-ghost">닫기</button>
+      </div>
+    </div>
+  `);
+});
+</script>
+</body>
+</html>

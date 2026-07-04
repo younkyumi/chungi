@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --bg-deep-green: #1A3D1A;
+            --point-gold: #C9A74E;
+            --soft-white: #FDFCF8;
+            --couple-pink: #FF6B81;
+        }
+
+        body { background-color: #000; margin: 0; font-family: 'Noto Serif KR', serif; color: white; display: flex; justify-content: center; }
+        #app { width: 100%; max-width: 450px; background-color: var(--bg-deep-green); min-height: 100vh; position: relative; }
+        .page { display: none; padding: 20px; box-sizing: border-box; }
+        .page.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* 프로모션 */
+        .promo { text-align: center; padding: 40px 10px; }
+        .price { background: rgba(255,255,255,0.1); border: 1px solid var(--couple-pink); padding: 5px 15px; border-radius: 20px; font-size: 14px; color: var(--couple-pink); }
+        
+        /* 스캔 */
+        .scan-container { position: relative; width: 100%; height: 280px; background: #000; border-radius: 20px; margin: 30px 0; display: flex; gap: 10px; padding: 10px; box-sizing: border-box; }
+        .slot { flex: 1; border: 2px dashed var(--couple-pink); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--couple-pink); }
+        .laser { position: absolute; width: 100%; height: 3px; background: var(--couple-pink); box-shadow: 0 0 20px var(--couple-pink); top: 0; animation: scan 2.5s infinite linear; }
+        @keyframes scan { 0% {top:0} 100% {top:100%} }
+
+        /* 결과 카드 */
+        .result-sheet { background: var(--soft-white); color: #1A1A1A; border-radius: 25px; padding: 30px 20px; margin-top: 20px; border: 3px solid var(--couple-pink); text-align: center; }
+        .indiv-box { background: #f8f0f2; padding: 15px; border-radius: 15px; margin-bottom: 15px; text-align: left; border-left: 4px solid var(--couple-pink); }
+        .score-badge { background: var(--couple-pink); color: white; padding: 5px 20px; border-radius: 50px; display: inline-block; margin-top: 15px; font-weight: 900; }
+
+        .btn-pay { width: 100%; padding: 22px; background: var(--couple-pink); border: none; border-radius: 18px; color: white; font-size: 18px; font-weight: 900; cursor: pointer; margin-top: 20px; }
+        .status-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px; background: rgba(0,0,0,0.85); padding: 15px; display: flex; justify-content: space-around; font-size: 13px; border-top: 1px solid var(--couple-pink); font-weight: 700; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div class="page active" id="p1">
+        <div class="promo">
+            <div class="price"><strike style="opacity:0.5">1,960원</strike> → 1,480원</div>
+            <h1 style="font-size: 28px; line-height: 1.4;">전생부터 이어진<br>치명적 인연의 실 💖</h1>
+            <p style="opacity: 0.7; font-size: 15px;">두 사람의 관상을 각각 뜯어보고,<br>숨겨진 애정 궁합을 1,480원에 확인하세요.</p>
+            <div style="background:rgba(255,255,255,0.05); padding:20px; border-radius:15px; text-align:left; margin-top:20px;">
+                <div style="margin-bottom:10px;">👤 <b>나의</b> 관상 & 연애 기질 분석</div>
+                <div style="margin-bottom:10px;">👤 <b>상대의</b> 관상 & 속마음 스캔</div>
+                <div>🔮 <b>커플·베프</b> 전용 궁합 점수</div>
+            </div>
+            <button class="btn-pay" onclick="next(2)">인연 판독 시작하기</button>
+        </div>
+    </div>
+
+    <div class="page" id="p2">
+        <div style="text-align: center; padding-top: 40px;">
+            <h2 style="color: var(--couple-pink);">인연의 주파수를<br>맞추고 있습니다...</h2>
+            <div class="scan-container">
+                <div class="laser"></div>
+                <div class="slot">나의 얼굴</div>
+                <div class="slot">상대의 얼굴</div>
+            </div>
+            <button class="btn-pay" onclick="next(3)">판독 완료! 결과 보기</button>
+        </div>
+    </div>
+
+    <div class="page" id="p3" style="padding-bottom: 100px;">
+        <p style="text-align: center; color: var(--couple-pink); font-weight: 900;">천기 인연 정밀 리포트</p>
+        
+        <div class="indiv-box">
+            <b>👤 Partner A (나)</b><br>
+            <span style="font-size: 14px; color: var(--couple-pink);">"사랑에 올인하는 사슴 눈망울 상"</span>
+            <p style="font-size: 12px; margin-top: 5px;">감수성이 풍부하여 한 번 빠지면 간 쓸개 다 내주는 타입. 인복이 많아 주변에 사람이 끊이지 않습니다.</p>
+        </div>
+
+        <div class="indiv-box">
+            <b>👤 Partner B (상대)</b><br>
+            <span style="font-size: 14px; color: var(--couple-pink);">"의리 있고 묵직한 소나무 상"</span>
+            <p style="font-size: 12px; margin-top: 5px;">겉으론 무뚝뚝해도 속은 말랑한 츤데레 스타일. 턱선이 발달해 말년운과 자식운이 매우 좋습니다.</p>
+        </div>
+
+        <div class="result-sheet">
+            <span style="font-size: 45px;">👩‍❤️‍👨</span>
+            <h2 style="margin: 10px 0;">"전생의 연인,<br>현생의 껌딱지"</h2>
+            <div class="score-badge">애정 궁합: 98점</div>
+            <p style="font-size: 14px; line-height: 1.8; margin-top: 20px;">
+                두 사람의 관상 합이 기가 막힙니다. A의 예민함을 B의 포용력이 완벽히 감싸주는 구조군요. 이 인연, 놓치면 평생 후회할 소중한 운명입니다!
+            </p>
+        </div>
+
+        <div class="status-bar">
+            <span>💖 애정온도 99℃</span>
+            <span>🔥 열정 100%</span>
+            <span>🏆 S등급</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    function next(s) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('p' + s).classList.add('active');
+        window.scrollTo(0,0);
+    }
+</script>
+</body>
+</html>

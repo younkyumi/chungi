@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+/* 버튼/힌트 강조 애니메이션 */
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+/* v673: 탭 안내 멘트 강조 — 빨강 + 깜빡깜빡 (사용자 "아예 안 보임" 컴플레인) */
+@keyframes tabHintBlink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.45;transform:scale(0.97)} }
+.tab-hint-blink { color:#dc2626 !important; font-weight:800 !important; animation: tabHintBlink 1.3s ease-in-out infinite; }
+
+/* v750: 모든 탭 콘텐츠 통일 — 2줄=40px(기본), 3·4줄=34px(.compact). fontSize 12 통일.
+   사용자: '기질도처럼 2줄은 40으로, 3·4줄은 34' */
+.result-tabs button {
+  min-height: 40px !important;
+  font-size: 11px !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  line-height: 1.25;
+}
+.result-tabs.compact button {
+  min-height: 34px !important;
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+}
+@keyframes glowPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(212,175,55,0.6); transform: scale(1); }
+  50% { box-shadow: 0 0 0 6px rgba(212,175,55,0); transform: scale(1.08); }
+}
+
+/* 2세 예측 hero 애니메이션 (엄마+아빠 → 아기 합성) */
+@keyframes mergeMom {
+  0%, 10% { transform: translateX(-140%) scale(0.9); opacity: 0; }
+  35% { transform: translateX(0) scale(1); opacity: 1; }
+  55% { transform: translateX(14%) scale(0.9); opacity: 0.7; }
+  65%, 100% { transform: translateX(14%) scale(0.75); opacity: 0; }
+}
+@keyframes mergeDad {
+  0%, 10% { transform: translateX(140%) scale(0.9); opacity: 0; }
+  35% { transform: translateX(0) scale(1); opacity: 1; }
+  55% { transform: translateX(-14%) scale(0.9); opacity: 0.7; }
+  65%, 100% { transform: translateX(-14%) scale(0.75); opacity: 0; }
+}
+@keyframes babyAppear {
+  0%, 60% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+  70% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+  78% { transform: translate(-50%, -50%) scale(0.95); opacity: 1; }
+  85%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+@keyframes mergeGlow {
+  0%, 55% { opacity: 0; }
+  62% { opacity: 1; }
+  72%, 100% { opacity: 0; }
+}
+
+html, body {
+  background: #1A3C32 !important;
+  /* 순서:
+     1. Pretendard/Apple SD Gothic: 한글/영문/숫자 모두 담당 (숫자 9,0 등이 이모지 폰트로 가지 않도록 방어)
+     2. Apple Color Emoji / Segoe UI Emoji: OS에 설치된 이모지 폰트 (최우선)
+     3. Noto Color Emoji (Google 웹폰트): 로컬에 없는 최신 이모지(🪞 등) 완전 폴백 */
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+}

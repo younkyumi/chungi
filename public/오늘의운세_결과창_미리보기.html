@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>오늘의운세 결과창 미리보기</title>
+<!--
+  출처: src/app/page.tsx
+  - CSS 변수: 51행 (:root { --ink:#1A3C32; --ink2:#1E4A3D; ... })
+  - 모달 클래스(.md, .ov): 51행
+  - TodayUnseModal 결과 JSX: 16401~16730행
+  - _UNSE_AREAS 데이터: 15837~15848행 (10개 영역 이름·색상·이모지 — 코드 그대로)
+  - KW_DATA (키워드 TOP3): 16468행 — {"성장":"🌱","결실":"🍎","도약":"🦘","안정":"🏛️","전환":"🔄","조화":"🕊️","희망":"🌅","결단":"⚔️","축복":"🎊","집중":"🎯","교류":"🤝","휴식":"🌙","개척":"🚀","수확":"🌾","내실":"💎","변화":"🌪️","인연":"💞","재정비":"📋","비상":"🛫","뿌리":"🌳","돌파":"💥","꽃피움":"🌸"} (22개 키워드 풀, 코드 그대로)
+  - ⚠️ 키워드 샘플(도약/결실/성장): KW_DATA에 실존하는 값이나, 실제 선택은 seed 기반 랜덤 (16469~16475행 로직). HTML에서는 예시로 3개 임의 선택 — 추측 아닌 실존 데이터이나 고정값은 아님
+  - _UNSE_MSGS 데이터: 15849~15859행
+  - _UNSE_SPOILERS, _UNSE_SPOTS, _UNSE_GUIIN, _UNSE_LASTWORDS, _UNSE_SOLUTIONS: 15862~15925행
+  - _LUCKY_POOL: 15926행
+  - _OHANG_COLORS: 15930~15936행
+  - 섹션 순서: ①종합점수 → ②키워드TOP3 → ③10가지기운 → ④컬러가이드 → ⑤수호기운5칸 → ⑥시간대별흐름 → ⑦시그널&가이드 → ⑧Do&Don't → ⑨천기의한마디 → 푸터
+-->
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#1A3C32;--ink2:#1E4A3D;--ink3:#234F42;--ink4:#2A5A4D;
+  --gold:#D4AF37;--gold2:#E8C86A;--gold3:#B8942E;
+  --blush:#8B2929;--jade:#5FC49E;--violet:#9B8FD4;--coral:#8B2929;
+  --mist:#A8C4B8;--white:#F4F1E1;--r:18px;
+}
+body{background:var(--ink);font-family:'Apple SD Gothic Neo',sans-serif;padding:20px;}
+/* 모달 구조 (51행) */
+.ov{background:rgba(0,0,0,0.82);display:flex;align-items:flex-end;justify-content:center;min-height:100vh;}
+.md{background:var(--ink2);border-radius:24px 24px 0 0;padding:22px 20px 40px;width:100%;max-width:430px;border-top:1px solid rgba(212,175,55,0.12);}
+.hd{width:36px;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;margin:0 auto 20px;}
+/* 결과 화이트 카드 */
+.white-card{background:#ffffff;border-radius:20px;overflow:hidden;border:1px solid rgba(212,175,55,0.3);box-shadow:0 10px 30px rgba(0,0,0,0.06);margin-bottom:12px;color:#333;}
+/* BrandLine (page.tsx BrandLine 컴포넌트) */
+.brand-line{font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;padding:10px 16px 0;text-align:center;border-bottom:1px solid #f0f0f0;padding-bottom:10px;margin-bottom:0;}
+/* 푸터 해시태그 (16691~16695행) */
+.hash-footer{display:flex;justify-content:space-between;padding:10px 16px;margin-top:14px;font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;border-top:1px solid #f0f0f0;}
+/* 버튼 (51행) */
+.btn{display:block;width:100%;padding:14px;border-radius:var(--r);border:none;cursor:pointer;font-family:inherit;font-size:14px;font-weight:700;}
+.btn-p{background:linear-gradient(135deg,var(--gold),var(--gold3));color:var(--ink);margin-bottom:9px;}
+.btn-g{background:transparent;border:1px solid rgba(212,175,55,0.25);color:var(--gold);margin-top:9px;}
+/* 광고배너 카드 (16717~16728행) */
+.ad-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;}
+.ad-card{background:#ffffff;border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.06);}
+/* 이것도 해볼래요 (16731행~) */
+.cross-scroll{display:flex;gap:8px;padding-bottom:4px;overflow-x:auto;}
+.cross-card{flex-shrink:0;width:100px;background:#ffffff;border-radius:12px;padding:10px 8px;border:1px solid rgba(212,175,55,0.4);text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+</style>
+</head>
+<body>
+<div style="max-width:430px;margin:0 auto;">
+
+<!-- ====== 화이트 결과 카드 (id="unse-capture", 16410행) ====== -->
+<div class="white-card">
+
+  <!-- BrandLine (16411~16413행) -->
+  <div class="brand-line">🔮 천기(天機) 오리지널</div>
+
+  <!-- 헤더: 제목 + 인물정보 (16412~16440행) -->
+  <div style="padding:10px 16px 12px;text-align:center;">
+    <div style="font-size:18px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR',serif;line-height:1.35;margin-bottom:4px;">홍길동님의 오늘의 운세</div>
+    <div style="font-size:10px;color:#059669;margin-top:4px;font-weight:700;">✓ 내 사주 기반 개인 운세</div>
+    <!-- 인물정보 (16418~16421행) -->
+    <div style="font-size:10px;color:#888;font-weight:600;margin-top:6px;line-height:1.6;">
+      <div>👤 홍길동 : 1990-05-15 · 丑시생 · 양력</div>
+      <div style="color:#aaa;">📅 2026-06-30 검사</div>
+    </div>
+    <!-- 사주/띠/별자리 chip (16423~16438행) -->
+    <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-top:10px;">
+      <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:12px;background:#4CAF5015;color:#4CAF50;border:1px solid #4CAF5040;">☯️ 내 사주 일간 : 목(木)</span>
+      <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:12px;background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;">🐴 내 띠 : 말띠</span>
+      <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:12px;background:#fef3c7;color:#92400e;border:1px solid #fde68a;">♉ 내 별자리 : 황소자리</span>
+    </div>
+  </div>
+
+  <!-- ① 종합점수 (16443~16461행) -->
+  <div style="padding:16px 16px 12px;">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;letter-spacing:1.5px;margin-bottom:12px;">✦ 오늘의 종합점수</div>
+    <div style="display:grid;grid-template-columns:100px 1fr;gap:14px;align-items:center;">
+      <!-- LEFT: 90px 원형 테두리 (16447~16451행) -->
+      <div style="display:flex;justify-content:center;">
+        <div style="width:90px;height:90px;border-radius:50%;border:3px solid #D4AF37;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fffdf5;">
+          <div style="font-size:30px;font-weight:900;color:#D4AF37;line-height:1;font-family:'Noto Serif KR',serif;">72</div>
+          <div style="font-size:10px;color:#aaa;margin-top:2px;font-weight:600;">/100</div>
+        </div>
+      </div>
+      <!-- RIGHT: 별점 + 헤드라인 + 절기 chip (16453~16459행) -->
+      <div style="text-align:left;">
+        <div style="font-size:14px;color:#D4AF37;letter-spacing:1.5px;margin-bottom:6px;">★★★★☆</div>
+        <div style="font-size:13px;font-weight:700;color:#D4AF37;line-height:1.65;margin-bottom:10px;word-break:keep-all;">"작은 용기가 큰 변화를 만드는 날"</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:12px;background:#f0fdf4;color:#15803d;border:1px solid #86efac;">🌿 오늘 절기 : 하지</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 오늘의 키워드 TOP 3 (16466~16487행) -->
+  <!-- KW_DATA에서 seed 계산으로 픽: 도약/결실/성장 (15837행 대비 예시 데이터) -->
+  <div style="padding:14px 16px 12px;">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;letter-spacing:1.5px;margin-bottom:10px;">✦ 오늘의 키워드 TOP 3</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
+      <div style="text-align:center;background:#7c3aed10;border:1px solid #7c3aed40;border-radius:10px;padding:12px 6px;">
+        <div style="font-size:22px;margin-bottom:6px;">🦘</div>
+        <div style="font-size:9.5px;color:#7c3aed;font-weight:700;margin-bottom:3px;">#1</div>
+        <div style="font-size:14px;font-weight:900;color:#7c3aed;font-family:'Noto Serif KR',serif;">도약</div>
+      </div>
+      <div style="text-align:center;background:#D4AF3710;border:1px solid #D4AF3740;border-radius:10px;padding:12px 6px;">
+        <div style="font-size:22px;margin-bottom:6px;">🍎</div>
+        <div style="font-size:9.5px;color:#D4AF37;font-weight:700;margin-bottom:3px;">#2</div>
+        <div style="font-size:14px;font-weight:900;color:#D4AF37;font-family:'Noto Serif KR',serif;">결실</div>
+      </div>
+      <div style="text-align:center;background:#2E7D3210;border:1px solid #2E7D3240;border-radius:10px;padding:12px 6px;">
+        <div style="font-size:22px;margin-bottom:6px;">🌱</div>
+        <div style="font-size:9.5px;color:#2E7D32;font-weight:700;margin-bottom:3px;">#3</div>
+        <div style="font-size:14px;font-weight:900;color:#2E7D32;font-family:'Noto Serif KR',serif;">성장</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ③ 오늘의 10가지 기운 (16489~16531행) -->
+  <!-- _UNSE_AREAS 15837행 데이터 그대로: 각 area의 emoji/color 정확 반영 -->
+  <div style="padding:14px 16px 12px;">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;letter-spacing:1.5px;margin-bottom:6px;">✦ 오늘의 10가지 기운 (정밀 분석)</div>
+    <div style="font-size:10px;margin-bottom:10px;color:#dc2626;font-weight:800;">👇 각 기운을 탭하면 상세 풀이가 바로 펼쳐져요!</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;">
+      <!-- vibe: color:#D4AF37 -->
+      <div style="background:#fff;border-radius:10px;padding:11px 12px 12px;border:1px solid #eee;box-shadow:0 1px 3px rgba(0,0,0,0.03);">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:8px;">
+          <span style="font-size:14px;">✨</span>
+          <div style="flex:1;font-size:11px;font-weight:800;color:#1A3C32;">오늘의 바이브</div>
+          <span style="font-size:8.5px;font-weight:800;color:#fff;background:#D4AF37;padding:2px 6px;border-radius:6px;">A</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;">
+          <div style="flex:1;height:4px;background:#f0f0f0;border-radius:2px;overflow:hidden;"><div style="height:100%;width:78%;background:#D4AF37;border-radius:2px;"></div></div>
+          <span style="font-size:13px;font-weight:900;color:#D4AF37;">78</span>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:#D4AF37;">긍정적 기운</div>
+      </div>
+      <!-- signal: color:#74B9FF -->
+      <div style="background:#fff;border-radius:10px;padding:11px 12px 12px;border:1px solid #eee;">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:8px;">
+          <span style="font-size:14px;">📡</span>
+          <div style="flex:1;font-size:11px;font-weight:800;color:#1A3C32;">하루 시그널</div>
+          <span style="font-size:8.5px;font-weight:800;color:#fff;background:#D4AF37;padding:2px 6px;border-radius:6px;">A</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;">
+          <div style="flex:1;height:4px;background:#f0f0f0;border-radius:2px;overflow:hidden;"><div style="height:100%;width:76%;background:#74B9FF;border-radius:2px;"></div></div>
+          <span style="font-size:13px;font-weight:900;color:#D4AF37;">76</span>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:#74B9FF;">기회 포착</div>
+      </div>
+      <!-- success: color:#E67E22 -->
+      <div style="background:#fff;border-radius:10px;padding:11px 12px 12px;border:1px solid #eee;">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:8px;">
+          <span style="font-size:14px;">🏆</span>
+          <div style="flex:1;font-size:11px;font-weight:800;color:#1A3C32;">뜻밖의 성공운</div>
+          <span style="font-size:8.5px;font-weight:800;color:#fff;background:#D4AF37;padding:2px 6px;border-radius:6px;">A</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;">
+          <div style="flex:1;height:4px;background:#f0f0f0;border-radius:2px;overflow:hidden;"><div style="height:100%;width:72%;background:#E67E22;border-radius:2px;"></div></div>
+          <span style="font-size:13px;font-weight:900;color:#D4AF37;">72</span>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:#E67E22;">상승 기류</div>
+      </div>
+      <!-- flex: color:#E74C3C -->
+      <div style="background:#fff;border-radius:10px;padding:11px 12px 12px;border:1px solid #eee;">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:8px;">
+          <span style="font-size:14px;">💪</span>
+          <div style="flex:1;font-size:11px;font-weight:800;color:#1A3C32;">FLEX 파워</div>
+          <span style="font-size:8.5px;font-weight:800;color:#fff;background:#74B9FF;padding:2px 6px;border-radius:6px;">B</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;">
+          <div style="flex:1;height:4px;background:#f0f0f0;border-radius:2px;overflow:hidden;"><div style="height:100%;width:58%;background:#E74C3C;border-radius:2px;"></div></div>
+          <span style="font-size:13px;font-weight:900;color:#74B9FF;">58</span>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:#E74C3C;">평균</div>
+      </div>
+      <!-- energy: color:#F39C12 -->
+      <div style="background:#fff;border-radius:10px;padding:11px 12px 12px;border:1px solid #eee;">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:8px;">
+          <span style="font-size:14px;">🔋</span>
+          <div style="flex:1;font-size:11px;font-weight:800;color:#1A3C32;">에너지 점검</div>
+          <span style="font-size:8.5px;font-weight:800;color:#fff;background:#74B9FF;padding:2px 6px;border-radius:6px;">B</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;">
+          <div style="flex:1;height:4px;background:#f0f0f0;border-radius:2px;overflow:hidden;"><div style="height:100%;width:56%;background:#F39C12;border-radius:2px;"></div></div>
+          <span style="font-size:13px;font-weight:900;color:#74B9FF;">56</span>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:#F39C12;">적정선</div>
+      </div>
+      <!-- social: color:#1ABC9C -->
+      <div style="background:#fff;border-radius:10px;padding:11px 12px 12px;border:1px solid #eee;">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:8px;">
+          <span style="font-size:14px;">🤝</span>
+          <div style="flex:1;font-size:11px;font-weight:800;color:#1A3C32;">소셜 캐미</div>
+          <span style="font-size:8.5px;font-weight:800;color:#fff;background:#D4AF37;padding:2px 6px;border-radius:6px;">A</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;">
+          <div style="flex:1;height:4px;background:#f0f0f0;border-radius:2px;overflow:hidden;"><div style="height:100%;width:76%;background:#1ABC9C;border-radius:2px;"></div></div>
+          <span style="font-size:13px;font-weight:900;color:#D4AF37;">76</span>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:#1ABC9C;">사람 복 있음</div>
+      </div>
+      <!-- money: color:#FDCB6E -->
+      <div style="background:#fff;border-radius:10px;padding:11px 12px 12px;border:1px solid #eee;">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:8px;">
+          <span style="font-size:14px;">💰</span>
+          <div style="flex:1;font-size:11px;font-weight:800;color:#1A3C32;">재물운</div>
+          <span style="font-size:8.5px;font-weight:800;color:#fff;background:#74B9FF;padding:2px 6px;border-radius:6px;">B</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;">
+          <div style="flex:1;height:4px;background:#f0f0f0;border-radius:2px;overflow:hidden;"><div style="height:100%;width:65%;background:#FDCB6E;border-radius:2px;"></div></div>
+          <span style="font-size:13px;font-weight:900;color:#74B9FF;">65</span>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:#FDCB6E;">현상 유지</div>
+      </div>
+      <!-- love: color:#ff6b6b -->
+      <div style="background:#fff;border-radius:10px;padding:11px 12px 12px;border:1px solid #eee;">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:8px;">
+          <span style="font-size:14px;">💕</span>
+          <div style="flex:1;font-size:11px;font-weight:800;color:#1A3C32;">애정운</div>
+          <span style="font-size:8.5px;font-weight:800;color:#fff;background:#DC3545;padding:2px 6px;border-radius:6px;">D</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;">
+          <div style="flex:1;height:4px;background:#f0f0f0;border-radius:2px;overflow:hidden;"><div style="height:100%;width:34%;background:#ff6b6b;border-radius:2px;"></div></div>
+          <span style="font-size:13px;font-weight:900;color:#DC3545;">34</span>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:#ff6b6b;">오해 주의</div>
+      </div>
+      <!-- career: color:#A29BFE -->
+      <div style="background:#fff;border-radius:10px;padding:11px 12px 12px;border:1px solid #eee;">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:8px;">
+          <span style="font-size:14px;">💼</span>
+          <div style="flex:1;font-size:11px;font-weight:800;color:#1A3C32;">직업·커리어</div>
+          <span style="font-size:8.5px;font-weight:800;color:#fff;background:#D4AF37;padding:2px 6px;border-radius:6px;">A</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;">
+          <div style="flex:1;height:4px;background:#f0f0f0;border-radius:2px;overflow:hidden;"><div style="height:100%;width:78%;background:#A29BFE;border-radius:2px;"></div></div>
+          <span style="font-size:13px;font-weight:900;color:#D4AF37;">78</span>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:#A29BFE;">기회 포착</div>
+      </div>
+      <!-- health: color:#4CAF50 -->
+      <div style="background:#fff;border-radius:10px;padding:11px 12px 12px;border:1px solid #eee;">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:8px;">
+          <span style="font-size:14px;">🌿</span>
+          <div style="flex:1;font-size:11px;font-weight:800;color:#1A3C32;">건강·활력</div>
+          <span style="font-size:8.5px;font-weight:800;color:#fff;background:#059669;padding:2px 6px;border-radius:6px;">S</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;">
+          <div style="flex:1;height:4px;background:#f0f0f0;border-radius:2px;overflow:hidden;"><div style="height:100%;width:90%;background:#4CAF50;border-radius:2px;"></div></div>
+          <span style="font-size:13px;font-weight:900;color:#059669;">90</span>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:#4CAF50;">최상 컨디션</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ④ 컬러 가이드 (16534~16573행) 로그인 버전 -->
+  <!-- _OHANG_COLORS 15930행: 목={hex:"#4CAF50",name:"새싹 그린",palette:5종,...} -->
+  <div style="padding:14px 16px 12px;">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;letter-spacing:1.5px;margin-bottom:10px;">✦ 오늘의 컬러 가이드</div>
+    <div style="font-size:11px;color:#555;line-height:1.85;margin-bottom:6px;"><strong style="color:#1A3C32;">☯️ 홍길동님의 사주 오행 :</strong> <span style="color:#4CAF50;font-weight:800;">목(木)</span></div>
+    <div style="font-size:11px;color:#555;line-height:1.85;margin-bottom:9px;"><strong style="color:#1A3C32;">🎨 사주 오행 컬러 :</strong> <span style="color:#4CAF50;font-weight:800;">새싹 그린</span></div>
+    <div style="font-size:11px;color:#666;line-height:1.7;margin-bottom:12px;">성장과 생명력의 에너지. 초록 계열이 잘 맞아요.</div>
+    <!-- 팔레트 5종 (16542~16549행) -->
+    <div style="display:flex;gap:4px;align-items:flex-end;margin-bottom:4px;">
+      <div style="flex:1;"><div style="width:100%;height:28px;background:#81C784;border-radius:7px;"></div></div>
+      <div style="flex:1;"><div style="width:100%;height:28px;background:#4CAF50;border-radius:7px;"></div></div>
+      <div style="flex:1;"><div style="width:100%;height:44px;background:#2E7D32;border-radius:7px;border:2px solid #2E7D32;box-shadow:0 3px 8px #2E7D3255;"></div><div style="font-size:8px;color:#2E7D32;text-align:center;margin-top:3px;font-weight:800;">메인</div></div>
+      <div style="flex:1;"><div style="width:100%;height:28px;background:#F1F8E9;border-radius:7px;"></div></div>
+      <div style="flex:1;"><div style="width:100%;height:28px;background:#DCEDC8;border-radius:7px;"></div></div>
+    </div>
+    <div style="font-size:11px;color:#aaa;margin-top:10px;text-align:center;line-height:1.7;margin-bottom:14px;">5가지 톤 중 가운데 큰 칸이 <strong style="color:#4CAF50;">메인 컬러</strong>예요</div>
+    <!-- 활용법 2박스 (16553~16563행) -->
+    <div style="font-size:11px;color:#666;margin-bottom:10px;line-height:1.7;">외출 의류는 오늘 수호색, 늘 지니는 소품은 사주 오행색을 조합한 가이드예요</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div style="background:#fff;border:1px solid #eee;border-radius:12px;padding:14px 14px;">
+        <div style="font-size:11px;color:#B8942E;font-weight:700;letter-spacing:1.5px;margin-bottom:6px;">🚪 오늘 외출 메인</div>
+        <div style="font-size:13px;font-weight:800;color:#1A3C32;margin-bottom:4px;line-height:1.5;">노란색</div>
+        <div style="font-size:11px;color:#666;line-height:1.7;word-break:keep-all;">가디건·머플러·신발 등 시각적 의류 (매일 변동)</div>
+      </div>
+      <div style="background:#fff;border:1px solid #eee;border-radius:12px;padding:14px 14px;">
+        <div style="font-size:11px;color:#4CAF50;font-weight:700;letter-spacing:1.5px;margin-bottom:6px;">🧳 늘 지니는 소품</div>
+        <div style="font-size:13px;font-weight:800;color:#1A3C32;margin-bottom:4px;line-height:1.5;">새싹 그린</div>
+        <div style="font-size:11px;color:#666;line-height:1.7;word-break:keep-all;">식물 화분·우드 액세서리·그린 다이어리</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑤ 수호 기운 5칸 (16576~16593행) -->
+  <!-- _LUCKY_POOL 15926행 데이터 기반 -->
+  <div style="padding:14px 16px 12px;">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;letter-spacing:1.5px;margin-bottom:10px;">✦ 오늘의 수호 기운</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:5px;">
+      <div style="background:#f8f9fa;border:1px solid #eee;border-radius:10px;padding:10px 4px;text-align:center;">
+        <div style="font-size:16px;margin-bottom:4px;">🔢</div>
+        <div style="font-size:9px;color:#888;margin-bottom:4px;font-weight:600;">숫자</div>
+        <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.4;">37</div>
+      </div>
+      <div style="background:#f8f9fa;border:1px solid #eee;border-radius:10px;padding:10px 4px;text-align:center;">
+        <div style="font-size:16px;margin-bottom:4px;">🧭</div>
+        <div style="font-size:9px;color:#888;margin-bottom:4px;font-weight:600;">방향</div>
+        <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.4;">동쪽</div>
+      </div>
+      <div style="background:#f8f9fa;border:1px solid #eee;border-radius:10px;padding:10px 4px;text-align:center;">
+        <div style="font-size:16px;margin-bottom:4px;">🍽️</div>
+        <div style="font-size:9px;color:#888;margin-bottom:4px;font-weight:600;">음식</div>
+        <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.4;">비빔밥</div>
+      </div>
+      <div style="background:#f8f9fa;border:1px solid #eee;border-radius:10px;padding:10px 4px;text-align:center;">
+        <div style="font-size:16px;margin-bottom:4px;">⏰</div>
+        <div style="font-size:9px;color:#888;margin-bottom:4px;font-weight:600;">시간</div>
+        <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.4;word-break:keep-all;">오후 1~3시</div>
+      </div>
+      <div style="background:#f8f9fa;border:1px solid #eee;border-radius:10px;padding:10px 4px;text-align:center;">
+        <div style="font-size:16px;margin-bottom:4px;">🦢</div>
+        <div style="font-size:9px;color:#888;margin-bottom:4px;font-weight:600;">수호 동물</div>
+        <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.4;">학</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑥ 시간대별 흐름 (16596~16621행) -->
+  <!-- tDay: 아침6-12/낮12-18/저녁18-21/밤21-6, 길/평/흉 색상 코드 그대로 -->
+  <div style="padding:14px 16px 12px;">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;letter-spacing:1.5px;margin-bottom:10px;">✦ 오늘 시간대별 흐름</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;">
+      <!-- 아침: 길 (#f0fdf4 / #86efac / #15803d) -->
+      <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:10px 4px;text-align:center;">
+        <div style="font-size:18px;margin-bottom:3px;">🌅</div>
+        <div style="font-size:9.5px;color:#888;font-weight:600;margin-bottom:3px;">아침</div>
+        <div style="font-size:9px;color:#aaa;font-weight:500;margin-bottom:5px;">6-12시</div>
+        <div style="font-size:12px;font-weight:900;color:#15803d;margin-bottom:4px;">길</div>
+        <div style="font-size:9px;color:#666;line-height:1.45;word-break:keep-all;">기운이 강한 시간</div>
+      </div>
+      <!-- 낮: 평 (#fffbe9 / rgba(212,175,55,0.4) / #7A5C00) -->
+      <div style="background:#fffbe9;border:1px solid rgba(212,175,55,0.4);border-radius:10px;padding:10px 4px;text-align:center;">
+        <div style="font-size:18px;margin-bottom:3px;">☀️</div>
+        <div style="font-size:9.5px;color:#888;font-weight:600;margin-bottom:3px;">낮</div>
+        <div style="font-size:9px;color:#aaa;font-weight:500;margin-bottom:5px;">12-18시</div>
+        <div style="font-size:12px;font-weight:900;color:#7A5C00;margin-bottom:4px;">평</div>
+        <div style="font-size:9px;color:#666;line-height:1.45;word-break:keep-all;">무난한 시간</div>
+      </div>
+      <!-- 저녁: 흉 (#fef2f2 / #fecaca / #B71C1C) -->
+      <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:10px 4px;text-align:center;">
+        <div style="font-size:18px;margin-bottom:3px;">🌆</div>
+        <div style="font-size:9.5px;color:#888;font-weight:600;margin-bottom:3px;">저녁</div>
+        <div style="font-size:9px;color:#aaa;font-weight:500;margin-bottom:5px;">18-21시</div>
+        <div style="font-size:12px;font-weight:900;color:#B71C1C;margin-bottom:4px;">흉</div>
+        <div style="font-size:9px;color:#666;line-height:1.45;word-break:keep-all;">조심하는 게 좋아요</div>
+      </div>
+      <!-- 밤: 길 -->
+      <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:10px 4px;text-align:center;">
+        <div style="font-size:18px;margin-bottom:3px;">🌙</div>
+        <div style="font-size:9.5px;color:#888;font-weight:600;margin-bottom:3px;">밤</div>
+        <div style="font-size:9px;color:#aaa;font-weight:500;margin-bottom:5px;">21-6시</div>
+        <div style="font-size:12px;font-weight:900;color:#15803d;margin-bottom:4px;">길</div>
+        <div style="font-size:9px;color:#666;line-height:1.45;word-break:keep-all;">좋은 흐름이에요</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑦ 시그널 & 가이드 (16623~16643행) -->
+  <!-- _UNSE_SOLUTIONS, _UNSE_SPOTS, _UNSE_GUIIN 15916~15899행 데이터 -->
+  <div style="padding:14px 16px 12px;">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;letter-spacing:1.5px;margin-bottom:12px;">✦ 오늘의 시그널 & 가이드</div>
+    <div style="display:grid;grid-template-columns:1fr;gap:8px;">
+      <div style="background:#fff;border-radius:12px;padding:14px 14px;border:1px solid #eee;">
+        <div style="font-size:11px;color:#15803d;letter-spacing:1.5px;font-weight:700;margin-bottom:6px;">💡 솔루션</div>
+        <div style="font-size:13px;color:#1A3C32;font-weight:800;margin-bottom:4px;line-height:1.5;">오늘의 리셋 루틴</div>
+        <div style="font-size:11px;color:#666;line-height:1.7;word-break:keep-all;">아침 5분 스트레칭 → 따뜻한 차 → 할 일 딱 3개만 적기. 거창한 거 NO</div>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:14px 14px;border:1px solid #eee;">
+        <div style="font-size:11px;color:#B8942E;letter-spacing:1.5px;font-weight:700;margin-bottom:6px;">🗺️ 럭키 스팟</div>
+        <div style="font-size:13px;color:#1A3C32;font-weight:800;margin-bottom:4px;line-height:1.5;">카페·북카페</div>
+        <div style="font-size:11px;color:#666;line-height:1.7;word-break:keep-all;">혼자 가든 친구랑 가든 창가 자리 픽! 노트북 가져가도 좋고, 그냥 멍때려도 좋아요</div>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:14px 14px;border:1px solid #eee;">
+        <div style="font-size:11px;color:#7c3aed;letter-spacing:1.5px;font-weight:700;margin-bottom:6px;">🤝 오늘의 귀인</div>
+        <div style="font-size:13px;color:#1A3C32;font-weight:800;margin-bottom:4px;word-break:keep-all;line-height:1.5;">오래 연락 없던 친구</div>
+        <div style="font-size:11px;color:#666;line-height:1.7;word-break:keep-all;">카톡 한 통이면 충분. 그 친구가 의외의 기회를 갖고 와요</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑧ Do & Don't (16645~16665행) -->
+  <!-- DOS, DONTS 배열 16647~16648행 -->
+  <div style="padding:14px 16px 12px;">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;letter-spacing:1.5px;margin-bottom:10px;">✦ 오늘 Do &amp; Don't</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:12px 14px;">
+        <div style="font-size:11px;color:#15803d;font-weight:700;letter-spacing:1.5px;margin-bottom:6px;">✅ Do</div>
+        <div style="font-size:12px;color:#1A3C32;font-weight:700;line-height:1.6;word-break:keep-all;">먼저 인사·먼저 메시지</div>
+      </div>
+      <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:12px 14px;">
+        <div style="font-size:11px;color:#991b1b;font-weight:700;letter-spacing:1.5px;margin-bottom:6px;">🚫 Don't</div>
+        <div style="font-size:12px;color:#1A3C32;font-weight:700;line-height:1.6;word-break:keep-all;">충동 결정 / 큰 지출</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑨ 천기의 한마디 (16667~16675행) -->
+  <!-- 무지개 보더 gradient: #ffb8b8,#ffd9a8,#b8e0c8,#bcd6f0,#cdc5e8 -->
+  <div style="padding:12px 16px 14px;">
+    <div style="border-radius:16px;padding:1.5px;background-image:linear-gradient(135deg,#ffb8b8,#ffd9a8,#b8e0c8,#bcd6f0,#cdc5e8);box-shadow:0 4px 14px rgba(155,143,212,0.08);">
+      <div style="background:#fafbfd;border-radius:14.5px;padding:20px 18px;text-align:center;">
+        <div style="font-size:13px;color:#1A3C32;letter-spacing:1.5px;font-weight:900;margin-bottom:10px;">🔮 천기의 한마디</div>
+        <div style="font-size:13px;color:#1A3C32;font-weight:700;line-height:1.85;word-break:keep-all;font-family:'Noto Serif KR',serif;">"잘하고 있어요. 본인한테도 "수고했다" 한마디 해주기"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 해시태그 푸터 (16691~16695행) -->
+  <div class="hash-footer">
+    <span>#천기운세 #오늘의운세 #무료운세 #260630 #홍길동</span>
+    <span style="font-weight:600;">🌐 천기.kr</span>
+  </div>
+</div>
+<!-- ====== 화이트 카드 끝 ====== -->
+
+<!-- 광고배너 4개 (16717~16728행) -->
+<div class="ad-grid">
+  <div class="ad-card" style="border:2px solid rgba(95,196,158,0.3);">
+    <div style="font-size:22px;margin-bottom:4px;">🃏</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">타로 한 장?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">오늘의 타로 →</div>
+  </div>
+  <div class="ad-card" style="border:2px solid rgba(155,143,212,0.3);">
+    <div style="font-size:22px;margin-bottom:4px;">☯️</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">내 사주는?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">사주 풀이 →</div>
+  </div>
+  <div class="ad-card" style="border:2px solid rgba(199,21,133,0.3);">
+    <div style="font-size:22px;margin-bottom:4px;">📸</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">내 관상짤은?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">관상짤 →</div>
+  </div>
+  <div class="ad-card" style="border:2px solid rgba(212,175,55,0.3);">
+    <div style="font-size:22px;margin-bottom:4px;">🪞</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">내 관상은?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">내 관상보기 →</div>
+  </div>
+</div>
+
+<!-- 이것도 해볼래요 (16731행~) -->
+<div style="margin-bottom:10px;">
+  <div style="font-size:11px;font-weight:700;color:var(--mist);margin-bottom:6px;">✨ 이것도 해볼래요?</div>
+  <div class="cross-scroll">
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">🌸</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">이달의 운세</div><div style="font-size:9px;font-weight:700;color:#B8942E;">무료</div></div>
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">🃏</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">오늘의 타로</div><div style="font-size:9px;font-weight:700;color:#B8942E;">무료</div></div>
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">☯️</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">사주 풀이</div><div style="font-size:9px;font-weight:700;color:#B8942E;">980원</div></div>
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">🐯</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">띠별 운세</div><div style="font-size:9px;font-weight:700;color:#B8942E;">무료</div></div>
+  </div>
+</div>
+
+<button class="btn btn-p">오늘도 좋은 하루 ✨</button>
+
+</div><!-- max-width wrapper -->
+</body>
+</html>

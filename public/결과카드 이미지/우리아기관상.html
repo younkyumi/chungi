@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --midnight: #0B140B;
+            --matte-gold: #B89C6A;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border-gold: rgba(184, 156, 106, 0.2);
+        }
+
+        body { 
+            background: var(--midnight); color: #fff; font-family: 'Noto Sans KR', sans-serif; 
+            margin: 0; display: flex; flex-direction: column; align-items: center; padding-bottom: 80px; 
+        }
+
+        #app { width: 100%; max-width: 450px; position: relative; }
+        
+        .title-serif { font-family: 'Playfair Display', serif; font-size: 28px; background: linear-gradient(180deg, #E0C080 0%, #B89C6A 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; margin-bottom: 30px; }
+
+        /* 하이엔드 인증서 카드 (핵심 해결책) */
+        .luxury-certificate {
+            background: var(--glass); backdrop-filter: blur(15px);
+            border: 1px solid var(--border-gold); border-radius: 35px;
+            padding: 40px 25px; margin: 30px 20px; text-align: center;
+            position: relative; overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .luxury-certificate::after {
+            content: "S"; position: absolute; font-size: 200px; color: rgba(184, 156, 106, 0.05);
+            font-family: 'Playfair Display', serif; bottom: -20px; right: -20px; z-index: -1;
+        }
+
+        .header-label { font-size: 10px; letter-spacing: 4px; color: var(--matte-gold); font-weight: 700; margin-bottom: 10px; display: block; }
+        
+        .char-title { font-size: 22px; font-weight: 700; color: #fff; letter-spacing: -1px; margin-top: 15px; line-height: 1.4; }
+        .keyword-group { display: flex; justify-content: space-around; gap: 5px; margin: 20px 0; font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.7); }
+        .grade-badge { display: inline-block; background: var(--matte-gold); color: #000; padding: 10px 30px; border-radius: 100px; font-weight: 900; margin-top: 20px; font-size: 16px; }
+
+        .btn-pay { width: calc(100% - 40px); margin: 0 20px 20px; padding: 22px; background: transparent; border: 1px solid var(--matte-gold); border-radius: 100px; color: var(--matte-gold); font-size: 14px; font-weight: 700; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; }
+        .btn-pay:hover { background: var(--matte-gold); color: #000; }
+
+        /* 하단 고정 스탯바 */
+        .status-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px; background: rgba(0,0,0,0.9); padding: 15px; display: flex; justify-content: space-around; font-size: 13px; color: var(--matte-gold); border-top: 1px solid var(--border-gold); font-weight: 700; z-index: 100; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div style="padding: 20px;">
+        <span style="letter-spacing: 4px; font-size: 10px; color: var(--matte-gold); display: block; text-align: center;">THE FAMILY CONNECTION</span>
+        <h1 class="title-serif">Fate Report</h1>
+    </div>
+
+    <div class="luxury-certificate">
+        <span class="header-label">CHUNGI ORIGINALS</span>
+        <div style="font-size: 50px; margin-bottom: 10px;">👶</div>
+        
+        <h2 class="char-title">"세상을 밝히는<br>꼬마 태양"</h2>
+        
+        <p style="font-size: 13px; opacity: 0.7; line-height: 1.8; margin-top: 20px; padding: 0 10px;">
+            하은이는 타고난 기질 자체가 존귀하고 대귀한 복덩이입니다. 엄마의 총명함과 아빠의 끈기가 만난 최고의 유전자로, 사랑으로 키우면 세상을 바꿀 사람이 될 상입니다.
+        </p>
+        
+        <div class="keyword-group">
+            <span>#존귀</span> <span>#총명</span> <span>#대귀</span> <span>#인복</span>
+        </div>
+
+        <div class="grade-badge">운명 등급: S등급</div>
+        
+        <div style="font-size: 11px; opacity: 0.5; margin-top: 30px;">chungi.kr | 2024. 01. 12 판독완료</div>
+    </div>
+
+    <button class="btn-pay" style="background: var(--matte-gold); color: #000;" onclick="location.href='/41'">📸 이미지로 저장하여 자랑하기</button>
+    <button class="btn-pay" onclick="location.href='/6'">2세 얼굴 & 운명 예측 (평행우주)</button>
+    <button class="btn-pay" onclick="location.href='/42'">동양 오행 기질도 분석</button>
+</div>
+
+<div class="status-bar">
+    <span>🧠 지능 99%</span>
+    <span>💰 재물 大</span>
+    <span>🏆 S등급</span>
+</div>
+
+</body>
+</html>

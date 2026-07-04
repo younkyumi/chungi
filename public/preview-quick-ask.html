@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>지금 바로 물어봐 2종 미리보기</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#1A3C32;color:#fff;font-family:'Pretendard','Noto Serif KR',sans-serif;padding:20px;display:flex;justify-content:center;}
+.wrap{max-width:420px;width:100%;}
+h1{color:#D4AF37;font-size:18px;margin-bottom:6px;}
+.sub{color:#aaa;font-size:11px;margin-bottom:20px;}
+.section-hd{color:#D4AF37;font-size:14px;font-weight:900;margin:24px 0 10px;padding:8px 12px;background:rgba(212,175,55,0.1);border-left:4px solid #D4AF37;border-radius:4px;}
+
+.intro{background:rgba(0,0,0,0.25);border-radius:20px;padding:20px 16px;margin-bottom:10px;text-align:center;}
+.intro .title{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:900;margin-bottom:6px;}
+.intro .sub-t{font-size:12px;color:#C1D1C1;margin-bottom:14px;}
+.intro .hero{height:140px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:70px;margin-bottom:14px;}
+.intro .list{text-align:left;margin-bottom:14px;}
+.intro .li{display:flex;gap:8px;padding:5px 0;font-size:11px;color:#fff;}
+.intro input[type="text"]{width:100%;padding:12px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:10px;color:#fff;font-size:13px;margin-bottom:12px;}
+.cta{color:#fff;padding:14px;border-radius:12px;font-size:14px;font-weight:900;width:100%;border:none;cursor:pointer;}
+
+.rcard{background:#fff;color:#333;border-radius:20px;overflow:hidden;margin-bottom:10px;box-shadow:0 10px 30px rgba(0,0,0,0.15);}
+.rhd{padding:16px;text-align:center;border-bottom:1px solid #f0f0f0;}
+.brand{font-size:9px;color:#aaa;letter-spacing:0.5px;margin-bottom:4px;}
+.rtitle{font-size:17px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR',serif;}
+
+/* YES/NO 결과 */
+.yesno-big{font-size:80px;font-weight:900;text-align:center;padding:30px 0 10px;font-family:'Noto Serif KR',serif;letter-spacing:4px;}
+.yes{color:#059669;}
+.no{color:#c92a2a;}
+.maybe{color:#f59f00;}
+.yesno-lbl{text-align:center;font-size:14px;font-weight:700;margin-bottom:14px;}
+
+/* 타로 카드 */
+.card-draw{display:flex;justify-content:center;padding:20px 0;}
+.tcard{width:100px;height:150px;background:linear-gradient(135deg,#8B2929,#4a1313);border:2px solid #D4AF37;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#D4AF37;box-shadow:0 10px 20px rgba(139,41,41,0.4);}
+.tcard .tnum{font-size:12px;letter-spacing:2px;}
+.tcard .tic{font-size:44px;margin:12px 0;}
+.tcard .tnm{font-size:11px;font-weight:700;}
+
+.rsec{background:#f8f9fa;border-left:4px solid #D4AF37;padding:12px;border-radius:10px;margin-bottom:10px;}
+.rsec .st{font-size:12px;font-weight:800;color:#1A3C32;margin-bottom:4px;}
+.rsec .sd{font-size:11px;color:#555;line-height:1.7;}
+
+/* 꿈 해몽 */
+.dream-input-box{background:rgba(255,255,255,0.05);border:2px dashed rgba(155,143,212,0.5);border-radius:12px;padding:16px;margin-bottom:14px;text-align:center;}
+.dream-icon{font-size:40px;margin-bottom:8px;}
+.dream-categories{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px;}
+.dcat{background:rgba(255,255,255,0.06);border:1px solid rgba(155,143,212,0.3);padding:8px 4px;border-radius:8px;text-align:center;font-size:10px;color:#c5b3ee;}
+.dream-quality{display:flex;justify-content:center;gap:10px;padding:16px 0;}
+.dq{width:70px;height:70px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:900;}
+.dq .label{font-size:9px;}
+.dq .value{font-size:14px;}
+.dq-gilmong{background:linear-gradient(135deg,#5fc49e,#2f8d6a);}
+.dq-tangmong{background:linear-gradient(135deg,#ff8a8a,#c92a2a);}
+.dq-yumong{background:linear-gradient(135deg,#9b8fd4,#6d28d9);}
+
+.hashtag{font-size:8px;color:#aaa;display:flex;justify-content:space-between;padding:0 16px 16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>🔮 지금 바로 물어봐 2종 미리보기</h1>
+<div class="sub">즉문즉답 · 고민 1분 해결</div>
+
+<!-- 1. YES/NO 타로 -->
+<div class="section-hd">① ✨ YES/NO 타로</div>
+<div class="intro" style="border:2px solid rgba(255,107,107,0.5);">
+  <div class="title" style="color:#ff6b6b">✨ YES/NO 타로</div>
+  <div class="sub-t">할까 말까? 천기가 단호박으로 답해드림</div>
+  <div class="hero" style="background:linear-gradient(135deg,rgba(255,107,107,0.2),rgba(0,0,0,0.4));">🎯</div>
+  <div style="text-align:left;margin-bottom:14px;">
+    <div class="li">💬 <b>Yes/No로 답이 오는 질문 1개 입력</b></div>
+    <div class="li">🃏 <b>카드 1장 뽑아 단호박 답변</b></div>
+    <div class="li">📊 <b>확신도 (0~100%)</b></div>
+    <div class="li">🔮 <b>천기가 짚은 조언 1줄</b></div>
+  </div>
+  <input type="text" placeholder="예: 오늘 그 사람에게 연락해도 될까?"/>
+  <button class="cta" style="background:linear-gradient(135deg,#ff6b6b,#c92a2a);">🎯 답 받기 (무료) →</button>
+</div>
+<div class="rcard">
+  <div class="rhd">
+    <div class="brand">✨ 천기 오리지널 | YES/NO 타로</div>
+    <div class="rtitle">질문: "오늘 그 사람에게 연락해도 될까?"</div>
+  </div>
+  <div class="yesno-big yes">YES</div>
+  <div class="yesno-lbl"><span style="background:#d4f7e7;color:#059669;padding:4px 14px;border-radius:16px;">확신도 85%</span></div>
+  <div class="card-draw">
+    <div class="tcard">
+      <div class="tnum">II</div>
+      <div class="tic">💕</div>
+      <div class="tnm">연인 · 견우직녀</div>
+    </div>
+  </div>
+  <div style="padding:0 16px 16px;">
+    <div class="rsec" style="border-color:#5fc49e"><div class="st">🔮 천기의 단호박 답</div><div class="sd">"지금 보내도 됩니다. 다만 <b>문장 톤은 가볍게</b>. 반응 오면 그대로 흐름 타세요. 오늘은 규미 님 쪽이 주도권 잡는 날."</div></div>
+    <div class="rsec" style="border-color:#4263eb"><div class="st">⏰ 최적 타이밍</div><div class="sd">오후 <b>3~5시</b> 사이. 저녁엔 답 느려질 수 있음.</div></div>
+  </div>
+  <div class="hashtag"><span>#YESNO타로 #YES85% #연인카드</span><span>🌐 천기.kr</span></div>
+</div>
+
+<!-- 2. 꿈·태몽 해몽 -->
+<div class="section-hd">② 🌙 꿈·태몽 해몽</div>
+<div class="intro" style="border:2px solid rgba(155,143,212,0.5);">
+  <div class="title" style="color:#c5b3ee">🌙 꿈 · 태몽 해몽</div>
+  <div class="sub-t">어젯밤 그 꿈, 길몽일까 태몽일까?</div>
+  <div class="hero" style="background:linear-gradient(135deg,rgba(155,143,212,0.2),rgba(0,0,0,0.4));">🌙</div>
+  <div style="text-align:left;margin-bottom:14px;">
+    <div class="li">📝 <b>꿈 내용 1~2줄 입력</b></div>
+    <div class="li">🎴 <b>길몽/흉몽/유몽 판정</b></div>
+    <div class="li">👶 <b>태몽 가능성 체크</b> (임신/출산 연관)</div>
+    <div class="li">🔮 <b>꿈 상징 해석 + 행동 가이드</b></div>
+    <div class="li">💌 <b>공유하면 부정 기운 소멸</b></div>
+  </div>
+  <input type="text" placeholder="예: 어제 금붕어 꿈 꿨어요..."/>
+  <button class="cta" style="background:linear-gradient(135deg,#9b8fd4,#6d28d9);">🌙 해몽 보기 (무료) →</button>
+</div>
+<div class="rcard">
+  <div class="rhd">
+    <div class="brand">🌙 천기 오리지널 | 꿈·태몽 해몽</div>
+    <div class="rtitle">"금붕어가 집에 들어오는 꿈"</div>
+  </div>
+  <div class="dream-quality">
+    <div class="dq dq-gilmong"><div class="label">길몽</div><div class="value">92%</div></div>
+    <div class="dq dq-yumong"><div class="label">태몽</div><div class="value">75%</div></div>
+    <div class="dq dq-tangmong"><div class="label">흉몽</div><div class="value">8%</div></div>
+  </div>
+  <div style="padding:0 16px 16px;">
+    <div class="rsec" style="border-color:#5fc49e"><div class="st">🎴 대길몽 판정</div><div class="sd">금붕어가 집에 들어오는 꿈은 <b>재물운·태몽의 대표 길몽</b>. 특히 '집으로 들어오는' 방향이면 새로운 복이 들어오는 신호.</div></div>
+    <div class="rsec" style="border-color:#c5b3ee"><div class="st">👶 태몽 가능성 75%</div><div class="sd">임신 계획 중이거나 최근 가족에 임산부가 있다면 <b>딸 태몽</b>일 확률 높음. 금붕어 꿈은 전통적으로 <b>총명하고 재물 많은 자식</b> 상징.</div></div>
+    <div class="rsec" style="border-color:#f59f00"><div class="st">🎯 오늘의 행동</div><div class="sd">낮에 <b>물가(카페·강변) 산책</b>. 로또·복권 1매는 OK. 붉은 지갑 안에 금붕어 사진 보관하면 효과 증폭.</div></div>
+  </div>
+  <div class="hashtag"><span>#꿈해몽 #금붕어꿈 #대길몽92%</span><span>🌐 천기.kr</span></div>
+</div>
+
+</div>
+</body>
+</html>

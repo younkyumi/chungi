@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>궁합연예인 결과창 미리보기</title>
+<!--
+  출처: src/app/page.tsx
+  - celeb_compat result JSX: 8140~8312행
+  - id="celeb-capture" 없음 — 전체 흰카드 구조 (8227행)
+  - border: "1px solid rgba(212,175,55,0.3)" (골드)
+  - BrandLine: "궁합 연예인 TOP 5" (8230행)
+  - 제목: "💕 {personName}님의 찰떡 연예인" (8231행)
+  - 사주 한줄 분석 박스: borderLeft 4px solid #D4AF37, bg:#fffbe9 (8241행)
+  - 매칭 안내 텍스트 (8245행)
+  - TOP 5 미리보기: 위3개 (3칸) + 아래2개 (2칸) grid (8250~8266행)
+    - 선택된 탭: border #D4AF37, boxShadow gold
+    - 미선택: border #f0e0a0
+  - 선택된 연예인 상세 (8270~8304행):
+    - 이모지 원형 bg (54x54, bg:#f59e0b)
+    - 이름 + 직업 + tag chip + match% + progress bar
+    - 사주 베이스 박스 (8290행)
+    - 왜 잘 맞나? 박스 (8295행)
+    - 함께하면 좋은 일 박스 (8300행)
+  - hash footer: #천기궁합 #궁합연예인 #{이름} #일간{ohaeng} #{tag} #무료운세 (8308행)
+  - 무료 서비스 (1일 1회)
+
+  _CELEBS_POOL 샘플:
+  - 아이유: 오행=목, tag="#천생연분형", emoji=🎤
+  - 박보검: 오행=토, tag="#안정형", emoji=🎬
+  - 손흥민: 오행=금, tag="#시너지형", emoji=⚽
+  - 임영웅: 오행=토, tag="#동반성장형", emoji=🎵
+  - 김연아: 오행=수, tag="#음양조화형", emoji=⛸️
+-->
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#1A3C32;--gold:#D4AF37;--mist:#A8C4B8;}
+body{background:#1A3C32;font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;padding:20px;}
+.max-wrap{max-width:430px;margin:0 auto;}
+.white-card{background:#ffffff;border-radius:20px;overflow:hidden;border:1px solid rgba(212,175,55,0.3);box-shadow:0 10px 30px rgba(0,0,0,0.06);color:#333;margin-bottom:12px;}
+.brand-line-inner{font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;padding:10px 16px;text-align:center;border-bottom:1px solid #f0f0f0;}
+.hash-footer{display:flex;justify-content:space-between;padding:10px 16px;margin-top:14px;font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;border-top:1px solid #f0f0f0;}
+.gray-box{background:#ffffff;border-radius:10px;padding:10px 12px;margin-bottom:12px;border:1px solid #eee;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+</style>
+</head>
+<body>
+<div class="max-wrap">
+
+<!-- ═══════════ 메인 결과 카드 (8227행) ═══════════ -->
+<div class="white-card">
+  <!-- 상단 브랜딩 (8229~8236행) -->
+  <div style="padding:10px 16px 0;text-align:center;">
+    <div class="brand-line-inner">궁합 연예인 TOP 5</div>
+    <div style="font-size:18px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;line-height:1.35;">💕 홍길동님의 찰떡 연예인</div>
+    <div style="font-size:10px;color:#888;font-weight:600;margin-top:6px;line-height:1.6;">
+      <div>👤 홍길동 : 1990.05.15. 午시생 · 양력 · 남성</div>
+      <div style="color:#aaa;">📅 2026-06-30 검사</div>
+    </div>
+  </div>
+
+  <!-- 사주 한줄 분석 박스 (8240~8247행) -->
+  <div style="padding:14px 16px;background:#fff;">
+    <div style="border-left:4px solid #D4AF37;background:#fffbe9;border-radius:0 12px 12px 0;padding:12px 14px;margin-bottom:12px;">
+      <div style="font-size:10px;color:#7A5C00;letter-spacing:1.5px;font-weight:800;margin-bottom:6px;">✦ 홍길동님의 사주 한줄 분석</div>
+      <div style="font-size:12px;color:#1A3C32;line-height:1.75;font-weight:600;word-break:keep-all;">홍길동님의 일간(태어난 날의 기운)은 甲(목, 木) — 다섯 기운 중 '나무'의 본질이에요. 천천히 굳건히 자라는 큰 나무처럼, 성장·창의·감수성이 깊고 따뜻한 매력의 소유자랍니다.</div>
+    </div>
+    <div style="font-size:11px;color:#666;line-height:1.7;word-break:keep-all;">아래 5명은 홍길동님의 일간과 가장 잘 어우러지는 오행을 가진 연예인들이에요. <strong style="color:#1A3C32;">같은 기운(동행)</strong> · <strong style="color:#1A3C32;">생해주는 기운(보살핌)</strong> · <strong style="color:#1A3C32;">정반대 기운(끌림)</strong> 순으로 매칭됐어요.</div>
+  </div>
+
+  <!-- TOP 5 미리보기 (8249~8267행) -->
+  <div style="padding:12px 12px;background:#fff;">
+    <!-- 위 3개: 3칸 grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-bottom:5px;">
+      <!-- 1번 (선택됨): border #D4AF37, boxShadow gold -->
+      <div style="background:#fff;border:1.5px solid #D4AF37;border-radius:10px;padding:8px 6px;text-align:center;box-shadow:0 2px 8px rgba(212,175,55,0.25);">
+        <div style="font-size:18px;margin-bottom:2px;">🎤</div>
+        <div style="font-size:11px;font-weight:800;color:#1A3C32;line-height:1.3;">1. 아이유</div>
+      </div>
+      <!-- 2번 (미선택): border #f0e0a0 -->
+      <div style="background:#fff;border:1.5px solid #f0e0a0;border-radius:10px;padding:8px 6px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+        <div style="font-size:18px;margin-bottom:2px;">🎵</div>
+        <div style="font-size:11px;font-weight:800;color:#1A3C32;line-height:1.3;">2. 임영웅</div>
+      </div>
+      <!-- 3번 (미선택) -->
+      <div style="background:#fff;border:1.5px solid #f0e0a0;border-radius:10px;padding:8px 6px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+        <div style="font-size:18px;margin-bottom:2px;">🌹</div>
+        <div style="font-size:11px;font-weight:800;color:#1A3C32;line-height:1.3;">3. BLACKPINK 지수</div>
+      </div>
+    </div>
+    <!-- 아래 2개: 2칸 grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
+      <div style="background:#fff;border:1.5px solid #f0e0a0;border-radius:10px;padding:8px 6px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+        <div style="font-size:18px;margin-bottom:2px;">🌷</div>
+        <div style="font-size:11px;font-weight:800;color:#1A3C32;line-height:1.3;">4. 르세라핌 카즈하</div>
+      </div>
+      <div style="background:#fff;border:1.5px solid #f0e0a0;border-radius:10px;padding:8px 6px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+        <div style="font-size:18px;margin-bottom:2px;">🎭</div>
+        <div style="font-size:11px;font-weight:800;color:#1A3C32;line-height:1.3;">5. 이도현</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 선택된 1번 상세 (8270~8304행) -->
+  <!-- cur = 아이유 (1위, ohaeng=목, tag="#천생연분형", match=88%) -->
+  <div style="padding:14px 16px;">
+    <!-- 화이트 카드 (8272행): bg:#fff, border 1px #eee, borderRadius:14, boxShadow -->
+    <div class="gray-box" style="border-radius:14px;padding:14px;">
+      <!-- 헤더: 이모지 원형 + 이름/직업/태그/progress -->
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <!-- 이모지 원형 (54x54, bg:#f59e0b) (8274행) -->
+        <div style="width:54px;height:54px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;box-shadow:0 4px 12px rgba(245,158,11,0.3);">🎤</div>
+        <div style="flex:1;">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;flex-wrap:wrap;">
+            <span style="font-size:15px;font-weight:900;color:#111;">1. 아이유</span>
+            <span style="font-size:10px;color:#888;">가수·배우</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+            <span style="font-size:9px;padding:2px 8px;border-radius:10px;background:rgba(245,158,11,0.2);color:#92400e;font-weight:800;">#천생연분형</span>
+            <span style="font-size:13px;font-weight:900;color:#f59e0b;">88%</span>
+          </div>
+          <!-- progress bar -->
+          <div style="height:6px;background:rgba(245,158,11,0.15);border-radius:4px;overflow:hidden;">
+            <div style="height:100%;width:88%;background:linear-gradient(90deg,#f59e0b,#fbbf24);border-radius:4px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 사주 베이스 박스 (8290행) -->
+      <div style="background:#fff;border-radius:10px;padding:10px 12px;margin-bottom:12px;">
+        <div style="font-size:10px;color:#7A5C00;font-weight:800;letter-spacing:1px;margin-bottom:5px;">🌱 아이유의 사주 <span style="color:#888;font-weight:600;">(목 — 성장·창의의 기운)</span></div>
+        <div style="font-size:12px;color:#555;line-height:1.75;word-break:keep-all;">창의적이고 감성적인 木 일간. 섬세한 감수성과 표현력이 일상을 예술로 만드는 사람. 아이유의 일간 목(성장·창의의 기운) 기운이 홍길동님의 목(성장·창의의 기운)와 자연스럽게 어우러져요.</div>
+      </div>
+
+      <!-- 왜 잘 맞나? (8295행) -->
+      <div style="background:#fff;border-radius:10px;padding:10px 12px;margin-bottom:12px;">
+        <div style="font-size:10px;color:#c92a2a;font-weight:800;letter-spacing:1px;margin-bottom:5px;">💞 왜 잘 맞나? <span style="color:#888;font-weight:600;">· 같은 일간 (자연스러운 공명)</span></div>
+        <div style="font-size:12px;color:#555;line-height:1.75;word-break:keep-all;">홍길동님의 일간과 木으로 공명해요. 같은 방향을 보고 자라는 인연 — 말 없이도 통하는 사이. 이런 결의 사람과 함께 있으면 홍길동님의 본래 매력이 더 자연스럽게 발휘되고, 서로의 약점을 부드럽게 채워줄 수 있어요.</div>
+      </div>
+
+      <!-- 함께하면 좋은 일 (8300행) -->
+      <div style="background:#fff;border-radius:10px;padding:10px 12px;">
+        <div style="font-size:10px;color:#0369a1;font-weight:800;letter-spacing:1px;margin-bottom:5px;">🌸 함께하면 좋은 일</div>
+        <div style="font-size:12px;color:#555;line-height:1.75;word-break:keep-all;">함께 카페·전시·여행을 다니면 영감이 폭발해요. 음악 취향이 맞아 플레이리스트만 공유해도 행복. 아이유의 결을 닮은 사람과의 시간은 홍길동님에게 좋은 기운이 흐르는 순간으로 남을 거예요.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 해시태그 푸터 (8307~8310행) -->
+  <div class="hash-footer">
+    <span>#천기궁합 #궁합연예인 #홍길동 #일간목 #천생연분형 #무료운세</span>
+    <span style="font-weight:600;">🌐 천기.kr</span>
+  </div>
+</div>
+
+<!-- 광고배너 2x2 -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(212,175,55,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">💑</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">커플 궁합?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">커플궁합 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(155,143,212,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">👯</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">베프 궁합?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">베프궁합 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(212,175,55,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">☯️</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">내 사주?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">사주 풀이 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(199,21,133,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">📸</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">내 관상짤?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">관상짤 →</div>
+  </div>
+</div>
+
+<!-- ResultActions -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+  <button style="padding:12px;background:#f8f9fa;border:1px solid #eee;border-radius:12px;font-size:12px;font-weight:700;color:#333;cursor:pointer;">📸 이미지 저장</button>
+  <button style="padding:12px;background:#f8f9fa;border:1px solid #eee;border-radius:12px;font-size:12px;font-weight:700;color:#333;cursor:pointer;">🔗 공유하기</button>
+</div>
+
+<!-- 버튼 -->
+<button style="width:100%;padding:14px;background:#D4AF37;color:#1A3C32;border:none;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;">확인 완료</button>
+
+</div>
+</body>
+</html>

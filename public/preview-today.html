@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>오늘의 천기 5종 미리보기</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#1A3C32;color:#fff;font-family:'Pretendard','Noto Serif KR',sans-serif;padding:20px;display:flex;justify-content:center;}
+.wrap{max-width:420px;width:100%;}
+h1{color:#D4AF37;font-size:18px;margin-bottom:6px;}
+.sub{color:#aaa;font-size:11px;margin-bottom:20px;}
+.section-hd{color:#D4AF37;font-size:14px;font-weight:900;margin:24px 0 10px;padding:8px 12px;background:rgba(212,175,55,0.1);border-left:4px solid #D4AF37;border-radius:4px;}
+
+/* 설명팝업 */
+.intro{background:rgba(0,0,0,0.25);border-radius:20px;padding:20px 16px;margin-bottom:10px;border:2px solid rgba(212,175,55,0.4);text-align:center;}
+.intro .title{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:900;color:#F4E0A0;margin-bottom:6px;}
+.intro .sub-t{font-size:12px;color:#C1D1C1;margin-bottom:14px;}
+.intro .hero{height:140px;background:linear-gradient(135deg,rgba(212,175,55,0.15),rgba(0,0,0,0.4));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:70px;margin-bottom:14px;border:1px solid rgba(212,175,55,0.25);}
+.intro .list{text-align:left;margin-bottom:14px;}
+.intro .li{display:flex;gap:8px;padding:5px 0;font-size:11px;color:#fff;}
+.intro .li b{color:#F4E0A0;}
+.cta{background:linear-gradient(135deg,#D29C44,#AA7B30);color:#fff;padding:14px;border-radius:12px;font-size:14px;font-weight:900;width:100%;border:none;cursor:pointer;}
+.cta-free{background:linear-gradient(135deg,#5fc49e,#2f8d6a);}
+
+/* 결과 카드 */
+.rcard{background:#fff;color:#333;border-radius:20px;overflow:hidden;margin-bottom:10px;box-shadow:0 10px 30px rgba(0,0,0,0.15);}
+.rcard .rhd{padding:16px;text-align:center;border-bottom:1px solid #f0f0f0;background:linear-gradient(180deg,#fafafa,#fff);}
+.rcard .brand{font-size:9px;color:#aaa;letter-spacing:0.5px;margin-bottom:4px;}
+.rcard .rtitle{font-size:17px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR',serif;}
+.rcard .date{font-size:10px;color:#888;margin-top:2px;}
+.rcard .body{padding:16px;}
+
+/* 공통 섹션 */
+.rsec{background:#f8f9fa;border-left:4px solid #D4AF37;padding:12px;border-radius:10px;margin-bottom:10px;}
+.rsec .st{font-size:12px;font-weight:800;color:#1A3C32;margin-bottom:4px;}
+.rsec .sd{font-size:11px;color:#555;line-height:1.7;}
+
+/* 점수/지수 */
+.score-big{font-size:40px;font-weight:900;color:#D4AF37;text-align:center;margin:10px 0;font-family:'Noto Serif KR',serif;}
+.stars{text-align:center;font-size:20px;color:#D4AF37;margin-bottom:10px;}
+
+/* 카테고리 5바 */
+.cats{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:0 16px 16px;}
+.cat{background:linear-gradient(135deg,#fdf6e3,#fff8eb);border:1px solid #e6d5a8;border-radius:10px;padding:8px 4px;text-align:center;}
+.cat .cn{font-size:9px;color:#8b6f1c;font-weight:700;margin-bottom:2px;}
+.cat .cs{font-size:13px;color:#c9a04e;font-weight:900;}
+
+/* 타로 카드 이미지 */
+.tarot-deck{display:flex;gap:10px;justify-content:center;padding:20px;}
+.tcard{width:90px;height:130px;background:linear-gradient(135deg,#8B2929,#4a1313);border:2px solid #D4AF37;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#D4AF37;box-shadow:0 6px 15px rgba(139,41,41,0.3);}
+.tcard .tnum{font-size:11px;letter-spacing:2px;margin-bottom:10px;}
+.tcard .tic{font-size:36px;}
+.tcard .tnm{font-size:11px;font-weight:700;margin-top:10px;}
+
+/* 로또 번호 */
+.lotto-wrap{padding:16px;}
+.lotto-balls{display:flex;gap:6px;justify-content:center;margin:10px 0;flex-wrap:wrap;}
+.lotto-ball{width:40px;height:40px;border-radius:50%;color:#fff;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(0,0,0,0.2);}
+.lb1-10{background:#fbc400;}
+.lb11-20{background:#69c8f2;}
+.lb21-30{background:#ff7272;}
+.lb31-40{background:#aaa;}
+.lb41-45{background:#b0d840;}
+
+/* 월별 주파수 */
+.month-list{margin:10px 0;}
+.mitem{background:#fff;border:1px solid #ffe0b3;border-radius:10px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px;}
+.mname{font-weight:800;color:#8b6f1c;font-size:11px;width:40px;}
+.mbar{flex:1;height:8px;background:#ffe0b3;border-radius:4px;overflow:hidden;}
+.mbar-fill{height:100%;background:linear-gradient(90deg,#fad45f,#ff9f43);border-radius:4px;}
+.mrate{font-size:11px;font-weight:900;color:#c9a04e;width:40px;text-align:right;}
+
+/* 명언 */
+.quote-box{background:linear-gradient(135deg,#f0f4ff,#e8f0ff);border-left:6px solid #4263eb;padding:20px;margin:10px 16px;border-radius:10px;text-align:center;}
+.quote-text{font-size:14px;font-weight:700;color:#1a2a4a;line-height:1.7;font-style:italic;margin-bottom:8px;font-family:'Noto Serif KR',serif;}
+.quote-author{font-size:10px;color:#4263eb;}
+
+.hashtag{font-size:8px;color:#aaa;display:flex;justify-content:space-between;padding:0 16px 16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>✦ 오늘의 천기 5종 (설명+결과) 미리보기</h1>
+<div class="sub">매일 1회 무료 · 공유하면 도파민 폭발</div>
+
+<!-- 1. 오늘의 운세 -->
+<div class="section-hd">① 🔮 오늘의 운세</div>
+<div class="intro">
+  <div class="title">🔮 오늘의 운세</div>
+  <div class="sub-t">2026년 4월 15일 · 1일 1회 무료</div>
+  <div class="hero">🔮</div>
+  <div class="list">
+    <div class="li">✦ <b>5대 운세 점수</b> (애정/재물/건강/직장/인간관계)</div>
+    <div class="li">🎨 <b>오늘의 수호 컬러·숫자·방향·시간</b></div>
+    <div class="li">🍱 <b>수호 음식</b> (건강 보완)</div>
+    <div class="li">🐯 <b>오늘의 수호 동물</b></div>
+    <div class="li">💌 <b>운세 공유</b>하면 추가 쿠폰</div>
+  </div>
+  <button class="cta cta-free">오늘의 운세 보기 (무료) →</button>
+</div>
+<div class="rcard">
+  <div class="rhd">
+    <div class="brand">🔮 천기 오리지널 | 오늘의 운세</div>
+    <div class="rtitle">윤규미 님의 오늘 기운</div>
+    <div class="date">2026년 4월 15일 · 갑진년 계묘월 경신일</div>
+  </div>
+  <div class="score-big">87점</div>
+  <div class="stars">★★★★☆</div>
+  <div class="cats">
+    <div class="cat"><div class="cn">애정</div><div class="cs">92</div></div>
+    <div class="cat"><div class="cn">재물</div><div class="cs">85</div></div>
+    <div class="cat"><div class="cn">건강</div><div class="cs">80</div></div>
+    <div class="cat"><div class="cn">직장</div><div class="cs">88</div></div>
+    <div class="cat"><div class="cn">인관</div><div class="cs">90</div></div>
+  </div>
+  <div class="body">
+    <div class="rsec"><div class="st">💬 천기의 한마디</div><div class="sd">"규미 님, 오늘은 <b>동쪽</b>에서 귀인이 옵니다. 새로운 제안이 들어오면 <b>즉답 대신 하루 고민</b>하세요. 결과가 배로 좋아집니다."</div></div>
+    <div class="rsec" style="border-color:#ff6b6b"><div class="st">💖 애정운</div><div class="sd">마음 표현이 적극적이어질 타이밍. 짝 있다면 깊은 대화, 솔로라면 소개팅 OK.</div></div>
+    <div class="rsec" style="border-color:#f59f00"><div class="st">💰 재물운</div><div class="sd">작은 지출은 줄이고 투자·저축 고민 좋은 날. 로또는 패스.</div></div>
+  </div>
+  <div class="hashtag"><span>#오늘의운세 #87점 #★★★★☆</span><span>🌐 천기.kr</span></div>
+</div>
+
+<!-- 2. 오늘의 타로 -->
+<div class="section-hd">② 🃏 오늘의 타로</div>
+<div class="intro" style="border-color:rgba(139,41,41,0.5)">
+  <div class="title" style="color:#ff8a8a">🃏 오늘의 타로</div>
+  <div class="sub-t">조선 타로 78장 중 오늘의 한 장</div>
+  <div class="hero" style="background:linear-gradient(135deg,rgba(139,41,41,0.2),rgba(0,0,0,0.4));">🎴</div>
+  <div class="list">
+    <div class="li">🃏 <b>랜덤 1장 + 의미 해석</b></div>
+    <div class="li">🎯 <b>오늘 적용 포인트</b></div>
+    <div class="li">💌 <b>공유</b>하면 카드 수집 (78장 도감)</div>
+    <div class="li">📋 <b>내가 뽑은 카드 기록</b>에 저장</div>
+  </div>
+  <button class="cta cta-free">오늘의 카드 뽑기 (무료) →</button>
+</div>
+<div class="rcard">
+  <div class="rhd">
+    <div class="brand">🃏 천기 오리지널 | 조선 타로</div>
+    <div class="rtitle">오늘 뽑힌 카드</div>
+  </div>
+  <div class="tarot-deck">
+    <div class="tcard">
+      <div class="tnum">XVII</div>
+      <div class="tic">⭐</div>
+      <div class="tnm">별 · 칠성신</div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="rsec" style="border-color:#c92a2a"><div class="st">🌟 카드 의미</div><div class="sd"><b>칠성신(七星神)</b>의 가호. 희망과 영감이 쏟아지는 날. 잃었던 믿음을 되찾고, 오래 꿈꾸던 것에 한 발 내딛기 좋은 타이밍.</div></div>
+    <div class="rsec" style="border-color:#7950f2"><div class="st">🎯 오늘 적용법</div><div class="sd">망설이던 연락·기획·도전 중 <b>하나</b>만 오늘 실행. 우주가 뒤에서 밀어줍니다.</div></div>
+    <div class="rsec" style="border-color:#ff8a8a"><div class="st">⚠️ 경계</div><div class="sd">너무 이상적인 사람에게 빠지지 말 것. 현실의 디테일은 체크.</div></div>
+  </div>
+  <div class="hashtag"><span>#오늘의타로 #칠성신 #별카드</span><span>🌐 천기.kr</span></div>
+</div>
+
+<!-- 3. 행운 로또번호 -->
+<div class="section-hd">③ 🎰 행운 로또번호</div>
+<div class="intro" style="border-color:rgba(251,196,0,0.5)">
+  <div class="title" style="color:#ffd93d">🎰 행운 로또번호</div>
+  <div class="sub-t">내 사주 오행 × 오늘 기운 조합</div>
+  <div class="hero" style="background:linear-gradient(135deg,rgba(251,196,0,0.2),rgba(0,0,0,0.4));">🎰</div>
+  <div class="list">
+    <div class="li">🔢 <b>5세트 로또번호</b> (사주 맞춤)</div>
+    <div class="li">⭐ <b>오늘의 행운 숫자 TOP 5</b></div>
+    <div class="li">🕐 <b>구매 최적 시간대</b></div>
+    <div class="li">💌 공유할수록 <b>당첨 기운 UP</b></div>
+  </div>
+  <button class="cta cta-free">행운 로또번호 받기 (무료) →</button>
+</div>
+<div class="rcard">
+  <div class="rhd">
+    <div class="brand">🎰 천기 오리지널 | 행운 로또번호</div>
+    <div class="rtitle">2026.4.15 오늘의 행운 번호</div>
+  </div>
+  <div class="lotto-wrap">
+    <div style="font-size:11px;color:#888;text-align:center;margin-bottom:4px;">1세트</div>
+    <div class="lotto-balls">
+      <div class="lotto-ball lb1-10">7</div>
+      <div class="lotto-ball lb11-20">14</div>
+      <div class="lotto-ball lb21-30">23</div>
+      <div class="lotto-ball lb31-40">35</div>
+      <div class="lotto-ball lb41-45">42</div>
+      <div class="lotto-ball lb41-45">45</div>
+    </div>
+    <div style="font-size:11px;color:#888;text-align:center;margin-top:10px;margin-bottom:4px;">2세트</div>
+    <div class="lotto-balls">
+      <div class="lotto-ball lb1-10">3</div>
+      <div class="lotto-ball lb11-20">11</div>
+      <div class="lotto-ball lb21-30">27</div>
+      <div class="lotto-ball lb31-40">33</div>
+      <div class="lotto-ball lb31-40">38</div>
+      <div class="lotto-ball lb41-45">44</div>
+    </div>
+  </div>
+  <div style="background:#fffbe6;padding:12px;margin:0 16px;border-radius:10px;border:1px solid #fde68a;">
+    <div style="font-size:11px;font-weight:800;color:#b45309;margin-bottom:4px;">⭐ 오늘의 행운 숫자 TOP 5</div>
+    <div style="font-size:14px;font-weight:900;color:#c9a04e;">7 · 14 · 23 · 33 · 42</div>
+  </div>
+  <div class="body">
+    <div class="rsec" style="border-color:#fbc400"><div class="st">🕐 구매 최적 시간</div><div class="sd">오늘 <b>오후 2시 22분</b> 또는 <b>저녁 7시 7분</b>에 구매하세요.</div></div>
+  </div>
+  <div class="hashtag"><span>#행운로또 #오행맞춤</span><span>🌐 천기.kr</span></div>
+</div>
+
+<!-- 4. 이달의 운세 -->
+<div class="section-hd">④ 🌸 이달의 운세</div>
+<div class="intro" style="border-color:rgba(255,107,173,0.5)">
+  <div class="title" style="color:#ff6bad">🌸 이달의 운세</div>
+  <div class="sub-t">4월 한 달 주파수 + 주간 가이드</div>
+  <div class="hero" style="background:linear-gradient(135deg,rgba(255,107,173,0.2),rgba(0,0,0,0.4));">🌸</div>
+  <div class="list">
+    <div class="li">📅 <b>주차별 주파수 그래프</b></div>
+    <div class="li">⭐ <b>이달의 별점 (5단계)</b></div>
+    <div class="li">🎯 <b>주차별 할 일/피할 일</b></div>
+    <div class="li">💝 <b>월말 보너스 예언</b></div>
+  </div>
+  <button class="cta cta-free">이달의 운세 보기 (무료) →</button>
+</div>
+<div class="rcard">
+  <div class="rhd">
+    <div class="brand">🌸 천기 오리지널 | 이달의 운세</div>
+    <div class="rtitle">2026년 4월 "새 바람"</div>
+    <div class="date">★★★★★ 황금달</div>
+  </div>
+  <div class="body">
+    <div class="month-list">
+      <div class="mitem"><div class="mname">1주</div><div class="mbar"><div class="mbar-fill" style="width:85%"></div></div><div class="mrate">85%</div></div>
+      <div class="mitem"><div class="mname">2주</div><div class="mbar"><div class="mbar-fill" style="width:60%"></div></div><div class="mrate">60%</div></div>
+      <div class="mitem"><div class="mname">3주</div><div class="mbar"><div class="mbar-fill" style="width:95%"></div></div><div class="mrate">95%</div></div>
+      <div class="mitem"><div class="mname">4주</div><div class="mbar"><div class="mbar-fill" style="width:75%"></div></div><div class="mrate">75%</div></div>
+    </div>
+    <div class="rsec" style="border-color:#ff6bad"><div class="st">🌸 이달의 키워드</div><div class="sd"><b>"새 바람, 새 기회"</b> — 4월은 생기가 돌아 규미 님에게 새 인연/제안이 들어옵니다. 특히 3주차 기적의 달.</div></div>
+    <div class="rsec" style="border-color:#7950f2"><div class="st">🎯 이달의 과제</div><div class="sd">미뤄둔 연락·리스트 정리. 2주차(60%)에 무리한 결정 금지.</div></div>
+    <div class="rsec" style="border-color:#5fc49e"><div class="st">💝 월말 보너스</div><div class="sd">4월 29일 전후로 <b>예상 못한 수입</b> 가능. 리뷰·보너스·선물 예상.</div></div>
+  </div>
+  <div class="hashtag"><span>#이달의운세 #황금4월 #새바람</span><span>🌐 천기.kr</span></div>
+</div>
+
+<!-- 5. 오늘의 명언 -->
+<div class="section-hd">⑤ ✨ 오늘의 명언</div>
+<div class="intro" style="border-color:rgba(66,99,235,0.5)">
+  <div class="title" style="color:#7c94ff">✨ 오늘의 명언</div>
+  <div class="sub-t">천기가 골라준 나를 위한 한마디</div>
+  <div class="hero" style="background:linear-gradient(135deg,rgba(66,99,235,0.2),rgba(0,0,0,0.4));">✨</div>
+  <div class="list">
+    <div class="li">📜 <b>오늘 나를 위한 명언 1개</b></div>
+    <div class="li">🌸 <b>명언 해석 (내 상황 매칭)</b></div>
+    <div class="li">💾 <b>명언 캡처/저장</b> (배경화면용)</div>
+  </div>
+  <button class="cta cta-free">오늘의 명언 보기 (무료) →</button>
+</div>
+<div class="rcard">
+  <div class="rhd">
+    <div class="brand">✨ 천기 오리지널 | 오늘의 명언</div>
+    <div class="rtitle">윤규미 님을 위한 천기의 말씀</div>
+    <div class="date">2026.4.15</div>
+  </div>
+  <div class="quote-box">
+    <div class="quote-text">"하늘은 스스로 돕는 자를 돕는다"</div>
+    <div class="quote-author">— 벤자민 프랭클린 / 천기가 규미 님께</div>
+  </div>
+  <div class="body">
+    <div class="rsec" style="border-color:#4263eb"><div class="st">🌸 오늘 이 명언이 나온 이유</div><div class="sd">요즘 규미 님이 <b>"누가 도와주지 않을까"</b> 고민하고 계시죠? 천기는 말합니다. <b>먼저 한 걸음</b>만 내딛으면 우주가 나머지 9걸음을 돕습니다.</div></div>
+    <div class="rsec" style="border-color:#5fc49e"><div class="st">🎯 오늘의 한 가지 행동</div><div class="sd">미뤄둔 <b>그거</b> — 지금 5분만 해보세요. 그게 시작입니다.</div></div>
+  </div>
+  <div class="hashtag"><span>#오늘의명언 #스스로돕는자</span><span>🌐 천기.kr</span></div>
+</div>
+
+</div>
+</body>
+</html>

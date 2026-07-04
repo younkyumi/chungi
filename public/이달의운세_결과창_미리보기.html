@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>이달의운세 결과창 미리보기</title>
+<!--
+  출처: src/app/page.tsx
+  - MonthlyUnseModal result JSX: 21574~21724행
+  - id="monthly-capture" (21574행)
+  - border: "1px solid rgba(212,175,55,0.3)"
+  - BrandLine: "이달의 운세" (21577행)
+  - 제목: "{personName}님의 {monthLabel} 운세" (21578행)
+  - 사주 기반 chip: ☯️ 내 사주 일간, 띠, 별자리 (21587~21603행)
+  - 종합점수: 90px circle, border:3px solid #D4AF37 (21612행)
+  - 별점: color:#D4AF37, fontSize:14 (21619행)
+  - 이달의 키워드 TOP 3: kwColors=["#7c3aed","#D4AF37","#2E7D32"] (21639행)
+  - 토정비결 DB: linear-gradient(135deg,#fef9e7,#fffbeb) (21656행)
+  - 영역별 운: barGraph, score>=4→#2E7D32, >=3→#7A5C00, else→#B71C1C (21668행)
+  - 주차별 흐름: 로그인→4주차, 비로그인→잠금박스 D4AF37 버튼 (21693~21708행)
+  - 이달 운명의 날 (21711행~)
+  - 절기 chip: bg:#f0fdf4 #15803d (21622행)
+  - 토정비결 chip: bg:#fffbe9 #7A5C00 (21623행)
+  - hash footer 코드에서 별도 확인 필요 — 생략
+-->
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#1A3C32;--gold:#D4AF37;--mist:#A8C4B8;}
+body{background:#1A3C32;font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;padding:20px;}
+.max-wrap{max-width:430px;margin:0 auto;}
+.white-card{background:#ffffff;border-radius:20px;overflow:hidden;border:1px solid rgba(212,175,55,0.3);box-shadow:0 10px 30px rgba(0,0,0,0.06);color:#333;margin-bottom:12px;}
+.brand-line-inner{font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;padding:10px 16px;text-align:center;border-bottom:1px solid #f0f0f0;}
+.hash-footer{display:flex;justify-content:space-between;padding:10px 16px;margin-top:14px;font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;border-top:1px solid #f0f0f0;}
+.gray-box{background:#f8f9fa;border-radius:12px;padding:12px 14px;margin-bottom:10px;}
+.cross-scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;}
+.cross-card{flex-shrink:0;width:100px;background:#fff;border-radius:12px;padding:10px 8px;border:1px solid rgba(212,175,55,0.4);text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+</style>
+</head>
+<body>
+<div class="max-wrap">
+
+<!-- ═══════════ 메인 결과 카드 id="monthly-capture" (21574행) ═══════════ -->
+<div class="white-card">
+  <!-- 헤더 (21576~21603행) -->
+  <div style="padding:10px 16px 12px;text-align:center;">
+    <div class="brand-line-inner">이달의 운세</div>
+    <div style="font-size:18px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;line-height:1.35;">홍길동님의 2026년 6월 운세</div>
+    <!-- 사주 기반 표시 (로그인 상태) (21580행) -->
+    <div style="font-size:10px;color:#059669;margin-top:3px;">✓ 홍길동님 사주 기반 개인 운세</div>
+    <div style="font-size:10px;color:#888;font-weight:600;margin-top:6px;line-height:1.6;">
+      <div>👤 홍길동 : 1990.05.15. 午시생 · 양력 · 남성</div>
+      <div style="color:#aaa;">📅 2026-06-30 검사</div>
+    </div>
+    <!-- 사주 칩 (21587~21603행): 일간, 띠, 별자리 -->
+    <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-top:10px;">
+      <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:12px;background:rgba(76,175,80,0.15);color:#4CAF50;border:1px solid rgba(76,175,80,0.4);">☯️ 내 사주 일간 : 목(木)</span>
+      <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:12px;background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;">🐴 내 띠 : 말띠</span>
+      <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:12px;background:#fef3c7;color:#92400e;border:1px solid #fde68a;">♉ 내 별자리 : 황소자리</span>
+    </div>
+  </div>
+
+  <!-- 종합점수 (21607~21626행) -->
+  <div style="padding:16px 16px 12px;">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;letter-spacing:1.5px;margin-bottom:12px;">✦ 이달의 종합점수</div>
+    <div style="display:grid;grid-template-columns:100px 1fr;gap:14px;align-items:center;">
+      <!-- 90px circle, border:3px solid #D4AF37 (21612행) -->
+      <div style="display:flex;justify-content:center;">
+        <div style="width:90px;height:90px;border-radius:50%;border:3px solid #D4AF37;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fffdf5;">
+          <div style="font-size:30px;font-weight:900;color:#D4AF37;line-height:1;font-family:'Noto Serif KR',serif;">84</div>
+          <div style="font-size:10px;color:#aaa;margin-top:2px;font-weight:600;">/100</div>
+        </div>
+      </div>
+      <!-- 오른쪽: 별점 + 헤드라인 + 칩 (21618~21625행) -->
+      <div style="text-align:left;">
+        <!-- 별점: color:#D4AF37 (21619행) -->
+        <div style="font-size:14px;color:#D4AF37;letter-spacing:1.5px;margin-bottom:6px;">★★★★☆</div>
+        <div style="font-size:13px;font-weight:700;color:#D4AF37;line-height:1.65;margin-bottom:10px;word-break:keep-all;">"봄바람이 부는 달, 새 인연이 문을 두드린다"</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <!-- 절기 chip: bg:#f0fdf4 (21622행) -->
+          <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:12px;background:#f0fdf4;color:#15803d;border:1px solid #86efac;">🌿 이달 절기 : 하지</span>
+          <!-- 토정비결 chip: bg:#fffbe9 (21623행) -->
+          <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:12px;background:#fffbe9;color:#7A5C00;border:1px solid rgba(212,175,55,0.4);">📜 이달 토정비결 : #48괘</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 이달의 키워드 TOP 3 (21630~21652행) -->
+  <!-- kwColors=["#7c3aed","#D4AF37","#2E7D32"] (21639행) -->
+  <div style="padding:14px 16px;">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;letter-spacing:1.5px;margin-bottom:10px;">✦ 이달의 키워드 TOP 3</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
+      <div style="text-align:center;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.4);border-radius:10px;padding:12px 6px;">
+        <div style="font-size:22px;margin-bottom:6px;">💞</div>
+        <div style="font-size:9.5px;color:#7c3aed;font-weight:700;margin-bottom:3px;">#1</div>
+        <div style="font-size:14px;font-weight:900;color:#7c3aed;font-family:'Noto Serif KR','Batang',serif;">인연</div>
+      </div>
+      <div style="text-align:center;background:rgba(212,175,55,0.1);border:1px solid rgba(212,175,55,0.4);border-radius:10px;padding:12px 6px;">
+        <div style="font-size:22px;margin-bottom:6px;">🌱</div>
+        <div style="font-size:9.5px;color:#D4AF37;font-weight:700;margin-bottom:3px;">#2</div>
+        <div style="font-size:14px;font-weight:900;color:#D4AF37;font-family:'Noto Serif KR','Batang',serif;">성장</div>
+      </div>
+      <div style="text-align:center;background:rgba(46,125,50,0.1);border:1px solid rgba(46,125,50,0.4);border-radius:10px;padding:12px 6px;">
+        <div style="font-size:22px;margin-bottom:6px;">🌾</div>
+        <div style="font-size:9.5px;color:#2E7D32;font-weight:700;margin-bottom:3px;">#3</div>
+        <div style="font-size:14px;font-weight:900;color:#2E7D32;font-family:'Noto Serif KR','Batang',serif;">수확</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 토정비결 DB 원문 (21655~21660행) -->
+  <div style="padding:14px 16px;">
+    <div style="background:linear-gradient(135deg,#fef9e7,#fffbeb);border:1px solid rgba(212,175,55,0.4);border-radius:14px;padding:14px;">
+      <div style="font-size:9px;color:#7A5C00;letter-spacing:2px;margin-bottom:6px;font-weight:700;">📜 토정비결 #48괘 — 6월 원문</div>
+      <div style="font-size:12px;color:#5a4316;line-height:1.85;font-style:italic;">"하늘의 때가 무르익으니 기다림이 빛을 발하리라. 인내한 자에게 문이 열리고 새 인연이 찾아오리니, 두려움 없이 나아가라."</div>
+    </div>
+  </div>
+
+  <!-- 영역별 운 (21664~21688행) -->
+  <!-- barColor: score>=4→#2E7D32, >=3→#7A5C00, else→#B71C1C -->
+  <div style="padding:14px 16px;">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;letter-spacing:1.5px;margin-bottom:10px;">✦ 이달의 영역별 운</div>
+    <!-- 재물운 (score=4/5 → #2E7D32) -->
+    <div style="margin-bottom:11px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+        <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:14px;">💰</span><span style="font-size:12px;font-weight:700;color:#333;">재물운</span></div>
+        <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:10px;color:#2E7D32;font-weight:600;">상승세</span><span style="font-size:11px;color:#D4AF37;letter-spacing:1px;">★★★★☆</span></div>
+      </div>
+      <div style="height:6px;background:rgba(0,0,0,0.08);border-radius:99px;">
+        <div style="height:100%;width:80%;background:linear-gradient(90deg,rgba(46,125,50,0.66),#2E7D32);border-radius:99px;"></div>
+      </div>
+    </div>
+    <!-- 애정운 (score=5/5 → #2E7D32) -->
+    <div style="margin-bottom:11px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+        <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:14px;">💕</span><span style="font-size:12px;font-weight:700;color:#333;">애정운</span></div>
+        <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:10px;color:#2E7D32;font-weight:600;">매우 좋음</span><span style="font-size:11px;color:#D4AF37;letter-spacing:1px;">★★★★★</span></div>
+      </div>
+      <div style="height:6px;background:rgba(0,0,0,0.08);border-radius:99px;">
+        <div style="height:100%;width:100%;background:linear-gradient(90deg,rgba(46,125,50,0.66),#2E7D32);border-radius:99px;"></div>
+      </div>
+    </div>
+    <!-- 직업운 (score=3/5 → #7A5C00) -->
+    <div style="margin-bottom:11px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+        <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:14px;">💼</span><span style="font-size:12px;font-weight:700;color:#333;">직업운</span></div>
+        <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:10px;color:#7A5C00;font-weight:600;">평온</span><span style="font-size:11px;color:#D4AF37;letter-spacing:1px;">★★★☆☆</span></div>
+      </div>
+      <div style="height:6px;background:rgba(0,0,0,0.08);border-radius:99px;">
+        <div style="height:100%;width:60%;background:linear-gradient(90deg,rgba(122,92,0,0.66),#7A5C00);border-radius:99px;"></div>
+      </div>
+    </div>
+    <!-- 건강운 (score=4/5 → #2E7D32) -->
+    <div style="margin-bottom:11px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+        <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:14px;">🩺</span><span style="font-size:12px;font-weight:700;color:#333;">건강운</span></div>
+        <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:10px;color:#2E7D32;font-weight:600;">활기참</span><span style="font-size:11px;color:#D4AF37;letter-spacing:1px;">★★★★☆</span></div>
+      </div>
+      <div style="height:6px;background:rgba(0,0,0,0.08);border-radius:99px;">
+        <div style="height:100%;width:80%;background:linear-gradient(90deg,rgba(46,125,50,0.66),#2E7D32);border-radius:99px;"></div>
+      </div>
+    </div>
+    <!-- 학업운 (score=2/5 → #B71C1C) -->
+    <div style="margin-bottom:0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+        <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:14px;">📚</span><span style="font-size:12px;font-weight:700;color:#333;">학업운</span></div>
+        <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:10px;color:#B71C1C;font-weight:600;">집중 필요</span><span style="font-size:11px;color:#D4AF37;letter-spacing:1px;">★★☆☆☆</span></div>
+      </div>
+      <div style="height:6px;background:rgba(0,0,0,0.08);border-radius:99px;">
+        <div style="height:100%;width:40%;background:linear-gradient(90deg,rgba(183,28,28,0.66),#B71C1C);border-radius:99px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 주차별 흐름 (21690~21709행) -->
+  <div style="padding:14px 16px;">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;letter-spacing:1.5px;margin-bottom:10px;">✦ 주차별 흐름</div>
+    <!-- 로그인 상태: 4주차 표시 (21693~21701행) -->
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;gap:9px;align-items:flex-start;">
+        <span style="font-size:9px;padding:3px 8px;border-radius:18px;background:rgba(212,175,55,0.1);color:#7A5C00;border:1px solid rgba(212,175,55,0.2);font-weight:700;flex-shrink:0;">1주차</span>
+        <div style="font-size:11px;color:#666;line-height:1.7;">새로운 만남이 예상돼요. 먼저 다가가는 용기가 인연을 만들어요.</div>
+      </div>
+      <div style="display:flex;gap:9px;align-items:flex-start;">
+        <span style="font-size:9px;padding:3px 8px;border-radius:18px;background:rgba(212,175,55,0.1);color:#7A5C00;border:1px solid rgba(212,175,55,0.2);font-weight:700;flex-shrink:0;">2주차</span>
+        <div style="font-size:11px;color:#666;line-height:1.7;">재물 흐름이 활발해져요. 오래 기다렸던 소식이 들어올 수 있어요.</div>
+      </div>
+      <div style="display:flex;gap:9px;align-items:flex-start;">
+        <span style="font-size:9px;padding:3px 8px;border-radius:18px;background:rgba(212,175,55,0.1);color:#7A5C00;border:1px solid rgba(212,175,55,0.2);font-weight:700;flex-shrink:0;">3주차</span>
+        <div style="font-size:11px;color:#666;line-height:1.7;">잠시 숨을 고르는 시간. 무리한 결정보다 충분한 숙고가 필요해요.</div>
+      </div>
+      <div style="display:flex;gap:9px;align-items:flex-start;">
+        <span style="font-size:9px;padding:3px 8px;border-radius:18px;background:rgba(212,175,55,0.1);color:#7A5C00;border:1px solid rgba(212,175,55,0.2);font-weight:700;flex-shrink:0;">4주차</span>
+        <div style="font-size:11px;color:#666;line-height:1.7;">이달의 마무리. 감사한 인연에게 연락해보세요. 예상치 못한 행운이 따라올 거예요.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 이달 운명의 날 (21711~21738행) — seed 기반: goodDays 4개(for i<4), cautionDays 최대 2개(for i<2) -->
+  <div style="padding:14px 16px;">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;letter-spacing:1.5px;margin-bottom:10px;">✦ 이달 운명의 날 (구체 날짜)</div>
+    <!-- 좋은 날: bg:#f0fdf4, border:1px solid #bbf7d0 (21723행) -->
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:12px;margin-bottom:12px;">
+      <div style="font-size:11px;font-weight:800;color:#166534;margin-bottom:6px;">🌟 좋은 날 (4일)</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;">
+        <span style="font-size:11px;padding:5px 10px;border-radius:18px;background:#fff;border:1px solid #bbf7d0;color:#166534;font-weight:700;">7/3 (금)</span>
+        <span style="font-size:11px;padding:5px 10px;border-radius:18px;background:#fff;border:1px solid #bbf7d0;color:#166534;font-weight:700;">7/8 (수)</span>
+        <span style="font-size:11px;padding:5px 10px;border-radius:18px;background:#fff;border:1px solid #bbf7d0;color:#166534;font-weight:700;">7/13 (월)</span>
+        <span style="font-size:11px;padding:5px 10px;border-radius:18px;background:#fff;border:1px solid #bbf7d0;color:#166534;font-weight:700;">7/18 (토)</span>
+      </div>
+      <div style="font-size:10px;color:#166534;margin-top:8px;line-height:1.6;">중요한 결정·계약·만남에 추천. 새 시작에 길한 날.</div>
+    </div>
+    <!-- 주의할 날: bg:#fef2f2, border:1px solid #fecaca (21730행) -->
+    <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:12px;">
+      <div style="font-size:11px;font-weight:800;color:#991b1b;margin-bottom:6px;">⚠️ 주의할 날 (2일)</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;">
+        <span style="font-size:11px;padding:5px 10px;border-radius:18px;background:#fff;border:1px solid #fecaca;color:#991b1b;font-weight:700;">7/11 (토)</span>
+        <span style="font-size:11px;padding:5px 10px;border-radius:18px;background:#fff;border:1px solid #fecaca;color:#991b1b;font-weight:700;">7/22 (수)</span>
+      </div>
+      <div style="font-size:10px;color:#991b1b;margin-top:8px;line-height:1.6;">이 날은 큰 결정 보류. 충돌 회피 + 무리한 약속 자제.</div>
+    </div>
+  </div>
+
+  <!-- 해시태그 푸터 -->
+  <div class="hash-footer">
+    <span>#천기운세 #이달의운세 #월별운세 #사주기반 #무료운세</span>
+    <span style="font-weight:600;">🌐 천기.kr</span>
+  </div>
+</div>
+
+<!-- 비로그인 유도 (주차별 잠금 박스 버전 참고) -->
+<div style="background:#fef9e7;border:1px solid rgba(212,175,55,0.3);border-radius:12px;padding:14px;margin-bottom:12px;text-align:center;">
+  <div style="font-size:18px;margin-bottom:6px;">🔒</div>
+  <div style="font-size:11px;color:#888;margin-bottom:8px;line-height:1.6;">사주 입력 후 주차별<br/>개인화 흐름 분석을 볼 수 있어요</div>
+  <button style="font-size:10px;padding:6px 14px;border-radius:18px;background:linear-gradient(135deg,#D4AF37,#B8942E);color:#fff;border:none;font-weight:700;cursor:pointer;font-family:inherit;">로그인하기 →</button>
+</div>
+
+<!-- 광고배너 2x2 -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(212,175,55,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">🌅</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">오늘 운세?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">오늘운세 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(155,143,212,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">☯️</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">사주 풀이?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">사주 풀이 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(95,196,158,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">🐯</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">띠별 운세?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">띠별운세 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(199,21,133,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">📸</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">내 관상짤?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">관상짤 →</div>
+  </div>
+</div>
+
+<!-- ResultActions -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+  <button style="padding:12px;background:#f8f9fa;border:1px solid #eee;border-radius:12px;font-size:12px;font-weight:700;color:#333;cursor:pointer;">📸 이미지 저장</button>
+  <button style="padding:12px;background:#f8f9fa;border:1px solid #eee;border-radius:12px;font-size:12px;font-weight:700;color:#333;cursor:pointer;">🔗 공유하기</button>
+</div>
+
+<!-- 이것도 해볼래요 -->
+<div style="margin-bottom:10px;">
+  <div style="font-size:11px;font-weight:700;color:#A8C4B8;margin-bottom:6px;">✨ 이것도 해볼래요?</div>
+  <div class="cross-scroll">
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">🌅</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">오늘의 운세</div><div style="font-size:9px;font-weight:700;color:#B8942E;">무료</div></div>
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">📜</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">오늘의 명언</div><div style="font-size:9px;font-weight:700;color:#B8942E;">무료</div></div>
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">🎰</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">행운번호</div><div style="font-size:9px;font-weight:700;color:#B8942E;">무료</div></div>
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">☯️</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">사주 풀이</div><div style="font-size:9px;font-weight:700;color:#B8942E;">980원</div></div>
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">🃏</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">오늘의 타로</div><div style="font-size:9px;font-weight:700;color:#B8942E;">무료</div></div>
+  </div>
+</div>
+
+<!-- 버튼 -->
+<button style="width:100%;padding:14px;background:#D4AF37;color:#1A3C32;border:none;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;">확인 완료</button>
+
+</div>
+</body>
+</html>

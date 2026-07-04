@@ -1,0 +1,295 @@
+{
+  "types": [
+    {
+      "id": 1,
+      "category": "재물",
+      "face_type": "황금손관상",
+      "persona": "대군",
+      "rank": "최상위 왕족",
+      "english": "Grand Prince",
+      "costume": "붉은 곤룡포, 금박 용 무늬, 금장 익선관",
+      "prompt_en": "Korean Joseon dynasty Grand Prince, wearing red royal robe with gold dragon embroidery, gold headdress (익선관), dignified and confident expression, traditional Korean portrait style, oil painting",
+      "expression": "여유롭고 근엄하면서 자신만만한 미소",
+      "emoji": "👑"
+    },
+    {
+      "id": 2,
+      "category": "재물",
+      "face_type": "재물들어오는관상",
+      "persona": "거상",
+      "rank": "중인/부유한 상인",
+      "english": "Merchant Tycoon",
+      "costume": "짙은 감색 비단 도포, 세련된 갓, 주판과 은자",
+      "prompt_en": "Korean Joseon dynasty wealthy merchant, wearing dark blue silk robe, traditional hat (갓), holding abacus and money pouch, sharp yet cheerful eyes, traditional Korean portrait style",
+      "expression": "눈이 예리하면서 호탕하게 웃는",
+      "emoji": "💰"
+    },
+    {
+      "id": 3,
+      "category": "재물",
+      "face_type": "짠돌이부자관상",
+      "persona": "사헌부 감찰",
+      "rank": "양반/관리",
+      "english": "Strict Inspector",
+      "costume": "흑색 관복, 해태 흉배, 사모, 장부 또는 마패",
+      "prompt_en": "Korean Joseon dynasty government inspector, wearing black official robe with haetae chest badge, official hat (사모), holding ledger or authority token, cold and analytical expression, traditional Korean portrait style",
+      "expression": "콧대 오뚝하고 단정하며 냉철한",
+      "emoji": "📋"
+    },
+    {
+      "id": 4,
+      "category": "재물",
+      "face_type": "머니인머니아웃관상",
+      "persona": "한량",
+      "rank": "양반/돈많은 백수",
+      "english": "Playboy Nobleman",
+      "costume": "민트색 또는 보라색 비단 도포, 화려한 갓끈, 부채",
+      "prompt_en": "Korean Joseon dynasty carefree nobleman, wearing colorful mint or purple silk robe, ornate hat string, holding decorative fan, charming eye-smile, relaxed at tavern, traditional Korean portrait style",
+      "expression": "눈웃음이 매력적이고 노는 게 제일 좋은",
+      "emoji": "🍶"
+    },
+    {
+      "id": 5,
+      "category": "애정",
+      "face_type": "도화살폭발관상",
+      "persona": "도화살 예인",
+      "rank": "중인/예술가",
+      "english": "Charm Master",
+      "costume": "(여)화려한 가체+오색 한복+거문고 / (남)수려한 도포+대금",
+      "prompt_en": "Korean Joseon dynasty entertainer artist, wearing colorful silk hanbok, playing geomungo or daegeum flute, captivating eyes with slight smile, irresistibly charming aura, traditional Korean portrait style",
+      "expression": "눈가 촉촉하고 눈웃음이 치명적인",
+      "emoji": "😏"
+    },
+    {
+      "id": 6,
+      "category": "애정",
+      "face_type": "소개팅1등관상",
+      "persona": "꽃선비",
+      "rank": "양반/유생",
+      "english": "Visual Scholar",
+      "costume": "흰색 또는 연두색 선비복, 유건, 책",
+      "prompt_en": "Korean Joseon dynasty handsome scholar, wearing white or light green scholar robe, traditional scholar cap (유건), holding book, perfectly balanced features, confident and refined expression, traditional Korean portrait style",
+      "expression": "이목구비 밸런스 완벽하고 자신감 넘치는",
+      "emoji": "✨"
+    },
+    {
+      "id": 7,
+      "category": "애정",
+      "face_type": "일이먼저관상",
+      "persona": "내의원 의녀/의관",
+      "rank": "중인/전문직",
+      "english": "Royal Physician",
+      "costume": "의녀복 또는 의관 관복, 침통, 탕약",
+      "prompt_en": "Korean Joseon dynasty royal physician or medical lady, wearing official medical uniform, carrying acupuncture case, checking pulse or preparing medicine, sharp intelligent eyes, focused expression, traditional Korean portrait style",
+      "expression": "눈빛이 예리하고 총명하며 일할 때 빛나는",
+      "emoji": "💼"
+    },
+    {
+      "id": 8,
+      "category": "애정",
+      "face_type": "한우물사랑관상",
+      "persona": "호위무사",
+      "rank": "중인/무관",
+      "english": "Royal Guard",
+      "costume": "철갑 팔찌, 무관복, 용 무늬 검",
+      "prompt_en": "Korean Joseon dynasty royal guard, wearing military armor with iron bracelet, holding sword with dragon pattern, standing loyally beside the king, stoic but warm eyes, dependable expression, traditional Korean portrait style",
+      "expression": "턱선 단단하고 눈빛이 깊은 우직한",
+      "emoji": "🫶"
+    },
+    {
+      "id": 9,
+      "category": "성격",
+      "face_type": "공부머리관상",
+      "persona": "집현전 학자",
+      "rank": "양반/학자",
+      "english": "Royal Scholar",
+      "costume": "짙은 남색 관리복, 사모, 서고의 책더미",
+      "prompt_en": "Korean Joseon dynasty Jiphyeonjeon scholar, wearing dark navy official robe and official hat, surrounded by books and manuscripts, wide forehead, intelligent eyes, analytical expression, traditional Korean portrait style",
+      "expression": "이마가 넓고 눈이 총명하며 영리한",
+      "emoji": "📚"
+    },
+    {
+      "id": 10,
+      "category": "성격",
+      "face_type": "타고난리더관상",
+      "persona": "장군",
+      "rank": "양반/고위 무관",
+      "english": "General",
+      "costume": "전립, 두정갑(철갑옷), 호랑이 가죽",
+      "prompt_en": "Korean Joseon dynasty military general, wearing ornate general hat (전립), iron armor (두정갑), tiger fur draped over shoulder, commanding troops, strong jawline, powerful and charismatic expression, traditional Korean portrait style",
+      "expression": "턱선 굵고 눈빛 강렬하며 카리스마 넘치는",
+      "emoji": "👑"
+    },
+    {
+      "id": 11,
+      "category": "성격",
+      "face_type": "황소고집관상",
+      "persona": "옹기장인",
+      "rank": "평민/기술자",
+      "english": "Pottery Master",
+      "costume": "해진 삼베옷, 팔 걷어붙임, 옹기",
+      "prompt_en": "Korean Joseon dynasty master potter, wearing worn hemp clothes with rolled up sleeves, hands covered in clay, deeply focused on shaping pottery, stubborn pride and self-confidence in eyes, traditional Korean portrait style",
+      "expression": "눈빛에 고집과 자부심이 꽉 찬",
+      "emoji": "🐂"
+    },
+    {
+      "id": 12,
+      "category": "성격",
+      "face_type": "믿을구석관상",
+      "persona": "주막 사장님",
+      "rank": "평민/인싸",
+      "english": "Innkeeper",
+      "costume": "팔 걷어붙인 편안한 한복, 주막 밥",
+      "prompt_en": "Korean Joseon dynasty friendly innkeeper, wearing casual comfortable hanbok with sleeves rolled up, warmly serving food to guests, hearty laugh, warm and approachable expression, everyone's favorite person, traditional Korean portrait style",
+      "expression": "호탕하게 웃으며 따뜻하고 정감 있는",
+      "emoji": "🪨"
+    },
+    {
+      "id": 13,
+      "category": "직업",
+      "face_type": "사장될관상",
+      "persona": "영의정",
+      "rank": "최상위 양반/관리",
+      "english": "Prime Minister",
+      "costume": "최고급 관복, 코뿔소 흉배, 정자관",
+      "prompt_en": "Korean Joseon dynasty Prime Minister (영의정), wearing highest rank official robe with rhinoceros chest badge, official cap (정자관), commanding presence in royal court, ambitious and capable expression, traditional Korean portrait style",
+      "expression": "턱선 단단하고 야망과 능력이 동시에 있는",
+      "emoji": "💼"
+    },
+    {
+      "id": 14,
+      "category": "직업",
+      "face_type": "전문직관상",
+      "persona": "관상감 천문학자",
+      "rank": "중인/기술직",
+      "english": "Royal Astronomer",
+      "costume": "전문직 관리복, 별자리 지도, 혼천의",
+      "prompt_en": "Korean Joseon dynasty royal astronomer, wearing official uniform, holding star map and astronomical instruments (혼천의/측우기), high forehead, precise and perfectionist eyes, meticulous expression, traditional Korean portrait style",
+      "expression": "이마가 높고 눈매 예리한 완벽주의",
+      "emoji": "🔬"
+    },
+    {
+      "id": 15,
+      "category": "직업",
+      "face_type": "예술가관상",
+      "persona": "도화서 화원",
+      "rank": "중인/화가",
+      "english": "Palace Painter",
+      "costume": "붓과 물감, 왕의 초상화(어진) 그리는 중",
+      "prompt_en": "Korean Joseon dynasty royal court painter, holding brush and pigments, deeply absorbed in painting royal portrait, M-shaped hairline, dreamy and artistic expression, creative genius aura, traditional Korean portrait style",
+      "expression": "M자 이마에 감수성 터지는 천재 분위기",
+      "emoji": "🎨"
+    },
+    {
+      "id": 16,
+      "category": "직업",
+      "face_type": "여행운폭발관상",
+      "persona": "보부상",
+      "rank": "평민/상인",
+      "english": "Itinerant Merchant",
+      "costume": "만능 봇짐, 오행 씨앗 키링, 전국 장터",
+      "prompt_en": "Korean Joseon dynasty traveling merchant (보부상), carrying large bundle pack on back, walking between markets across the country, lively and adventurous eyes, energetic expression, traditional Korean portrait style",
+      "expression": "해진 옷이지만 눈빛에 생기가 도는",
+      "emoji": "✈️"
+    },
+    {
+      "id": 17,
+      "category": "웃긴",
+      "face_type": "맛집레이더관상",
+      "persona": "수라간 기미상궁",
+      "rank": "천민~중인/궁녀",
+      "english": "Royal Taste Tester",
+      "costume": "수라간 상궁복, 왕의 음식 간을 보는 중",
+      "prompt_en": "Korean Joseon dynasty royal kitchen taster court lady, wearing kitchen court lady uniform, tasting royal food with extremely focused and delighted expression, eyes wide with food excitement, traditional Korean portrait style",
+      "expression": "도파민 1000% 쩌는 식탐 가득한 표정",
+      "emoji": "🍜"
+    },
+    {
+      "id": 18,
+      "category": "웃긴",
+      "face_type": "밥얻어먹는관상",
+      "persona": "주막 알바생",
+      "rank": "천민~평민",
+      "english": "Inn Servant",
+      "costume": "해진 삼베옷, 댕댕이 같은 매력",
+      "prompt_en": "Korean Joseon dynasty inn servant, wearing simple worn hemp clothes, serving food to guests with innocent puppy-like charm, curious and lovable expression, someone everyone wants to feed, traditional Korean portrait style",
+      "expression": "눈치 0단이지만 커여운 댕댕이상",
+      "emoji": "🍚"
+    },
+    {
+      "id": 19,
+      "category": "웃긴",
+      "face_type": "SNS터질관상",
+      "persona": "시장판 광대",
+      "rank": "천민/예인",
+      "english": "Market Performer",
+      "costume": "화려한 분장, 시장 한복판 공연",
+      "prompt_en": "Korean Joseon dynasty market street performer, wearing colorful face paint and performer costume, entertaining crowd in marketplace, naturally charismatic and attention-grabbing expression, born influencer energy, traditional Korean portrait style",
+      "expression": "알고리즘이 무조건 픽할 인싸 기질",
+      "emoji": "📱"
+    },
+    {
+      "id": 20,
+      "category": "웃긴",
+      "face_type": "겉바속촉관상",
+      "persona": "무명 대장장이",
+      "rank": "평민/기술자",
+      "english": "Blacksmith",
+      "costume": "대장장이 가죽 앞치마, 쇠 두드리는 중",
+      "prompt_en": "Korean Joseon dynasty blacksmith, wearing leather apron, hammering iron with sweaty brow, rough tough exterior but secretly warm marshmallow inside, grumpy expression hiding soft heart, traditional Korean portrait style",
+      "expression": "화난 듯하지만 속은 말랑말랑 마시멜로",
+      "emoji": "😐"
+    },
+    {
+      "id": 21,
+      "category": "이스터에그",
+      "face_type": "인간계이탈상",
+      "persona": "도깨비 신",
+      "rank": "초자연적 존재",
+      "english": "Dokkaebi Deity",
+      "costume": "도깨비 방망이, 신비로운 아우라",
+      "prompt_en": "Korean mythical Dokkaebi deity, holding magical club (도깨비 방망이), supernatural and mysterious aura beyond human realm, otherworldly charisma, mystical expression, traditional Korean folklore painting style",
+      "expression": "AI도 당황한 인간계 이탈 에너지",
+      "emoji": "👹",
+      "error_message": "어? 이건 인간 관상이 아닌데요...👹 도깨비 방망이 들고 나타나셨습니다. 기가 너무 셉니다!"
+    },
+    {
+      "id": 22,
+      "category": "이스터에그",
+      "face_type": "전설의고향상",
+      "persona": "심령 존재",
+      "rank": "초자연적 존재",
+      "english": "Ghost Spirit",
+      "costume": "어둠 속, 흔들리는 눈빛",
+      "prompt_en": "Korean ghost spirit in darkness, mysterious flickering eyes barely visible in shadows, eerie supernatural presence, traditional Korean ghost painting style, dark atmospheric background",
+      "expression": "기가 너무 세서 AI가 도망갔습니다",
+      "emoji": "👻",
+      "error_message": "관상을 보라니까 왜 이런 사진을... 😱 얼굴이 잘 안 보여요! 밝은 곳에서 정면으로 찍은 사진으로 다시 올려주세요!"
+    }
+  ],
+  "face_detection": {
+    "no_face": {
+      "trigger": "얼굴 인식 실패",
+      "assigned_type": 22,
+      "message": "얼굴이 잘 안 보여요! 😅 밝은 곳에서 정면으로 찍은 사진으로 다시 올려주세요!"
+    },
+    "multiple_faces": {
+      "trigger": "2인 이상 인식",
+      "assigned_type": 21,
+      "message": "여러 명이 보여요! 👀 분석할 인물 사진만 올려주세요!"
+    },
+    "animal_or_object": {
+      "trigger": "사람 아님",
+      "assigned_type": 21,
+      "message": "혹시 츄르 좋아하세요? 🐱 사람 사진을 올려주세요!"
+    }
+  },
+  "api_config": {
+    "face_swap_api": "fofr/face-swap on Replicate",
+    "cost_per_image": "약 50~100원",
+    "price_to_user": 980,
+    "free_first_use": true,
+    "template_images_needed": 22,
+    "template_storage": "Supabase Storage or Vercel CDN"
+  }
+}

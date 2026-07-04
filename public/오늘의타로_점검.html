@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🃏 오늘의 타로 78장 풀 결과 점검본</title>
+<style>
+  body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#ece6da;margin:0;padding:18px;color:#222;}
+  h1{text-align:center;color:#3b2a5c;}
+  h2{max-width:1280px;margin:30px auto 12px;color:#3b2a5c;border-bottom:2px solid #9B8FD4;padding-bottom:6px;font-size:18px;}
+  .note{max-width:920px;margin:0 auto 18px;background:#fff;border-radius:12px;padding:14px 18px;font-size:13px;line-height:1.85;box-shadow:0 4px 14px rgba(0,0,0,.06);}
+  .note b{color:#b91c1c;}
+  .note .var{color:#7c3aed;font-weight:800;}
+  .bug{max-width:920px;margin:0 auto 18px;background:#fff4f4;border:1.5px solid #f5b5b5;border-radius:12px;padding:14px 18px;font-size:13px;line-height:1.85;box-shadow:0 4px 14px rgba(0,0,0,.06);}
+  .bug b{color:#b91c1c;}
+  code{background:#f0ece2;border-radius:4px;padding:1px 5px;font-size:12px;font-family:Consolas,monospace;color:#7A5C00;}
+  table.sum{max-width:1280px;margin:0 auto 24px;border-collapse:collapse;background:#fff;font-size:12px;box-shadow:0 4px 14px rgba(0,0,0,.06);width:calc(100% - 0px);}
+  table.sum th,table.sum td{border:1px solid #e3dccb;padding:5px 8px;text-align:left;}
+  table.sum th{background:#3b2a5c;color:#fff;position:sticky;top:0;}
+  table.sum tr:nth-child(even){background:#faf7f0;}
+  .yn-yes{color:#059669;font-weight:800;}
+  .yn-no{color:#b91c1c;font-weight:800;}
+  .yn-maybe{color:#b8860b;font-weight:800;}
+  .wrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(440px,1fr));gap:16px;max-width:1280px;margin:0 auto;}
+  .card{background:#fff;border-radius:18px;padding:0;overflow:hidden;box-shadow:0 8px 22px rgba(0,0,0,.08);border:1px solid #e3dccb;}
+  .top{background:linear-gradient(135deg,#3b2a5c,#5f4d8c);color:#fff;padding:13px 18px;}
+  .top .big{font-size:18px;font-weight:900;}
+  .top .std{font-size:12px;color:#d8cfe8;margin-top:3px;}
+  .top .suitbadge{display:inline-block;font-size:10px;margin-top:6px;padding:2px 9px;border-radius:12px;background:rgba(255,255,255,.14);}
+  .dir{padding:12px 18px;border-top:3px solid #f0ece2;}
+  .dir.up{background:#f6fffb;}
+  .dir.rev{background:#faf5ff;}
+  .dir .dlbl{font-size:12px;font-weight:900;letter-spacing:1px;margin-bottom:8px;}
+  .dir.up .dlbl{color:#059669;}
+  .dir.rev .dlbl{color:#7c3aed;}
+  .moodpill{display:inline-block;font-size:11px;font-weight:800;padding:3px 11px;border-radius:14px;margin-bottom:8px;}
+  .mood-good{background:#e8fdf4;color:#059669;border:1px solid #b2f5ea;}
+  .mood-bad{background:#f3e8ff;color:#7c3aed;border:1px solid #d8b4fe;}
+  .box{background:#f8f9fa;border-radius:10px;padding:10px 12px;margin-bottom:9px;font-size:12.5px;line-height:1.75;}
+  .box .blbl{font-size:9.5px;font-weight:800;letter-spacing:1px;margin-bottom:5px;}
+  .box.msg{border-left:4px solid #D4AF37;}.box.msg .blbl{color:#D4AF37;}
+  .box.interp{border-left:4px solid #C8834A;}.box.interp .blbl{color:#C8834A;}
+  .box.mean{border-left:4px solid #9B8FD4;}.box.mean .blbl{color:#9B8FD4;}
+  strong.em{color:#7A5C00;}
+  em{color:#888;font-style:italic;}
+  .note-static{font-size:11px;color:#999;padding:8px 18px;background:#fafafa;border-top:1px dashed #e3dccb;line-height:1.7;}
+</style>
+</head>
+<body>
+<h1>🃏 오늘의 타로 (무료 · today_tarot) — 78장 풀 결과 점검본</h1>
+
+<div class="note">
+  <b>📌 가짓수의 핵심 = 뽑히는 카드(78장) × 방향(정/역) = 156가지.</b><br>
+  오늘의 타로는 사주·인물 정보가 결과 본문에 거의 안 들어가요. 본문에서 바뀌는 건 오직 <span class="var">뽑힌 카드</span>와 <span class="var">정/역방향</span>이에요(인물 이름만 "○○님"으로 치환). 그래서 아래에 78장 전부를 정방향·역방향 두 버전으로 나열했어요. 직접 읽으며 오타·어색한 문구·로직 버그를 잡아주세요.<br>
+  · <b>카드 선택 로직:</b> <code>seed = 날짜인덱스 + 이름글자합</code>, <code>todayCard = TAROT_78[seed%78]</code>. 같은 날 같은 사람이면 같은 카드.<br>
+  · <b>방향 로직:</b> <code>isReversed = rng(seed+9999) &gt; 0.65</code> (약 35% 확률로 역방향).<br>
+  · <b>좋은 날/주의 날:</b> <code>isGood = (카드.yesno==="yes" &amp;&amp; 정방향)</code>. 즉 yesno가 "yes"가 아니거나 역방향이면 "주의가 필요한 날".<br>
+  · <b>메시지 문구:</b> isGood이면 <code>_TAROT_GOOD[seed%12]</code>, 아니면 <code>_TAROT_BAD[seed%12]</code> 중 1개 (아래 별도 목록 참조).
+</div>
+
+<div class="note" style="border-left:4px solid #059669;background:#f0fdf4;">
+  <b>✅ v808 수정 완료 — 슈트 단수화</b><br>
+  구버전 버그(suit 복수 비교 → 완드·컵·소드 전부 펜타클로 표시)는 <b>v808에서 단수(wand/cup/sword)로 수정 완료</b>. 현재 코드 정상 동작.
+</div>
+
+<h2 id="goodbad">📜 메시지 문구 풀 (랜덤 12 + 12)</h2>
+<table class="sum"><thead><tr><th>#</th><th>☀️ 좋은 날 (_TAROT_GOOD)</th><th>🌙 주의 날 (_TAROT_BAD)</th></tr></thead><tbody id="gbbody"></tbody></table>
+
+<h2 id="sumh">📋 78장 카드 요약표</h2>
+<table class="sum"><thead><tr><th>#</th><th>id</th><th>슈트</th><th>카드명 (조선)</th><th>서양 원형(std)</th><th>yesno</th><th>핵심 의미(meaning)</th></tr></thead><tbody id="sumbody"></tbody></table>
+
+<h2 id="cardsh">🃏 78장 × 정/역방향 풀 결과</h2>
+<div class="wrap" id="wrap"></div>
+
+<script>
+// ─── 실제 코드에서 추출한 데이터 ───
+const _TAROT_GOOD=["오늘은 긍정적인 에너지가 감싸고 있어요. 망설이던 일을 시작하기 좋은 날!","카드가 밝은 기운을 보내고 있어요. 자신을 믿고 앞으로 나아가세요.","원하는 방향으로 흐름이 맞춰지는 날이에요. 기회가 보이면 잡으세요.","우주가 당신의 선택을 응원하고 있어요. 지금이 적절한 타이밍!","행운의 카드가 오늘 당신과 함께해요. 자신감 있게 한 발 내딛으세요.","오늘은 좋은 인연이 다가올 수 있어요. 마음을 열고 만나보세요.","뜻밖의 기회가 찾아오는 날. 작은 신호도 놓치지 마세요.","고민하던 일이 풀리는 날이에요. 직관을 믿어보세요.","오늘 당신의 노력이 빛을 발해요. 자신을 칭찬해주세요.","오늘은 모든 게 순조롭게 흐르는 날. 즐기세요.","주변 사람의 도움이 큰 힘이 되는 날이에요.","오늘 시작한 일이 좋은 결과로 이어질 가능성이 높아요."];
+const _TAROT_BAD=["오늘은 조금 신중하게 행동하는 것이 좋겠어요. 중요한 결정은 내일로.","카드가 잠시 멈추라고 말하고 있어요. 내면의 소리에 귀 기울여보세요.","오늘은 에너지를 아끼고 충전하는 날로 삼으면 좋겠어요.","한 발 물러서서 더 신중하게 생각해보세요. 타이밍을 다시 봐보세요.","오늘은 작은 일에도 신중함이 필요해요. 서두르지 마세요.","감정에 휩쓸리지 않게 조심하는 날이에요. 한 박자 쉬어가세요.","오늘은 큰 결정보다 작은 정리가 어울려요.","주변 의견을 한 번 더 들어보면 좋은 날이에요.","오늘은 새 시작보다 마무리가 어울리는 날이에요.","피곤할 수 있어요. 오늘은 자신을 돌보세요.","말과 행동을 한 번 더 점검하는 게 좋아요.","오늘은 흐름을 거스르지 말고 잠시 비워두세요."];
+
+// 메이저 22
+const MAJOR=[
+ {id:0,name:"봇짐 멘 유랑 선비",std:"The Fool",yn:"yes",m:"새로운 시작과 무한한 가능성. 두려움 없이 첫걸음을 내디뎌."},
+ {id:1,name:"도사 전우치",std:"The Magician",yn:"yes",m:"창조적 능력이 발현될 때. 원하는 것을 이룰 힘이 있다."},
+ {id:2,name:"국무 대무당",std:"The High Priestess",yn:"maybe",m:"직관을 믿어. 보이지 않는 것에 답이 있다."},
+ {id:3,name:"중전마마",std:"The Empress",yn:"yes",m:"풍요와 안정. 사랑과 풍요가 찾아온다."},
+ {id:4,name:"곤룡포 왕",std:"The Emperor",yn:"yes",m:"리더십과 질서. 계획대로 실행하면 성공한다."},
+ {id:5,name:"대제학",std:"The Hierophant",yn:"maybe",m:"전통과 가르침. 멘토의 조언을 경청할 때."},
+ {id:6,name:"견우와 직녀",std:"The Lovers",yn:"yes",m:"사랑과 선택. 마음이 끌리는 쪽이 정답이다."},
+ {id:7,name:"거북선 장군",std:"The Chariot",yn:"yes",m:"승리와 전진. 강한 의지로 돌파하라."},
+ {id:8,name:"해태 여인",std:"Strength",yn:"yes",m:"내면의 힘. 부드러움이 진정한 강함이다."},
+ {id:9,name:"산속 고승",std:"The Hermit",yn:"maybe",m:"내면의 탐색. 혼자만의 시간이 필요할 때."},
+ {id:10,name:"사방신·윤도",std:"Wheel of Fortune",yn:"yes",m:"운명의 전환점. 흐름이 바뀌고 있다."},
+ {id:11,name:"암행어사 판관",std:"Justice",yn:"yes",m:"공정한 결과. 진실은 반드시 드러난다."},
+ {id:12,name:"유배된 유학자",std:"The Hanged Man",yn:"no",m:"잠시 멈춤. 새로운 시각으로 바라봐야 할 때."},
+ {id:13,name:"저승사자",std:"Death",yn:"no",m:"끝과 시작. 낡은 것을 보내야 새것이 온다."},
+ {id:14,name:"물 나누는 선녀",std:"Temperance",yn:"maybe",m:"조화와 균형. 급하지 않게, 천천히 가도 괜찮다."},
+ {id:15,name:"도깨비",std:"The Devil",yn:"no",m:"집착과 유혹. 너를 묶고 있는 것에서 벗어나."},
+ {id:16,name:"벼락 맞는 경회루",std:"The Tower",yn:"no",m:"갑작스러운 변화. 무너져야 다시 세울 수 있다."},
+ {id:17,name:"칠성신",std:"The Star",yn:"yes",m:"희망과 치유. 밤이 깊을수록 별은 밝게 빛난다."},
+ {id:18,name:"달토끼·월궁",std:"The Moon",yn:"maybe",m:"불안과 환상. 보이는 것이 전부가 아니다."},
+ {id:19,name:"해님·동자",std:"The Sun",yn:"yes",m:"기쁨과 성공. 밝은 에너지가 넘치는 시기!"},
+ {id:20,name:"나팔 부는 신선",std:"Judgement",yn:"yes",m:"각성과 부활. 과거를 정리하고 새롭게 태어날 때."},
+ {id:21,name:"천하도 속 무희",std:"The World",yn:"yes",m:"완성과 성취. 모든 것이 제자리를 찾는다."},
+].map(c=>({...c,suit:"major"}));
+
+const WANDS=[{n:"붓의 시작",m:"새로운 열정의 시작. 영감이 불꽃처럼 타오른다.",yn:"yes"},{n:"한양 바라보는 선비",m:"계획을 세울 때. 큰 그림을 그리고 결단하라.",yn:"maybe"},{n:"무역선 기다리는 보부상",m:"기다림의 보상. 준비한 것이 결실을 맺는다.",yn:"yes"},{n:"잔칫날",m:"축하와 안정. 행복한 순간을 만끽하라.",yn:"yes"},{n:"선비들의 논쟁",m:"경쟁과 갈등. 의견 충돌이 있지만 성장의 기회.",yn:"no"},{n:"장원급제 금의환향",m:"승리와 영광. 노력의 결과가 인정받는다.",yn:"yes"},{n:"고수부지 수호",m:"방어와 신념. 자기 자리를 굳건히 지켜라.",yn:"maybe"},{n:"하늘 나는 붓",m:"빠른 진행. 일이 급속도로 풀린다.",yn:"yes"},{n:"성벽 보초",m:"경계와 인내. 조금만 더 버티면 된다.",yn:"maybe"},{n:"서책 짊어진 선비",m:"과중한 짐. 혼자 다 짊어지려 하지 마.",yn:"no"},{n:"붓 든 동자",m:"새로운 소식. 흥미로운 기회가 찾아온다.",yn:"yes"},{n:"말 탄 젊은 화공",m:"열정적 행동. 과감하게 움직일 때.",yn:"yes"},{n:"붓 든 신사임당",m:"따뜻한 리더십. 자신감과 매력으로 주변을 이끌어.",yn:"yes"},{n:"붓 든 세종대왕",m:"비전과 리더십. 큰 뜻을 세우고 실행하라.",yn:"yes"}].map((c,i)=>({id:22+i,suit:"wand",name:c.n,std:"Wands",yn:c.yn,m:c.m}));
+
+const CUPS=[{n:"청자의 넘치는 복",m:"새로운 감정의 시작. 사랑과 기쁨이 넘친다.",yn:"yes"},{n:"정분 나누는 연인",m:"파트너십과 사랑. 마음이 통하는 만남.",yn:"yes"},{n:"기생들의 풍류",m:"우정과 축제. 좋은 사람들과 함께하는 기쁨.",yn:"yes"},{n:"명상하는 선비",m:"권태와 무기력. 새로운 자극이 필요할 때.",yn:"no"},{n:"깨진 도자기",m:"상실과 슬픔. 아직 남아있는 것에 집중해.",yn:"no"},{n:"어린 시절 추억",m:"향수와 추억. 과거의 좋은 기억이 힘이 된다.",yn:"maybe"},{n:"환상과 유혹",m:"환상과 선택. 현실과 꿈을 구분해야 할 때.",yn:"no"},{n:"길 떠나는 나그네",m:"떠남의 결심. 더 나은 곳을 향해 이동할 때.",yn:"maybe"},{n:"만석꾼의 만족",m:"소원 성취. 원하던 것이 이루어진다!",yn:"yes"},{n:"화목한 가족",m:"완전한 행복. 가족과 사랑의 완성.",yn:"yes"},{n:"연못가 동자",m:"감성적 메시지. 마음을 전하는 소식이 온다.",yn:"yes"},{n:"시를 읊는 선비",m:"로맨틱한 행동. 감정에 솔직해질 때.",yn:"yes"},{n:"자애로운 안주인",m:"공감과 직관. 따뜻한 마음으로 주변을 감싸줘.",yn:"yes"},{n:"바다 위 군주",m:"감정의 성숙. 지혜롭고 균형 잡힌 판단.",yn:"yes"}].map((c,i)=>({id:36+i,suit:"cup",name:c.n,std:"Cups",yn:c.yn,m:c.m}));
+
+const SWORDS=[{n:"검의 결단",m:"진실과 결단. 명확한 판단을 내릴 때.",yn:"yes"},{n:"눈 가린 무사",m:"결정을 미루는 중. 균형을 찾아야 한다.",yn:"maybe"},{n:"심장에 꽂힌 칼",m:"마음의 상처. 아프지만 지나가는 시간.",yn:"no"},{n:"전사의 휴식",m:"휴식과 회복. 지금은 쉬어가야 할 때.",yn:"maybe"},{n:"패배자의 뒷모습",m:"갈등과 패배. 자존심보다 상황을 봐.",yn:"no"},{n:"밤배 피난길",m:"전환의 여정. 힘든 곳을 떠나 새로운 곳으로.",yn:"maybe"},{n:"칼 훔치는 도적",m:"전략과 기지. 정공법보다 지혜가 필요할 때.",yn:"maybe"},{n:"포위된 여인",m:"속박감. 스스로 만든 한계에서 벗어나.",yn:"no"},{n:"악몽 꾼 선비",m:"불안과 걱정. 두려움은 마음이 만든 것.",yn:"no"},{n:"몰락한 장수",m:"끝의 끝. 바닥을 치면 올라갈 일만 남았다.",yn:"no"},{n:"검술 익히는 소년",m:"호기심과 관찰. 정보를 수집하고 분석할 때.",yn:"maybe"},{n:"돌격하는 장군",m:"과감한 행동. 생각보다 행동이 앞설 때.",yn:"yes"},{n:"단호한 대비마마",m:"냉철한 판단. 감정을 배제하고 사실을 봐.",yn:"maybe"},{n:"공정한 판관",m:"공정과 권위. 올바른 판단으로 문제를 해결하라.",yn:"yes"}].map((c,i)=>({id:50+i,suit:"sword",name:c.n,std:"Swords",yn:c.yn,m:c.m}));
+
+const PENTS=[{n:"엽전의 복",m:"재물의 시작. 새로운 수입원이 열린다.",yn:"yes"},{n:"엽전 굴리는 광대",m:"균형 잡기. 여러 일을 유연하게 처리할 때.",yn:"maybe"},{n:"단청 그리는 장인",m:"장인 정신. 실력이 인정받는 시기.",yn:"yes"},{n:"자린고비",m:"안정과 절약. 가진 것을 지키되 너무 움켜쥐지 마.",yn:"maybe"},{n:"눈보라 속 거지",m:"경제적 어려움. 도움을 청하는 것도 용기.",yn:"no"},{n:"베푸는 대감",m:"나눔과 공정. 베풀면 더 큰 것이 돌아온다.",yn:"yes"},{n:"수확 기다리는 농부",m:"인내의 수확. 꾸준히 하면 결실이 온다.",yn:"maybe"},{n:"엽전 깎는 장인",m:"기술 연마. 실력을 갈고닦을 때.",yn:"yes"},{n:"정원의 귀부인",m:"풍요와 자립. 노력한 만큼 누릴 자격이 있다.",yn:"yes"},{n:"명문가 유산",m:"유산과 전통. 안정된 기반 위에 번영.",yn:"yes"},{n:"엽전 살피는 유생",m:"배움의 기회. 실용적인 새로운 시작.",yn:"yes"},{n:"신중한 기사",m:"꾸준한 전진. 느리지만 확실하게.",yn:"yes"},{n:"내조의 여왕",m:"풍요로운 돌봄. 현실적 지혜로 모두를 살린다.",yn:"yes"},{n:"만석꾼 최부자",m:"재물의 왕. 성공과 안정의 정점.",yn:"yes"}].map((c,i)=>({id:64+i,suit:"pentacle",name:c.n,std:"Pentacles",yn:c.yn,m:c.m}));
+
+const TAROT_78=[...MAJOR,...WANDS,...CUPS,...SWORDS,...PENTS];
+
+// 샘플 인물명 (코드에선 selectedPerson?.name, 없으면 "나")
+const NM="규미";
+
+// ─── 메시지 풀 표 ───
+const gb=document.getElementById('gbbody');
+for(let i=0;i<12;i++){
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td>${i}</td><td>${_TAROT_GOOD[i]}</td><td>${_TAROT_BAD[i]}</td>`;
+  gb.appendChild(tr);
+}
+
+// ─── 요약표 ───
+const ynLabel={yes:'<span class="yn-yes">yes</span>',no:'<span class="yn-no">no</span>',maybe:'<span class="yn-maybe">maybe</span>'};
+const suitKo={major:"메이저",wand:"완드🔥",cup:"컵🌊",sword:"소드⚔️",pentacle:"펜타클🪙"};
+const sb=document.getElementById('sumbody');
+TAROT_78.forEach((c,i)=>{
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td>${i}</td><td>${c.id}</td><td>${suitKo[c.suit]}</td><td><b>${c.name}</b></td><td>${c.std}</td><td>${ynLabel[c.yn]}</td><td>${c.m}</td>`;
+  sb.appendChild(tr);
+});
+
+// ─── 슈트 설명 (실제 코드 동작 재현: wand/cup/sword/pentacle 단수인데 코드는 wands/cups/swords 복수로 비교 → 메이저 외 전부 펜타클 분기로 떨어짐) ───
+function suitDescAsCoded(suit){
+  // 실제 코드 16878행 분기 그대로
+  if(suit==="major") return "메이저 아르카나 22장 중 한 장으로, 인생의 큰 흐름을 짚어주는 카드";
+  if(suit==="wands") return "완드(불 기운) — 열정·창조·행동의 결";   // 매칭 안 됨
+  if(suit==="cups")  return "컵(물 기운) — 감정·인연·치유의 결";     // 매칭 안 됨
+  if(suit==="swords")return "소드(바람 기운) — 사고·판단·결단의 결"; // 매칭 안 됨
+  return "펜타클(흙 기운) — 재물·물질·안정의 결"; // ← wand/cup/sword/pentacle 모두 여기로
+}
+function ynKi(yn){return yn==="yes"?"긍정의 기운":yn==="no"?"성찰의 기운":"중립의 기운";}
+
+// ─── 풀 결과 카드 ───
+const wrap=document.getElementById('wrap');
+TAROT_78.forEach((c,i)=>{
+  const std=c.std;
+  // 정/역 두 버전을 한 카드 안에 같이 표시
+  function renderDir(isReversed){
+    const isGood=(c.yn==="yes" && !isReversed);
+    const moodTxt=isGood?"☀️ 좋은 기운의 날":"🌙 주의가 필요한 날";
+    const moodCls=isGood?"mood-good":"mood-bad";
+    const revMark=isReversed?" (역방향)":"";
+    // 메시지 박스 — _TAROT_GOOD/_BAD 는 seed에 따라 1개만 뽑히므로 "예시"로 표기
+    const flowBold=isReversed?"잠시 멈추고 돌아보라는":"앞으로 나아가라는";
+    const goodTail=isGood?"마음이 이끄는 방향대로 한 걸음 내디뎌도 좋은 날이에요.":"조급함을 내려놓고 천천히 흐름에 맡겨보세요.";
+    // 카드 의미 박스
+    const meanBold=isGood?"흐름을 따라 자연스럽게":"잠시 멈추고 내면을 다지라";
+    return `
+     <div class="dir ${isReversed?'rev':'up'}">
+       <div class="dlbl">${isReversed?'🔄 역방향':'⬆️ 정방향'}</div>
+       <span class="moodpill ${moodCls}">${moodTxt}</span>
+       <div class="box msg"><div class="blbl">✦ 오늘의 카드 메시지</div>
+         <span style="color:#aaa">[랜덤 1개 — ${isGood?'_TAROT_GOOD':'_TAROT_BAD'}[seed%12] 중]</span> ${NM}님, 이 카드는 오늘 ${NM}님의 흐름에 <strong class="em">${flowBold}</strong> 신호를 보내고 있어요. ${goodTail} 작은 선택 하나가 의외의 행운을 부를 수 있어요.
+       </div>
+       <div class="box interp"><div class="blbl">🃏 카드 해석</div>
+         <strong class="em">${c.name}</strong>${revMark} — 서양 타로의 <em>${std}</em>에 해당하는 조선 타로예요. ${suitDescAsCoded(c.suit)}. ${ynKi(c.yn)}이 강하게 흐르는 장면이에요.
+       </div>
+       <div class="box mean"><div class="blbl">🔮 카드 의미</div>
+         ${c.m} 이 카드의 핵심 메시지는 <strong class="em">${meanBold}</strong>는 거예요. ${NM}님 안에 이미 답이 있으니, 외부보다 내 마음의 소리에 귀 기울여보세요.
+       </div>
+     </div>`;
+  }
+  const el=document.createElement('div');
+  el.className='card';
+  el.innerHTML=`
+    <div class="top">
+      <div class="big">${i}. ${c.name}</div>
+      <div class="std">${std} · id ${c.id} · yesno: ${c.yn}</div>
+      <span class="suitbadge">${suitKo[c.suit]}</span>
+    </div>
+    ${renderDir(false)}
+    ${renderDir(true)}
+    <div class="note-static">고정 헤더: "오늘의 운명 한 장" / "${NM}님의 오늘의 카드" · 카드명 아래 std("${std}") 노출 · 역방향이면 카드 이미지 180° 회전 + "역방향" 뱃지.</div>
+  `;
+  wrap.appendChild(el);
+});
+</script>
+</body>
+</html>

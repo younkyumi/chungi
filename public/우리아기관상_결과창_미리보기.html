@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>우리아기관상 결과창 미리보기</title>
+<!--
+  출처: src/app/page.tsx
+  - BabyGwansangModal result JSX: 11372~11680행
+  - border:1px solid rgba(201,167,78,0.3) (11420행)
+  - BrandLine: "우리 아기 관상 상세 리포트" (11423행)
+  - 제목: "🍼 {fullName} 아기의 관상보기" (11424행)
+  - laserScan: bg linear-gradient(135deg,#fdf8f0,#fff8eb), laser #D4AF37 (11434행)
+  - 점수+별+상위% (11441~11450행)
+  - 칩 3종: 천재성%(#f0e6ff/#7c3aed), 재물그릇(#fffbeb/#b45309), 인복 만점(#fff0f3/#e03131) (11447~11449행)
+  - 탭 3줄: 풀너비(🐣 첫인상) / 4등분(🧒 천재성/💰 재물/🤝 교우/🩺 건강) / 풀너비(🍼 육아) (11456~11468행)
+  - 탭 active: bg:#1A3C32
+  - 콘텐츠 borderLeft: 첫인상=#D4AF37, 천재성=#4263eb, 재물=#D4AF37, 교우/건강=#059669
+  - 10년 후 모습: bg linear-gradient(135deg,#eef2ff,#fae8ff), border:#c7d2fe (11482행)
+  - 교우 탭: 찰떡 #fff5f5/#ffe3e3, 주의 #f8f9fa/#eee
+  - 건강 탭: 수호보석 #f3e8ff/#e9d5ff, 수호동물 #fff8eb/#fde68a
+  - 육아 탭: borderLeft:#059669 (본문), 이번주팁 #0369a1, 아기편지 #b45309
+  - 천기의 한마디: 무지개 박스 (육아 탭)
+  - hash: #천기관상 #우리아기관상 #{nm} #{score}점 #{character_name}
+  - 인증서: dark green 배경, "Baby Face Reading Certificate", 캐릭터: /baby-cards/baby (id).png
+-->
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#1A3C32;--gold:#D4AF37;}
+body{background:#1A3C32;font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;padding:20px;}
+.max-wrap{max-width:430px;margin:0 auto;}
+.white-card{background:#ffffff;border-radius:20px;overflow:hidden;border:1px solid rgba(201,167,78,0.3);box-shadow:0 10px 30px rgba(0,0,0,0.06);color:#333;margin-bottom:12px;}
+.brand-line-inner{font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;padding:10px 16px;text-align:center;border-bottom:1px solid #f0f0f0;}
+.hash-footer{display:flex;justify-content:space-between;padding:10px 16px;font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;border-top:1px solid #f0f0f0;flex-wrap:wrap;gap:4px;}
+.gray-box{background:#f8f9fa;border-radius:12px;padding:14px;margin-bottom:12px;}
+.tab-btn{padding:8px 6px;background:transparent;border:1px solid #ddd;color:#1A3C32;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;text-align:center;}
+.tab-btn.active{background:#1A3C32;color:#fff;border-color:#1A3C32;}
+@keyframes laserScan{0%{top:0}100%{top:calc(100% - 3px)}}
+</style>
+</head>
+<body>
+<div class="max-wrap">
+
+<!-- ══════ 메인 결과 카드 ══════ -->
+<div class="white-card">
+  <!-- 헤더 -->
+  <div style="padding:10px 16px 12px;text-align:center;">
+    <div class="brand-line-inner">우리 아기 관상 상세 리포트</div>
+    <div style="font-size:18px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;line-height:1.35;">🍼 다온 아기의 관상보기</div>
+    <div style="font-size:10px;color:#888;font-weight:600;margin-top:6px;line-height:1.6;">
+      <div>다온 · 2025-03-20 양력 · 남</div>
+      <div style="color:#aaa;">📅 2026-06-30 분석</div>
+    </div>
+  </div>
+
+  <!-- laserScan (bg: beige gradient, laser #D4AF37) -->
+  <div style="position:relative;width:100%;height:180px;background:linear-gradient(135deg,#fdf8f0,#fff8eb);overflow:hidden;display:flex;align-items:center;justify-content:center;">
+    <div style="font-size:48px;opacity:0.5;">👶</div>
+    <div style="position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#D4AF37,transparent);box-shadow:0 0 15px #D4AF37;top:40%;"></div>
+    <div style="position:absolute;bottom:8px;right:12px;font-size:10px;color:#D4AF37;font-weight:600;background:rgba(255,255,255,0.85);padding:2px 8px;border-radius:6px;">우리 아기 관상 스캐닝 완료 ✓</div>
+  </div>
+
+  <!-- 점수 + 별 + 상위% -->
+  <div style="display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 16px;background:#fafafa;">
+    <div style="font-size:24px;font-weight:900;color:#D4AF37;">98점</div>
+    <div style="font-size:14px;color:#FFD700;">⭐⭐⭐⭐⭐</div>
+    <span style="font-size:11px;color:#888;font-weight:600;">상위 3%</span>
+  </div>
+  <!-- 칩 3종 -->
+  <div style="display:flex;justify-content:center;gap:6px;padding:8px 16px;background:#fafafa;flex-wrap:wrap;">
+    <span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:#f0e6ff;color:#7c3aed;border:1px solid #e8d5f5;">🧒 천재성 92%</span>
+    <span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:#fffbeb;color:#b45309;border:1px solid #fde68a;">💰 재물그릇 특대</span>
+    <span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:#fff0f3;color:#e03131;border:1px solid #ffe0e6;">🌟 인복 만점</span>
+  </div>
+
+  <!-- 탭 안내 -->
+  <div style="text-align:center;padding:10px 16px 4px;font-size:11px;color:#D4AF37;font-weight:700;background:#fafafa;">👇 아래 탭 버튼을 눌러 분야별 상세 리포트를 확인하세요!</div>
+
+  <!-- 탭 3줄 -->
+  <div style="padding:10px 12px;display:flex;flex-direction:column;gap:5px;background:#fafafa;">
+    <!-- 풀너비: 첫인상 -->
+    <div style="display:flex;gap:5px;">
+      <div class="tab-btn active" style="flex:1;">🐣 첫인상</div>
+    </div>
+    <!-- 4등분: 천재성/재물/교우/건강 -->
+    <div style="display:flex;gap:5px;">
+      <div class="tab-btn" style="flex:1;">🧒 천재성</div>
+      <div class="tab-btn" style="flex:1;">💰 재물</div>
+      <div class="tab-btn" style="flex:1;">🤝 교우</div>
+      <div class="tab-btn" style="flex:1;">🩺 건강</div>
+    </div>
+    <!-- 풀너비: 육아 -->
+    <div style="display:flex;gap:5px;">
+      <div class="tab-btn" style="flex:1;">🍼 엄마아빠를 위한 육아 비방</div>
+    </div>
+  </div>
+
+  <!-- 콘텐츠 (첫인상 탭 샘플) -->
+  <div style="padding:18px 16px;">
+    <div style="text-align:center;margin-bottom:6px;">
+      <div style="font-size:18px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;line-height:1.35;">🐣 우리 다온, 첫인상 한마디</div>
+    </div>
+    <!-- borderLeft #D4AF37 -->
+    <div class="gray-box" style="border-left:4px solid #D4AF37;">
+      <div style="font-size:12px;color:#555;line-height:1.75;word-break:keep-all;">
+        다온이의 이목구비는 <strong style="color:#1A3C32;">균형이 탁월</strong>하고, 첫눈에 보는 사람을 따뜻하게 만드는 특별한 매력이 있어요. 눈빛이 총명하고 맑아서 호기심과 지성이 느껴지고, 인중이 뚜렷해 복이 두텁게 깔린 귀한 관상이에요.
+      </div>
+    </div>
+    <!-- character_name 칩 -->
+    <div style="text-align:center;margin-bottom:12px;">
+      <span style="display:inline-block;font-size:10px;font-weight:700;padding:4px 12px;border-radius:20px;background:#fff8eb;color:#D4AF37;border:1px solid #fde68a;">👑 캐릭터: 황금빛 태양아이</span>
+    </div>
+    <!-- 10년 후 모습: bg linear-gradient(135deg,#eef2ff,#fae8ff), border:#c7d2fe -->
+    <div style="background:linear-gradient(135deg,#eef2ff,#fae8ff);border:1px solid #c7d2fe;border-radius:12px;padding:12px 14px;margin-top:12px;">
+      <div style="font-size:11px;font-weight:800;color:#5b21b6;margin-bottom:5px;">🌟 10년 후 다온의 모습</div>
+      <div style="font-size:11px;color:#4c1d95;line-height:1.75;">또래보다 훨씬 성숙한 사고방식과 리더십을 갖춘 아이로 자라 있을 거예요. 반에서 중심이 되고 선생님들에게 인정받는, 빛나는 10살의 다온이에요.</div>
+    </div>
+  </div>
+
+  <!-- 천재성 탭 미리보기 (borderLeft #4263eb) -->
+  <div style="padding:0 16px 14px;border-top:1px solid #f5f5f5;">
+    <div style="font-size:10px;font-weight:800;color:#4263eb;text-align:center;margin:10px 0 8px;">🧒 천재성 탭 샘플</div>
+    <div class="gray-box" style="border-left:4px solid #4263eb;margin-bottom:8px;">
+      <div style="font-size:12px;color:#555;line-height:1.75;word-break:keep-all;">다온이의 이마는 넓고 윤기 있어 사고력이 뛰어나고, 눈동자가 또렷해 관찰력이 탁월해요. 수학적 논리력과 예술적 감수성을 동시에 가진 희귀한 천재성이에요.</div>
+    </div>
+    <div style="text-align:center;margin-bottom:6px;">
+      <span style="display:inline-block;font-size:10px;font-weight:700;padding:4px 12px;border-radius:20px;background:#f0e6ff;color:#7c3aed;">🧒 천재 유형: 창의·탐구형</span>
+    </div>
+  </div>
+
+  <!-- 육아 탭 미리보기 -->
+  <div style="padding:0 16px 14px;border-top:1px solid #f5f5f5;">
+    <div style="font-size:10px;font-weight:800;color:#059669;text-align:center;margin:10px 0 8px;">🍼 육아 탭 샘플</div>
+    <div class="gray-box" style="border-left:4px solid #059669;">
+      <div style="font-size:12px;color:#555;line-height:1.75;word-break:keep-all;">다온이는 넓은 이마와 총명한 눈빛이 말해주듯 선구적인 아이예요. 부모님이 선택을 강요하기보다 선택지를 보여주고 기다려주면 놀라운 결과를 만들어내요.</div>
+    </div>
+    <!-- 이번 주 팁: borderLeft #0369a1 -->
+    <div class="gray-box" style="border-left:4px solid #0369a1;margin-bottom:10px;">
+      <div style="font-size:11px;font-weight:800;color:#0369a1;margin-bottom:5px;">📅 이번 주 다온에게 해주면 좋을 것</div>
+      <div style="font-size:12px;color:#555;line-height:1.75;word-break:keep-all;">색깔 블록 놀이나 모래 놀이처럼 손을 쓰는 활동이 두뇌 발달에 좋아요. 자기 결정을 존중해주는 시간이 자존감을 키워줘요.</div>
+    </div>
+    <!-- 아기 편지: borderLeft #b45309 -->
+    <div class="gray-box" style="border-left:4px solid #b45309;margin-bottom:10px;">
+      <div style="font-size:11px;font-weight:800;color:#b45309;margin-bottom:5px;">💌 다온이 엄마아빠에게</div>
+      <div style="font-size:12px;color:#555;line-height:1.75;font-style:italic;word-break:keep-all;">"엄마, 아빠! 저를 선택해줘서 감사해요. 제가 커서 두 분이 자랑스러워할 사람이 될게요!"</div>
+    </div>
+    <!-- 천기의 한마디 -->
+    <div style="border-radius:16px;padding:1.5px;background-image:linear-gradient(135deg,#ffb8b8,#ffd9a8,#b8e0c8,#bcd6f0,#cdc5e8);box-shadow:0 4px 14px rgba(155,143,212,0.08);margin-bottom:10px;">
+      <div style="background:#fafbfd;border-radius:14.5px;padding:20px 18px;text-align:center;">
+        <div style="font-size:13px;color:#1A3C32;letter-spacing:1.5px;font-weight:900;margin-bottom:10px;">🔮 천기의 한마디</div>
+        <div style="font-size:13px;color:#1A3C32;font-weight:700;line-height:1.85;word-break:keep-all;font-family:'Noto Serif KR','Batang',serif;">"다온이는 이 시대에 꼭 필요한 빛 같은 존재예요. 부모님의 따뜻한 사랑이 그 빛을 더욱 강하게 만들어줄 거예요."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- hash footer -->
+  <div class="hash-footer">
+    <span>#천기관상 #우리아기관상 #다온 #98점 #황금빛태양아이</span>
+    <span style="font-weight:600;">🌐 천기.kr</span>
+  </div>
+</div>
+
+<!-- 구분선 -->
+<div style="padding:0 16px;margin:4px 0;"><div style="height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);"></div></div>
+
+<!-- ══════ 인증서 카드 ══════ -->
+<div class="white-card">
+  <div style="padding:10px 16px 0;text-align:center;">
+    <div class="brand-line-inner">우리 아기 관상 상세 리포트</div>
+    <div style="font-size:18px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;line-height:1.35;margin-bottom:6px;">👑 천상의 관상 인증서</div>
+    <div style="font-size:10px;color:#888;line-height:1.6;">다온만의 특별한 인증서예요!<br>📋 기록소에서 인증서를 모아보세요!</div>
+  </div>
+  <div style="padding:0 16px 16px;">
+    <div style="background:linear-gradient(135deg,#1A3C32,#2d5f4d 50%,#1A3C32);border:3px double #C0C0C8;border-radius:18px;padding:38px 24px 32px;text-align:center;position:relative;box-shadow:0 10px 30px rgba(192,192,200,0.25);overflow:hidden;">
+      <div style="position:absolute;top:14px;left:14px;font-size:16px;color:#C0C0C8;opacity:0.6;">❀</div>
+      <div style="position:absolute;top:14px;right:14px;font-size:16px;color:#C0C0C8;opacity:0.6;">❀</div>
+      <div style="position:absolute;bottom:14px;left:14px;font-size:16px;color:#C0C0C8;opacity:0.6;">❀</div>
+      <div style="position:absolute;bottom:14px;right:14px;font-size:16px;color:#C0C0C8;opacity:0.6;">❀</div>
+      <div style="font-size:10px;letter-spacing:4px;color:#C0C0C8;font-weight:700;margin-bottom:8px;">CHUNGI ORIGINALS</div>
+      <div style="font-size:9px;color:#C0C0C8;font-style:italic;margin-bottom:24px;">— Baby Face Reading Certificate —</div>
+      <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.08);border:1px solid rgba(192,192,200,0.3);border-radius:20px;padding:6px 16px;margin-bottom:28px;">
+        <span style="font-size:11px;color:#FFD700;letter-spacing:1px;">⭐⭐⭐⭐⭐</span>
+        <span style="font-size:11px;font-weight:900;color:#C0C0C8;font-family:'Noto Serif KR',serif;">98</span>
+        <span style="font-size:8px;color:#C0C0C8;opacity:0.5;">|</span>
+        <span style="font-size:11px;font-weight:900;color:#c92a2a;font-family:'Noto Serif KR',serif;">S</span>
+        <span style="font-size:8px;color:#C0C0C8;opacity:0.5;">|</span>
+        <span style="font-size:11px;font-weight:900;color:#FFD700;font-family:'Noto Serif KR',serif;">상위 3%</span>
+      </div>
+      <!-- 캐릭터 이미지 자리 (/baby-cards/baby (id).png) -->
+      <div style="width:200px;height:200px;margin:0 auto 16px;border-radius:50%;background:linear-gradient(135deg,#fffbe9,#fef3c7);display:flex;align-items:center;justify-content:center;font-size:80px;">👶</div>
+      <div style="font-size:9px;color:#C0C0C8;letter-spacing:2px;margin-bottom:10px;font-weight:600;">— THIS BABY IS —</div>
+      <div style="font-family:'Noto Serif KR','Batang',serif;font-size:22px;font-weight:900;color:#E8E8EC;line-height:1.35;margin-bottom:10px;">"황금빛 태양아이"</div>
+      <div style="font-size:11px;color:#E8E8EC;line-height:2;text-align:center;padding:0 12px;margin-bottom:18px;word-break:keep-all;opacity:0.9;">
+        다온이는 천기가 인증한 귀한 아이예요. 대한민국 상위 3%에 해당하는 이 귀한 관상은 평생 인복과 기회를 끌어모으는 운명을 타고났어요.
+      </div>
+      <div style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-bottom:22px;">
+        <span style="font-size:10px;font-weight:800;color:#C0C0C8;background:rgba(255,255,255,0.08);border:1px solid rgba(192,192,200,0.3);padding:4px 8px;border-radius:20px;">#천재</span>
+        <span style="font-size:10px;font-weight:800;color:#C0C0C8;background:rgba(255,255,255,0.08);border:1px solid rgba(192,192,200,0.3);padding:4px 8px;border-radius:20px;">#대복</span>
+        <span style="font-size:10px;font-weight:800;color:#C0C0C8;background:rgba(255,255,255,0.08);border:1px solid rgba(192,192,200,0.3);padding:4px 8px;border-radius:20px;">#인복</span>
+        <span style="font-size:10px;font-weight:800;color:#C0C0C8;background:rgba(255,255,255,0.08);border:1px solid rgba(192,192,200,0.3);padding:4px 8px;border-radius:20px;">#총명</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:14px;">
+        <div style="height:1px;flex:1;max-width:80px;background:#C0C0C8;opacity:0.4;"></div>
+        <div style="width:42px;height:42px;border:2px solid #c92a2a;border-radius:6px;display:flex;align-items:center;justify-content:center;background:#fff5f5;transform:rotate(-4deg);box-shadow:0 2px 6px rgba(201,42,42,0.15);">
+          <div style="text-align:center;">
+            <div style="font-size:6px;color:#c92a2a;font-weight:700;line-height:1;">天機</div>
+            <div style="font-size:10px;font-weight:900;color:#c92a2a;line-height:1;margin-top:2px;">認證</div>
+          </div>
+        </div>
+        <div style="height:1px;flex:1;max-width:80px;background:#C0C0C8;opacity:0.4;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 광고배너 2x2 -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(212,175,55,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">🍼</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">2세 예측</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">2세예측 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(155,143,212,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">🌙</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">태몽 해몽</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">태몽해몽 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(95,196,158,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">🐕</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">댕댕상</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">댕댕상 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(212,175,55,0.25);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">☯️</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">사주 풀이</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">사주풀이 →</div>
+  </div>
+</div>
+
+<!-- ResultActions -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+  <button style="padding:12px;background:#f8f9fa;border:1px solid #eee;border-radius:12px;font-size:12px;font-weight:700;color:#333;cursor:pointer;">📸 이미지 저장</button>
+  <button style="padding:12px;background:#f8f9fa;border:1px solid #eee;border-radius:12px;font-size:12px;font-weight:700;color:#333;cursor:pointer;">🔗 공유하기</button>
+</div>
+
+<button style="width:100%;padding:14px;background:#D4AF37;color:#1A3C32;border:none;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;">확인 완료</button>
+
+</div>
+
+
+
+<!-- ═══ 전체 20종 아기 관상 타입 도감 ═══ -->
+<div style="background:#fff5f5;border-radius:16px;padding:16px;margin-top:16px;border:1px solid rgba(255,182,193,0.5);">
+  <div style="font-size:13px;font-weight:900;color:#1A3C32;text-align:center;margin-bottom:4px;">🍼 전체 20종 아기 관상 타입 도감</div>
+  <div style="font-size:10px;color:#888;text-align:center;margin-bottom:14px;">[우리아기관상] 결과카드 메인 스캔 이미지 + 타입 표기 (baby-cards/baby (N).png)</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+    <div style="background:#fff;border-radius:12px;padding:10px;border:1px solid rgba(255,105,135,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);text-align:center;">
+      <div style="font-size:9px;color:#e03131;font-weight:700;margin-bottom:4px;">No.01</div>
+      <div style="background:#fafafa;border-radius:8px;padding:6px;margin-bottom:6px;">
+        <img src="/baby-cards/baby (1).png" alt="세상을 밝히는 꼬마 태양" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+      </div>
+      <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.3;">세상을 밝히는 꼬마 태양</div>
+      <div style="font-size:8px;color:#aaa;margin-top:2px;">baby (1).png</div>
+    </div>
+    <div style="background:#fff;border-radius:12px;padding:10px;border:1px solid rgba(255,105,135,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);text-align:center;">
+      <div style="font-size:9px;color:#e03131;font-weight:700;margin-bottom:4px;">No.02</div>
+      <div style="background:#fafafa;border-radius:8px;padding:6px;margin-bottom:6px;">
+        <img src="/baby-cards/baby (2).png" alt="복덩이 황금 아기돼지" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+      </div>
+      <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.3;">복덩이 황금 아기돼지</div>
+      <div style="font-size:8px;color:#aaa;margin-top:2px;">baby (2).png</div>
+    </div>
+    <div style="background:#fff;border-radius:12px;padding:10px;border:1px solid rgba(255,105,135,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);text-align:center;">
+      <div style="font-size:9px;color:#e03131;font-weight:700;margin-bottom:4px;">No.03</div>
+      <div style="background:#fafafa;border-radius:8px;padding:6px;margin-bottom:6px;">
+        <img src="/baby-cards/baby (3).png" alt="쏙쏙 모으는 알뜰 햄찌" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+      </div>
+      <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.3;">쏙쏙 모으는 알뜰 햄찌</div>
+      <div style="font-size:8px;color:#aaa;margin-top:2px;">baby (3).png</div>
+    </div>
+    <div style="background:#fff;border-radius:12px;padding:10px;border:1px solid rgba(255,105,135,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);text-align:center;">
+      <div style="font-size:9px;color:#e03131;font-weight:700;margin-bottom:4px;">No.04</div>
+      <div style="background:#fafafa;border-radius:8px;padding:6px;margin-bottom:6px;">
+        <img src="/baby-cards/baby (4).png" alt="날아오를 아기 학" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+      </div>
+      <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.3;">날아오를 아기 학</div>
+      <div style="font-size:8px;color:#aaa;margin-top:2px;">baby (4).png</div>
+    </div>
+    <div style="background:#fff;border-radius:12px;padding:10px;border:1px solid rgba(255,105,135,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);text-align:center;">
+      <div style="font-size:9px;color:#e03131;font-weight:700;margin-bottom:4px;">No.05</div>
+      <div style="background:#fafafa;border-radius:8px;padding:6px;margin-bottom:6px;">
+        <img src="/baby-cards/baby (5).png" alt="영리한 아기 여우" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+      </div>
+      <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.3;">영리한 아기 여우</div>
+      <div style="font-size:8px;color:#aaa;margin-top:2px;">baby (5).png</div>
+    </div>
+    <div style="background:#fff;border-radius:12px;padding:10px;border:1px solid rgba(255,105,135,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);text-align:center;">
+      <div style="font-size:9px;color:#e03131;font-weight:700;margin-bottom:4px;">No.06</div>
+      <div style="background:#fafafa;border-radius:8px;padding:6px;margin-bottom:6px;">
+        <img src="/baby-cards/baby (6).png" alt="눈부신 꽃사슴 베이비" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+      </div>
+      <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.3;">눈부신 꽃사슴 베이비</div>
+      <div style="font-size:8px;color:#aaa;margin-top:2px;">baby (6).png</div>
+    </div>
+    <div style="background:#fff;border-radius:12px;padding:10px;border:1px solid rgba(255,105,135,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);text-align:center;">
+      <div style="font-size:9px;color:#e03131;font-weight:700;margin-bottom:4px;">No.07</div>
+      <div style="background:#fafafa;border-radius:8px;padding:6px;margin-bottom:6px;">
+        <img src="/baby-cards/baby (7).png" alt="부지런한 똑똑 펭귄" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+      </div>
+      <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.3;">부지런한 똑똑 펭귄</div>
+      <div style="font-size:8px;color:#aaa;margin-top:2px;">baby (7).png</div>
+    </div>
+    <div style="background:#fff;border-radius:12px;padding:10px;border:1px solid rgba(255,105,135,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);text-align:center;">
+      <div style="font-size:9px;color:#e03131;font-weight:700;margin-bottom:4px;">No.08</div>
+      <div style="background:#fafafa;border-radius:8px;padding:6px;margin-bottom:6px;">
+        <img src="/baby-cards/baby (8).png" alt="세상 순한 포근 강아지" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+      </div>
+      <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.3;">세상 순한 포근 강아지</div>
+      <div style="font-size:8px;color:#aaa;margin-top:2px;">baby (8).png</div>
+    </div>
+    <div style="background:#fff;border-radius:12px;padding:10px;border:1px solid rgba(255,105,135,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);text-align:center;">
+      <div style="font-size:9px;color:#e03131;font-weight:700;margin-bottom:4px;">No.09</div>
+      <div style="background:#fafafa;border-radius:8px;padding:6px;margin-bottom:6px;">
+        <img src="/baby-cards/baby (9).png" alt="지혜로운 아기 부엉이" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+      </div>
+      <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.3;">지혜로운 아기 부엉이</div>
+      <div style="font-size:8px;color:#aaa;margin-top:2px;">baby (9).png</div>
+    </div>
+    <div style="background:#fff;border-radius:12px;padding:10px;border:1px solid rgba(255,105,135,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);text-align:center;">
+      <div style="font-size:9px;color:#e03131;font-weight:700;margin-bottom:4px;">No.10</div>
+      <div style="background:#fafafa;border-radius:8px;padding:6px;margin-bottom:6px;">
+        <img src="/baby-cards/baby (10).png" alt="용감한 꼬마 사자왕" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+      </div>
+      <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.3;">용감한 꼬마 사자왕</div>
+      <div style="font-size:8px;color:#aaa;margin-top:2px;">baby (10).png</div>
+    </div>
+    <div style="background:#fff;border-radius:12px;padding:10px;border:1px solid rgba(255,105,135,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);text-align:center;">
+      <div style="font-size:9px;color:#e03131;font-weight:700;margin-bottom:4px;">No.11</div>
+      <div style="background:#fafafa;border-radius:8px;padding:6px;margin-bottom:6px;">
+        <img src="/baby-cards/baby (11).png" alt="돌진하는 뚝심 베이비" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+      </div>
+      <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.3;">돌진하는 뚝심 베이비</div>
+      <div style="font-size:8px;color:#aaa;margin-top:2px;">baby (11).png</div>
+    </div>
+    <div style="background:#fff;border-radius:12px;padding:10px;border:1px solid rgba(255,105,135,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);text-align:center;">
+      <div style="font-size:9px;color:#e03131;font-weight:700;margin-bottom:4px;">No.12</div>
+      <div style="background:#fafafa;border-radius:8px;padding:6px;margin-bottom:6px;">
+        <img src="/baby-cards/baby (12).png" alt="사랑 듬뿍 포근 양" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+      </div>
+      <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.3;">사랑 듬뿍 포근 양</div>
+      <div style="font-size:8px;color:#aaa;margin-top:2px;">baby (12).png</div>
+    </div>
+    <div style="background:#fff;border-radius:12px;padding:10px;border:1px solid rgba(255,105,135,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);text-align:center;">
+      <div style="font-size:9px;color:#e03131;font-weight:700;margin-bottom:4px;">No.13</div>
+      <div style="background:#fafafa;border-radius:8px;padding:6px;margin-bottom:6px;">
+        <img src="/baby-cards/baby (13).png" alt="하늘을 품은 아기 용" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+      </div>
+      <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.3;">하늘을 품은 아기 용</div>
+      <div style="font-size:8px;color:#aaa;margin-top:2px;">baby (13).png</div>
+    </div>
+    <div style="background:#fff;border-radius:12px;padding:10px;border:1px solid rgba(255,105,135,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);text-align:center;">
+      <div style="font-size:9px;color:#e03131;font-weight:700;margin-bottom:4px;">No.14</div>
+      <div style="background:#fafafa;border-radius:8px;padding:6px;margin-bottom:6px;">
+        <img src="/baby-cards/baby (14).png" alt="눈썰미 만점 똘똘이" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+      </div>
+      <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.3;">눈썰미 만점 똘똘이</div>
+      <div style="font-size:8px;color:#aaa;margin-top:2px;">baby (14).png</div>
+    </div>
+    <div style="background:#fff;border-radius:12px;padding:10px;border:1px solid rgba(255,105,135,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);text-align:center;">
+      <div style="font-size:9px;color:#e03131;font-weight:700;margin-bottom:4px;">No.15</div>
+      <div style="background:#fafafa;border-radius:8px;padding:6px;margin-bottom:6px;">
+        <img src="/baby-cards/baby (15).png" alt="감성 만개 나비 베이비" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+      </div>
+      <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.3;">감성 만개 나비 베이비</div>
+      <div style="font-size:8px;color:#aaa;margin-top:2px;">baby (15).png</div>
+    </div>
+    <div style="background:#fff;border-radius:12px;padding:10px;border:1px solid rgba(255,105,135,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);text-align:center;">
+      <div style="font-size:9px;color:#e03131;font-weight:700;margin-bottom:4px;">No.16</div>
+      <div style="background:#fafafa;border-radius:8px;padding:6px;margin-bottom:6px;">
+        <img src="/baby-cards/baby (16).png" alt="세계를 누빌 아기 새" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+      </div>
+      <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.3;">세계를 누빌 아기 새</div>
+      <div style="font-size:8px;color:#aaa;margin-top:2px;">baby (16).png</div>
+    </div>
+    <div style="background:#fff;border-radius:12px;padding:10px;border:1px solid rgba(255,105,135,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);text-align:center;">
+      <div style="font-size:9px;color:#e03131;font-weight:700;margin-bottom:4px;">No.17</div>
+      <div style="background:#fafafa;border-radius:8px;padding:6px;margin-bottom:6px;">
+        <img src="/baby-cards/baby (17).png" alt="냠냠 먹보 다람쥐" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+      </div>
+      <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.3;">냠냠 먹보 다람쥐</div>
+      <div style="font-size:8px;color:#aaa;margin-top:2px;">baby (17).png</div>
+    </div>
+    <div style="background:#fff;border-radius:12px;padding:10px;border:1px solid rgba(255,105,135,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);text-align:center;">
+      <div style="font-size:9px;color:#e03131;font-weight:700;margin-bottom:4px;">No.18</div>
+      <div style="background:#fafafa;border-radius:8px;padding:6px;margin-bottom:6px;">
+        <img src="/baby-cards/baby (18).png" alt="행운 듬뿍 클로버 베이비" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+      </div>
+      <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.3;">행운 듬뿍 클로버 베이비</div>
+      <div style="font-size:8px;color:#aaa;margin-top:2px;">baby (18).png</div>
+    </div>
+    <div style="background:#fff;border-radius:12px;padding:10px;border:1px solid rgba(255,105,135,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);text-align:center;">
+      <div style="font-size:9px;color:#e03131;font-weight:700;margin-bottom:4px;">No.19</div>
+      <div style="background:#fafafa;border-radius:8px;padding:6px;margin-bottom:6px;">
+        <img src="/baby-cards/baby (19).png" alt="반짝반짝 별빛 아기" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+      </div>
+      <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.3;">반짝반짝 별빛 아기</div>
+      <div style="font-size:8px;color:#aaa;margin-top:2px;">baby (19).png</div>
+    </div>
+    <div style="background:#fff;border-radius:12px;padding:10px;border:1px solid rgba(255,105,135,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);text-align:center;">
+      <div style="font-size:9px;color:#e03131;font-weight:700;margin-bottom:4px;">No.20</div>
+      <div style="background:#fafafa;border-radius:8px;padding:6px;margin-bottom:6px;">
+        <img src="/baby-cards/baby (20).png" alt="도도한 아기 호랑이" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+      </div>
+      <div style="font-size:10px;font-weight:800;color:#1A3C32;line-height:1.3;">도도한 아기 호랑이</div>
+      <div style="font-size:8px;color:#aaa;margin-top:2px;">baby (20).png</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

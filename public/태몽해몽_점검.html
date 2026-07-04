@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🤰 태몽해몽 결과 점검본 (성별 3종 비교)</title>
+<style>
+  body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#ece6da;margin:0;padding:18px;color:#222;}
+  h1{text-align:center;color:#1A3C32;}
+  h2{max-width:1280px;margin:34px auto 12px;color:#1A3C32;border-bottom:3px solid #D4AF37;padding-bottom:6px;font-size:19px;}
+  .note{max-width:920px;margin:0 auto 18px;background:#fff;border-radius:12px;padding:14px 18px;font-size:13px;line-height:1.85;box-shadow:0 4px 14px rgba(0,0,0,.06);}
+  .note b{color:#b91c1c;}
+  .ai{color:#9333ea;font-weight:800;}
+  .fb{color:#16a34a;font-weight:800;}
+  .legend{max-width:920px;margin:0 auto 22px;display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;justify-content:center;}
+  .legend span{background:#fff;border-radius:8px;padding:5px 12px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+  table.sum{max-width:1100px;margin:0 auto 10px;border-collapse:collapse;background:#fff;font-size:12.5px;box-shadow:0 4px 14px rgba(0,0,0,.06);width:100%;}
+  table.sum th,table.sum td{border:1px solid #e3dccb;padding:7px 10px;text-align:left;vertical-align:top;line-height:1.55;}
+  table.sum th{background:#1A3C32;color:#fff;}
+  table.sum tr:nth-child(even){background:#faf7f0;}
+  table.sum th.son{background:#1e40af;}
+  table.sum th.dau{background:#9d174d;}
+  table.sum th.und{background:#854d0e;}
+  table.sum td.lbl{font-weight:800;color:#7A5C00;background:#fdfaf2;white-space:nowrap;}
+  .common{max-width:1100px;margin:0 auto 14px;background:#eef6ff;border:1px solid #bfdbfe;border-radius:10px;padding:12px 16px;font-size:12.5px;line-height:1.8;}
+  .common .ck{font-weight:800;color:#1d4ed8;}
+  em{color:#B8942E;font-style:normal;font-weight:800;}
+  .son-t{color:#1e40af;font-weight:700;}
+  .dau-t{color:#9d174d;font-weight:700;}
+  .und-t{color:#854d0e;font-weight:700;}
+  .sect-desc{max-width:1100px;margin:0 auto 6px;font-size:12px;color:#666;}
+  .badge{display:inline-block;font-size:10px;font-weight:800;border-radius:6px;padding:2px 7px;margin-left:6px;vertical-align:middle;}
+  .badge.ai{background:#f3e8ff;color:#9333ea;}
+  .badge.fb{background:#dcfce7;color:#16a34a;}
+  .badge.tab{background:#1A3C32;color:#fff;}
+</style>
+</head>
+<body>
+<h1>🤰 태몽해몽 결과 점검본</h1>
+<div class="note">
+  <b>📌 성별 3종(아들 / 딸 / 미정) 비교 점검본 — 직접 읽고 오타·어색 문구 잡기</b><br>
+  태몽 결과는 <b>result.gender 값(아들·딸·미정)</b>에 따라 거의 모든 문장이 3갈래로 갈려요. 그래서 각 섹션을 <b>3열로 나란히</b> 놓아 셋을 비교하며 점검할 수 있게 했어.<br>
+  <span class="ai">보라 글씨 / AI생성 뱃지</span> = Gemini가 입력 태몽으로 채우는 부분(제목·한줄·상세·요소·기질·이름팁 등) → 여기선 플레이스홀더로 표시.
+  <span class="fb">초록 글씨 / 폴백 뱃지</span> = AI가 비었을 때 쓰는 코드 내 기본값(태명 튼튼이·복덩이·사랑이 등).<br>
+  ⚠️ <b>3탭(타고난 기질 / 미래의 흐름 / 육아 처방전)</b> 안의 거의 모든 본문 문장은 성별로만 갈리고 사주·태몽 내용과 무관한 <b>정적 템플릿</b>이야. 그래서 이 점검본의 핵심 점검 대상.
+</div>
+<div class="legend">
+  <span>🔵 <b>아들</b> 버전</span>
+  <span>🌸 <b>딸</b> 버전</span>
+  <span>🟡 <b>미정</b> 버전</span>
+  <span class="ai">●</span> AI생성(입력 태몽 기반)
+  <span class="fb">●</span> 폴백(코드 기본값)
+</div>
+
+<h2>① PAGE 1 — 개요 (성별 무관 + 성별 3분기 혼합)</h2>
+<div class="sect-desc">성별 예측 박스(배경색·아바타·메시지)만 성별로 갈리고, 한줄/상세/핵심신호/요소/한끗차이는 AI가 채우거나 성별 무관 고정문.</div>
+
+<div class="common">
+  <span class="ck">[성별 무관 공통]</span><br>
+  · <b>말씀하신 태몽 박스:</b> 노랑→흰→연보라 그라데이션 + 우상단 <em>天機 / 胎夢</em> 도장. 이모지 <span class="ai">{result.emoji}<span class="badge ai">AI</span></span> · 제목 <span class="ai">{result.title}<span class="badge ai">AI</span></span> · 부제 "아이가 보낸 첫 인사"<br>
+  · <b>성별 예측 헤더:</b> "👶 우리 아이 성별 예측 / 태몽이 전하는 첫 소식" · "📬 새 가족 소식이 도착했어요" / "천기 AI가 전해드려요"<br>
+  · <b>🌙 한줄 해몽:</b> 라벨 "🌙 한줄 해몽: \"{이모지} 태몽 신호\"" · 본문 <span class="ai">{result.result}<span class="badge ai">AI</span></span> (폴백: "이 태몽은 아이가 부모님께 보내는 귀한 첫 인사예요.")<br>
+  · <b>🔮 상세 해몽:</b> 라벨 "🔮 상세 해몽: \"태몽의 메시지\"" · 본문 <span class="ai">{result.detail}<span class="badge ai">AI</span></span> (폴백: "전통 태몽 풀이로 정성껏 해석한 내용이에요.")<br>
+  · <b>핵심 신호 박스(골드 좌측선, 고정문):</b> "<strong>태몽이 전하는 핵심 신호:</strong> 이 태몽은 단순한 무의식 작용이 아니라, 세상에 오기 전 영혼이 부모님께 미리 보내는 인사예요. 꿈 속의 강렬했던 한 장면(색·움직임·감정)이 아이의 평생 정체성과 가장 깊이 연결됩니다. 잊기 전에 그 장면을 메모해두세요."<br>
+  · <b>✦ 태몽 속 요소 분석:</b> <span class="ai">{result.elements[].emoji / name / meaning}<span class="badge ai">AI</span></span> (배열 비면 섹션 숨김)<br>
+  · <b>💡 한 끗 차이 태몽:</b> 라벨 "키워드 하나로 달라져요" · <span class="ai">{result.similar_dreams[].case / interpret}<span class="badge ai">AI</span></span> (최대 3개, 비면 숨김)
+</div>
+
+<table class="sum">
+<thead><tr><th>성별 예측 박스</th><th class="son">🔵 아들</th><th class="dau">🌸 딸</th><th class="und">🟡 미정</th></tr></thead>
+<tbody>
+<tr><td class="lbl">박스 배경/테두리</td><td>파란박스 (#eff6ff / #93c5fd)</td><td>핑크박스 (#fdf2f8 / #f9a8d4)</td><td>노란박스 (#fefce8 / #fde047)</td></tr>
+<tr><td class="lbl">아바타 라인</td><td>👩‍🍼 💞 👶</td><td>👩‍🍼 💞 👶🏻</td><td>👩‍🍼 ✨ 👶</td></tr>
+<tr><td class="lbl">메인 메시지</td><td class="son-t">"아들이 올 거예요"</td><td class="dau-t">"딸이 올 거예요"</td><td class="und-t">🌟 성별 예측 불확실</td></tr>
+<tr><td class="lbl">신뢰도 바</td><td>신뢰도 <span class="ai">{result.prob}%<span class="badge ai">AI</span></span> · 파란 게이지</td><td>신뢰도 <span class="ai">{result.prob}%<span class="badge ai">AI</span></span> · 핑크 게이지</td><td>표시 안 함 (신뢰도 바 숨김)</td></tr>
+<tr><td class="lbl">하단 고정문</td><td colspan="3" style="text-align:center">"※ 태몽 해석은 전통 풀이 참고용이에요" (3종 공통)</td></tr>
+</tbody>
+</table>
+
+<h2>② 탭 1 — 🌱 타고난 기질 <span class="badge tab">tmTab 0</span></h2>
+<div class="sect-desc">오행 / 기질강점·주의점 / 부모인연 / 전생인연 — 전부 성별 3분기 정적 템플릿. (기질 태그 칩만 AI: result.trait)</div>
+
+<table class="sum">
+<thead><tr><th>항목</th><th class="son">🔵 아들</th><th class="dau">🌸 딸</th><th class="und">🟡 미정</th></tr></thead>
+<tbody>
+<tr><td class="lbl">☯️ 오행 본기</td><td>양(陽) 기운이 강한 화(火)·목(木)</td><td>음(陰) 기운이 풍부한 수(水)·금(金)</td><td>균형 잡힌 토(土)·중성</td></tr>
+<tr><td class="lbl">영혼의 색깔</td><td>주황·금색</td><td>분홍·연보라</td><td>황금·옥색</td></tr>
+<tr><td class="lbl">부족할 수 있는 기운</td><td>수(水) — 침착함·통찰</td><td>화(火) — 표현력·열정</td><td>금(金) — 결단력·정밀함</td></tr>
+<tr><td class="lbl">✦ 기질 칩</td><td colspan="3" style="text-align:center"><span class="ai">{result.trait} 을 "·"로 분리해 태그 칩<span class="badge ai">AI</span></span></td></tr>
+<tr><td class="lbl">타고난 강점</td><td>강한 추진력과 모험심, 한 번 마음먹으면 끝까지 해내는 뚝심</td><td>섬세한 공감 능력과 예술적 감수성, 사람의 마음을 빠르게 알아채는 직관</td><td>균형 감각과 어디에서나 잘 적응하는 적응력, 평화를 만드는 중재 능력</td></tr>
+<tr><td class="lbl">주의할 점</td><td>고집이 너무 강해질 때, 주변 의견을 듣지 않으려는 경향</td><td>감정에 너무 깊게 빠질 때, 자기 마음을 표현 못 하고 쌓아둘 위험</td><td>결정 미루기·우유부단함, 모두 만족시키려다 자신을 놓치는 경향</td></tr>
+<tr><td class="lbl">👪 부모 인연 패턴</td><td>엄마와 더 강한 결속</td><td>아빠와 미묘한 끌림</td><td>양쪽 부모 모두에게 균등한 애착</td></tr>
+<tr><td class="lbl">🔮 전생 인연 유형</td><td>전생에 부모님께 큰 신세를 진 인연</td><td>전생에 부모님과 같은 길을 걸었던 영혼</td><td>오랜 시간 부모님 곁을 맴돌던 인연</td></tr>
+<tr><td class="lbl">전생의 무대</td><td>한반도 북방의 무사 가문</td><td>고려 말 사대부의 안채</td><td>바닷가 어촌 마을의 평민 가정</td></tr>
+</tbody>
+</table>
+<div class="common">
+  <span class="ck">[탭1 성별 무관 고정문]</span><br>
+  · 색 노출 안내: "이 색을 유아기 환경(이불·벽지·옷)에 자연스럽게 노출시키면 타고난 기운이 더 잘 발현돼요." / "이 부분은 이름·취미·생활습관으로 자연스럽게 보강해주세요."<br>
+  · 강점 마무리: "학교·사회에서 인정받는 가장 큰 무기가 될 거예요." / "어릴 때부터 부모가 부드럽게 균형을 잡아주면 잘 자라요."<br>
+  · 부모인연: "이번 생에 아이가 부모에게 가져다주는 선물은 <strong>새로운 시각·잊고 있던 기쁨·인생 후반의 의미</strong>예요. 동시에 부모는 아이에게 <strong>안정감·세상에 대한 신뢰·자존감</strong>을 주는 가장 큰 스승이 돼요."<br>
+  · 전생 마무리: "이 아이는 부모님께 큰 위로와 기쁨을 가져다주는 존재가 될 거예요. ... 그때 못다 한 일·못다 한 사랑을 이번 생에 마무리하러 왔어요."
+</div>
+
+<h2>③ 탭 2 — 🌟 미래의 흐름 <span class="badge tab">tmTab 1</span></h2>
+<div class="sect-desc">학업·재능 시기 / 인연·결혼 / 직업·사명 — 성별 3분기 정적 템플릿.</div>
+
+<table class="sum">
+<thead><tr><th>항목</th><th class="son">🔵 아들</th><th class="dau">🌸 딸</th><th class="und">🟡 미정</th></tr></thead>
+<tbody>
+<tr><td class="lbl">📚 7~9세 두각 분야</td><td>수학·과학·체육·음악</td><td>언어·예술·읽기·그림</td><td>전 분야 골고루</td></tr>
+<tr><td class="lbl">💕 미래 배우자상</td><td>따뜻한 눈매에 단단한 책임감을 가진 사람</td><td>든든하고 유머 있는 균형 잡힌 사람</td><td>각자의 길을 존중해주는 정신적으로 성숙한 사람</td></tr>
+<tr><td class="lbl">만남 시기</td><td>27~31세</td><td>25~29세</td><td>28~32세</td></tr>
+<tr><td class="lbl">💼 잘 맞는 직업</td><td>리더·기획·연구·운동·기술 (단단한 한 분야 깊이 파는 일)</td><td>예술·교육·심리·디자인·콘텐츠 (사람 마음을 다루는 일)</td><td>중재·상담·외교·통역·서비스 (사람과 사람을 잇는 일)</td></tr>
+<tr><td class="lbl">이번 생의 사명</td><td>자기 분야에서 남들이 못 가본 길을 개척</td><td>세상에 따뜻함·아름다움을 더하는 영향력 있는 사람</td><td>갈등이 있는 곳에 평화를 가져오는 존재</td></tr>
+</tbody>
+</table>
+<div class="common">
+  <span class="ck">[탭2 성별 무관 고정문]</span><br>
+  · 학업 시기(성별 무관): <strong>3~5세</strong> 호기심 폭발기 / <strong>7~9세</strong> 첫 두각(분야만 성별 분기) / <strong>13~15세</strong> 정체성 형성기 / <strong>18~22세</strong> 진로 결정 황금기.<br>
+  · 연애 패턴: "<strong>한번 마음을 주면 깊고 진지한 스타일</strong>이라 친구처럼 시작해 연인이 되는 흐름이 잘 맞아요. 결혼 후엔 가정을 매우 소중히 여기는 모습을 보여줘요."<br>
+  · 직업 마무리: "어릴 때부터 이 메시지를 자주 들려주면 자존감이 높아져요."
+</div>
+
+<h2>④ 탭 3 — 🍼 육아 처방전 <span class="badge tab">tmTab 2</span></h2>
+<div class="sect-desc">이름방향(AI) / 태명추천(폴백) / 임신·태교 / 시기별양육(공통) / 같은태몽후기 / 영혼첫인사 / 천기한마디.</div>
+
+<table class="sum">
+<thead><tr><th>임신·태교 가이드</th><th class="son">🔵 아들</th><th class="dau">🌸 딸</th><th class="und">🟡 미정</th></tr></thead>
+<tbody>
+<tr><td class="lbl">좋은 활동</td><td>클래식 음악·자연 다큐·차분한 산책 — 안정과 강인함을 함께 키워줘요.</td><td>피아노 연주·꽃 가꾸기·예술 작품 감상 — 섬세한 감수성을 키워줘요.</td><td>산책·명상·따뜻한 차 마시기 — 마음의 평화가 아이에게 그대로 전해져요.</td></tr>
+<tr><td class="lbl">행운 컬러</td><td>파랑·흰색</td><td>핑크·연노랑</td><td>초록·금색</td></tr>
+<tr><td class="lbl">좋은 음식</td><td>호두·검은콩·미역국 (단단한 골격·뇌 발달)</td><td>석류·연근·유자차 (고운 피부·차분한 정서)</td><td>단호박·당근·잡곡밥 (균형 잡힌 영양)</td></tr>
+<tr><td class="lbl">👥 같은 태몽 후기 (회원 B)</td><td>활발하고 리더십 있어요</td><td>섬세하고 예술적이에요</td><td>균형 잡힌 아이로 자라요</td></tr>
+<tr><td class="lbl">💌 영혼의 첫 인사</td>
+  <td>"엄마, 아빠. 저는 두 분을 보고 왔어요. 두 분이 부모가 되기 전부터 저는 두 분을 알았어요. 강하게, 그러나 다정하게 키워주세요. 제가 이 세상에서 무엇을 할 수 있을지 함께 발견해주세요."</td>
+  <td>"엄마, 아빠. 저는 따뜻함이 흐르는 두 분을 보고 왔어요. 제 마음이 너무 섬세해서 가끔 흔들릴 거예요. 그때 그저 곁에 있어주세요. 저는 두 분을 닮은 사람이 될 거예요."</td>
+  <td>"엄마, 아빠. 저는 두 분의 마음의 균형을 보고 왔어요. 어떤 곳에서도 잘 적응하는 아이로 자랄게요. 두 분이 서로를 사랑하는 모습이 제게 가장 큰 가르침이에요."</td></tr>
+</tbody>
+</table>
+
+<table class="sum">
+<thead><tr><th>이름·태명 (AI/폴백)</th><th colspan="3">값</th></tr></thead>
+<tbody>
+<tr><td class="lbl">✦ 이름 방향 제안</td><td colspan="3"><span class="ai">{result.name_tip}<span class="badge ai">AI</span></span> (폴백: "이 태몽의 기운을 담은 이름이 어울려요.")</td></tr>
+<tr><td class="lbl">🍼 태명 추천 1</td><td colspan="3"><span class="fb">튼튼이<span class="badge fb">폴백</span></span> — 건강하게 자라라는 부모님 마음 <span class="ai">(AI가 womb_names 채우면 대체)</span></td></tr>
+<tr><td class="lbl">🍼 태명 추천 2</td><td colspan="3"><span class="fb">복덩이<span class="badge fb">폴백</span></span> — 복을 가득 안고 온 귀한 아이</td></tr>
+<tr><td class="lbl">🍼 태명 추천 3</td><td colspan="3"><span class="fb">사랑이<span class="badge fb">폴백</span></span> — 사랑으로 기다린 우리 아기</td></tr>
+<tr><td class="lbl">작명 팁(고정)</td><td colspan="3">💡 부족한 오행 자음을 둘째 글자에 넣고, 받침은 부드럽게(ㄴ·ㄹ·ㅁ·ㅇ). 한자 뜻보다 <strong>매일 불릴 때의 발음 파동</strong>이 더 큰 영향. 정밀 분석은 「🌊 파동 성명학」에서.</td></tr>
+</tbody>
+</table>
+
+<div class="common">
+  <span class="ck">[탭3 성별 무관 고정문]</span><br>
+  · <b>임신·태교 공통:</b> 피해야 할 것 = "큰 소음·자극적인 영상·과한 스트레스" / 금기 = "이사·큰 가구 옮기기는 안정기 이후로. 부정적 감정의 영화·소설 자제."<br>
+  · <b>📅 시기별 양육 핵심(전부 성별 무관):</b> ~100일 자주 안아주기 / 돌(1년) 돌잡이 첫 선택 → 「🎲 돌잡이 시뮬레이션」연결 / 3~4세 자기주장 폭발기 / 5~7세 사회성 형성기 / 10세 전후 자존감 기초 완성.<br>
+  · <b>같은 태몽 후기:</b> 회원 A "정말 태몽 그대로 닮았어요. 신기해요!" (고정) / 회원 B (성별 분기) / 회원 C "친정엄마한테 보여드렸더니 옛날 태몽 풀이랑 똑같다고 놀라셨어요" (고정) · ※ 천기 태몽 회원 익명 사례 발췌.<br>
+  · <b>영혼 첫 인사 서명:</b> "— 영혼의 첫 인사 (천기가 받아 적은 메시지)"<br>
+  · <b>🔮 천기의 한마디(무지개 박스, 고정):</b> "이 태몽을 받은 부모님께 — 아이는 이미 당신을 선택했어요. 두려움보다 설렘으로 맞이하세요. 사랑이 가득한 태교가 가장 큰 선물입니다. 10년 후, 20년 후 이 풀이를 다시 읽어보시면 깜짝 놀라실 거예요. 천기는 미리 알고 있었답니다. 🌟"<br>
+  · <b>해시태그 푸터:</b> #천기태몽 #태몽해몽 #{사람이름} #<span class="ai">{result.gender}</span> #<span class="ai">{result.title}</span>
+</div>
+
+<div class="note" style="margin-top:30px">
+  <b>🔎 점검 포인트 메모란</b><br>
+  · 탭1 "리더십" 맞춤법 수정 완료 (기존 "리더쉽" → "리더십").<br>
+  · 성별 "미정"일 때 오행/색/직업 등은 "토·중성/균형"으로 통일되는데, 사용자가 읽었을 때 자연스러운지 확인.<br>
+  · AI 표시 부분은 실제 태몽 입력마다 달라지니, 폴백 문구(빈 값일 때)가 어색하지 않은지 위주로 점검.
+</div>
+
+</body>
+</html>

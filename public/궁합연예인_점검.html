@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💕 궁합 연예인 풀 결과 점검본</title>
+<style>
+  body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#fce8ef;margin:0;padding:18px;color:#222;}
+  h1{text-align:center;color:#1A3C32;}
+  h2{max-width:1280px;margin:34px auto 12px;color:#1A3C32;border-bottom:3px solid #ed98ac;padding-bottom:6px;}
+  .note{max-width:980px;margin:0 auto 18px;background:#fff;border-radius:12px;padding:14px 18px;font-size:13px;line-height:1.85;box-shadow:0 4px 14px rgba(0,0,0,.06);}
+  .note b{color:#b91c1c;}
+  .note .var{color:#c2185b;font-weight:800;}
+  .note .const{color:#1d72b8;font-weight:800;}
+  table.sum{max-width:1100px;margin:0 auto 24px;border-collapse:collapse;background:#fff;font-size:12.5px;box-shadow:0 4px 14px rgba(0,0,0,.06);}
+  table.sum th,table.sum td{border:1px solid #f0d3df;padding:6px 9px;text-align:left;vertical-align:top;}
+  table.sum th{background:#1A3C32;color:#fff;}
+  table.sum tr:nth-child(even){background:#fdf5f8;}
+  .oh-mok{color:#2e7d32;font-weight:800;}
+  .oh-hwa{color:#d32f2f;font-weight:800;}
+  .oh-to{color:#a1700a;font-weight:800;}
+  .oh-geum{color:#6b7280;font-weight:800;}
+  .oh-su{color:#1565c0;font-weight:800;}
+  .wrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px;max-width:1280px;margin:0 auto;}
+  .card{background:#fff;border-radius:20px;padding:0;overflow:hidden;box-shadow:0 8px 22px rgba(0,0,0,.08);border:1px solid rgba(212,175,55,.3);}
+  .brand{text-align:center;font-size:10px;letter-spacing:2px;color:#b8942e;font-weight:800;padding:10px 16px 0;}
+  .head{padding:2px 16px 0;text-align:center;}
+  .head .big{font-size:18px;font-weight:900;color:#1A3C32;}
+  .head .info{font-size:10px;color:#888;font-weight:600;margin-top:6px;line-height:1.6;}
+  .sajubox{margin:12px 16px;border-left:4px solid #D4AF37;background:#fffbe9;border-radius:0 12px 12px 0;padding:12px 14px;}
+  .sajubox .lbl{font-size:10px;color:#7A5C00;letter-spacing:1.5px;font-weight:800;margin-bottom:6px;}
+  .sajubox .txt{font-size:12px;color:#1A3C32;line-height:1.75;font-weight:600;}
+  .intro{padding:0 16px 12px;font-size:11px;color:#666;line-height:1.7;}
+  .top5grid{padding:0 12px 12px;}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-bottom:5px;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+  .chip{background:#fff;border:1.5px solid #f0e0a0;border-radius:10px;padding:8px 6px;text-align:center;}
+  .chip.sel{border-color:#D4AF37;box-shadow:0 2px 8px rgba(212,175,55,.25);}
+  .chip .e{font-size:18px;}
+  .chip .nm{font-size:11px;font-weight:800;color:#1A3C32;}
+  .detail{padding:0 16px 14px;}
+  .detail .inner{background:#fff;border:1px solid #eee;border-radius:14px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.04);}
+  .dhead{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+  .avatar{width:54px;height:54px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;}
+  .dname{font-size:15px;font-weight:900;color:#111;}
+  .djob{font-size:10px;color:#888;}
+  .dtag{font-size:9px;padding:2px 8px;border-radius:10px;background:rgba(245,158,11,.2);color:#92400e;font-weight:800;}
+  .dscore{font-size:13px;font-weight:900;color:#f59e0b;}
+  .bar{height:6px;background:rgba(245,158,11,.15);border-radius:4px;overflow:hidden;margin-top:4px;}
+  .bar > div{height:100%;background:linear-gradient(90deg,#f59e0b,#fbbf24);border-radius:4px;}
+  .dsec{background:#fafafa;border:1px solid #f3f3f3;border-radius:10px;padding:10px 12px;margin-bottom:10px;}
+  .dsec .l{font-size:10px;font-weight:800;letter-spacing:1px;margin-bottom:5px;}
+  .dsec .l.g{color:#7A5C00;}
+  .dsec .l.r{color:#c92a2a;}
+  .dsec .l.b{color:#0369a1;}
+  .dsec .t{font-size:12px;color:#555;line-height:1.75;}
+  .foot{display:flex;justify-content:space-between;padding:10px 16px;font-size:9px;color:#aaa;font-weight:600;border-top:1px solid #f0f0f0;}
+  em{color:#c2185b;font-style:normal;font-weight:800;}
+  .cn{color:#1d72b8;font-weight:800;}
+  .bug{background:#fff3cd;border-left:4px solid #d39e00;padding:3px 7px;border-radius:4px;display:inline-block;font-size:11px;color:#7a5c00;}
+</style>
+</head>
+<body>
+<h1>💕 궁합 연예인 (celeb_compat) 풀 결과 점검본</h1>
+<div class="note">
+  <b>📌 무료 콘텐츠 · 1일 1회 (인트로엔 "3회"로 표기 — 불일치, 아래 버그 참고)</b><br>
+  결과를 가르는 변수는 딱 <b>2가지</b>뿐이에요:<br>
+  ① <span class="var">인물의 일간 오행(ilOh)</span> — 목/화/토/금/수 5종 (생년월일로 계산, 없으면 '목' 기본)<br>
+  ② <span class="var">이름(personName)</span> — 글자 char code 합 = seed. 점수에 <code>(seed + i*7)%20</code> 랜덤가산 + 본문에 이름 치환.<br>
+  <b style="color:#c2185b;">⚠️ 사전질문(focus: 연애/친구/비즈니스/멘토/예술…)은 결과 렌더에 전혀 안 쓰여요.</b> 인트로는 "AI가 그 톤에 맞춰 추천"이라 약속하지만 실제 TOP5/문구는 focus와 무관.<br>
+  <span class="const">파란 글씨</span> = 연예인 풀(POOL) 고정 데이터(45명, 이름 안 변함). <em>분홍 글씨</em> = 이름·일간으로 치환되는 부분.<br><br>
+  <b>이 점검본 구성:</b> ① 5개 일간별 대표 결과 카드(이름 "규미" 고정) → 일간이 바뀌면 TOP5가 어떻게 갈리는지.
+  ② 45명 연예인 풀 전수 표 + 일간별 멘트 풀세트(sajuLine 5종 / ilOhMeaning 5종 / kind 4종).
+</div>
+
+<div id="cards"></div>
+
+<h2>📋 연예인 풀(POOL) 전수 — 45명 고정 데이터</h2>
+<div class="note" style="margin-bottom:10px;">
+  아래는 코드에 박힌 45명 전체예요. <b>base/why/daily 문구</b>를 읽고 오타·어색함을 잡아주세요.
+  <span class="var">why·daily 안의 "OOO님"</span>은 검사 인물 이름으로 치환돼요(여기선 <em>규미</em>로 표기).
+  중복 ohaeng·태그가 많으니 같은 일간이어도 seed에 따라 누가 TOP5에 드는지 달라져요.
+</div>
+<table class="sum" id="pooltable">
+  <thead><tr><th>#</th><th>이름</th><th>직업</th><th>오행</th><th>태그</th><th>base(사주 베이스)</th><th>why(왜 잘 맞나)</th><th>daily(함께하면)</th></tr></thead>
+  <tbody></tbody>
+</table>
+
+<h2>🗂️ 일간별 멘트 풀세트 (정적 텍스트 전수)</h2>
+<div id="statictexts"></div>
+
+<script>
+// ===== 코드에서 1:1 복사한 POOL =====
+const PN="규미"; // personName 샘플
+const POOL=[
+ {name:"아이유",job:"가수·배우",emoji:"🎤",ohaeng:"목",tag:"#천생연분형",base:"창의적이고 감성적인 木 일간. 섬세한 감수성과 표현력이 일상을 예술로 만드는 사람.",why:`${PN}님의 일간과 木으로 공명해요. 같은 방향을 보고 자라는 인연 — 말 없이도 통하는 사이.`,daily:"함께 카페·전시·여행을 다니면 영감이 폭발해요. 음악 취향이 맞아 플레이리스트만 공유해도 행복."},
+ {name:"박보검",job:"배우",emoji:"🎬",ohaeng:"토",tag:"#안정형",base:"든든하고 신뢰감 가는 土 일간. 변하지 않는 진심으로 사람을 끌어당기는 타입.",why:`${PN}님의 사주가 안정과 책임감을 원할 때 가장 든든한 보호막이 되어주는 케미.`,daily:"함께 산책·요리·집에서 영화 보는 평범한 일상이 가장 행복해지는 관계."},
+ {name:"손흥민",job:"축구선수",emoji:"⚽",ohaeng:"금",tag:"#시너지형",base:"강한 추진력과 결단의 金 일간. 한 번 정한 목표를 끝까지 밀어붙이는 의지의 화신.",why:`${PN}님이 정체될 때 자극이 되어 다시 뛰게 만드는 동기 부여형 인연.`,daily:"함께 운동·공부·자기계발하면 시너지 폭발. 둘 다 성장이라는 같은 가치를 추구."},
+ {name:"임영웅",job:"가수",emoji:"🎵",ohaeng:"토",tag:"#동반성장형",base:"진심으로 마음을 움직이는 土 일간. 묵묵히 자기 길을 가는 외길 장인 타입.",why:`${PN}님이 흔들릴 때 변치 않는 응원으로 다시 일으켜 세워주는 평생 든든이.`,daily:"공연·여행·맛집 탐방 — 말없이 옆에 있어주는 것만으로 위로가 되는 관계."},
+ {name:"김연아",job:"전 피겨선수",emoji:"⛸️",ohaeng:"수",tag:"#음양조화형",base:"유연하면서 단단한 水 일간. 고요한 카리스마로 주변을 압도하는 우아함의 표본.",why:`${PN}님과 정반대 기운이 만나 음양이 완벽하게 균형을 이루는 매혹적 케미.`,daily:"한쪽이 격해질 때 다른 쪽이 차분해주는 — 절묘한 밸런스의 관계."},
+ {name:"BTS 정국",job:"가수",emoji:"🎙️",ohaeng:"화",tag:"#두근두근형",base:"폭발적 매력의 火 일간. 무대에 서면 시선을 단번에 사로잡는 타고난 스타성.",why:`${PN}님의 일상에 설렘이 부족할 때 심장을 다시 뛰게 만드는 강한 자극형 인연.`,daily:"콘서트·페스티벌·즉흥 데이트 — 함께 있으면 매일이 축제처럼 짜릿해요."},
+ {name:"이도현",job:"배우",emoji:"🎭",ohaeng:"목",tag:"#동행형",base:"같은 방향을 보고 함께 자라는 木 일간. 따뜻하고 부드러운 청년 에너지.",why:`${PN}님과 같은 木 기운으로 가치관·취향·꿈이 자연스럽게 맞아떨어지는 인연.`,daily:"함께 책 읽기·산책·소소한 대화 — 평범한 일상도 의미 있게 만드는 관계."},
+ {name:"수지",job:"배우·가수",emoji:"💎",ohaeng:"수",tag:"#소울메이트형",base:"깊이 있는 水 일간. 말로 표현하지 않아도 본질을 알아보는 직관의 소유자.",why:`${PN}님의 가장 깊은 곳을 알아봐 주는 — 영혼이 통하는 인연.`,daily:"긴 대화 · 별 보기 · 새벽 산책 — 시간을 잊고 빠져드는 관계."},
+ {name:"차은우",job:"배우",emoji:"✨",ohaeng:"금",tag:"#비주얼합형",base:"정교함과 빛남이 공존하는 金 일간. 보는 것만으로 마음이 정화되는 천상계.",why:`${PN}님이 시각·미적 자극을 좋아한다면 최고의 영감 파트너.`,daily:"전시·갤러리·셀카 데이트 — 함께 있는 모든 순간이 화보처럼 남는 관계."},
+ {name:"카리나",job:"가수",emoji:"🌟",ohaeng:"화",tag:"#카리스마형",base:"화려함과 카리스마의 火 일간. 한 번 보면 잊을 수 없는 강렬한 존재감.",why:`${PN}님의 무대 위 욕구·주목받고 싶은 마음을 같이 이해해주는 동족.`,daily:"파티·핫플 탐방·SNS 공동 운영 — 함께 빛나는 관계."},
+ {name:"민지(뉴진스)",job:"아이돌",emoji:"💫",ohaeng:"목",tag:"#청량케미형",base:"맑고 청량한 木 일간. 보기만 해도 기분 좋아지는 청춘 그 자체.",why:`${PN}님의 마음이 무거울 때 가볍게 띄워주는 — 청량 비타민 같은 인연.`,daily:"한강 피크닉·디저트 카페 투어 — 인스타 감성 폭발하는 일상."},
+ {name:"안유진(아이브)",job:"아이돌",emoji:"💖",ohaeng:"화",tag:"#럭키 비키형",base:"긍정 폭발 火 일간. 곁에 있으면 좋은 일만 생기는 행운의 아이콘.",why:`${PN}님이 슬럼프일 때 "럭키 비키~" 한마디로 분위기 반전시키는 인연.`,daily:"콘서트·페스티벌·셀카·치맥 — 함께면 매일이 축제 모드."},
+ {name:"장원영(아이브)",job:"아이돌",emoji:"💎",ohaeng:"수",tag:"#영혼교감형",base:"우아하고 깊이 있는 水 일간. 침착함과 카리스마가 공존하는 보석.",why:`${PN}님이 본질적인 대화를 원할 때 — 표면이 아닌 내면을 알아보는 인연.`,daily:"북카페·미술관·새벽 드라이브 — 시간 가는 줄 모르는 관계."},
+ {name:"NCT 재현",job:"아이돌",emoji:"🌹",ohaeng:"목",tag:"#로맨틱형",base:"서정적이고 부드러운 木 일간. 멜로 드라마 남주 그 자체.",why:`${PN}님이 로맨스에 굶주려 있을 때 마음을 살짝 두근거리게 만드는 인연.`,daily:'OST 좋아하는 영화 같이 보고 "우리 얘기 같아" 공감하는 관계.'},
+ {name:"BTS 지민",job:"아이돌",emoji:"🦋",ohaeng:"수",tag:"#감정공명형",base:"섬세한 감성의 水 일간. 무대에서도 일상에서도 감정이 살아 숨쉬는 사람.",why:`${PN}님의 내면 깊은 감정을 가장 먼저 알아채는 — 영혼이 닿는 인연.`,daily:"긴 대화·산책·새벽 통화 — 정적인 순간에도 충만한 관계."},
+ {name:"르세라핌 사쿠라",job:"아이돌",emoji:"🌸",ohaeng:"금",tag:"#멘토형",base:"단단하고 정돈된 金 일간. 흔들림 없이 자기 길을 가는 단정 매력.",why:`${PN}님이 방황할 때 명확한 기준이 되어주는 — 동년배 멘토 인연.`,daily:"운동·공부·자기계발 같이 — 서로의 성장을 가속하는 관계."},
+ {name:"세븐틴 호시",job:"아이돌",emoji:"🐯",ohaeng:"화",tag:"#텐션충전형",base:"폭발하는 텐션의 火 일간. 분위기를 단숨에 띄우는 에너지 폭탄.",why:`${PN}님의 일상이 단조로울 때 깜짝 웃음을 선사하는 인연.`,daily:"노래방·피크닉·즉흥 여행 — 매일이 예측불가 즐거움."},
+ {name:"엔하이픈 정원",job:"아이돌",emoji:"🌟",ohaeng:"토",tag:"#안정매력형",base:"든든하면서 매력적인 土 일간. 곁에 있으면 마음이 평온해지는 사람.",why:`${PN}님이 쉼이 필요할 때 가장 편한 — 베스트프렌드 같은 인연.`,daily:"홈데이트·맛집 탐방·드라이브 — 가식없는 일상이 가장 행복한 관계."},
+ {name:"트와이스 나연",job:"아이돌",emoji:"🍓",ohaeng:"화",tag:"#귀여움폭격형",base:"발랄한 매력의 火 일간. 보는 것만으로도 미소가 절로.",why:`${PN}님이 우울할 때 무조건 기분 좋게 만들어주는 — 타고난 무드메이커.`,daily:"디즈니랜드·놀이공원·파티 — 함께면 일상이 동화."},
+ {name:"세븐틴 우지",job:"아이돌·작곡가",emoji:"🎼",ohaeng:"수",tag:"#영감자극형",base:"창작 천재 水 일간. 디테일에 미친 완벽주의자.",why:`${PN}님의 창작 욕구·예술 감각을 한 차원 끌어올려주는 인연.`,daily:"스튜디오·콘서트·작품 감상 — 영감과 자극이 끊이지 않는 관계."},
+ {name:"르세라핌 카즈하",job:"아이돌",emoji:"🌷",ohaeng:"목",tag:"#감성충전형",base:"우아한 감성의 木 일간. 무대 위 발레리나 같은 라인.",why:`${PN}님이 거친 일상에 지칠 때 우아함으로 마음을 정돈해주는 인연.`,daily:"발레·전시·공원 산책 — 일상에 품위를 더하는 관계."},
+ {name:"에스파 윈터",job:"아이돌",emoji:"❄️",ohaeng:"수",tag:"#차분매력형",base:"고요하고 깊은 水 일간. 차분하지만 한번 보면 빠지는 매력.",why:`${PN}님의 진중한 면을 알아주는 — 깊이 있는 대화 파트너.`,daily:"북카페·미술관·재즈바 — 쳐다보기만 해도 시간이 멈추는 관계."},
+ {name:"BTS 뷔",job:"아이돌·배우",emoji:"🎭",ohaeng:"화",tag:"#예술혼형",base:"신비롭고 매혹적인 火 일간. 사진 한 장도 작품이 되는 사람.",why:`${PN}님의 미적 감각·예술적 영감을 끌어올리는 — 뮤즈 같은 인연.`,daily:"전시·필름카메라·야경 데이트 — 모든 순간이 화보."},
+ {name:"BLACKPINK 제니",job:"아이돌",emoji:"💄",ohaeng:"금",tag:"#아이코닉형",base:"강렬한 카리스마의 金 일간. 보는 순간 시선 강탈 아이코닉 매력.",why:`${PN}님이 자신감을 끌어올리고 싶을 때 — 옆에 있는 것만으로 분위기 업.`,daily:"쇼핑·사진 촬영·핫플 카페 — 매 순간이 인스타 1열."},
+ {name:"NewJeans 해린",job:"아이돌",emoji:"🐰",ohaeng:"목",tag:"#청량비주얼형",base:"맑고 깨끗한 木 일간. 청량음료 광고 그 자체.",why:`${PN}님의 마음을 깨끗하게 정화시켜주는 — 청량 그 자체.`,daily:"공원·아이스크림·셀카 — 평범한 일상도 청량하게 빛나는 관계."},
+ {name:"손석구",job:"배우",emoji:"🎬",ohaeng:"화",tag:"#남자다운형",base:"단단하고 매혹적인 火 일간. 진짜 남자의 정의.",why:`${PN}님이 든든한 어른 같은 사람을 원할 때 — 그 자체가 답.`,daily:"고기집·드라이브·심야 데이트 — 무뚝뚝하지만 다정한 관계."},
+ {name:"변우석",job:"배우",emoji:"🎬",ohaeng:"목",tag:"#설렘제조기형",base:"풋풋하고 신선한 木 일간. 첫사랑 그대로의 매력.",why:`${PN}님이 잊고 있던 설렘을 다시 깨우는 — 청춘 인연.`,daily:"교복데이트·놀이공원·꽃놀이 — 학생 시절로 돌려놓는 관계."},
+ {name:"BTS 슈가",job:"아이돌·프로듀서",emoji:"🎹",ohaeng:"수",tag:"#영혼친구형",base:"깊고 진중한 水 일간. 말 없이도 통하는 비주얼·창작 천재.",why:`${PN}님의 내면을 가장 잘 이해하는 — 침묵도 편한 인연.`,daily:"음악·작업실·심야 드라이브 — 함께 있을 때 안식의 관계."},
+ {name:"BTS 진",job:"아이돌",emoji:"🌟",ohaeng:"화",tag:"#비주얼클래식형",base:"클래식하면서 화려한 火 일간. 월드와이드 핸섬가이.",why:`${PN}님이 자존감 채우고 싶을 때 — 옆에 있는 것만으로도 우상.`,daily:"맛집 투어·낚시·요리 — 일상이 곧 예능 콘텐츠."},
+ {name:"BTS 제이홉",job:"아이돌",emoji:"🌈",ohaeng:"화",tag:"#긍정폭격형",base:"긍정 만렙 火 일간. 'I'm your hope'.",why:`${PN}님의 우울함을 한방에 날려주는 — 살아있는 비타민.`,daily:"댄스 클래스·페스티벌·여행 — 매일이 축제 모드."},
+ {name:"BLACKPINK 지수",job:"아이돌",emoji:"🌹",ohaeng:"목",tag:"#우아매력형",base:"청량하고 우아한 木 일간. K-도화살의 정점.",why:`${PN}님이 매력의 정수를 알고 싶을 때 — 보고 배우는 인연.`,daily:"꽃집·디저트 카페·셀카 — 매 순간이 인스타."},
+ {name:"BLACKPINK 로제",job:"아이돌",emoji:"🌷",ohaeng:"수",tag:"#감성디바형",base:"섬세한 보컬과 우아함의 水 일간. APT의 주인공.",why:`${PN}님의 감성과 음악 취향을 동기화시키는 — 플레이리스트 메이트.`,daily:"디저트 투어·재즈바·야경 카페 — 분위기 맛집 동행."},
+ {name:"BLACKPINK 리사",job:"아이돌",emoji:"💃",ohaeng:"화",tag:"#글로벌카리스마형",base:"글로벌 카리스마의 火 일간. 무대를 휘어잡는 댄서.",why:`${PN}님이 무대 위에서 빛나고 싶을 때 — 자신감 폭발 코치.`,daily:"댄스·럭셔리 쇼핑·여행 — 함께면 누구든 비추는 관계."},
+ {name:"NewJeans 하니",job:"아이돌",emoji:"🐰",ohaeng:"화",tag:"#순수에너지형",base:"순수한 텐션의 火 일간. 보면 절로 웃음 나는 청춘.",why:`${PN}님의 삭막한 일상에 비타민 같은 — 청량 인연.`,daily:"푸드코트·놀이동산·즉흥 노래방 — 가식없는 행복."},
+ {name:"NewJeans 다니엘",job:"아이돌",emoji:"💛",ohaeng:"토",tag:"#편안매력형",base:"편안하고 친근한 土 일간. 외국인이지만 친숙한 매력.",why:`${PN}님이 가족 같은 따뜻한 인연을 원할 때 — 한결같은 친구.`,daily:"홈데이트·산책·이야기 — 평범한 시간이 가장 편한 관계."},
+ {name:"NewJeans 혜인",job:"아이돌",emoji:"🌸",ohaeng:"수",tag:"#순수영혼형",base:"맑고 순수한 水 일간. 막내의 청량함.",why:`${PN}님이 어른의 무게에 지쳤을 때 — 동심을 찾아주는 인연.`,daily:"공원·동물원·아이스크림 — 어린 시절로 돌려놓는 관계."},
+ {name:"르세라핌 채원",job:"아이돌",emoji:"🦄",ohaeng:"목",tag:"#리더십형",base:"단단한 리더의 木 일간. 자기 길을 분명히 가는 사람.",why:`${PN}님이 방향이 흔들릴 때 명확한 기준이 되는 — 멘토 인연.`,daily:"운동·자기계발·스터디 — 함께 성장하는 관계."},
+ {name:"에스파 닝닝",job:"아이돌",emoji:"🎀",ohaeng:"화",tag:"#발랄매력형",base:"발랄한 매력의 火 일간. 보컬과 비주얼 다 잡은 사람.",why:`${PN}님이 단조로운 일상에 색을 더하고 싶을 때 — 무드 부스터.`,daily:"브런치·놀이공원·셀카 — 매일이 화창한 관계."},
+ {name:"에스파 지젤",job:"아이돌",emoji:"💫",ohaeng:"수",tag:"#쿨이지형",base:"쿨하고 시크한 水 일간. 일본계 글로벌 매력.",why:`${PN}님이 적당한 거리감 있는 우아한 인연을 원할 때 — 고요한 매력.`,daily:"갤러리·재즈·해외 영화 — 분위기 맛집 동행."},
+ {name:"세븐틴 디에잇",job:"아이돌",emoji:"🐉",ohaeng:"목",tag:"#아트형",base:"예술적 감성의 木 일간. 댄스·미술 다재다능.",why:`${PN}님의 창작 욕구를 끌어올리는 — 영감 파트너.`,daily:"전시·댄스 클래스·작업실 — 매일이 영감의 관계."},
+ {name:"세븐틴 민규",job:"아이돌",emoji:"💎",ohaeng:"금",tag:"#차분매력형",base:"차분한 매력의 金 일간. 시그니처 비주얼.",why:`${PN}님이 정돈된 인연을 원할 때 — 단정한 매력 인연.`,daily:"카페·서점·뮤지엄 — 차분한 데이트의 정석."},
+ {name:"NCT 도영",job:"아이돌·MC",emoji:"📣",ohaeng:"화",tag:"#밝은리더형",base:"밝고 따뜻한 火 일간. 무대도 일상도 능숙한 멀티플레이어.",why:`${PN}님이 분위기 메이커가 필요할 때 — 자연스럽게 분위기 끌어주는 인연.`,daily:"방송 시청·노래방·드라이브 — 어디서든 즐거운 관계."},
+ {name:"엔하이픈 선우",job:"아이돌",emoji:"🍀",ohaeng:"목",tag:"#순수매력형",base:"천진난만한 木 일간. 청량한 미소가 매력의 핵심.",why:`${PN}님의 마음이 어두울 때 한 줄기 빛이 되는 — 행운 인연.`,daily:"공원·아이스크림·해변 — 청량 비타민 같은 관계."},
+ {name:"트와이스 사나",job:"아이돌",emoji:"💕",ohaeng:"수",tag:"#큐티매력형",base:"섬세하고 큐트한 水 일간. 일본계 K-pop 아이콘.",why:`${PN}님이 깊고 부드러운 매력을 원할 때 — 마음 달래주는 인연.`,daily:"브런치·갤러리·서점 — 마음 풀어지는 관계."},
+ {name:"트와이스 미나",job:"아이돌",emoji:"🦢",ohaeng:"수",tag:"#백조매력형",base:"우아하고 차분한 水 일간. 발레리나 같은 자세.",why:`${PN}님이 우아한 영감이 필요할 때 — 곁에 있으면 정돈되는 인연.`,daily:"발레·재즈·쇼핑 — 품위 있는 일상의 관계."},
+];
+
+// ===== 코드 그대로의 매칭 로직 =====
+const ohRel={목:"수",화:"목",토:"화",금:"토",수:"금"};
+const matchKey={same:"같은 일간 (자연스러운 공명)","생":"나를 생(生)해주는 기운 (든든)","생타":"내가 생(生)해주는 기운 (보살핌)","중립":"무난한 중립 케미"};
+const sajuLineTpl={
+ 목:n=>`${n}님의 일간(태어난 날의 기운)은 甲(목, 木) — 다섯 기운 중 '나무'의 본질이에요. 천천히 굳건히 자라는 큰 나무처럼, 성장·창의·감수성이 깊고 따뜻한 매력의 소유자랍니다.`,
+ 화:n=>`${n}님의 일간(태어난 날의 기운)은 甲(화, 火) — 다섯 기운 중 '불'의 본질이에요. 활활 타오르는 열정처럼, 표현력·매력·끌어당김이 강해 함께 있으면 분위기가 살아나는 사람이랍니다.`,
+ 토:n=>`${n}님의 일간(태어난 날의 기운)은 甲(토, 土) — 다섯 기운 중 '흙'의 본질이에요. 든든한 대지처럼, 안정·신뢰·중심이 단단해서 변하지 않는 진심으로 사람을 끌어당기는 분이랍니다.`,
+ 금:n=>`${n}님의 일간(태어난 날의 기운)은 甲(금, 金) — 다섯 기운 중 '금속'의 본질이에요. 단단한 강철처럼, 결단·추진·정의가 분명해서 명확한 가치관으로 신뢰받는 사람이랍니다.`,
+ 수:n=>`${n}님의 일간(태어난 날의 기운)은 甲(수, 水) — 다섯 기운 중 '물'의 본질이에요. 깊은 강물처럼, 직관·깊이·유연함이 흘러 본질을 꿰뚫는 통찰의 소유자랍니다.`,
+};
+const ilOhMeaning={목:"성장·창의의 기운",화:"열정·매력의 기운",토:"안정·신뢰의 기운",금:"결단·정의의 기운",수:"지혜·감성의 기운"};
+const ohHanja={목:"木",화:"火",토:"土",금:"金",수:"水"};
+const ohCls={목:"oh-mok",화:"oh-hwa",토:"oh-to",금:"oh-geum",수:"oh-su"};
+
+function scoreFor(ilOh,personName){
+  const seed=(personName||"x").split("").reduce((s,c)=>s+c.charCodeAt(0),0);
+  const scored=POOL.map((c,i)=>{
+    let score=70, kind=matchKey["중립"];
+    if(c.ohaeng===ilOh){score+=18;kind=matchKey.same;}
+    else if(c.ohaeng===ohRel[ilOh]){score+=14;kind=matchKey["생"];}
+    score+=((seed+i*7)%20);
+    return {...c,match:Math.min(98,score),kind};
+  });
+  scored.sort((a,b)=>b.match-a.match);
+  return scored.slice(0,5);
+}
+
+// ===== 일간별 대표 카드 렌더 =====
+const ILS=["목","화","토","금","수"];
+const cardsRoot=document.getElementById("cards");
+ILS.forEach(ilOh=>{
+  const top5=scoreFor(ilOh,PN);
+  const h=document.createElement("h2");
+  h.innerHTML=`👤 일간 <span class="${ohCls[ilOh]}">${ilOh}(${ohHanja[ilOh]})</span> · 이름 "${PN}" — TOP 5`;
+  cardsRoot.appendChild(h);
+  const wrap=document.createElement("div");
+  wrap.className="wrap";
+  // 한 일간당 카드 1개에 TOP5 칩 + 5명 상세 전부 펼침
+  const c=document.createElement("div");
+  c.className="card";
+  let chips="";
+  top5.slice(0,3).forEach((x,i)=>{chips+=`<div class="chip ${i===0?'sel':''}"><div class="e">${x.emoji}</div><div class="nm">${i+1}. ${x.name}</div></div>`;});
+  let chips2="";
+  top5.slice(3,5).forEach((x,i)=>{chips2+=`<div class="chip"><div class="e">${x.emoji}</div><div class="nm">${i+4}. ${x.name}</div></div>`;});
+  let details="";
+  top5.forEach((cur,idx)=>{
+    details+=`<div class="detail"><div class="inner">
+      <div class="dhead">
+        <div class="avatar">${cur.emoji}</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:4px"><span class="dname">${idx+1}. ${cur.name}</span><span class="djob">${cur.job}</span></div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span class="dtag">${cur.tag}</span><span class="dscore">${cur.match}%</span></div>
+          <div class="bar"><div style="width:${cur.match}%"></div></div>
+        </div>
+      </div>
+      <div class="dsec"><div class="l g">🌱 ${cur.name}의 사주 <span style="color:#888;font-weight:600">(${cur.ohaeng} — ${ilOhMeaning[cur.ohaeng]})</span></div><div class="t"><span class="cn">${cur.base}</span> <span class="cn">${cur.name}의 일간 ${cur.ohaeng}(${ilOhMeaning[cur.ohaeng]}) 기운이</span> <em>${PN}님의 ${ilOh}(${ilOhMeaning[ilOh]})</em>와 자연스럽게 어우러져요.</div></div>
+      <div class="dsec"><div class="l r">💞 왜 잘 맞나? <span style="color:#888;font-weight:600">· ${cur.kind}</span></div><div class="t"><span class="cn">${cur.why}</span> 이런 결의 사람과 함께 있으면 <em>${PN}님</em>의 본래 매력이 더 자연스럽게 발휘되고, 서로의 약점을 부드럽게 채워줄 수 있어요.</div></div>
+      <div class="dsec"><div class="l b">🌸 함께하면 좋은 일</div><div class="t"><span class="cn">${cur.daily}</span> ${cur.name}의 결을 닮은 사람과의 시간은 <em>${PN}님</em>에게 좋은 기운이 흐르는 순간으로 남을 거예요.</div></div>
+    </div></div>`;
+  });
+  c.innerHTML=`
+    <div class="brand">궁합 연예인 TOP 5</div>
+    <div class="head"><div class="big">💕 ${PN}님의 찰떡 연예인</div><div class="info">${PN} · 일간 ${ilOh}(${ohHanja[ilOh]}) (샘플)<br><span style="color:#aaa">분석일 표기 위치</span></div></div>
+    <div class="sajubox"><div class="lbl">✦ ${PN}님의 사주 한줄 분석</div><div class="txt">${sajuLineTpl[ilOh](PN)}</div></div>
+    <div class="intro">아래 5명은 ${PN}님의 일간과 가장 잘 어우러지는 오행을 가진 연예인들이에요. <strong>같은 기운(동행)</strong> · <strong>생해주는 기운(보살핌)</strong> · <strong>정반대 기운(끌림)</strong> 순으로 매칭됐어요. 아래 5명 중 한 명을 눌러 자세한 풀이를 확인해보세요!</div>
+    <div class="top5grid"><div class="row3">${chips}</div><div class="row2">${chips2}</div></div>
+    ${details}
+    <div class="foot"><span>#천기궁합 #궁합연예인 #${PN} #일간${ilOh} #${top5[0].tag.replace('#','')} #무료운세</span><span>🌐 천기.kr</span></div>
+  `;
+  wrap.appendChild(c);
+  cardsRoot.appendChild(wrap);
+});
+
+// ===== POOL 전수 표 =====
+const tb=document.querySelector("#pooltable tbody");
+POOL.forEach((p,i)=>{
+  const tr=document.createElement("tr");
+  tr.innerHTML=`<td>${i+1}</td><td><b>${p.emoji} ${p.name}</b></td><td>${p.job}</td><td class="${ohCls[p.ohaeng]}">${p.ohaeng}(${ohHanja[p.ohaeng]})</td><td>${p.tag}</td><td>${p.base}</td><td>${p.why}</td><td>${p.daily}</td>`;
+  tb.appendChild(tr);
+});
+
+// ===== 정적 텍스트 전수 =====
+const st=document.getElementById("statictexts");
+let html='<div class="note">';
+html+='<b>① sajuLine (일간별 사주 한줄 분석, 5종)</b> — <span style="color:#888">코드상 일간 한자(ilgan)는 실제 사주값으로 치환, 여기선 甲 고정 표기</span><br><br>';
+ILS.forEach(o=>{html+=`<div style="margin-bottom:10px"><span class="${ohCls[o]}">[${o}]</span> ${sajuLineTpl[o](PN)}</div>`;});
+html+='</div>';
+html+='<div class="note"><b>② ilOhMeaning (일간 의미, 5종)</b><br><br>';
+ILS.forEach(o=>{html+=`<div><span class="${ohCls[o]}">${o}(${ohHanja[o]})</span> → ${ilOhMeaning[o]}</div>`;});
+html+='</div>';
+html+='<div class="note"><b>③ kind / matchKey (매칭 종류 라벨, 4종 정의 / 실제 도달 3종)</b><br><br>';
+html+=`<div>• same: <b>${matchKey.same}</b> (연예인 오행 == 내 일간)</div>`;
+html+=`<div>• 생: <b>${matchKey["생"]}</b> (연예인 오행 == ohRel[내일간] = 나를 생해주는 오행)</div>`;
+html+=`<div>• 중립: <b>${matchKey["중립"]}</b> (그 외)</div>`;
+html+=`<div style="color:#b91c1c;margin-top:6px">• <span class="bug">미사용 버그</span> 생타: "${matchKey["생타"]}" — matchKey에 정의돼 있으나 scored 로직에서 한 번도 할당 안 됨(=화면에 절대 안 나옴).</div>`;
+html+='</div>';
+html+='<div class="note"><b>④ ohRel 매핑 (내 일간 → 나를 생(生)하는 오행)</b><br><br>';
+ILS.forEach(o=>{html+=`<div><span class="${ohCls[o]}">${o}</span> ← 생해주는 기운: <span class="${ohCls[ohRel[o]]}">${ohRel[o]}</span></div>`;});
+html+='<div style="color:#7a5c00;margin-top:6px" class="bug">검토포인트: 오행 상생은 水生木·木生火·火生土·土生金·金生水. ohRel(목→수, 화→목, 토→화, 금→토, 수→금)은 "나를 생하는 오행"으로 정확. 다만 인트로/안내문은 이 그룹을 "생해주는 기운(보살핌)"이라 부르는데, 상세박스 kind 라벨도 "나를 생(生)해주는 기운(든든)"으로 표기 → 두 문구의 톤이 다름(보살핌 vs 든든). 통일 검토.</div>';
+html+='</div>';
+st.innerHTML=html;
+</script>
+</body>
+</html>

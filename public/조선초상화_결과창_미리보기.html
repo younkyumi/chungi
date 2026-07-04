@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>조선초상화 결과창 미리보기</title>
+<!--
+  출처: src/app/page.tsx
+  - JoseonPortraitModal result JSX: 15451~15729행
+  - PAGE 1: bg:#fff, border:1px solid rgba(201,167,78,0.3), borderRadius:20 (15466행)
+  - PAGE 2: 같은 스타일 (15548행)
+  - BrandLine PAGE1: "조선시대 신분으로 그린 초상화" (15469행)
+  - BrandLine PAGE2: "조선 초상화 분석" (15551행)
+  - 합성이미지: width:100%, aspectRatio:1/1, bg:#f8f0e3, transform:scale(1.18) (15480행)
+  - filter: blur(0.3px) saturate(1.1) brightness(1.02) sepia(0.06) (15484행)
+  - inset boxShadow: inset 0 0 0 16px #f8f0e3 (15495행)
+  - ✨ AI 합성 완료 badge: bg:linear-gradient(135deg,#D4AF37,#B8942E) (15485행)
+  - 페르소나 헤더: icon 36px + 이름 18px #1A3C32 + class/gender/ohaeng 10px #7A5C00 (15499~15506행)
+  - desc 박스: bg:#f8f9fa, borderLeft:4px solid #D4AF37 (15509행)
+  - 전생 시나리오: bg:#f8f9fa, borderLeft:4px solid #D4AF37 (15528행)
+  - 소개 박스: bg:#fff, border:#e5e7eb (15536행)
+  - hash PAGE1: #천기관상 #조선초상화 #{nm} #조선시대신분 #{persona} (15542행)
+  - PAGE2 합성 과정: 내 얼굴 + B8942E "+" + 템플릿 + "=" + 결과 (15562~15584행)
+  - AI 핵심 인상: bg:#fffbe9, border:rgba(212,175,55,0.2) (15591행)
+  - attrs 5칸 grid: bg:#fff, border:rgba(212,175,55,0.3), repeat(5,1fr) (15642행)
+  - 풀이 박스: bg:#fffdf5, border:rgba(212,175,55,0.2) (15651행)
+  - 현대 매칭: bg:#f0f7ff, border:rgba(5,77,149,0.15) (15666행)
+  - 시대 맥락: bg:#fef9e7, border:rgba(212,175,55,0.2) (15674행)
+  - 찰떡/상극 신분: bg:#fafaf7, border:#eee, eff8f1/fef2f2 (15696행)
+  - 이미지: /joseon-portraits/joseon (id).png
+-->
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#1A3C32;--gold:#D4AF37;}
+body{background:#1A3C32;font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;padding:20px;}
+.max-wrap{max-width:430px;margin:0 auto;}
+.white-card{background:#fff;border-radius:20px;overflow:hidden;border:1px solid rgba(201,167,78,0.3);box-shadow:0 10px 30px rgba(0,0,0,0.06);color:#333;margin-bottom:12px;}
+.brand-line-inner{font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;padding:10px 16px;text-align:center;border-bottom:1px solid #f0f0f0;}
+.hash-footer{padding:10px 16px;display:flex;justify-content:space-between;align-items:center;font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;border-top:1px solid #f0f0f0;}
+</style>
+</head>
+<body>
+<div class="max-wrap">
+
+<!-- ══════ PAGE 1: 합성 + 신분 + 전생 썰 ══════ -->
+<div class="white-card">
+  <!-- 헤더 -->
+  <div style="padding:10px 16px 14px;text-align:center;">
+    <div class="brand-line-inner">조선시대 신분으로 그린 초상화</div>
+    <div style="font-size:18px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;line-height:1.35;">👑 홍길동님의 조선시대 모습</div>
+    <div style="font-size:10px;color:#888;font-weight:600;margin-top:6px;line-height:1.6;">
+      <div>홍길동 · 1990-07-15 양력 · 오전 10시 · 남</div>
+      <div style="color:#aaa;">📅 2026-06-30 분석</div>
+    </div>
+  </div>
+
+  <!-- ① 합성 이미지 메인 — 1:1 정사각 (bg:#f8f0e3) -->
+  <div style="width:100%;aspect-ratio:1/1;background:#f8f0e3;display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative;overflow:hidden;">
+    <!-- 합성 이미지 자리 (scale(1.18) + filter) -->
+    <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;transform:scale(1.18);transform-origin:center center;filter:blur(0.3px) saturate(1.1) brightness(1.02) sepia(0.06);">
+      <div style="font-size:100px;line-height:1;">🏛️</div>
+    </div>
+    <!-- inset frame: inset 0 0 0 16px #f8f0e3 -->
+    <div style="position:absolute;inset:0;box-shadow:inset 0 0 0 16px #f8f0e3;pointer-events:none;z-index:1;"></div>
+    <!-- ✨ AI 합성 완료 badge -->
+    <div style="position:absolute;bottom:8px;right:10px;font-size:9px;font-weight:700;color:#fff;background:linear-gradient(135deg,#D4AF37,#B8942E);padding:3px 8px;border-radius:7px;box-shadow:0 2px 6px rgba(0,0,0,0.2);z-index:2;">✨ AI 합성 완료</div>
+  </div>
+
+  <!-- ② 페르소나 헤더 (bg:#fafafa) -->
+  <div style="padding:14px 16px;background:#fafafa;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="font-size:36px;flex-shrink:0;">🏛️</div>
+      <div style="flex:1;">
+        <div style="font-size:11px;color:#888;font-weight:600;">💹 당첨된 조선시대 신분</div>
+        <div style="font-size:18px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;line-height:1.35;">판서 대감</div>
+        <div style="font-size:10px;color:#7A5C00;font-weight:700;margin-top:2px;">양반/고위직 · 남자 · 木 기운</div>
+      </div>
+    </div>
+    <!-- desc 박스: borderLeft:4px solid #D4AF37, bg:#f8f9fa -->
+    <div style="font-size:12.5px;color:#374151;line-height:1.85;padding:10px 12px;background:#f8f9fa;border-radius:9px;border-left:4px solid #D4AF37;">
+      📜 <strong>판서 대감이 어떤 사람?</strong><br>
+      조선시대 6조의 으뜸 벼슬로, 임금을 보좌하며 국가 행정을 총괄하던 최고 권력자예요.
+      <span style="display:block;margin-top:6px;color:#555;">
+        조선시대 <strong style="color:#7A5C00;">양반/고위직</strong> 신분으로 살았던 인물로,
+        <strong style="color:#7A5C00;">木 기운</strong>을 타고나
+        성장·창의·문기(文氣)가 가득한 남자였답니다.
+      </span>
+    </div>
+  </div>
+
+  <!-- ③ 전생 시나리오: borderLeft:4px solid #D4AF37, bg:#f8f9fa -->
+  <div style="padding:14px 16px;">
+    <div style="font-size:10px;color:#7A5C00;letter-spacing:2px;font-weight:800;margin-bottom:8px;">✨ 500년 전 전생 시나리오 — 만약 홍길동님이 조선시대에 태어났다면…</div>
+    <div style="font-size:12px;color:#374151;line-height:1.95;padding:12px 14px;background:#f8f9fa;border-radius:10px;border-left:4px solid #D4AF37;word-break:keep-all;">
+      1750년대 영조 임금 시절, 홍길동님은 한양 북촌에서 명문 사대부 가문의 자제로 태어났어요. 어린 시절부터 서책을 가까이하며 탁월한 학문 실력을 쌓았고, 20대 초에 과거 문과에 당당히 장원급제했습니다. 이후 승정원과 홍문관을 거쳐 40대에 이조판서의 자리까지 오르며, 조선 후기 개혁 정치의 중심에 섰던 인물로 역사에 기억될 운명이었어요.
+    </div>
+  </div>
+
+  <!-- 소개 박스: bg:#fff, border:#e5e7eb -->
+  <div style="padding:0 16px 14px;">
+    <div style="font-size:11px;color:#555;line-height:1.65;padding:9px 11px;background:#fff;border-radius:9px;border:1px solid #e5e7eb;">
+      ✨ <strong>조선 초상화</strong>는 AI 화공이 내 얼굴을 분석해서, 조선시대 <strong>60종 페르소나</strong>(왕족·양반·중인·무인·궁녀·예인·상인·서민 등) 중 가장 닮은 신분으로 그려주는 콘텐츠예요.
+    </div>
+  </div>
+
+  <!-- hash footer PAGE 1 -->
+  <div class="hash-footer">
+    <span>#천기관상 #조선초상화 #홍길동 #조선시대신분 #판서대감</span>
+    <span style="font-weight:600;">🌐 천기.kr</span>
+  </div>
+</div>
+
+<!-- ══════ PAGE 2: 합성 과정 + 관상 분석 ══════ -->
+<div class="white-card">
+  <!-- 헤더 -->
+  <div style="padding:10px 16px 14px;text-align:center;">
+    <div class="brand-line-inner">조선 초상화 분석</div>
+    <div style="font-size:18px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;line-height:1.35;">🔍 어떻게 판서 대감이 나왔을까?</div>
+    <div style="font-size:11px;color:#888;margin-top:6px;">합성 과정 + 올린 사진의 관상 풀이</div>
+  </div>
+
+  <!-- ① 합성 과정 시각화 -->
+  <div style="padding:14px 16px;background:#fafbfc;">
+    <div style="font-size:15px;color:#7A5C00;letter-spacing:1px;font-weight:800;margin-bottom:10px;text-align:center;">🎨 합성 과정</div>
+    <div style="display:flex;align-items:center;gap:6px;justify-content:center;">
+      <!-- 내 얼굴 -->
+      <div style="flex:1;max-width:110px;text-align:center;">
+        <div style="aspect-ratio:1/1;border-radius:8px;overflow:hidden;border:2px solid #ddd;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:40px;">👤</div>
+        <div style="font-size:9px;color:#888;font-weight:700;margin-top:4px;">내 얼굴</div>
+      </div>
+      <div style="font-size:18px;color:#B8942E;">+</div>
+      <!-- 템플릿 -->
+      <div style="flex:1;max-width:110px;text-align:center;">
+        <div style="aspect-ratio:1/1;border-radius:8px;overflow:hidden;border:2px solid #B8942E55;background:#f8f0e3;display:flex;align-items:center;justify-content:center;font-size:40px;">🏛️</div>
+        <div style="font-size:9px;color:#7A5C00;font-weight:700;margin-top:4px;">🏛️ 판서 대감</div>
+      </div>
+      <div style="font-size:18px;color:#B8942E;">=</div>
+      <!-- 결과 -->
+      <div style="flex:1;max-width:110px;text-align:center;">
+        <div style="aspect-ratio:1/1;border-radius:8px;overflow:hidden;border:2px solid #D4AF37;background:linear-gradient(135deg,#fffbe9,#fef3c7);display:flex;align-items:center;justify-content:center;font-size:40px;">✨</div>
+        <div style="font-size:9px;color:#B8942E;font-weight:800;margin-top:4px;">합성 완료!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② AI 핵심 인상: bg:#fffbe9, border:rgba(212,175,55,0.2) -->
+  <div style="padding:14px 16px;">
+    <div style="font-size:15px;color:#7A5C00;letter-spacing:1px;font-weight:800;margin-bottom:8px;">🔍 AI가 포착한 핵심 인상</div>
+    <div style="font-size:12px;color:#555;line-height:1.85;padding:12px 14px;background:#fffbe9;border-radius:10px;border:1px solid rgba(212,175,55,0.2);margin-bottom:8px;word-break:keep-all;">
+      최첨단 AI 화공이 <strong style="color:#B8942E;">홍길동님</strong>의 사진을 분석해, 얼굴의 이목구비·표정·분위기에서 조선시대 <strong style="color:#B8942E;">판서 대감</strong>의 전형적인 인상을 포착했어요.
+      <br><span style="display:block;margin-top:6px;color:#666;"><strong>위엄</strong>한 존재감, <strong>지적</strong>인 지성, <strong>외향</strong>인 성향, <strong>단정</strong>한 강도, <strong>중후한</strong> 분위기 — 조선 60종 페르소나 중 가장 닮은 신분이에요.</span>
+      <span style="display:block;margin-top:6px;font-size:11px;color:#888;font-style:italic;">그래서 AI가 홍길동님의 사진을 토대로 위 조선 초상화를 합성해드렸답니다.</span>
+    </div>
+
+    <!-- attrs 5칸 그리드 -->
+    <div style="font-size:10px;color:#7A5C00;letter-spacing:2px;font-weight:800;margin-top:14px;margin-bottom:8px;">✨ 얼굴이 풍기는 다섯 가지 결</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:10px;">
+      <div style="background:#fff;border:1px solid rgba(212,175,55,0.3);border-radius:9px;padding:8px 2px;text-align:center;">
+        <div style="font-size:9px;color:#888;margin-bottom:3px;">존재감</div>
+        <div style="font-size:11px;font-weight:800;color:#7A5C00;word-break:keep-all;">위엄</div>
+      </div>
+      <div style="background:#fff;border:1px solid rgba(212,175,55,0.3);border-radius:9px;padding:8px 2px;text-align:center;">
+        <div style="font-size:9px;color:#888;margin-bottom:3px;">지성</div>
+        <div style="font-size:11px;font-weight:800;color:#7A5C00;word-break:keep-all;">지적</div>
+      </div>
+      <div style="background:#fff;border:1px solid rgba(212,175,55,0.3);border-radius:9px;padding:8px 2px;text-align:center;">
+        <div style="font-size:9px;color:#888;margin-bottom:3px;">성향</div>
+        <div style="font-size:11px;font-weight:800;color:#7A5C00;word-break:keep-all;">외향</div>
+      </div>
+      <div style="background:#fff;border:1px solid rgba(212,175,55,0.3);border-radius:9px;padding:8px 2px;text-align:center;">
+        <div style="font-size:9px;color:#888;margin-bottom:3px;">강도</div>
+        <div style="font-size:11px;font-weight:800;color:#7A5C00;word-break:keep-all;">단정</div>
+      </div>
+      <div style="background:#fff;border:1px solid rgba(212,175,55,0.3);border-radius:9px;padding:8px 2px;text-align:center;">
+        <div style="font-size:9px;color:#888;margin-bottom:3px;">분위기</div>
+        <div style="font-size:11px;font-weight:800;color:#7A5C00;word-break:keep-all;">중후</div>
+      </div>
+    </div>
+
+    <!-- attrs 풀이: bg:#fffdf5, border:rgba(212,175,55,0.2) -->
+    <div style="background:#fffdf5;border-radius:9px;padding:10px 12px;margin-bottom:10px;border:1px solid rgba(212,175,55,0.2);">
+      <div style="font-size:11px;color:#555;line-height:1.7;word-break:keep-all;margin-bottom:4px;"><strong style="color:#B8942E;">위엄</strong>한 존재감 — 묵직한 첫인상, 자리를 채우는 결</div>
+      <div style="font-size:11px;color:#555;line-height:1.7;word-break:keep-all;margin-bottom:4px;"><strong style="color:#B8942E;">지적</strong>인 지성 — 차분히 통찰하는 머리 결</div>
+      <div style="font-size:11px;color:#555;line-height:1.7;word-break:keep-all;margin-bottom:4px;"><strong style="color:#B8942E;">외향</strong>인 성향 — 사람 속에서 빛나는 결</div>
+      <div style="font-size:11px;color:#555;line-height:1.7;word-break:keep-all;margin-bottom:4px;"><strong style="color:#B8942E;">단정</strong>한 강도 — 절제와 균형이 빚은 결</div>
+      <div style="font-size:11px;color:#555;line-height:1.7;word-break:keep-all;"><strong style="color:#B8942E;">중후</strong>한 분위기 — 농익은 깊이가 느껴지는 결</div>
+    </div>
+
+    <!-- 현대 매칭: bg:#f0f7ff, border:rgba(5,77,149,0.15) -->
+    <div style="display:flex;align-items:flex-start;gap:8px;padding:9px 12px;background:#f0f7ff;border-radius:9px;margin-bottom:6px;border:1px solid rgba(5,77,149,0.15);">
+      <span style="font-size:14px;flex-shrink:0;line-height:1.4;">🎯</span>
+      <div style="font-size:11px;color:#1e3a5f;line-height:1.6;word-break:keep-all;">
+        <strong style="color:#054D95;">현대 직업으로 치면</strong> — 교수·전문직·고위 공무원 (지식·권위)
+      </div>
+    </div>
+
+    <!-- 시대 맥락: bg:#fef9e7, border:rgba(212,175,55,0.2) -->
+    <div style="display:flex;align-items:flex-start;gap:8px;padding:9px 12px;background:#fef9e7;border-radius:9px;margin-bottom:10px;border:1px solid rgba(212,175,55,0.2);">
+      <span style="font-size:14px;flex-shrink:0;line-height:1.4;">🕰️</span>
+      <div style="font-size:11px;color:#7A5C00;line-height:1.6;word-break:keep-all;">
+        <strong style="color:#B8942E;">시대 맥락</strong> — 조선 전기~후기 · 사대부 사회
+      </div>
+    </div>
+
+    <!-- 찰떡/상극 신분: bg:#fafaf7, border:#eee -->
+    <div style="margin-top:14px;padding:12px;background:#fafaf7;border-radius:10px;border:1px solid #eee;">
+      <div style="font-size:10px;color:#7A5C00;letter-spacing:2px;font-weight:800;margin-bottom:10px;text-align:center;">💞 내 신분과 케미 좋은 / 안 좋은 신분</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <!-- 찰떡 (木→火 상생) -->
+        <div style="background:#eff8f1;border:1.5px solid #86efac;border-radius:10px;padding:10px 8px;text-align:center;">
+          <div style="font-size:9px;color:#16a34a;font-weight:800;letter-spacing:1.5px;margin-bottom:6px;">💚 찰떡</div>
+          <div style="width:60px;height:60px;border-radius:8px;overflow:hidden;background:#fff;border:1px solid rgba(22,163,74,0.3);margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:28px;">🪷</div>
+          <div style="font-size:11px;font-weight:800;color:#1e3a2a;line-height:1.3;font-family:'Noto Serif KR','Batang',serif;">궁녀 상궁</div>
+          <div style="font-size:9px;color:#16a34a;margin-top:3px;font-weight:600;">火 기운 · 여자</div>
+        </div>
+        <!-- 상극 (木↔土 상극) -->
+        <div style="background:#fef2f2;border:1.5px solid #fcb6b6;border-radius:10px;padding:10px 8px;text-align:center;">
+          <div style="font-size:9px;color:#dc2626;font-weight:800;letter-spacing:1.5px;margin-bottom:6px;">⚡ 상극</div>
+          <div style="width:60px;height:60px;border-radius:8px;overflow:hidden;background:#fff;border:1px solid rgba(220,38,38,0.3);margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:28px;">🛒</div>
+          <div style="font-size:11px;font-weight:800;color:#7c1d1d;line-height:1.3;font-family:'Noto Serif KR','Batang',serif;">보부상 거상</div>
+          <div style="font-size:9px;color:#dc2626;margin-top:3px;font-weight:600;">土 기운 · 남자</div>
+        </div>
+      </div>
+      <div style="font-size:9px;color:#888;text-align:center;margin-top:8px;line-height:1.6;">오행 상생(木→火)·상극(木↔土) 기반</div>
+    </div>
+
+    <!-- 안내 박스 -->
+    <div style="font-size:10.5px;color:#666;line-height:1.7;margin-top:14px;padding:8px 11px;background:#f9fafb;border-radius:8px;border:1px solid #eee;">
+      💡 천기 AI가 60종 신분 중 가장 가까운 인물을 골라드린 거예요. 같은 사진도 다른 각도·표정에서는 다른 결과가 나올 수 있어요!
+    </div>
+  </div>
+
+  <!-- hash footer PAGE 2 -->
+  <div class="hash-footer">
+    <span>#천기관상 #조선초상화 #홍길동 #조선시대신분 #판서대감</span>
+    <span style="font-weight:600;">🌐 천기.kr</span>
+  </div>
+</div>
+
+<!-- 광고배너 2x2 -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(212,175,55,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">🪞</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">내 관상보기</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">내관상보기 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(155,143,212,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">📸</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">관상짤</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">관상짤 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(95,196,158,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">🍼</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">우리 아기 관상</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">우리아기관상 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(255,107,107,0.25);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">☯️</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">사주 풀이</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">사주풀이 →</div>
+  </div>
+</div>
+
+<!-- 도감 버튼 (line 15740): linear-gradient(135deg,#fffbe9,#fef3c7), color:#7A5C00, border:rgba(212,175,55,0.4) -->
+<button style="width:100%;padding:14px;margin-bottom:12px;background:linear-gradient(135deg,#fffbe9,#fef3c7);color:#7A5C00;border:2px solid rgba(212,175,55,0.4);border-radius:14px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;">
+  📚 60종 조선 페르소나 전체 도감 보기
+</button>
+
+<!-- ResultActions -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+  <button style="padding:12px;background:#f8f9fa;border:1px solid #eee;border-radius:12px;font-size:12px;font-weight:700;color:#333;cursor:pointer;">📸 이미지 저장</button>
+  <button style="padding:12px;background:#f8f9fa;border:1px solid #eee;border-radius:12px;font-size:12px;font-weight:700;color:#333;cursor:pointer;">🔗 공유하기</button>
+</div>
+
+<!-- 버튼 -->
+<button style="width:100%;padding:14px;background:#D4AF37;color:#1A3C32;border:none;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;">확인 완료</button>
+
+</div>
+
+
+
+
+<!-- ═══ 전체 60종 조선초상화 타입 도감 ═══ -->
+<div style="background:#1A3C32;border-radius:16px;padding:16px;margin-top:16px;">
+  <div style="font-size:14px;font-weight:900;color:#D4AF37;text-align:center;margin-bottom:4px;font-family:'Noto Serif KR',serif;">👑 전체 60종 조선초상화 도감</div>
+  <div style="font-size:10px;color:#A8C4B8;text-align:center;margin-bottom:14px;">[조선초상화] 결과로 나올 수 있는 60가지 인물 — /joseon-portraits/joseon (N).png</div>
+  <div style="margin-bottom:16px;">
+    <div style="font-size:11px;font-weight:800;color:#ffd43b;margin-bottom:8px;padding:4px 10px;background:rgba(255,255,255,0.08);border-radius:8px;display:inline-block;">👑 왕족·귀족 (6종)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#fff9e6;border-radius:10px;padding:8px;border:1px solid #ffd43b;text-align:center;">
+        <div style="font-size:8px;color:#8b6914;font-weight:700;margin-bottom:3px;">No.01 👑</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (1).png" alt="대군" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">대군</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">빨간 곤룡포의 자신만만한 귀공자, 평생 부귀영화</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#e0313122;color:#e03131;border:1px solid #e0313144;border-radius:4px;padding:1px 5px;font-weight:700;">火</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 황금손 미다스상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">01.대군.png</div>
+      </div>
+      <div style="background:#fff9e6;border-radius:10px;padding:8px;border:1px solid #ffd43b;text-align:center;">
+        <div style="font-size:8px;color:#8b6914;font-weight:700;margin-bottom:3px;">No.02 👸</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (2).png" alt="대비" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">대비</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">적의(赤衣) 입은 위엄있는 노년 王실 절대권력</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#e0313122;color:#e03131;border:1px solid #e0313144;border-radius:4px;padding:1px 5px;font-weight:700;">火</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 여왕벌 카리스마상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">02.대비.png</div>
+      </div>
+      <div style="background:#fff9e6;border-radius:10px;padding:8px;border:1px solid #ffd43b;text-align:center;">
+        <div style="font-size:8px;color:#8b6914;font-weight:700;margin-bottom:3px;">No.03 🎖️</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (3).png" alt="왕세자" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">왕세자</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">흑색 곤룡포, 차기 왕의 무게감과 책임감</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#2f9e4422;color:#2f9e44;border:1px solid #2f9e4444;border-radius:4px;padding:1px 5px;font-weight:700;">木</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 차세대 리더상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">03.왕세자.png</div>
+      </div>
+      <div style="background:#fff9e6;border-radius:10px;padding:8px;border:1px solid #ffd43b;text-align:center;">
+        <div style="font-size:8px;color:#8b6914;font-weight:700;margin-bottom:3px;">No.04 💍</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (4).png" alt="왕세자빈" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">왕세자빈</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">우아한 단아함, 미래 중전의 압박감</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#2f9e4422;color:#2f9e44;border:1px solid #2f9e4444;border-radius:4px;padding:1px 5px;font-weight:700;">木</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 차세대 퀸상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">04.왕세자빈.png</div>
+      </div>
+      <div style="background:#fff9e6;border-radius:10px;padding:8px;border:1px solid #ffd43b;text-align:center;">
+        <div style="font-size:8px;color:#8b6914;font-weight:700;margin-bottom:3px;">No.05 🌸</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (5).png" alt="옹주" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">옹주</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">비주얼·자유분방, 사랑받고 자란 公主</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#e0313122;color:#e03131;border:1px solid #e0313144;border-radius:4px;padding:1px 5px;font-weight:700;">火</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 꽃옹주상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">05.옹주.png</div>
+      </div>
+      <div style="background:#fff9e6;border-radius:10px;padding:8px;border:1px solid #ffd43b;text-align:center;">
+        <div style="font-size:8px;color:#8b6914;font-weight:700;margin-bottom:3px;">No.06 🏹</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (6).png" alt="평강공주" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">평강공주</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">결단력·실행력 있는 王실 女리더</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#b0890022;color:#b08900;border:1px solid #b0890044;border-radius:4px;padding:1px 5px;font-weight:700;">金</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 온달의 아내상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">06.평강공주.png</div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-bottom:16px;">
+    <div style="font-size:11px;font-weight:800;color:#69db7c;margin-bottom:8px;padding:4px 10px;background:rgba(255,255,255,0.08);border-radius:8px;display:inline-block;">🏛️ 양반·관료 (10종)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f0fff4;border-radius:10px;padding:8px;border:1px solid #69db7c;text-align:center;">
+        <div style="font-size:8px;color:#2b8a3e;font-weight:700;margin-bottom:3px;">No.07 🏛️</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (7).png" alt="영의정" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">영의정</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">1품 최고 관료, 야망과 실행력</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#8b5e3c22;color:#8b5e3c;border:1px solid #8b5e3c44;border-radius:4px;padding:1px 5px;font-weight:700;">土</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 영앤리치 예비 CEO상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">07.영의정.png</div>
+      </div>
+      <div style="background:#f0fff4;border-radius:10px;padding:8px;border:1px solid #69db7c;text-align:center;">
+        <div style="font-size:8px;color:#2b8a3e;font-weight:700;margin-bottom:3px;">No.08 💎</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (8).png" alt="정경부인" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">정경부인</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">정1품 부인, 가문 경영하는 마님</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#8b5e3c22;color:#8b5e3c;border:1px solid #8b5e3c44;border-radius:4px;padding:1px 5px;font-weight:700;">土</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 조선의 미세스 CEO상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">08.정경부인.png</div>
+      </div>
+      <div style="background:#f0fff4;border-radius:10px;padding:8px;border:1px solid #69db7c;text-align:center;">
+        <div style="font-size:8px;color:#2b8a3e;font-weight:700;margin-bottom:3px;">No.09 📋</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (9).png" alt="사헌부 감찰" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">사헌부 감찰</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">1원도 안 놓치는 차갑고 이성적인 뇌섹남</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#b0890022;color:#b08900;border:1px solid #b0890044;border-radius:4px;padding:1px 5px;font-weight:700;">金</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 지갑 수호신상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">09.사헌부감찰.png</div>
+      </div>
+      <div style="background:#f0fff4;border-radius:10px;padding:8px;border:1px solid #69db7c;text-align:center;">
+        <div style="font-size:8px;color:#2b8a3e;font-weight:700;margin-bottom:3px;">No.10 🎓</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (10).png" alt="집현전 학자" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">집현전 학자</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">조선의 모든 지식을 꿰뚫는 지능형</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#1971c222;color:#1971c2;border:1px solid #1971c244;border-radius:4px;padding:1px 5px;font-weight:700;">水</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 인간 챗GPT상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">10.집현전학자.png</div>
+      </div>
+      <div style="background:#f0fff4;border-radius:10px;padding:8px;border:1px solid #69db7c;text-align:center;">
+        <div style="font-size:8px;color:#2b8a3e;font-weight:700;margin-bottom:3px;">No.11 🖌️</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (11).png" alt="신사임당" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">신사임당</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">시·서·화 다 잘하는 멀티 학식녀</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#1971c222;color:#1971c2;border:1px solid #1971c244;border-radius:4px;padding:1px 5px;font-weight:700;">水</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 조선의 천재 작가상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">11.신사임당.png</div>
+      </div>
+      <div style="background:#f0fff4;border-radius:10px;padding:8px;border:1px solid #69db7c;text-align:center;">
+        <div style="font-size:8px;color:#2b8a3e;font-weight:700;margin-bottom:3px;">No.12 📜</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (12).png" alt="허난설헌" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">허난설헌</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">우수에 잠긴 감성 여류 시인</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#1971c222;color:#1971c2;border:1px solid #1971c244;border-radius:4px;padding:1px 5px;font-weight:700;">水</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 비운의 천재 시인상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">12.허난설헌.png</div>
+      </div>
+      <div style="background:#f0fff4;border-radius:10px;padding:8px;border:1px solid #69db7c;text-align:center;">
+        <div style="font-size:8px;color:#2b8a3e;font-weight:700;margin-bottom:3px;">No.13 📚</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (13).png" alt="꽃선비" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">꽃선비</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">얼굴로 과거 급제할 비주얼 끝판왕</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#2f9e4422;color:#2f9e44;border:1px solid #2f9e4444;border-radius:4px;padding:1px 5px;font-weight:700;">木</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 얼굴천재 프리패스상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">13.꽃선비.png</div>
+      </div>
+      <div style="background:#f0fff4;border-radius:10px;padding:8px;border:1px solid #69db7c;text-align:center;">
+        <div style="font-size:8px;color:#2b8a3e;font-weight:700;margin-bottom:3px;">No.14 🎭</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (14).png" alt="한량" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">한량</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">노는 게 제일 좋은 베짱이 훈남</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#e0313122;color:#e03131;border:1px solid #e0313144;border-radius:4px;padding:1px 5px;font-weight:700;">火</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 도파민 플렉서상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">14.한량.png</div>
+      </div>
+      <div style="background:#e7f5ff;border-radius:10px;padding:8px;border:1px solid #74c0fc;text-align:center;">
+        <div style="font-size:8px;color:#1864ab;font-weight:700;margin-bottom:3px;">No.15 🎵</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (15).png" alt="풍류 예인남" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">풍류 예인남</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">거문고 든 매력남, 가만히 있어도 홀리는</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#e0313122;color:#e03131;border:1px solid #e0313144;border-radius:4px;padding:1px 5px;font-weight:700;">火</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 유죄인간 폭스상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">15.풍류예인남.png</div>
+      </div>
+      <div style="background:#f0fff4;border-radius:10px;padding:8px;border:1px solid #69db7c;text-align:center;">
+        <div style="font-size:8px;color:#2b8a3e;font-weight:700;margin-bottom:3px;">No.16 🦸</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (16).png" alt="암행어사" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">암행어사</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">정의와 암약, 조선의 다크나이트</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#b0890022;color:#b08900;border:1px solid #b0890044;border-radius:4px;padding:1px 5px;font-weight:700;">金</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 히어로 정의구현상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">16.암행어사.png</div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-bottom:16px;">
+    <div style="font-size:11px;font-weight:800;color:#74c0fc;margin-bottom:8px;padding:4px 10px;background:rgba(255,255,255,0.08);border-radius:8px;display:inline-block;">📚 중인·전문직 (8종)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#e7f5ff;border-radius:10px;padding:8px;border:1px solid #74c0fc;text-align:center;">
+        <div style="font-size:8px;color:#1864ab;font-weight:700;margin-bottom:3px;">No.17 💊</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (17).png" alt="내의원 의관" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">내의원 의관</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">일할 때 도파민 터지는 男 의사</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#1971c222;color:#1971c2;border:1px solid #1971c244;border-radius:4px;padding:1px 5px;font-weight:700;">水</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 워커홀릭 갓생러상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">17.내의원의관.png</div>
+      </div>
+      <div style="background:#e7f5ff;border-radius:10px;padding:8px;border:1px solid #74c0fc;text-align:center;">
+        <div style="font-size:8px;color:#1864ab;font-weight:700;margin-bottom:3px;">No.18 🩺</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (18).png" alt="내의원 의녀" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">내의원 의녀</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">여성 의료인의 정점, 똑똑한 일중독</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#1971c222;color:#1971c2;border:1px solid #1971c244;border-radius:4px;padding:1px 5px;font-weight:700;">水</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 워커홀릭 갓생러녀상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">18.내의원의녀.png</div>
+      </div>
+      <div style="background:#e7f5ff;border-radius:10px;padding:8px;border:1px solid #74c0fc;text-align:center;">
+        <div style="font-size:8px;color:#1864ab;font-weight:700;margin-bottom:3px;">No.19 🔭</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (19).png" alt="관상감 천문학자" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">관상감 천문학자</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">1mm 오차도 안 놓치는 완벽주의</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#1971c222;color:#1971c2;border:1px solid #1971c244;border-radius:4px;padding:1px 5px;font-weight:700;">水</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 디테일 변태 장인상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">19.관상감천문학자.png</div>
+      </div>
+      <div style="background:#e7f5ff;border-radius:10px;padding:8px;border:1px solid #74c0fc;text-align:center;">
+        <div style="font-size:8px;color:#1864ab;font-weight:700;margin-bottom:3px;">No.20 🎨</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (20).png" alt="도화서 화원" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">도화서 화원</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">혼자만의 세계가 뚜렷한 미친 감성 천재</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#2f9e4422;color:#2f9e44;border:1px solid #2f9e4444;border-radius:4px;padding:1px 5px;font-weight:700;">木</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 미친 감성 아티스트상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">20.도화서화원.png</div>
+      </div>
+      <div style="background:#e7f5ff;border-radius:10px;padding:8px;border:1px solid #74c0fc;text-align:center;">
+        <div style="font-size:8px;color:#1864ab;font-weight:700;margin-bottom:3px;">No.21 🌍</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (21).png" alt="역관" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">역관</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">외국어 능통한 엘리트 중인</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#1971c222;color:#1971c2;border:1px solid #1971c244;border-radius:4px;padding:1px 5px;font-weight:700;">水</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 글로벌 인재상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">21.역관.png</div>
+      </div>
+      <div style="background:#e7f5ff;border-radius:10px;padding:8px;border:1px solid #74c0fc;text-align:center;">
+        <div style="font-size:8px;color:#1864ab;font-weight:700;margin-bottom:3px;">No.22 ⚖️</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (22).png" alt="율관" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">율관</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">논리·정확함, 조선의 변호사</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#b0890022;color:#b08900;border:1px solid #b0890044;border-radius:4px;padding:1px 5px;font-weight:700;">金</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 법률 전문가상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">22.율관.png</div>
+      </div>
+      <div style="background:#e7f5ff;border-radius:10px;padding:8px;border:1px solid #74c0fc;text-align:center;">
+        <div style="font-size:8px;color:#1864ab;font-weight:700;margin-bottom:3px;">No.23 🧭</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (23).png" alt="풍수가" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">풍수가</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">기맥·지세 읽는 직관 신비주의</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#8b5e3c22;color:#8b5e3c;border:1px solid #8b5e3c44;border-radius:4px;padding:1px 5px;font-weight:700;">土</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 공간의 마에스트로상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">23.풍수가.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.24 🌿</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (24).png" alt="심마니" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">심마니</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">산삼 캐며 자연과 교감하는 고독한 장인</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#2f9e4422;color:#2f9e44;border:1px solid #2f9e4444;border-radius:4px;padding:1px 5px;font-weight:700;">木</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 산속 도사상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">24.심마니.png</div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-bottom:16px;">
+    <div style="font-size:11px;font-weight:800;color:#ff8787;margin-bottom:8px;padding:4px 10px;background:rgba(255,255,255,0.08);border-radius:8px;display:inline-block;">⚔️ 무관·무인 (5종)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f0fff4;border-radius:10px;padding:8px;border:1px solid #69db7c;text-align:center;">
+        <div style="font-size:8px;color:#2b8a3e;font-weight:700;margin-bottom:3px;">No.25 🛡️</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (25).png" alt="장군" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">장군</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">질 수 없다는 책임감 끝판왕</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#b0890022;color:#b08900;border:1px solid #b0890044;border-radius:4px;padding:1px 5px;font-weight:700;">金</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 갓벽한 대장상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">25.장군.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.26 🗡️</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (26).png" alt="여검객 홍계월" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">여검객 홍계월</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">남장하고 검 든 여전사, 결연한 표정</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#b0890022;color:#b08900;border:1px solid #b0890044;border-radius:4px;padding:1px 5px;font-weight:700;">金</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 여전사 홍계월상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">26.여검객.png</div>
+      </div>
+      <div style="background:#e7f5ff;border-radius:10px;padding:8px;border:1px solid #74c0fc;text-align:center;">
+        <div style="font-size:8px;color:#1864ab;font-weight:700;margin-bottom:3px;">No.27 ⚔️</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (27).png" alt="호위무사" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">호위무사</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">한번 정 주면 끝까지 지키는 상남자</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#b0890022;color:#b08900;border:1px solid #b0890044;border-radius:4px;padding:1px 5px;font-weight:700;">金</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 순도 100% 진국상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">27.호위무사.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.28 🏹</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (28).png" alt="포수" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">포수</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">산속 호랑이 쫓는 고독한 사냥꾼</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#b0890022;color:#b08900;border:1px solid #b0890044;border-radius:4px;padding:1px 5px;font-weight:700;">金</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 야생 헌터상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">28.포수.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.29 🔥</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (29).png" alt="의병" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">의병</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">나라 위해 일어선 희생·정의감</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#e0313122;color:#e03131;border:1px solid #e0313144;border-radius:4px;padding:1px 5px;font-weight:700;">火</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 정의의 의병상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">29.의병.png</div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-bottom:16px;">
+    <div style="font-size:11px;font-weight:800;color:#da77f2;margin-bottom:8px;padding:4px 10px;background:rgba(255,255,255,0.08);border-radius:8px;display:inline-block;">🔑 궁녀·내시 (6종)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.30 🔑</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (30).png" alt="지밀상궁" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">지밀상궁</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">내전 지밀 담당, 1mm도 안 봐주는 정5품</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#b0890022;color:#b08900;border:1px solid #b0890044;border-radius:4px;padding:1px 5px;font-weight:700;">金</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 엄격한 비서실장상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">30.지밀상궁.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.31 🪡</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (31).png" alt="수방상궁" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">수방상궁</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">궁중 자수방 총괄, 완벽주의 끝판왕</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#1971c222;color:#1971c2;border:1px solid #1971c244;border-radius:4px;padding:1px 5px;font-weight:700;">水</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 1mm 자수 장인상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">31.수방상궁.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.32 🍲</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (32).png" alt="수라간 상궁" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">수라간 상궁</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">식탐과 미각이 뛰어난 쩝쩝박사</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#8b5e3c22;color:#8b5e3c;border:1px solid #8b5e3c44;border-radius:4px;padding:1px 5px;font-weight:700;">土</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 쩝쩝박사 먹방러상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">32.수라간상궁.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.33 🧵</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (33).png" alt="침선비" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">침선비</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">바느질 한 땀에 영혼 갈아넣는 장인</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#2f9e4422;color:#2f9e44;border:1px solid #2f9e4444;border-radius:4px;padding:1px 5px;font-weight:700;">木</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 궁중 자수녀상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">33.침선비.png</div>
+      </div>
+      <div style="background:#e7f5ff;border-radius:10px;padding:8px;border:1px solid #74c0fc;text-align:center;">
+        <div style="font-size:8px;color:#1864ab;font-weight:700;margin-bottom:3px;">No.34 🍳</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (34).png" alt="숙수" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">숙수</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">궁중·관청의 男 요리사</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#8b5e3c22;color:#8b5e3c;border:1px solid #8b5e3c44;border-radius:4px;padding:1px 5px;font-weight:700;">土</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 조선 男 셰프상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">34.숙수.png</div>
+      </div>
+      <div style="background:#e7f5ff;border-radius:10px;padding:8px;border:1px solid #74c0fc;text-align:center;">
+        <div style="font-size:8px;color:#1864ab;font-weight:700;margin-bottom:3px;">No.35 🔐</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (35).png" alt="내시" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">내시</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">왕 곁의 男 관료, 신중·충성</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#1971c222;color:#1971c2;border:1px solid #1971c244;border-radius:4px;padding:1px 5px;font-weight:700;">水</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 왕실 비서상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">35.내시.png</div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-bottom:16px;">
+    <div style="font-size:11px;font-weight:800;color:#b197fc;margin-bottom:8px;padding:4px 10px;background:rgba(255,255,255,0.08);border-radius:8px;display:inline-block;">🕊️ 종교·수행 (5종)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.36 📿</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (36).png" alt="승려" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">승려</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">가사 두른 男 승려, 깨달음·고행</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#2f9e4422;color:#2f9e44;border:1px solid #2f9e4444;border-radius:4px;padding:1px 5px;font-weight:700;">木</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 깨달은 선승상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">36.승려.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.37 🕊️</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (37).png" alt="비구니" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">비구니</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">속세 떠난 女 승려, 내면의 평온</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#2f9e4422;color:#2f9e44;border:1px solid #2f9e4444;border-radius:4px;padding:1px 5px;font-weight:700;">木</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 절제 수행자상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">37.비구니.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.38 🌙</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (38).png" alt="무녀" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">무녀</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">방울·신주 든 女 무당, 신기·접신</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#e0313122;color:#e03131;border:1px solid #e0313144;border-radius:4px;padding:1px 5px;font-weight:700;">火</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 원조 타로마스터상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">38.무녀.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.39 ⚡</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (39).png" alt="박수무당" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">박수무당</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">방울·부적 든 男 무당</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#e0313122;color:#e03131;border:1px solid #e0313144;border-radius:4px;padding:1px 5px;font-weight:700;">火</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 男 무속인상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">39.박수무당.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.40 🍃</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (40).png" alt="도사" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">도사</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">산속 동굴의 백발 도사, 신비주의</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#2f9e4422;color:#2f9e44;border:1px solid #2f9e4444;border-radius:4px;padding:1px 5px;font-weight:700;">木</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 신선급 도인상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">40.도사.png</div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-bottom:16px;">
+    <div style="font-size:11px;font-weight:800;color:#ffa94d;margin-bottom:8px;padding:4px 10px;background:rgba(255,255,255,0.08);border-radius:8px;display:inline-block;">🎭 예인·공연 (5종)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#e7f5ff;border-radius:10px;padding:8px;border:1px solid #74c0fc;text-align:center;">
+        <div style="font-size:8px;color:#1864ab;font-weight:700;margin-bottom:3px;">No.41 🎼</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (41).png" alt="일패명기" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">일패명기</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">황진이급 시·서·악 갖춘 예술가급 명기</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#e0313122;color:#e03131;border:1px solid #e0313144;border-radius:4px;padding:1px 5px;font-weight:700;">火</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 유죄인간 폭스녀상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">41.일패명기.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.42 🥁</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (42).png" alt="사당패녀" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">사당패녀</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">북·장구 든 女 사당패, 무대 인싸</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#e0313122;color:#e03131;border:1px solid #e0313144;border-radius:4px;padding:1px 5px;font-weight:700;">火</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 여 인싸 광대상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">42.사당패녀.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.43 🎪</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (43).png" alt="시장 광대" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">시장 광대</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">알고리즘이 무조건 픽할 男 인싸 기질</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#e0313122;color:#e03131;border:1px solid #e0313144;border-radius:4px;padding:1px 5px;font-weight:700;">火</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 인간 알고리즘상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">43.시장광대.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.44 🎤</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (44).png" alt="남자 명창" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">남자 명창</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">판소리 男 명창, 서편제·동편제 거목</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#e0313122;color:#e03131;border:1px solid #e0313144;border-radius:4px;padding:1px 5px;font-weight:700;">火</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 조선의 男 디바상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">44.남자명창.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.45 🎙️</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (45).png" alt="여자 명창" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">여자 명창</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">판소리 女 명창, 이화중선 같은 전설</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#e0313122;color:#e03131;border:1px solid #e0313144;border-radius:4px;padding:1px 5px;font-weight:700;">火</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 조선의 女 디바상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">45.여자명창.png</div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-bottom:16px;">
+    <div style="font-size:11px;font-weight:800;color:#a9e34b;margin-bottom:8px;padding:4px 10px;background:rgba(255,255,255,0.08);border-radius:8px;display:inline-block;">💰 상인·거상 (5종)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#e7f5ff;border-radius:10px;padding:8px;border:1px solid #74c0fc;text-align:center;">
+        <div style="font-size:8px;color:#1864ab;font-weight:700;margin-bottom:3px;">No.46 💰</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (46).png" alt="거상" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">거상</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">돈 냄새 기가 막히게 맡는 힙한 男 상인</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#8b5e3c22;color:#8b5e3c;border:1px solid #8b5e3c44;border-radius:4px;padding:1px 5px;font-weight:700;">土</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 강남 건물주상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">46.거상.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.47 💹</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (47).png" alt="김만덕" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">김만덕</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">제주 출신 실존 女 거상</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#8b5e3c22;color:#8b5e3c;border:1px solid #8b5e3c44;border-radius:4px;padding:1px 5px;font-weight:700;">土</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 조선의 워런 버핏녀상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">47.김만덕.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.48 🎒</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (48).png" alt="보부상" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">보부상</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">어딜 던져놔도 오아시스 찾는 적응력</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#8b5e3c22;color:#8b5e3c;border:1px solid #8b5e3c44;border-radius:4px;padding:1px 5px;font-weight:700;">土</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 프로 역마살러상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">48.보부상.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.49 💄</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (49).png" alt="매분구" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">매분구</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">화장품 광주리 이고 장터 도는 女 행상</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#8b5e3c22;color:#8b5e3c;border:1px solid #8b5e3c44;border-radius:4px;padding:1px 5px;font-weight:700;">土</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 장돌뱅이녀상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">49.매분구.png</div>
+      </div>
+      <div style="background:#e7f5ff;border-radius:10px;padding:8px;border:1px solid #74c0fc;text-align:center;">
+        <div style="font-size:8px;color:#1864ab;font-weight:700;margin-bottom:3px;">No.50 🏪</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (50).png" alt="객주" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">객주</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">객주집 운영, 거래 중개의 큰손</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#8b5e3c22;color:#8b5e3c;border:1px solid #8b5e3c44;border-radius:4px;padding:1px 5px;font-weight:700;">土</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 도매상 큰손상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">50.객주.png</div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-bottom:16px;">
+    <div style="font-size:11px;font-weight:800;color:#66d9e8;margin-bottom:8px;padding:4px 10px;background:rgba(255,255,255,0.08);border-radius:8px;display:inline-block;">👨‍🌾 평민·백성 (10종)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.51 👨‍🌾</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (51).png" alt="농부" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">농부</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">인구 70%, 묵묵히 땅 가꾸는 근면</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#8b5e3c22;color:#8b5e3c;border:1px solid #8b5e3c44;border-radius:4px;padding:1px 5px;font-weight:700;">土</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 성실한 가장상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">51.농부.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.52 👩‍🌾</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (52).png" alt="농부의 처" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">농부의 처</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">노동·인내, 가족 위해 헌신</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#8b5e3c22;color:#8b5e3c;border:1px solid #8b5e3c44;border-radius:4px;padding:1px 5px;font-weight:700;">土</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 근면 안주인상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">52.농부처.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.53 🎣</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (53).png" alt="어부" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">어부</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">바다 위 자유로운 영혼</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#1971c222;color:#1971c2;border:1px solid #1971c244;border-radius:4px;padding:1px 5px;font-weight:700;">水</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 바다의 사나이상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">53.어부.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.54 🌊</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (54).png" alt="잠녀(해녀)" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">잠녀(해녀)</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">바다에 뛰어드는 강인한 女 노동자</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#1971c222;color:#1971c2;border:1px solid #1971c244;border-radius:4px;padding:1px 5px;font-weight:700;">水</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 제주 억척녀상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">54.잠녀.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.55 🏺</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (55).png" alt="옹기장인" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">옹기장인</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">남 눈치 안 보고 자기 작품에만 몰입</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#8b5e3c22;color:#8b5e3c;border:1px solid #8b5e3c44;border-radius:4px;padding:1px 5px;font-weight:700;">土</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 알빠노 마이웨이상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">55.옹기장인.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.56 🔨</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (56).png" alt="대장장이" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">대장장이</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">터프하지만 속은 말랑말랑한 마시멜로</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#b0890022;color:#b08900;border:1px solid #b0890044;border-radius:4px;padding:1px 5px;font-weight:700;">金</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 겉바속촉 츤데레상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">56.대장장이.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.57 🧶</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (57).png" alt="직조녀" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">직조녀</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">베틀 앞 무뚝뚝, 한 올 한 올 정성</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#2f9e4422;color:#2f9e44;border:1px solid #2f9e4444;border-radius:4px;padding:1px 5px;font-weight:700;">木</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 베틀 장인녀상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">57.직조녀.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.58 🍶</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (58).png" alt="주막 주모" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">주막 주모</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">고민 상담소 차려도 될 정도의 인복</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#8b5e3c22;color:#8b5e3c;border:1px solid #8b5e3c44;border-radius:4px;padding:1px 5px;font-weight:700;">土</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 무해한 힐러상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">58.주막주모.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.59 🐕</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (59).png" alt="주막 알바생" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">주막 알바생</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">눈치 0단이지만 주변에서 알아서 챙겨줌</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#8b5e3c22;color:#8b5e3c;border:1px solid #8b5e3c44;border-radius:4px;padding:1px 5px;font-weight:700;">土</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">男</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 럭키비키상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">59.주막알바생.png</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:8px;border:1px solid #ced4da;text-align:center;">
+        <div style="font-size:8px;color:#495057;font-weight:700;margin-bottom:3px;">No.60 🥘</div>
+        <div style="background:#fafafa;border-radius:8px;padding:4px;margin-bottom:5px;">
+          <img src="/joseon-portraits/joseon (60).png" alt="찬모" style="width:70px;height:70px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:#1A3C32;margin-bottom:2px;">찬모</div>
+        <div style="font-size:9px;color:#555;line-height:1.3;margin-bottom:3px;">양반가 부엌 운영하는 푸근한 어멈</div>
+        <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;">
+          <span style="font-size:8px;background:#8b5e3c22;color:#8b5e3c;border:1px solid #8b5e3c44;border-radius:4px;padding:1px 5px;font-weight:700;">土</span>
+          <span style="font-size:8px;background:#f8f9fa;color:#666;border:1px solid #dee2e6;border-radius:4px;padding:1px 5px;">女</span>
+        </div>
+        <div style="font-size:8px;color:#888;margin-top:3px;font-style:italic;">→ 푸근한 찬모상</div>
+        <div style="font-size:7px;color:#bbb;margin-top:1px;">60.찬모.png</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

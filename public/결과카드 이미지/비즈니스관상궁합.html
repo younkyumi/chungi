@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --bg-deep-green: #1A3D1A;
+            --point-gold: #C9A74E;
+            --paper-white: #FDFCF8;
+            --biz-blue: #2E5A88;
+        }
+
+        body { background-color: #000; margin: 0; font-family: 'Noto Serif KR', serif; color: white; display: flex; justify-content: center; }
+        #app { width: 100%; max-width: 450px; background-color: var(--bg-deep-green); min-height: 100vh; position: relative; }
+        .page { display: none; padding: 20px; box-sizing: border-box; }
+        .page.active { display: block; animation: slideUp 0.5s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .promo { text-align: center; padding: 40px 10px; }
+        .price { background: rgba(201,167,78,0.2); border: 1px solid var(--point-gold); padding: 5px 15px; border-radius: 20px; font-size: 14px; color: var(--point-gold); }
+        
+        .scan-container { position: relative; width: 100%; height: 280px; background: #000; border-radius: 20px; margin: 30px 0; display: flex; gap: 10px; padding: 10px; box-sizing: border-box; }
+        .slot { flex: 1; border: 2px dashed var(--point-gold); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--point-gold); }
+        .laser { position: absolute; width: 100%; height: 3px; background: var(--point-gold); box-shadow: 0 0 20px var(--point-gold); top: 0; animation: scan 2s infinite ease-in-out; }
+        @keyframes scan { 0% {top:0} 100% {top:100%} }
+
+        .result-sheet { background: var(--paper-white); color: #1A1A1A; border-radius: 25px; padding: 30px 20px; margin-top: 20px; border: 3px solid var(--point-gold); text-align: center; }
+        .indiv-box { background: #f0f2f0; padding: 15px; border-radius: 15px; margin-bottom: 15px; text-align: left; border-left: 4px solid var(--bg-deep-green); }
+        .final-badge { background: var(--bg-deep-green); color: white; padding: 8px 25px; border-radius: 5px; display: inline-block; margin-top: 15px; font-weight: 900; }
+
+        .btn-pay { width: 100%; padding: 22px; background: linear-gradient(180deg, var(--point-gold), #AA7B30); border: none; border-radius: 18px; color: white; font-size: 18px; font-weight: 900; cursor: pointer; margin-top: 20px; }
+        .status-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px; background: rgba(0,0,0,0.9); padding: 15px; display: flex; justify-content: space-around; font-size: 13px; border-top: 1px solid var(--point-gold); font-weight: 700; color: var(--point-gold); }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div class="page active" id="p1">
+        <div class="promo">
+            <div class="price">성공을 위한 투자: 1,480원</div>
+            <h1 style="font-size: 28px; line-height: 1.4;">돈을 쓸어담는 조합인가,<br>밑 빠진 독인가? 💰</h1>
+            <p style="opacity: 0.7; font-size: 15px;">사업의 성패는 인재의 합에 있습니다.<br>각자의 재물운을 분석하고 비즈니스 시너지를 판독합니다.</p>
+            <div style="background:rgba(0,0,0,0.2); padding:20px; border-radius:15px; text-align:left; margin-top:20px; border: 1px solid rgba(255,255,255,0.1);">
+                <div style="margin-bottom:10px;">📊 <b>A(대표)</b>의 재물 그릇 & 실행력</div>
+                <div style="margin-bottom:10px;">📊 <b>B(파트너)</b>의 신뢰도 & 영업력</div>
+                <div>📈 <b>수익 증폭 시너지</b> & 배신 지수</div>
+            </div>
+            <button class="btn-pay" onclick="next(2)">비즈니스 합 확인하기</button>
+        </div>
+    </div>
+
+    <div class="page" id="p2">
+        <div style="text-align: center; padding-top: 40px;">
+            <h2 style="color: var(--point-gold);">부의 기운을<br>대조하고 있습니다...</h2>
+            <div class="scan-container">
+                <div class="laser"></div>
+                <div class="slot">대표님</div>
+                <div class="slot">파트너</div>
+            </div>
+            <button class="btn-pay" onclick="next(3)">판독 완료! 리포트 열기</button>
+        </div>
+    </div>
+
+    <div class="page" id="p3" style="padding-bottom: 100px;">
+        <p style="text-align: center; color: var(--point-gold); font-weight: 900;">천기 비즈니스 정밀 리포트</p>
+        
+        <div class="indiv-box">
+            <b>👤 Partner A (대표)</b><br>
+            <span style="font-size: 14px; color: var(--bg-deep-green);">"판을 짜는 예리한 책사 상"</span>
+            <p style="font-size: 12px; margin-top: 5px;">콧대가 오뚝하고 미간이 넓어 분석력이 뛰어납니다. 전략을 세우고 지시하는 리더 역할에 최적입니다.</p>
+        </div>
+
+        <div class="indiv-box">
+            <b>👤 Partner B (파트너)</b><br>
+            <span style="font-size: 14px; color: var(--bg-deep-green);">"돈 냄새 기가 막히게 맡는 거상 상"</span>
+            <p style="font-size: 12px; margin-top: 5px;">콧망울에 살집이 있어 재물을 가두는 힘이 강합니다. 현장에서 결과를 만들어내는 불도저형입니다.</p>
+        </div>
+
+        <div class="result-sheet">
+            <span style="font-size: 45px;">🏦</span>
+            <h2 style="margin: 10px 0;">"조선 팔도 씹어먹을<br>유니콘 제조기"</h2>
+            <div class="final-badge">비즈니스 궁합: 99점</div>
+            <p style="font-size: 14px; line-height: 1.8; margin-top: 20px;">
+                서로의 관상이 부족함을 완벽히 보완합니다. A가 길을 닦고 B가 황금을 줍는 격이군요. 같이 사업 안 하면 국가적 손실입니다!
+            </p>
+        </div>
+
+        <div class="status-bar">
+            <span>💰 수익증폭 300%</span>
+            <span>🤝 신뢰도 95%</span>
+            <span>🏆 S등급</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    function next(s) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('p' + s).classList.add('active');
+        window.scrollTo(0,0);
+    }
+</script>
+</body>
+</html>

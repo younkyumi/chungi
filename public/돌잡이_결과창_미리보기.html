@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>돌잡이 결과창 미리보기</title>
+<!--
+  출처: src/app/page.tsx
+  - _DOLJABI_ITEMS 데이터: 3774~3795행
+  - _DOLJABI_HIDDEN 데이터: 3796~3802행
+  - 오행별 데이터(ohPersonality/ohHealth/ohParenting/ohColor/ohFriend/ohPlay/ohMBTI/ohFood): 4697~4790행
+  - 돌잡이 result JSX: 4829~4930행
+  - wishToCat 매핑: 4684행
+  - sipsinExplain 한자 풀이: 4792~4803행
+  - 탭 라벨(4922~4928행): 🌟 사주의 기질과 성격 / 🔮 물건의 의미와 운명 / 🩺 건강 체질 / 🌱 양육비방과 꿀팁
+  - 해시태그 푸터: 4906~4909행
+  - 샘플 데이터: 건우(남아), 화(火) 오행, 책(📖) 아이템, 엄마소원=돈, 아빠소원=공부
+-->
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#1A3C32;--ink2:#1E4A3D;
+  --gold:#D4AF37;--gold3:#B8942E;
+  --mist:#A8C4B8;
+}
+body{background:var(--ink);font-family:'Apple SD Gothic Neo',sans-serif;padding:20px;}
+.max-wrap{max-width:430px;margin:0 auto;}
+.white-card{background:#ffffff;border-radius:20px;overflow:hidden;border:1px solid rgba(212,175,55,0.3);box-shadow:0 10px 30px rgba(0,0,0,0.06);color:#333;margin-bottom:12px;}
+.brand-line{font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;padding:10px 16px;text-align:center;border-bottom:1px solid #f0f0f0;display:block;}
+.hash-footer{display:flex;justify-content:space-between;padding:10px 16px;margin-top:14px;font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;border-top:1px solid #f0f0f0;}
+.tab-active{background:#1A3C32!important;border-color:#1A3C32!important;color:#fff!important;}
+.tab-btn{flex:1;padding:10px 4px;background:#fff;border:1px solid #ddd;color:#1A3C32;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;}
+.gray-box{background:#f8f9fa;border-radius:12px;padding:12px 14px;margin-bottom:10px;}
+.cross-scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;}
+.cross-card{flex-shrink:0;width:100px;background:#ffffff;border-radius:12px;padding:10px 8px;border:1px solid rgba(212,175,55,0.4);text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+</style>
+</head>
+<body>
+<div class="max-wrap">
+
+<!-- ====== id="doljabi-capture" wrapper (4834행) ====== -->
+
+<!-- ═══ PAGE 1: 메인 결과 카드 (4836행~) ═══ -->
+<div class="white-card">
+  <!-- BrandLine (4839행) -->
+  <span class="brand-line">돌잡이 시뮬레이션 리포트</span>
+
+  <!-- 아기 정보 헤더 (4842~4853행) -->
+  <div style="padding:0 16px 14px;text-align:center;">
+    <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:4px;">
+      <span style="font-size:20px;">👦</span>
+      <h2 style="font-size:18px;font-weight:900;color:#1A3C32;margin:0;font-family:'Noto Serif KR','Batang',serif;line-height:1.35;">우리 건우가 무얼 잡았을까요?</h2>
+    </div>
+    <!-- 인물 정보 (4850~4853행) -->
+    <div style="font-size:10px;color:#888;font-weight:600;line-height:1.6;">
+      <div>👤 건우 : 2025-01-15 · 午시생 · 양력 · 남아</div>
+      <div style="color:#aaa;">📅 2026-06-30 검사</div>
+    </div>
+  </div>
+
+  <!-- 1페이지 본문 (4858행~) -->
+  <div style="padding:4px 16px 0;">
+    <!-- 아이템 이미지 220px (4865행) — 실제는 ItemImg 컴포넌트, 여기선 이모지 대체 -->
+    <div style="margin:0 0 14px;display:flex;justify-content:center;">
+      <div style="width:220px;height:220px;background:#f8f9fa;border-radius:16px;display:flex;align-items:center;justify-content:center;border:2px dashed #e0e0e0;">
+        <span style="font-size:80px;">📖</span>
+      </div>
+    </div>
+
+    <!-- 아이템 이름 h3 + meaning (4866~4867행) -->
+    <h3 style="font-size:18px;font-weight:900;color:#111827;margin:0 0 6px;text-align:center;font-family:'Noto Serif KR','Batang',serif;">책을 잡았어요!</h3>
+    <div style="font-size:11px;color:#6b7280;margin-bottom:14px;text-align:center;">학자·작가·교수 — 학문으로 사람을 이롭게</div>
+
+    <!-- 설명 텍스트 (4869~4871행) -->
+    <div style="font-size:12px;color:#374151;line-height:1.85;margin-bottom:14px;word-break:keep-all;">
+      <strong style="color:#7A5C00;">건우 엄마님, 축하드려요!</strong> 건우는 돌상 위 수많은 물건 중에서도 <strong>📖 책</strong>을 잡았어요. 이건 단순한 우연이 아니에요. 아이 사주의 오행 중에서 <strong style="color:#7A5C00;">화(火)</strong>의 기운이 강한 건우의 타고난 에너지가 <strong>교육·학문</strong> 분야와 깊이 공명했기 때문이에요. 앞으로 이 아이가 자라면서 <strong>교육·학문</strong> 쪽에 관심을 보일 확률이 높아요.
+    </div>
+
+    <!-- 엄마·아빠 바람 vs 사주 비교 (4873~4902행) -->
+    <div style="border-top:1px solid #f3f4f6;padding-top:18px;margin-bottom:14px;">
+      <h3 style="font-size:14px;font-weight:800;color:#111827;margin:0 0 4px;">👨‍👩‍👧 엄마·아빠 바람 vs 사주 기질</h3>
+      <div style="font-size:11px;color:#6b7280;margin-bottom:14px;">셋 다 비교해드려요! 누구 바람이 맞았을까요? 🥊</div>
+
+      <!-- grid: 1fr auto 1fr auto 1fr (4876행) -->
+      <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:6px;align-items:center;margin-bottom:14px;">
+        <!-- 엄마 (bg:#fff5f5, border:2px solid rgba(255,107,107,0.4)) -->
+        <div style="background:#fff5f5;border:2px solid rgba(255,107,107,0.4);border-radius:14px;padding:12px 8px;text-align:center;">
+          <div style="font-size:10px;color:#e53e3e;margin-bottom:6px;font-weight:700;">👩 엄마</div>
+          <div style="font-size:11px;font-weight:700;color:#c53030;">돈·재물</div>
+        </div>
+        <!-- momMatched=false (돈→재물 cat, 책=교육 cat → 불일치) -->
+        <div style="text-align:center;font-size:14px;">❌</div>
+        <!-- 사주 (bg:#f0fdf4, border:3px solid rgba(74,222,128,0.5)) -->
+        <div style="background:#f0fdf4;border:3px solid rgba(74,222,128,0.5);border-radius:14px;padding:12px 8px;text-align:center;">
+          <div style="font-size:10px;color:#166534;margin-bottom:6px;font-weight:700;">🔮 사주</div>
+          <div style="font-size:28px;margin-bottom:2px;">📖</div>
+          <div style="font-size:10px;font-weight:700;color:#14532d;">책</div>
+        </div>
+        <!-- dadMatched=true (공부→학문→교육,문학,과학,우주항공 / 책=교육 ✅ 4684행) -->
+        <div style="text-align:center;font-size:14px;">✅</div>
+        <!-- 아빠 (bg:#eff6ff, border:2px solid rgba(116,185,255,0.4)) -->
+        <div style="background:#eff6ff;border:2px solid rgba(116,185,255,0.4);border-radius:14px;padding:12px 8px;text-align:center;">
+          <div style="font-size:10px;color:#1e40af;margin-bottom:6px;font-weight:700;">👨 아빠</div>
+          <div style="font-size:11px;font-weight:700;color:#1e3a8a;">공부·학문</div>
+        </div>
+      </div>
+
+      <!-- 비교 결과 박스 (4893행) dadMatched=true → #f0fdf4 / #bbf7d0 -->
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:14px;margin-bottom:12px;">
+        <div style="font-size:12px;font-weight:700;color:#166534;margin-bottom:8px;">🎊 아빠 바람이 맞았어요! 엄마는 다음에... 😅</div>
+        <div style="font-size:11px;color:#555;line-height:1.8;">
+          건우의 사주가 이끈 결과는 <strong>📖 책</strong>이에요.
+        </div>
+      </div>
+      <div style="font-size:12px;color:#374151;line-height:1.85;word-break:keep-all;">어느 쪽이든, 아이가 행복하게 자라는 게 가장 중요해요.<br>사주는 아이의 타고난 강점을 알려주는 나침반일 뿐, 최종 방향은 언제나 아이 스스로 결정하게 될 거예요 ❤️</div>
+    </div>
+  </div>
+
+  <!-- PAGE 1 해시태그 푸터 (4906~4909행) -->
+  <div class="hash-footer">
+    <span>#천기돌잡이 #건우돌잡이 #책 #화기운 #모바일돌잡이</span>
+    <span style="font-weight:600;">🌐 천기.kr</span>
+  </div>
+</div>
+<!-- ═══ PAGE 1 끝 ═══ -->
+
+<!-- ═══ PAGE 2: 탭 nav 카드 (4913~4930행) ═══ -->
+<div class="white-card">
+  <!-- 안내 (4916~4917행) -->
+  <div style="padding:14px 16px 6px;text-align:center;">
+    <div style="font-size:11px;color:#D4AF37;font-weight:700;">👇 아래 <b>탭 버튼</b>을 눌러 분야별 상세 리포트를 확인하세요!</div>
+  </div>
+  <!-- 4탭 버튼 2x2 (4920~4929행) / active=bg:#1A3C32 inactive=bg:#fff border:#ddd -->
+  <div style="padding:6px 6px 12px;display:flex;flex-direction:column;gap:6px;">
+    <div style="display:flex;gap:5px;">
+      <button class="tab-btn tab-active">🌟 사주의 기질과 성격</button>
+      <button class="tab-btn">🔮 물건의 의미와 운명</button>
+    </div>
+    <div style="display:flex;gap:5px;">
+      <button class="tab-btn">🩺 건강 체질</button>
+      <button class="tab-btn">🌱 양육비방과 꿀팁</button>
+    </div>
+  </div>
+</div>
+<!-- ═══ PAGE 2 끝 ═══ -->
+
+<!-- ═══ PAGE 3: 탭 0 콘텐츠 = 사주의 기질과 성격 (활성화 상태) ═══ -->
+<div class="white-card" style="padding:16px;">
+  <div style="font-size:11px;font-weight:700;color:#D4AF37;letter-spacing:1.5px;margin-bottom:10px;">🌟 사주의 기질과 성격</div>
+
+  <!-- ohPersonality.화 (4699~4704행) — 5가지 항목 -->
+  <div class="gray-box">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;margin-bottom:8px;">🌟 타고난 기운</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+      <span style="font-size:10px;font-weight:800;padding:3px 8px;border-radius:10px;background:#ff6b6b20;color:#ff6b6b;border:1px solid #ff6b6b50;">🔥 화(火)</span>
+      <!-- sipsinExplain.식신 (4800행) -->
+      <span style="font-size:10px;font-weight:800;padding:3px 8px;border-radius:10px;background:#7A5C0015;color:#7A5C00;border:1px solid #7A5C0040;">식신(食神) — 창조력·먹는 복</span>
+    </div>
+    <ul style="list-style:none;padding:0;">
+      <li style="font-size:12px;color:#374151;line-height:1.7;padding:3px 0;border-bottom:1px solid #f0f0f0;">💡 밝고 에너지가 넘쳐 주변을 환하게 밝혀줘요.</li>
+      <li style="font-size:12px;color:#374151;line-height:1.7;padding:3px 0;border-bottom:1px solid #f0f0f0;">💡 표현력이 뛰어나 말과 글로 마음을 잘 전해요.</li>
+      <li style="font-size:12px;color:#374151;line-height:1.7;padding:3px 0;border-bottom:1px solid #f0f0f0;">💡 리더십이 있어 또래 사이에서 주목받는 타입이에요.</li>
+      <li style="font-size:12px;color:#374151;line-height:1.7;padding:3px 0;border-bottom:1px solid #f0f0f0;">💡 열정적이지만 감정 기복이 있을 수 있어요.</li>
+      <li style="font-size:12px;color:#374151;line-height:1.7;padding:3px 0;">💡 무대·카메라 앞에서 빛나는 스타성이 있어요.</li>
+    </ul>
+  </div>
+
+  <!-- ohColor.화 (4723행) -->
+  <div class="gray-box">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;margin-bottom:6px;">🎨 타고난 색깔</div>
+    <div style="font-size:12px;color:#374151;line-height:1.7;">
+      <strong>🍀 행운 컬러</strong> 붉은색·핑크<br>
+      <strong>❤️ 애정 컬러</strong> 주황·코랄<br>
+      <span style="color:#888;font-size:11px;">열정의 불꽃처럼 따뜻한 톤이 기운을 끌어올려요.</span>
+    </div>
+  </div>
+
+  <!-- ohFriend.화 (4730행) -->
+  <div class="gray-box">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;margin-bottom:6px;">👫 친구 관계 성향</div>
+    <div style="font-size:12px;color:#374151;line-height:1.7;">인기 많은 외향형. 모임의 중심이 되는 타입이에요. 활발하고 밝은 친구와 잘 어울리지만, 너무 차분한 친구와는 답답함을 느낄 수 있어요.</div>
+  </div>
+
+  <!-- ohMBTI.화 (4744행) -->
+  <div class="gray-box">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;margin-bottom:6px;">🧬 예상 기질 유형</div>
+    <div style="font-size:12px;color:#374151;line-height:1.7;">ENFJ / ESFP 추측 — 빛나는 인기 스타</div>
+  </div>
+
+  <!-- ohPlay.화 (4738행) -->
+  <div class="gray-box">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;margin-bottom:6px;">🎮 좋아하는 놀이</div>
+    <div style="font-size:12px;color:#374151;line-height:1.7;">춤·노래·역할놀이·공연 흉내내기·카메라 앞에서 포즈. 표현하고 주목받는 놀이가 에너지를 폭발시켜요.</div>
+  </div>
+</div>
+
+<!-- 탭 1: 물건의 의미와 운명 콘텐츠 예시 -->
+<div class="white-card" style="padding:16px;">
+  <div style="font-size:11px;font-weight:700;color:#D4AF37;letter-spacing:1.5px;margin-bottom:10px;">🔮 물건의 의미와 운명 (탭 1)</div>
+
+  <div class="gray-box">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;margin-bottom:6px;">📖 책이 상징하는 것</div>
+    <div style="font-size:12px;color:#374151;line-height:1.7;">학자·작가·교수 — 학문으로 사람을 이롭게</div>
+  </div>
+
+  <!-- jobs: jobsFromMeaning(result.meaning) (4817행) + _DOLJABI_JOBS_BY_CAT.학문 (3818행) -->
+  <div class="gray-box">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;margin-bottom:8px;">💼 어울리는 직업군</div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;">
+      <span style="font-size:11px;padding:4px 9px;border-radius:10px;background:#f0fdf4;color:#15803d;font-weight:700;border:1px solid #bbf7d0;">학자</span>
+      <span style="font-size:11px;padding:4px 9px;border-radius:10px;background:#f0fdf4;color:#15803d;font-weight:700;border:1px solid #bbf7d0;">작가</span>
+      <span style="font-size:11px;padding:4px 9px;border-radius:10px;background:#f0fdf4;color:#15803d;font-weight:700;border:1px solid #bbf7d0;">교수</span>
+      <span style="font-size:11px;padding:4px 9px;border-radius:10px;background:#f0fdf4;color:#15803d;font-weight:700;border:1px solid #bbf7d0;">대학교수</span>
+      <span style="font-size:11px;padding:4px 9px;border-radius:10px;background:#f0fdf4;color:#15803d;font-weight:700;border:1px solid #bbf7d0;">박사 연구원</span>
+      <span style="font-size:11px;padding:4px 9px;border-radius:10px;background:#f0fdf4;color:#15803d;font-weight:700;border:1px solid #bbf7d0;">저널리스트</span>
+    </div>
+  </div>
+
+  <!-- 2050 뉴스헤드라인 (result.headline, 3783행) -->
+  <div style="background:#f8f9fa;border-left:3px solid #D4AF37;border-radius:0 12px 12px 0;padding:14px;margin-bottom:10px;">
+    <div style="font-size:10px;color:#D4AF37;font-weight:700;margin-bottom:6px;">📰 2050년 건우 뉴스 시나리오</div>
+    <div style="font-size:12px;color:#374151;line-height:1.7;font-style:italic;">"인류를 이롭게 한 시대의 석학, 지혜로 세상을 밝히다"</div>
+  </div>
+</div>
+
+<!-- 탭 2: 건강 체질 예시 -->
+<div class="white-card" style="padding:16px;">
+  <div style="font-size:11px;font-weight:700;color:#D4AF37;letter-spacing:1.5px;margin-bottom:10px;">🩺 건강 체질 (탭 2)</div>
+
+  <!-- ohHealth.화 (4707행) -->
+  <div class="gray-box">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;margin-bottom:6px;">🫀 관련 장기</div>
+    <div style="font-size:12px;color:#374151;line-height:1.7;">심장·소장(혀)</div>
+  </div>
+  <div class="gray-box">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;margin-bottom:6px;">💊 건강 관리 팁</div>
+    <div style="font-size:12px;color:#374151;line-height:1.7;">흥분 상태가 오래 이어지지 않도록 적당한 휴식이 필요해요. 붉은 음식(토마토·비트·팥)과 쓴맛 채소가 심장 기운을 보호해요. 과격한 운동 후에는 충분히 식혀주세요.</div>
+  </div>
+  <!-- ohFood.화 (4751행) -->
+  <div class="gray-box">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;margin-bottom:6px;">🍎 좋은 음식 / 주의 음식</div>
+    <div style="font-size:12px;color:#374151;line-height:1.7;">
+      <strong style="color:#15803d;">✅ 좋음:</strong> 토마토·비트·팥·체리·수박·쓴맛 채소(쑥·민들레)<br>
+      <strong style="color:#dc2626;">⚠️ 주의:</strong> 카페인·자극적 매운맛 (심장을 흥분시켜요)
+    </div>
+  </div>
+</div>
+
+<!-- 탭 3: 양육비방과 꿀팁 예시 -->
+<div class="white-card" style="padding:16px;">
+  <div style="font-size:11px;font-weight:700;color:#D4AF37;letter-spacing:1.5px;margin-bottom:10px;">🌱 양육비방과 꿀팁 (탭 3)</div>
+
+  <!-- ohParenting.화 (4715~4717행) -->
+  <div class="gray-box">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;margin-bottom:8px;">🏡 건우를 위한 양육 3가지 팁</div>
+    <div style="font-size:12px;color:#374151;line-height:1.85;word-break:keep-all;">
+      <div style="padding:6px 0;border-bottom:1px solid #f0f0f0;">① 건우는 칭찬을 먹고 자라는 아이예요. 작은 성취도 크게 기뻐해 주세요.</div>
+      <div style="padding:6px 0;border-bottom:1px solid #f0f0f0;">② 감정 기복을 '나쁜 것'으로 보지 말고 '풍부한 마음'으로 인정해 주세요.</div>
+      <div style="padding:6px 0;">③ 무대·공연·발표 — 주목받는 경험을 두려워하지 않게 응원해주세요.</div>
+    </div>
+  </div>
+
+  <!-- result.parenting (3783행 _DOLJABI_ITEMS.book.parenting) -->
+  <div class="gray-box">
+    <div style="font-size:11px;font-weight:700;color:#7A5C00;margin-bottom:6px;">📖 책을 잡은 아이에게</div>
+    <div style="font-size:12px;color:#374151;line-height:1.7;">독서 본능이 강한 아이예요. 부모도 함께 책 읽는 모습을 자주 보여주세요.</div>
+  </div>
+</div>
+
+<!-- ====== 결과 카드 래퍼 끝 ====== -->
+
+<!-- 친구선물 배너 (linear-gradient(135deg,#ffe5e5,#ffd1d1)) -->
+<div style="background:linear-gradient(135deg,#ffe5e5,#ffd1d1);border-radius:16px;padding:14px 16px;margin-bottom:10px;text-align:center;">
+  <div style="font-size:13px;font-weight:900;color:#9b2335;margin-bottom:4px;">🎁 이 결과, 공유하고 싶다면?</div>
+  <div style="font-size:11px;color:#c53030;margin-bottom:10px;">친구에게 선물하거나 저장해서 오래 기억하세요</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+    <button style="padding:10px;background:#fff;border:1px solid rgba(155,35,53,0.3);border-radius:10px;font-size:11px;font-weight:700;color:#9b2335;cursor:pointer;font-family:inherit;">📸 결과 저장</button>
+    <button style="padding:10px;background:#fff;border:1px solid rgba(155,35,53,0.3);border-radius:10px;font-size:11px;font-weight:700;color:#9b2335;cursor:pointer;font-family:inherit;">💌 친구에게 선물</button>
+  </div>
+</div>
+
+<!-- ResultActions -->
+<div style="margin-bottom:10px;">
+  <button style="display:block;width:100%;padding:14px;border-radius:18px;background:linear-gradient(135deg,#D4AF37,#B8942E);color:#1A3C32;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:inherit;margin-bottom:9px;">🎊 공유하기</button>
+  <button style="display:block;width:100%;padding:14px;border-radius:18px;background:transparent;border:1px solid rgba(212,175,55,0.25);color:#D4AF37;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">🔄 다시 뽑기</button>
+</div>
+
+<!-- 이것도 해볼래요 -->
+<div style="margin-bottom:20px;">
+  <div style="font-size:11px;font-weight:700;color:#A8C4B8;margin-bottom:6px;">✨ 이것도 해볼래요?</div>
+  <div class="cross-scroll">
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">☯️</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">사주 풀이</div><div style="font-size:9px;font-weight:700;color:#B8942E;">980원</div></div>
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">🧬</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">기질도</div><div style="font-size:9px;font-weight:700;color:#B8942E;">380원</div></div>
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">📸</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">아기 관상</div><div style="font-size:9px;font-weight:700;color:#B8942E;">무료</div></div>
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">🌸</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">이달의 운세</div><div style="font-size:9px;font-weight:700;color:#B8942E;">무료</div></div>
+  </div>
+</div>
+
+</div><!-- max-wrap 끝 -->
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>천기 내관상보기 v2 — 3 PART 미리보기</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#1A3C32;font-family:'Pretendard','Noto Serif KR',sans-serif;display:flex;justify-content:center;padding:20px;color:#333;}
+.wrap{max-width:420px;width:100%;}
+
+.part-label{text-align:center;color:#D4AF37;font-size:13px;font-weight:900;letter-spacing:2px;margin:24px 0 12px;font-family:'Noto Serif KR',serif;}
+.part-label .deco{color:rgba(212,175,55,0.4);}
+
+/* ━━━━━ 공통 카드 (관상짤 스타일) ━━━━━ */
+.card{background:#fff;border-radius:24px;overflow:hidden;border:1px solid #eaeaea;box-shadow:0 10px 30px rgba(0,0,0,0.06);color:#333;word-break:keep-all;letter-spacing:-0.3px;margin-bottom:10px;}
+
+/* 스와이프 네비게이션 */
+.nav-wrap{display:flex;align-items:center;justify-content:space-between;padding:10px 0;margin:8px 0;}
+.nav-btn{background:none;border:none;font-size:20px;color:#D4AF37;cursor:pointer;padding:4px 8px;}
+.nav-btn.disabled{color:rgba(168,196,184,0.15);cursor:default;}
+.dots{display:flex;gap:6px;}
+.dot{width:7px;height:7px;border-radius:50%;background:#e0e0e0;}
+.dot.on{background:#D4AF37;width:20px;border-radius:4px;}
+
+/* ━━━━━ PART 1: 관상짤 1페이지 동일 ━━━━━ */
+.p1-header{background:#fcfcfd;padding:18px 16px 12px;border-bottom:1px solid #f0f0f0;}
+.p1-brand{font-size:9px;color:#aaa;font-weight:600;text-align:center;margin-bottom:10px;letter-spacing:0.3px;}
+.p1-user{margin:0 auto;border-collapse:collapse;}
+.p1-avatar{width:34px;height:34px;border-radius:50%;overflow:hidden;background:#eee;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center;font-size:14px;}
+.p1-name{font-weight:800;font-size:11px;color:#222;}
+.p1-date{font-size:9px;color:#999;margin-top:1px;}
+
+.p1-illust{width:100%;background:linear-gradient(135deg,#fdfbfb,#ebedee);display:flex;align-items:center;justify-content:center;padding:8px 0;overflow:hidden;}
+.p1-illust img{width:65%;max-width:200px;object-fit:contain;}
+
+.p1-title{padding:16px 18px 12px;text-align:center;}
+.p1-titleko{font-size:20px;font-weight:800;color:#1a1a1a;margin-bottom:10px;}
+.p1-main{font-size:12px;color:#555;background:#f4f5f7;padding:6px 14px;border-radius:20px;display:inline-block;margin-bottom:8px;}
+.p1-summary{font-weight:800;color:#ff6b6b;font-size:12px;margin-top:5px;}
+
+.p1-story{padding:0 18px 12px;}
+.p1-story-inner{font-size:12px;color:#444;line-height:1.75;background:#f8f9fa;border-radius:12px;padding:12px 14px;}
+
+.p1-match{padding:0 18px 12px;display:flex;gap:6px;}
+.p1-match-box{flex:1;border-radius:12px;padding:10px;text-align:center;}
+.p1-match-good{background:#fff5f5;border:1px solid #ffe3e3;}
+.p1-match-bad{background:#f8f9fa;border:1px solid #eee;}
+.p1-match-label{font-size:9px;font-weight:700;}
+.p1-match-good .p1-match-label{color:#e03131;}
+.p1-match-bad .p1-match-label{color:#495057;}
+.p1-match-text{font-size:10px;font-weight:700;color:#333;margin-top:3px;}
+
+.p1-foot{padding:0 18px 20px;display:flex;justify-content:space-between;align-items:center;}
+.p1-tags{font-size:8px;color:#bbb;font-weight:500;}
+.p1-domain{font-size:8px;color:#ccc;font-weight:600;}
+
+/* ━━━━━ PART 2: 정밀 분석 ━━━━━ */
+.p2-header{padding:18px 16px 10px;text-align:center;border-bottom:1px solid #f0f0f0;}
+.p2-brand{font-size:9px;color:#aaa;letter-spacing:0.3px;margin-bottom:4px;}
+.p2-name{font-size:16px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR',serif;}
+
+.scan{position:relative;width:100%;height:200px;background:rgba(0,0,0,0.05);overflow:hidden;border-bottom:1px solid #f0f0f0;}
+.scan .laser{position:absolute;width:100%;height:3px;background:linear-gradient(90deg,transparent,#C9A74E,transparent);box-shadow:0 0 20px #C9A74E;animation:laserScan 3s infinite ease-in-out;}
+.scan .point{position:absolute;width:8px;height:8px;background:#F4E0A0;border-radius:50%;box-shadow:0 0 12px #F4E0A0;animation:pulsePoint 2s infinite;}
+.scan .log{position:absolute;bottom:8px;right:12px;font-size:10px;color:#C9A74E;font-weight:600;}
+
+.score-bar{display:flex;align-items:center;justify-content:center;gap:12px;padding:14px 16px;border-bottom:1px solid #f0f0f0;background:#fafafa;}
+.score-bar .score{font-size:32px;font-weight:900;color:#D4AF37;font-family:'Noto Serif KR',serif;}
+.score-bar .stars{font-size:16px;color:#D4AF37;}
+.score-bar .percent{font-size:11px;color:#888;font-weight:600;}
+
+.stat-bar{display:flex;justify-content:center;gap:8px;padding:10px 16px;background:#fafafa;border-bottom:1px solid #f0f0f0;flex-wrap:wrap;}
+.stat-bar .stat{font-size:10px;font-weight:700;padding:5px 12px;border-radius:20px;}
+.stat-bar .charm{background:#fff0f3;color:#e03131;border:1px solid #ffe0e6;}
+.stat-bar .wealth{background:#fffbeb;color:#b45309;border:1px solid #fde68a;}
+.stat-bar .level{background:#f0e6ff;color:#7c3aed;border:1px solid #e8d5f5;}
+
+.tabs{padding:12px;display:flex;flex-direction:column;gap:6px;border-bottom:1px solid #f0f0f0;}
+.tab-row{display:flex;gap:6px;}
+.tab-row.three{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.tab-row.five{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+.tab-row.full .tab{flex:1;}
+.tab{padding:8px 4px;background:transparent;border:1px solid #ddd;color:#1A3C32;border-radius:10px;font-size:10px;font-weight:700;cursor:pointer;text-align:center;font-family:inherit;}
+.tab.on{background:#1A3C32;color:#fff;border-color:#1A3C32;}
+
+.content{padding:18px 16px;}
+.sec-title{font-size:15px;font-weight:800;color:#1A3C32;text-align:center;margin-bottom:10px;}
+.sec-body{background:#f8f9fa;border-radius:12px;padding:14px;border-left:4px solid #1A3C32;}
+.sec-body p{font-size:12px;color:#444;line-height:1.85;}
+
+/* ━━━━━ PART 3: 인증서 (아기관상과 동일 폼) ━━━━━ */
+.cert-wrap{max-width:420px;width:100%;}
+.cert-gold{background:linear-gradient(135deg,#fdf6e3,#fff8eb 40%,#f5e6cc);border:3px double #c9a04e;border-radius:18px;padding:32px 20px 28px;text-align:center;position:relative;box-shadow:0 10px 30px rgba(201,160,78,0.2);overflow:hidden;margin-bottom:16px;}
+.cert-gold .corner{position:absolute;font-size:16px;color:#c9a04e;opacity:0.6;}
+.cert-gold .ct{top:12px;left:12px;}.cert-gold .ct2{top:12px;right:12px;}.cert-gold .cb{bottom:12px;left:12px;}.cert-gold .cb2{bottom:12px;right:12px;}
+.cert-gold .hd{font-size:10px;letter-spacing:4px;color:#8b6f1c;font-weight:700;margin-bottom:6px;}
+.cert-gold .sub{font-size:9px;color:#c9a04e;font-style:italic;margin-bottom:20px;}
+.cert-gold .icon-wrap{width:90px;height:90px;margin:0 auto 16px;border-radius:50%;background:#fff;border:3px solid #c9a04e;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 6px 20px rgba(201,160,78,0.3);}
+.cert-gold .icon-wrap img{width:100%;height:100%;object-fit:cover;}
+.cert-gold .label{font-size:9px;color:#8b6f1c;letter-spacing:2px;font-weight:600;margin-bottom:10px;}
+.cert-gold .title{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:900;color:#5a4316;line-height:1.3;text-shadow:0 2px 8px rgba(201,160,78,0.2);margin-bottom:16px;}
+.cert-gold .body{font-size:11px;color:#5a4316;line-height:1.8;opacity:0.9;margin-bottom:20px;word-break:keep-all;padding:0 8px;}
+.cert-gold .tags{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;}
+.cert-gold .tag{font-size:9px;font-weight:800;color:#c9a04e;background:#fffdf5;border:1px solid #e6d5a8;padding:4px 10px;border-radius:20px;}
+.cert-gold .stamp{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:10px;}
+.cert-gold .stamp-line{height:1px;width:50px;background:#c9a04e;opacity:0.4;}
+.cert-gold .stamp-icon{width:40px;height:40px;border:2px solid #c92a2a;border-radius:6px;display:flex;align-items:center;justify-content:center;background:#fff5f5;transform:rotate(-4deg);}
+.cert-gold .sig{font-size:8px;color:#8b6f1c;opacity:0.7;font-style:italic;}
+
+.archive-cta{padding:14px 16px;background:rgba(255,255,255,0.08);text-align:center;border-radius:14px;margin-top:8px;}
+.archive-cta .text{font-size:11px;color:#ddd;line-height:1.6;margin-bottom:8px;}
+.archive-cta .btn{display:inline-block;padding:8px 18px;background:#D4AF37;color:#1A3C32;border-radius:18px;font-size:11px;font-weight:800;text-decoration:none;}
+
+@keyframes laserScan{0%{top:0%;opacity:0}20%{opacity:1}80%{opacity:1}100%{top:100%;opacity:0}}
+@keyframes pulsePoint{0%,100%{opacity:0;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div style="text-align:center;color:#D4AF37;font-size:16px;font-weight:900;margin-bottom:8px;">🔍 내관상보기 v2 — 3 PART 스와이프</div>
+<div style="text-align:center;color:#aaa;font-size:10px;margin-bottom:20px;">PART 1 (관상짤 1페이지) → PART 2 (정밀 분석) → PART 3 (인증서)</div>
+
+<!-- ═══════════════════ PART 1: 관상짤 1페이지 동일 폼 ═══════════════════ -->
+<div class="part-label"><span class="deco">═══</span> PART 1: 캐릭터 매칭 <span class="deco">═══</span></div>
+
+<div class="card">
+  <div class="p1-header">
+    <div class="p1-brand">🔮 천기(天機) 오리지널 | 윤규미님 관상 리포트</div>
+    <table class="p1-user"><tbody><tr>
+      <td style="width:38px;height:38px;vertical-align:middle;padding-right:10px;">
+        <div class="p1-avatar">👤</div>
+      </td>
+      <td style="vertical-align:middle;">
+        <div class="p1-name">윤규미 : 황금손 미다스</div>
+        <div class="p1-date">2026. 4. 14. 오후 3:42</div>
+      </td>
+    </tr></tbody></table>
+  </div>
+
+  <div class="p1-illust">
+    <img src="/gwansang-cards/zzal (1).png" alt="황금손 미다스" onerror="this.style.display='none';this.parentNode.innerHTML='<div style=padding:40px;font-size:60px;>🐸</div>'">
+  </div>
+
+  <div class="p1-title">
+    <div class="p1-titleko">🐸 황금손 미다스</div>
+    <div class="p1-main">"손대는 것마다 황금이 되는 상"</div>
+    <div class="p1-summary">👉 코끝이 옹골차서 재물 그릇 역대급!</div>
+  </div>
+
+  <div class="p1-story">
+    <div class="p1-story-inner">
+      규미님, 사진 딱 보자마자 코끝이 야무져서 놀랐어요. 이건 손에 쥐는 것마다 황금으로 바꾸는 '미다스의 손' 관상이에요. 겉은 차분해 보여도 속은 계산이 빠르고 야망이 큰 타입. 30대 중반부터 재물이 확 들어올 상이니 지금은 기반 다지는 시기라 생각하고 버티세요. 주변에서 돈 빌려달라는 사람 많을 거예요. 조심!
+    </div>
+  </div>
+
+  <div class="p1-match">
+    <div class="p1-match-box p1-match-good">
+      <div class="p1-match-label">💖 찰떡궁합</div>
+      <div class="p1-match-text">무해한 힐러상</div>
+    </div>
+    <div class="p1-match-box p1-match-bad">
+      <div class="p1-match-label">⚡ 상극궁합</div>
+      <div class="p1-match-text">알빠노 마이웨이상</div>
+    </div>
+  </div>
+
+  <div class="p1-foot">
+    <div class="p1-tags">#천기관상 #내관상 #황금손미다스</div>
+    <span class="p1-domain">🌐 천기.kr</span>
+  </div>
+</div>
+
+<div class="nav-wrap">
+  <button class="nav-btn disabled">‹</button>
+  <div class="dots">
+    <div class="dot on"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+  <button class="nav-btn">›</button>
+</div>
+
+<!-- ═══════════════════ PART 2: 정밀 분석 ═══════════════════ -->
+<div class="part-label"><span class="deco">═══</span> PART 2: 정밀 운명 분석 <span class="deco">═══</span></div>
+
+<div class="card">
+  <div class="p2-header">
+    <div class="p2-brand">🔮 천기(天機) 오리지널 | 초정밀 관상 상세 리포트</div>
+    <div class="p2-name">윤규미님 관상 정밀 분석</div>
+  </div>
+
+  <div class="scan">
+    <div class="laser"></div>
+    <div class="point" style="top:20%;left:50%;animation-delay:0s;"></div>
+    <div class="point" style="top:20%;left:35%;animation-delay:0.3s;"></div>
+    <div class="point" style="top:20%;left:65%;animation-delay:0.3s;"></div>
+    <div class="point" style="top:40%;left:40%;animation-delay:0.6s;"></div>
+    <div class="point" style="top:40%;left:60%;animation-delay:0.6s;"></div>
+    <div class="point" style="top:50%;left:50%;animation-delay:0.9s;"></div>
+    <div class="point" style="top:70%;left:50%;animation-delay:1.2s;"></div>
+    <div class="point" style="top:75%;left:30%;animation-delay:1.5s;"></div>
+    <div class="point" style="top:75%;left:70%;animation-delay:1.5s;"></div>
+    <div class="log">AI 정밀 스캐닝 완료 ✓</div>
+  </div>
+
+  <div class="score-bar">
+    <div class="score">88점</div>
+    <div class="stars">★★★★☆</div>
+    <div class="percent">상위 12%</div>
+  </div>
+
+  <div class="stat-bar">
+    <span class="stat charm">💖 도화살 92%</span>
+    <span class="stat wealth">💰 재물그릇 大</span>
+    <span class="stat level">🏆 A등급</span>
+  </div>
+
+  <div class="tabs">
+    <div class="tab-row full">
+      <button class="tab on">✨ 첫인상</button>
+    </div>
+    <div class="tab-row three">
+      <button class="tab">🌅 초년</button>
+      <button class="tab">☀️ 중년</button>
+      <button class="tab">🌙 말년</button>
+    </div>
+    <div class="tab-row five">
+      <button class="tab">💕 애정</button>
+      <button class="tab">🧠 성격</button>
+      <button class="tab">💰 직업</button>
+      <button class="tab">💖 매력</button>
+      <button class="tab">🩺 건강</button>
+    </div>
+    <div class="tab-row full">
+      <button class="tab">🍀 개운법 & 천기의 한마디</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="sec-title">윤규미님, 처음 뵙겠습니다</div>
+    <div class="sec-body">
+      <p>규미님, 사진을 딱 보자마자 느껴지는 건 '참 오래 참으셨다'는 겁니다. 남들은 화려해 보인다고 하겠지만, 사실 속은 시커멓게 타들어 간 적이 많으시죠? 하지만 걱정 마세요. 이목구비에서 느껴지는 건 강한 회복 탄력성이에요. 넘어져도 다시 일어나는 불사조 같은 기운이 얼굴 전체에서 뿜어져 나옵니다.</p>
+    </div>
+  </div>
+</div>
+
+<div class="nav-wrap">
+  <button class="nav-btn">‹</button>
+  <div class="dots">
+    <div class="dot"></div>
+    <div class="dot on"></div>
+    <div class="dot"></div>
+  </div>
+  <button class="nav-btn">›</button>
+</div>
+
+<!-- ═══════════════════ PART 3: 인증서 (아기관상 폼 동일) ═══════════════════ -->
+<div class="part-label"><span class="deco">═══</span> PART 3: 인증서 <span class="deco">═══</span></div>
+
+<div class="cert-wrap">
+  <div class="cert-gold">
+    <div class="corner ct">❀</div><div class="corner ct2">❀</div><div class="corner cb">❀</div><div class="corner cb2">❀</div>
+    <div class="hd">CHUNGI ORIGINALS</div>
+    <div class="sub">— Face Reading Certificate —</div>
+    <div class="icon-wrap">
+      <img src="/gwansang-cards/zzal (1).png" alt="" onerror="this.style.display='none';this.parentNode.innerHTML='<div style=font-size:44px;>🐸</div>'">
+    </div>
+    <div class="label">— THIS PERSON IS —</div>
+    <div class="title">"황금손<br>미다스"</div>
+    <div class="body"><b style="color:#c9a04e;">윤규미</b>님은 코끝이 야무지고 눈빛에 깊이가 있는 <b>재복 타고난 상</b>입니다. 인복과 재물이 함께 깃든 <b style="color:#c9a04e;">귀한 관상</b>이니 자신감 가지세요.</div>
+    <div class="tags"><span class="tag">#재복</span><span class="tag">#인복</span><span class="tag">#황금손</span><span class="tag">#A등급</span></div>
+    <div class="stamp"><div class="stamp-line"></div><div class="stamp-icon"><div style="text-align:center;"><div style="font-size:6px;color:#c92a2a;font-weight:700;line-height:1;">天機</div><div style="font-size:10px;font-weight:900;color:#c92a2a;line-height:1;margin-top:2px;">認證</div></div></div><div class="stamp-line"></div></div>
+    <div class="sig">윤규미 · 天機 ORIGINAL · No. 2026-F042</div>
+    <div class="sig" style="margin-top:3px;">— 천기 (天機) 봉인 · 천기.kr —</div>
+  </div>
+
+  <div class="archive-cta">
+    <div class="text">📚 본 인증서는 <b style="color:#D4AF37;">천기 기록소</b>에 영구 보관됩니다<br>친구 관상도 모아서 12종 인증서 컬렉션을 완성해보세요!</div>
+    <a href="#" class="btn">기록소에서 모아보기 →</a>
+  </div>
+</div>
+
+<div class="nav-wrap">
+  <button class="nav-btn">‹</button>
+  <div class="dots">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot on"></div>
+  </div>
+  <button class="nav-btn disabled">›</button>
+</div>
+
+<!-- 변경점 요약 -->
+<div style="background:rgba(255,255,255,0.06);border:1px dashed rgba(212,175,55,0.4);border-radius:14px;padding:16px;color:#fff;font-size:11px;line-height:1.8;margin-top:24px;">
+  <div style="color:#D4AF37;font-weight:900;margin-bottom:8px;">📝 v2 수정 완료</div>
+  ✅ <b>PART 1</b> — 관상짤 1페이지 UI/UX 동일 (실제 이미지 zzal(1).png, 시적 표현 제거)<br>
+  ✅ <b>PART 2</b> — 88점 + ★★★★ 정밀 분석 (9탭)<br>
+  ✅ <b>PART 3</b> — 아기 인증서 폼 그대로 (cert-gold 스타일, 한자 X)<br>
+  ✅ <b>3페이지 스와이프</b> — 관상짤과 동일한 좌우 네비게이션<br>
+  <br>
+  <div style="color:#D4AF37;font-weight:900;margin-bottom:6px;">🔍 아기 인증서와 다른 점</div>
+  • 서브타이틀: "Baby Character Card" → "Face Reading Certificate"<br>
+  • 라벨: "THIS BABY IS" → "THIS PERSON IS"<br>
+  • 아이콘: 👶 이모지 → 관상짤 실제 이미지<br>
+  • 제목/본문 내용 (이름·타입 기반)<br>
+  • 태그 내용 (#재복 #인복 등)
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>내관상보기 결과창 미리보기</title>
+<!--
+  출처: src/app/page.tsx
+  - FaceReadingModal result JSX: 10807~11065행
+  - PART 1: id 없음 (capture는 관상짤 쪽), border:1px solid rgba(201,167,78,0.3)
+  - PART 2: 관상 인증서 (dark #1A3C32 배경, silver #C0C0C8 텍스트)
+  - BrandLine: "초정밀 관상 상세 리포트" (10875, 11016행)
+  - laserScan: background linear-gradient(90deg,transparent,#C9A74E,transparent), animation:laserScan
+  - 탭 4그룹:
+    - 그룹1: ✨ 첫인상 (풀너비)
+    - 그룹2: 🌅 초년 / ☀️ 중년 / 🌙 말년 (3등분)
+    - 그룹3: 💕 애정 / 🧠 성격 / 💰 직업 / 💖 매력 / 🩺 건강 (5등분)
+    - 그룹4: 🍀 개운법 (풀너비)
+  - 탭 버튼 active: background:#1A3C32, color:#fff
+  - 콘텐츠: bg:#f8f9fa, borderRadius:12, borderLeft:4px solid #1A3C32
+  - 칩: 도화살%(#fff0f3/#e03131) / 재물그릇(#fffbeb/#b45309) / 관상등급(#e8fdf4/#059669)
+  - 천기의 한마디: 개운법(tab10) 탭에서만 노출, 무지개 박스
+  - hash: #천기관상 #내관상보기 #{nm} #{top_percent} #{zalTitleKo}
+  - PART 2 인증서: bg linear-gradient(135deg,#1A3C32,#2d5f4d), border:3px double #C0C0C8
+  - 인증서 태그: cert_tags array
+  - 인증 도장: 天機 認證 (빨강 테두리)
+-->
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#1A3C32;--gold:#D4AF37;--mist:#A8C4B8;}
+body{background:#1A3C32;font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;padding:20px;}
+.max-wrap{max-width:430px;margin:0 auto;}
+.white-card{background:#ffffff;border-radius:20px;overflow:hidden;border:1px solid rgba(201,167,78,0.3);box-shadow:0 10px 30px rgba(0,0,0,0.06);color:#333;margin-bottom:12px;}
+.brand-line-inner{font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;padding:10px 16px;text-align:center;border-bottom:1px solid #f0f0f0;}
+.hash-footer{display:flex;justify-content:space-between;font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;padding:10px 0;margin:14px 0 0;border-top:1px solid #f0f0f0;flex-wrap:wrap;gap:4px;}
+.gray-box{background:#f8f9fa;border-radius:12px;padding:14px;margin-bottom:12px;border-left:4px solid #1A3C32;}
+.tab-btn{padding:7px 6px;background:transparent;border:1px solid #ddd;color:#1A3C32;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;text-align:center;}
+.tab-btn.active{background:#1A3C32;color:#fff;border-color:#1A3C32;}
+@keyframes laserScan{0%{top:0}100%{top:calc(100% - 3px)}}
+</style>
+</head>
+<body>
+<div class="max-wrap">
+
+<!-- ══════ PART 1: 정밀 운명 분석 (메인) ══════ -->
+<div class="white-card">
+  <!-- 헤더 -->
+  <div style="padding:10px 16px 12px;text-align:center;">
+    <div class="brand-line-inner">초정밀 관상 상세 리포트</div>
+    <div style="font-size:18px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;line-height:1.35;">🔍 홍길동님 관상보기</div>
+    <div style="font-size:10px;color:#888;font-weight:600;margin-top:6px;line-height:1.6;">
+      <div>홍길동 · 1990-07-15 양력 · 오전 10시 · 남</div>
+      <div style="color:#aaa;">📅 2026-06-30 분석</div>
+    </div>
+  </div>
+
+  <!-- 스캔 비주얼 (laserScan #C9A74E) -->
+  <div style="position:relative;width:100%;height:180px;background:rgba(0,0,0,0.05);overflow:hidden;display:flex;align-items:center;justify-content:center;">
+    <!-- 업로드된 사진 자리 -->
+    <div style="font-size:48px;opacity:0.3;">🪞</div>
+    <!-- laser line -->
+    <div style="position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#C9A74E,transparent);box-shadow:0 0 20px #C9A74E;top:40%;"></div>
+    <div style="position:absolute;bottom:8px;right:12px;font-size:10px;color:#C9A74E;font-weight:600;background:rgba(255,255,255,0.85);padding:2px 8px;border-radius:6px;">AI 정밀 스캐닝 완료</div>
+  </div>
+
+  <!-- 점수 + 별 + 상위% -->
+  <div style="display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 16px;background:#fafafa;flex-wrap:wrap;">
+    <div style="font-size:24px;font-weight:900;color:#D4AF37;">88점</div>
+    <span style="font-size:14px;color:#D4AF37;letter-spacing:1px;">★★★★☆</span>
+    <span style="font-size:11px;color:#888;font-weight:600;">상위 15%</span>
+  </div>
+  <!-- 칩 3종 -->
+  <div style="display:flex;justify-content:center;gap:8px;padding:8px 16px;background:#fafafa;flex-wrap:wrap;">
+    <span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:#fff0f3;color:#e03131;border:1px solid #ffe0e6;">💖 도화살 72%</span>
+    <span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:#fffbeb;color:#b45309;border:1px solid #fde68a;">💰 재물그릇 대</span>
+    <span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:#e8fdf4;color:#059669;border:1px solid #b2f5ea;">🏆 관상 A등급</span>
+  </div>
+
+  <!-- 탭 안내 -->
+  <div style="text-align:center;padding:10px 16px 4px;font-size:11px;color:#D4AF37;font-weight:700;background:#fafafa;">👇 아래 탭 버튼을 눌러 분야별 상세 리포트를 확인하세요!</div>
+
+  <!-- 4그룹 탭 -->
+  <div style="padding:10px 12px;display:flex;flex-direction:column;gap:5px;">
+    <!-- 그룹1: 첫인상 (풀너비) -->
+    <div style="display:flex;gap:5px;">
+      <div class="tab-btn active" style="flex:1;">✨ 첫인상</div>
+    </div>
+    <!-- 그룹2: 초년/중년/말년 (3등분) -->
+    <div style="display:flex;gap:5px;">
+      <div class="tab-btn" style="flex:1;">🌅 초년</div>
+      <div class="tab-btn" style="flex:1;">☀️ 중년</div>
+      <div class="tab-btn" style="flex:1;">🌙 말년</div>
+    </div>
+    <!-- 그룹3: 애정/성격/직업/매력/건강 (5등분) -->
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:5px;">
+      <div class="tab-btn">💕 애정</div>
+      <div class="tab-btn">🧠 성격</div>
+      <div class="tab-btn">💰 직업</div>
+      <div class="tab-btn">💖 매력</div>
+      <div class="tab-btn">🩺 건강</div>
+    </div>
+    <!-- 그룹4: 개운법 (풀너비) -->
+    <div style="display:flex;gap:5px;">
+      <div class="tab-btn" style="flex:1;">🍀 개운법</div>
+    </div>
+  </div>
+
+  <!-- 콘텐츠 영역 (✨ 첫인상 탭 활성 샘플) -->
+  <div style="padding:18px 16px 0;">
+    <div style="font-size:18px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;line-height:1.35;text-align:center;margin-bottom:4px;">✨ 첫인상 총평</div>
+    <div style="font-size:11px;color:#888;text-align:center;font-weight:600;margin-bottom:12px;line-height:1.6;">분석 부위: 전체 얼굴 (이목구비 종합)</div>
+
+    <div class="gray-box">
+      <div style="font-size:12px;color:#555;line-height:1.75;word-break:keep-all;">
+        홍길동님의 이목구비는 <strong style="color:#1A3C32;">균형과 조화</strong>가 뛰어나며, 첫눈에 신뢰감과 편안함을 주는 인상이에요. 눈빛은 총명하고 결단력이 있으며, 전체적으로 인복이 두텁고 기회를 스스로 만들어가는 운명적인 얼굴입니다. 사람들이 자연스럽게 끌리고, 도움을 주고 싶어지는 귀한 관상이에요.
+      </div>
+    </div>
+
+    <!-- character_name 칩 -->
+    <div style="display:flex;justify-content:center;margin-bottom:12px;">
+      <span style="display:inline-block;font-size:11px;font-weight:800;padding:5px 14px;border-radius:20px;background:#fff8eb;color:#D4AF37;border:1px solid #fde68a;">✨ "황금손 미다스"</span>
+    </div>
+
+    <!-- hash footer -->
+    <div class="hash-footer" style="margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px;">
+      <span>#천기관상 #내관상보기 #홍길동 #상위15% #황금손미다스</span>
+      <span style="font-weight:600;">🌐 천기.kr</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ PART 2: 관상 인증서 ══════ -->
+<div class="white-card">
+  <div style="padding:10px 16px 0;text-align:center;">
+    <div class="brand-line-inner">초정밀 관상 상세 리포트</div>
+    <div style="font-size:18px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;line-height:1.35;margin-bottom:6px;">🔮 운명의 관상 인증서</div>
+    <div style="font-size:10px;color:#888;line-height:1.6;">홍길동님만의 특별한 관상 카드예요!<br>📋 기록소에서 인증서를 모아보세요!</div>
+  </div>
+  <div style="padding:0 16px 16px;">
+    <!-- 인증서 본체 (dark green) -->
+    <div style="background:linear-gradient(135deg,#1A3C32,#2d5f4d 50%,#1A3C32);border:3px double #C0C0C8;border-radius:18px;padding:32px 20px 28px;text-align:center;position:relative;box-shadow:0 10px 30px rgba(192,192,200,0.25);overflow:hidden;">
+      <!-- 코너 장식 -->
+      <div style="position:absolute;top:14px;left:14px;font-size:16px;color:#C0C0C8;opacity:0.6;">❀</div>
+      <div style="position:absolute;top:14px;right:14px;font-size:16px;color:#C0C0C8;opacity:0.6;">❀</div>
+      <div style="position:absolute;bottom:14px;left:14px;font-size:16px;color:#C0C0C8;opacity:0.6;">❀</div>
+      <div style="position:absolute;bottom:14px;right:14px;font-size:16px;color:#C0C0C8;opacity:0.6;">❀</div>
+
+      <div style="font-size:10px;letter-spacing:4px;color:#C0C0C8;font-weight:700;margin-bottom:6px;">CHUNGI ORIGINALS</div>
+      <div style="font-size:9px;color:#C0C0C8;font-style:italic;margin-bottom:18px;">— Face Reading Certificate —</div>
+
+      <!-- 별점 + 점수 + 등급 배지 -->
+      <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.08);border:1px solid rgba(192,192,200,0.3);border-radius:20px;padding:6px 16px;margin-bottom:18px;">
+        <span style="font-size:11px;color:#FFD700;letter-spacing:1px;">⭐⭐⭐⭐</span>
+        <span style="font-size:11px;font-weight:900;color:#C0C0C8;font-family:'Noto Serif KR',serif;">88</span>
+        <span style="font-size:8px;color:#C0C0C8;opacity:0.5;">|</span>
+        <span style="font-size:11px;font-weight:900;color:#c92a2a;font-family:'Noto Serif KR',serif;">A</span>
+        <span style="font-size:8px;color:#C0C0C8;opacity:0.5;">|</span>
+        <span style="font-size:11px;font-weight:900;color:#FFD700;font-family:'Noto Serif KR',serif;">상위 15%</span>
+      </div>
+
+      <!-- 관상 카드 이미지 자리 -->
+      <div style="position:relative;width:100%;max-width:280px;aspect-ratio:1/1;margin:0 auto 16px;">
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:260px;height:260px;background:radial-gradient(circle,rgba(192,192,200,0.4),transparent 60%);border-radius:50%;"></div>
+        <!-- /gwansang-cards/gwansang (1).png -->
+        <div style="position:relative;width:100%;aspect-ratio:1/1;background:rgba(255,255,255,0.05);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:80px;">🔮</div>
+      </div>
+
+      <div style="font-size:9px;color:#C0C0C8;letter-spacing:2px;margin-bottom:10px;font-weight:600;">— THIS PERSON IS —</div>
+      <div style="font-family:'Noto Serif KR','Batang',serif;font-size:24px;font-weight:900;color:#E8E8EC;line-height:1.35;letter-spacing:-0.5px;text-shadow:0 2px 8px rgba(192,192,200,0.4);margin-bottom:10px;">"황금손 미다스"</div>
+
+      <div style="font-size:12px;color:#E8E8EC;line-height:2;text-align:center;padding:0 12px;margin-bottom:18px;word-break:keep-all;opacity:0.9;">
+        홍길동님은 천기가 인증한 귀한 황금손 미다스의 기운을 타고난 A등급 관상이에요. 대한민국 상위 15%에 해당하는 이 귀한 얼굴은 어디를 가든 빛나는 매력으로 사람들의 마음을 사로잡고, 평생 인복과 기회를 끌어모으는 운명적인 관상입니다.
+      </div>
+
+      <!-- 태그 chips -->
+      <div style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-bottom:22px;">
+        <span style="font-size:10px;font-weight:800;color:#C0C0C8;background:rgba(255,255,255,0.08);border:1px solid rgba(192,192,200,0.3);padding:4px 8px;border-radius:20px;">#귀상</span>
+        <span style="font-size:10px;font-weight:800;color:#C0C0C8;background:rgba(255,255,255,0.08);border:1px solid rgba(192,192,200,0.3);padding:4px 8px;border-radius:20px;">#대운</span>
+        <span style="font-size:10px;font-weight:800;color:#C0C0C8;background:rgba(255,255,255,0.08);border:1px solid rgba(192,192,200,0.3);padding:4px 8px;border-radius:20px;">#인복</span>
+        <span style="font-size:10px;font-weight:800;color:#C0C0C8;background:rgba(255,255,255,0.08);border:1px solid rgba(192,192,200,0.3);padding:4px 8px;border-radius:20px;">#총명</span>
+      </div>
+
+      <!-- 도장 -->
+      <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:14px;">
+        <div style="height:1px;flex:1;max-width:80px;background:#C0C0C8;opacity:0.4;"></div>
+        <div style="width:42px;height:42px;border:2px solid #c92a2a;border-radius:6px;display:flex;align-items:center;justify-content:center;background:#fff5f5;transform:rotate(-4deg);box-shadow:0 2px 6px rgba(201,42,42,0.15);">
+          <div style="text-align:center;">
+            <div style="font-size:6px;color:#c92a2a;font-weight:700;line-height:1;">天機</div>
+            <div style="font-size:10px;font-weight:900;color:#c92a2a;line-height:1;margin-top:2px;">認證</div>
+          </div>
+        </div>
+        <div style="height:1px;flex:1;max-width:80px;background:#C0C0C8;opacity:0.4;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 광고배너 2x2 -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(212,175,55,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">📸</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">관상짤 만들기</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">관상짤 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(199,21,133,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">🏛️</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">조선초상화</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">조선초상화 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(95,196,158,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">🍼</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">우리 아기 관상</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">우리아기관상 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(155,143,212,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">🐕</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">댕댕상</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">댕댕상 →</div>
+  </div>
+</div>
+
+<!-- ─── 에러 카드 케이스 (isError=true / type_id=21 인간계이탈상) ─── -->
+<!-- 에러 outer: border:1px solid #eaeaea (NOT gold), bg white, borderRadius:24, boxShadow:0 10px 30px rgba(0,0,0,0.15) -->
+<!-- 코드 10808~10839행 -->
+<div style="background:#ffffff;border-radius:24px;overflow:hidden;border:1px solid #eaeaea;box-shadow:0 10px 30px rgba(0,0,0,0.15);margin-bottom:16px;">
+  <!-- ERROR 헤더: linear-gradient(135deg,#fff5f5,#fef2f2) -->
+  <div style="background:linear-gradient(135deg,#fff5f5,#fef2f2);padding:16px;text-align:center;border-bottom:1px solid #fecaca;">
+    <div style="font-size:10px;font-weight:800;color:#dc2626;letter-spacing:3px;margin-bottom:4px;">⚠️ ERROR!! ERROR!!</div>
+    <div style="font-size:14px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;">관상 분석 중 이상한 기운이 감지되었어요</div>
+  </div>
+
+  <!-- 에러 일러스트: linear-gradient(135deg,#fdfbfb,#ebedee) -->
+  <div style="background:linear-gradient(135deg,#fdfbfb,#ebedee);padding:20px;text-align:center;">
+    <!-- 실제 코드: img src=/gwansang-cards/gwansang (21).png (에러 전용, 도감 1~20 제외) -->
+    <div style="width:65%;margin:0 auto;aspect-ratio:3/4;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.12);">
+      <img src="/gwansang-cards/gwansang (21).png" alt="에러 이미지" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.parentElement.style.background='linear-gradient(135deg,#eee,#ddd)';this.style.display='none'"/>
+    </div>
+    <!-- 관상 이름 + 한줄 코멘트 -->
+    <div style="margin-top:14px;">
+      <div style="font-size:20px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;margin-bottom:6px;">🐾 인간계 이탈상</div>
+      <div style="font-size:12px;color:#555;line-height:1.7;font-style:italic;word-break:keep-all;">"🐾 혹시... 상대방이 츄르 좋아해? 인간이 아니잖아!"</div>
+    </div>
+  </div>
+
+  <!-- 가이드 박스: bg:#f8f9fa -->
+  <div style="padding:16px;">
+    <div style="background:#f8f9fa;border-radius:12px;padding:14px;border-left:4px solid #dc2626;">
+      <div style="font-size:10px;font-weight:700;color:#dc2626;margin-bottom:6px;letter-spacing:1px;">⚠️ 에러 안내</div>
+      <div style="font-size:12px;color:#555;line-height:1.75;word-break:keep-all;">업로드하신 사진에서 사람 얼굴을 찾지 못했어요. 정면을 바라보는 사진으로 다시 시도해주세요. 강아지·고양이·캐릭터 등 인물이 아닌 경우 분석이 어려워요.</div>
+    </div>
+    <!-- hash footer (gray, NOT gold) -->
+    <div class="hash-footer">
+      <span>#천기관상 #내관상보기 #인간계이탈상</span>
+      <span style="font-weight:600;">🌐 천기.kr</span>
+    </div>
+  </div>
+</div>
+
+<!-- ResultActions -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+  <button style="padding:12px;background:#f8f9fa;border:1px solid #eee;border-radius:12px;font-size:12px;font-weight:700;color:#333;cursor:pointer;">📸 이미지 저장</button>
+  <button style="padding:12px;background:#f8f9fa;border:1px solid #eee;border-radius:12px;font-size:12px;font-weight:700;color:#333;cursor:pointer;">🔗 공유하기</button>
+</div>
+
+<!-- 버튼 -->
+<button style="width:100%;padding:14px;background:#D4AF37;color:#1A3C32;border:none;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;">확인 완료</button>
+
+</div>
+
+
+
+<!-- ═══ 전체 20종 관상 타입 도감 ═══ -->
+<div style="background:#f8f9fa;border-radius:16px;padding:16px;margin-top:16px;border:1px solid rgba(212,175,55,0.3);">
+  <div style="font-size:13px;font-weight:900;color:#1A3C32;text-align:center;margin-bottom:4px;">🎭 전체 20종 관상 타입 도감</div>
+  <div style="font-size:10px;color:#888;text-align:center;margin-bottom:14px;">[내관상보기] 결과카드 스캔 이미지 + 타입 표기</div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid rgba(212,175,55,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <!-- 타입 헤더 -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;">
+      <div style="background:#D4AF37;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.01</div>
+      <div>
+        <div style="font-size:13px;font-weight:900;color:#1A3C32;">💸 황금손 미다스상</div>
+        <div style="font-size:10px;color:#888;">로또 사지 마, 이 사람이 로또니까</div>
+      </div>
+    </div>
+    <!-- 이미지 + 세션 내용 -->
+    <div style="display:flex;gap:10px;margin-bottom:10px;">
+      <div style="flex-shrink:0;text-align:center;">
+        <div style="background:#fafafa;border-radius:10px;padding:6px;border:1px solid rgba(212,175,55,0.2);">
+          <img src="/gwansang-cards/gwansang (1).png" alt="황금손 미다스상" style="width:80px;height:80px;object-fit:contain;display:block;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:9px;color:#D4AF37;font-weight:700;margin-top:4px;">gwansang-cards</div>
+        <div style="font-size:8px;color:#aaa;">No.1.png</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#D4AF37;font-weight:700;">💰</span> 홍길동님은 코 끝이 옹골차서 재물운이 꽉 차 있어. 일단 벌어들이는 에너지가 남달라서 굶어 죽을 걱정은 1도...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#e03131;font-weight:700;">❤️</span> 홍길동님은 눈가에 여유가 철철 흘러서 돈 냄새 때문에 주변에 사람이 꼬이겠지만, 내 사람이다 싶으면 재력으로...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#4263eb;font-weight:700;">🧠</span> 홍길동님은 미간이 딱 모아져 있어서 계획에 어긋나면 잠 못 자는 완벽주의자야. 그 덕분에 돈이 안 새는 거니...</div>
+      </div>
+    </div>
+    <!-- 찰떡/안맞는 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f0fff4;border-radius:8px;padding:6px;border:1px solid #b2f2bb;font-size:9px;text-align:center;">
+        <div style="color:#2f9e44;font-weight:700;margin-bottom:2px;">💚 베스트 매칭</div>
+        <img src="/gwansang-cards/gwansang (5).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">🦊 유죄인간 폭스상</div>
+      </div>
+      <div style="background:#fff5f5;border-radius:8px;padding:6px;border:1px solid #ffc9c9;font-size:9px;text-align:center;">
+        <div style="color:#c92a2a;font-weight:700;margin-bottom:2px;">⚡ 최악 매칭</div>
+        <img src="/gwansang-cards/gwansang (11).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">🚀 알빠노 마이웨이상</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid rgba(212,175,55,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <!-- 타입 헤더 -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;">
+      <div style="background:#D4AF37;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.02</div>
+      <div>
+        <div style="font-size:13px;font-weight:900;color:#1A3C32;">🤑 강남 건물주상</div>
+        <div style="font-size:10px;color:#888;">앉아만 있어도 강남 건물주 각 뚫린 상</div>
+      </div>
+    </div>
+    <!-- 이미지 + 세션 내용 -->
+    <div style="display:flex;gap:10px;margin-bottom:10px;">
+      <div style="flex-shrink:0;text-align:center;">
+        <div style="background:#fafafa;border-radius:10px;padding:6px;border:1px solid rgba(212,175,55,0.2);">
+          <img src="/gwansang-cards/gwansang (2).png" alt="강남 건물주상" style="width:80px;height:80px;object-fit:contain;display:block;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:9px;color:#D4AF37;font-weight:700;margin-top:4px;">gwansang-cards</div>
+        <div style="font-size:8px;color:#aaa;">No.2.png</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#D4AF37;font-weight:700;">💰</span> 홍길동님은 콧대가 시원하게 뻗어서 빈손으로 시작해도 결국 강남 건물주 각이야. 기회 포착하는 코가 발달해서 ...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#e03131;font-weight:700;">❤️</span> 홍길동님은 눈꼬리가 자연스럽게 올라가서 영앤리치 바이브가 철철 넘쳐서 "오, 좀 사나 본데?" 하고 이성이 ...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#4263eb;font-weight:700;">🧠</span> 홍길동님은 눈매가 느긋해 보이는데 세월아 네월아~ 사실 머릿속에선 계산 끝났어. 타이밍 노리는 사냥꾼이라 방...</div>
+      </div>
+    </div>
+    <!-- 찰떡/안맞는 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f0fff4;border-radius:8px;padding:6px;border:1px solid #b2f2bb;font-size:9px;text-align:center;">
+        <div style="color:#2f9e44;font-weight:700;margin-bottom:2px;">💚 베스트 매칭</div>
+        <img src="/gwansang-cards/gwansang (6).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">✨ 얼굴 천재 프리패스상</div>
+      </div>
+      <div style="background:#fff5f5;border-radius:8px;padding:6px;border:1px solid #ffc9c9;font-size:9px;text-align:center;">
+        <div style="color:#c92a2a;font-weight:700;margin-bottom:2px;">⚡ 최악 매칭</div>
+        <img src="/gwansang-cards/gwansang (3).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">🛡️ 지갑 수호신상</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid rgba(212,175,55,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <!-- 타입 헤더 -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;">
+      <div style="background:#D4AF37;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.03</div>
+      <div>
+        <div style="font-size:13px;font-weight:900;color:#1A3C32;">🛡️ 지갑 수호신상</div>
+        <div style="font-size:10px;color:#888;">무지출 챌린지가 숨 쉬는 것보다 쉬운 타입</div>
+      </div>
+    </div>
+    <!-- 이미지 + 세션 내용 -->
+    <div style="display:flex;gap:10px;margin-bottom:10px;">
+      <div style="flex-shrink:0;text-align:center;">
+        <div style="background:#fafafa;border-radius:10px;padding:6px;border:1px solid rgba(212,175,55,0.2);">
+          <img src="/gwansang-cards/gwansang (3).png" alt="지갑 수호신상" style="width:80px;height:80px;object-fit:contain;display:block;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:9px;color:#D4AF37;font-weight:700;margin-top:4px;">gwansang-cards</div>
+        <div style="font-size:8px;color:#aaa;">No.3.png</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#D4AF37;font-weight:700;">💰</span> 홍길동님은 입술이 얇고 야무져서 충동구매? 그게 뭔데. 티끌 모아 빌딩 세울 상이야. 이 사람 옆에 있으면 ...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#e03131;font-weight:700;">❤️</span> 홍길동님은 눈매가 살짝 내려와서 가성비 데이트의 달인. 기념일엔 쿠폰 신공 발휘할 스타일이야. 가끔은 네가 ...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#4263eb;font-weight:700;">🧠</span> 홍길동님은 미간에 살짝 힘이 들어가 있어서 지갑 수호신 그 자체. 10원 단위까지 엑셀로 정리해야 직성이 풀...</div>
+      </div>
+    </div>
+    <!-- 찰떡/안맞는 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f0fff4;border-radius:8px;padding:6px;border:1px solid #b2f2bb;font-size:9px;text-align:center;">
+        <div style="color:#2f9e44;font-weight:700;margin-bottom:2px;">💚 베스트 매칭</div>
+        <img src="/gwansang-cards/gwansang (7).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">💻 워커홀릭 갓생러상</div>
+      </div>
+      <div style="background:#fff5f5;border-radius:8px;padding:6px;border:1px solid #ffc9c9;font-size:9px;text-align:center;">
+        <div style="color:#c92a2a;font-weight:700;margin-bottom:2px;">⚡ 최악 매칭</div>
+        <img src="/gwansang-cards/gwansang (4).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">💳 도파민 플렉서상</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid rgba(212,175,55,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <!-- 타입 헤더 -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;">
+      <div style="background:#D4AF37;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.04</div>
+      <div>
+        <div style="font-size:13px;font-weight:900;color:#1A3C32;">💳 도파민 플렉서상</div>
+        <div style="font-size:10px;color:#888;">통장은 그냥 잠깐 거쳐 가는 정거장일 뿐</div>
+      </div>
+    </div>
+    <!-- 이미지 + 세션 내용 -->
+    <div style="display:flex;gap:10px;margin-bottom:10px;">
+      <div style="flex-shrink:0;text-align:center;">
+        <div style="background:#fafafa;border-radius:10px;padding:6px;border:1px solid rgba(212,175,55,0.2);">
+          <img src="/gwansang-cards/gwansang (4).png" alt="도파민 플렉서상" style="width:80px;height:80px;object-fit:contain;display:block;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:9px;color:#D4AF37;font-weight:700;margin-top:4px;">gwansang-cards</div>
+        <div style="font-size:8px;color:#aaa;">No.4.png</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#D4AF37;font-weight:700;">💰</span> 홍길동님은 눈썹이 화려하게 뻗어서 들어올 땐 폭포수, 나갈 땐 썰물. 돈 복은 확실히 타고났는데 쇼핑 앱 알...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#e03131;font-weight:700;">❤️</span> 홍길동님은 입매가 시원시원해서 도파민 중독 플러팅 장인이야. 데이트 한 번을 해도 레전드를 찍어야 직성이 풀...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#4263eb;font-weight:700;">🧠</span> 홍길동님은 눈빛이 반짝반짝 살아있어서 인생 뭐 있어? 즐겨! 우울할 틈이 없는 오늘만 사는 베짱이 기질이야....</div>
+      </div>
+    </div>
+    <!-- 찰떡/안맞는 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f0fff4;border-radius:8px;padding:6px;border:1px solid #b2f2bb;font-size:9px;text-align:center;">
+        <div style="color:#2f9e44;font-weight:700;margin-bottom:2px;">💚 베스트 매칭</div>
+        <img src="/gwansang-cards/gwansang (8).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">🫶 순도 100% 진국상</div>
+      </div>
+      <div style="background:#fff5f5;border-radius:8px;padding:6px;border:1px solid #ffc9c9;font-size:9px;text-align:center;">
+        <div style="color:#c92a2a;font-weight:700;margin-bottom:2px;">⚡ 최악 매칭</div>
+        <img src="/gwansang-cards/gwansang (14).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">🔬 디테일 변태 장인상</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid rgba(212,175,55,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <!-- 타입 헤더 -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;">
+      <div style="background:#D4AF37;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.05</div>
+      <div>
+        <div style="font-size:13px;font-weight:900;color:#1A3C32;">🦊 유죄인간 폭스상</div>
+        <div style="font-size:10px;color:#888;">도화살 농도가 치사량 수준</div>
+      </div>
+    </div>
+    <!-- 이미지 + 세션 내용 -->
+    <div style="display:flex;gap:10px;margin-bottom:10px;">
+      <div style="flex-shrink:0;text-align:center;">
+        <div style="background:#fafafa;border-radius:10px;padding:6px;border:1px solid rgba(212,175,55,0.2);">
+          <img src="/gwansang-cards/gwansang (5).png" alt="유죄인간 폭스상" style="width:80px;height:80px;object-fit:contain;display:block;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:9px;color:#D4AF37;font-weight:700;margin-top:4px;">gwansang-cards</div>
+        <div style="font-size:8px;color:#aaa;">No.5.png</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#D4AF37;font-weight:700;">💰</span> 홍길동님은 눈꼬리가 길게 뻗어서 인복이 곧 재물운이야. 주변에서 도와주겠다는 사람이 줄을 서서 굶을 일은 절...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#e03131;font-weight:700;">❤️</span> 홍길동님은 젖은 듯한 눈망울이 사람을 홀려서 숨만 쉬어도 플러팅이 돼. 본인은 몰라도 주변 사람들은 다 가슴...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#4263eb;font-weight:700;">🧠</span> 홍길동님은 눈웃음이 살인적이라 상대방 마음을 귀신같이 읽어내서 리액션해 줘. 공감 능력 만렙이라 안 좋아할 ...</div>
+      </div>
+    </div>
+    <!-- 찰떡/안맞는 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f0fff4;border-radius:8px;padding:6px;border:1px solid #b2f2bb;font-size:9px;text-align:center;">
+        <div style="color:#2f9e44;font-weight:700;margin-bottom:2px;">💚 베스트 매칭</div>
+        <img src="/gwansang-cards/gwansang (1).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">💸 황금손 미다스상</div>
+      </div>
+      <div style="background:#fff5f5;border-radius:8px;padding:6px;border:1px solid #ffc9c9;font-size:9px;text-align:center;">
+        <div style="color:#c92a2a;font-weight:700;margin-bottom:2px;">⚡ 최악 매칭</div>
+        <img src="/gwansang-cards/gwansang (20).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">😐 겉바속촉 츤데레상</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid rgba(212,175,55,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <!-- 타입 헤더 -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;">
+      <div style="background:#D4AF37;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.06</div>
+      <div>
+        <div style="font-size:13px;font-weight:900;color:#1A3C32;">✨ 얼굴 천재 프리패스상</div>
+        <div style="font-size:10px;color:#888;">소개팅 나가면 애프터 200%</div>
+      </div>
+    </div>
+    <!-- 이미지 + 세션 내용 -->
+    <div style="display:flex;gap:10px;margin-bottom:10px;">
+      <div style="flex-shrink:0;text-align:center;">
+        <div style="background:#fafafa;border-radius:10px;padding:6px;border:1px solid rgba(212,175,55,0.2);">
+          <img src="/gwansang-cards/gwansang (6).png" alt="얼굴 천재 프리패스상" style="width:80px;height:80px;object-fit:contain;display:block;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:9px;color:#D4AF37;font-weight:700;margin-top:4px;">gwansang-cards</div>
+        <div style="font-size:8px;color:#aaa;">No.6.png</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#D4AF37;font-weight:700;">💰</span> 홍길동님은 이목구비 밸런스가 황금비율이라 첫인상이 너무 좋아서 비즈니스 미팅에서 성사율이 엄청날 거야. 성공...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#e03131;font-weight:700;">❤️</span> 홍길동님은 맑은 눈망울이 첫인상을 지배해서 이 사람이 먼저 말 걸면 웬만한 사람들은 다 무장해제 될걸? 네가...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#4263eb;font-weight:700;">🧠</span> 홍길동님은 정갈한 콧날에서 자신감이 뿜어져 나와서 외모에서 오는 자신감이 대단해. 구김살 없이 밝은 성격이라...</div>
+      </div>
+    </div>
+    <!-- 찰떡/안맞는 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f0fff4;border-radius:8px;padding:6px;border:1px solid #b2f2bb;font-size:9px;text-align:center;">
+        <div style="color:#2f9e44;font-weight:700;margin-bottom:2px;">💚 베스트 매칭</div>
+        <img src="/gwansang-cards/gwansang (2).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">🤑 강남 건물주상</div>
+      </div>
+      <div style="background:#fff5f5;border-radius:8px;padding:6px;border:1px solid #ffc9c9;font-size:9px;text-align:center;">
+        <div style="color:#c92a2a;font-weight:700;margin-bottom:2px;">⚡ 최악 매칭</div>
+        <img src="/gwansang-cards/gwansang (11).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">🚀 알빠노 마이웨이상</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid rgba(212,175,55,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <!-- 타입 헤더 -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;">
+      <div style="background:#D4AF37;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.07</div>
+      <div>
+        <div style="font-size:13px;font-weight:900;color:#1A3C32;">💻 워커홀릭 갓생러상</div>
+        <div style="font-size:10px;color:#888;">일할 때 섹시함 한도 초과. 뇌섹미 폭발</div>
+      </div>
+    </div>
+    <!-- 이미지 + 세션 내용 -->
+    <div style="display:flex;gap:10px;margin-bottom:10px;">
+      <div style="flex-shrink:0;text-align:center;">
+        <div style="background:#fafafa;border-radius:10px;padding:6px;border:1px solid rgba(212,175,55,0.2);">
+          <img src="/gwansang-cards/gwansang (7).png" alt="워커홀릭 갓생러상" style="width:80px;height:80px;object-fit:contain;display:block;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:9px;color:#D4AF37;font-weight:700;margin-top:4px;">gwansang-cards</div>
+        <div style="font-size:8px;color:#aaa;">No.7.png</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#D4AF37;font-weight:700;">💰</span> 홍길동님은 미간이 뚜렷해서 집중력이 돈으로 바뀌는 타입이야. 노는 시간 아까워서 일만 하다 보니 통장 잔고는...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#e03131;font-weight:700;">❤️</span> 홍길동님은 예리한 눈빛 때문에 데이트 중에 업무 메일 확인해도 놀라지 마. 이 사람에겐 일이 곧 생존이고 사...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#4263eb;font-weight:700;">🧠</span> 홍길동님은 이마에 지적인 기운이 흘러서 감성적인 위로보다는 현실적인 해결책을 주는 타입이야. 팩폭 조심해!...</div>
+      </div>
+    </div>
+    <!-- 찰떡/안맞는 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f0fff4;border-radius:8px;padding:6px;border:1px solid #b2f2bb;font-size:9px;text-align:center;">
+        <div style="color:#2f9e44;font-weight:700;margin-bottom:2px;">💚 베스트 매칭</div>
+        <img src="/gwansang-cards/gwansang (3).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">🛡️ 지갑 수호신상</div>
+      </div>
+      <div style="background:#fff5f5;border-radius:8px;padding:6px;border:1px solid #ffc9c9;font-size:9px;text-align:center;">
+        <div style="color:#c92a2a;font-weight:700;margin-bottom:2px;">⚡ 최악 매칭</div>
+        <img src="/gwansang-cards/gwansang (15).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">🎨 미친 감성 아티스트상</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid rgba(212,175,55,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <!-- 타입 헤더 -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;">
+      <div style="background:#D4AF37;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.08</div>
+      <div>
+        <div style="font-size:13px;font-weight:900;color:#1A3C32;">🫶 순도 100% 진국상</div>
+        <div style="font-size:10px;color:#888;">한번 정 주면 간 쓸개 다 빼줌</div>
+      </div>
+    </div>
+    <!-- 이미지 + 세션 내용 -->
+    <div style="display:flex;gap:10px;margin-bottom:10px;">
+      <div style="flex-shrink:0;text-align:center;">
+        <div style="background:#fafafa;border-radius:10px;padding:6px;border:1px solid rgba(212,175,55,0.2);">
+          <img src="/gwansang-cards/gwansang (8).png" alt="순도 100% 진국상" style="width:80px;height:80px;object-fit:contain;display:block;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:9px;color:#D4AF37;font-weight:700;margin-top:4px;">gwansang-cards</div>
+        <div style="font-size:8px;color:#aaa;">No.8.png</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#D4AF37;font-weight:700;">💰</span> 홍길동님은 둥글둥글한 턱선에서 복이 느껴져. 당장 큰돈은 안 보여도 주변 사람들이 맛있는 거 사주고 기회 물...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#e03131;font-weight:700;">❤️</span> 홍길동님은 처진 듯 선한 눈매가 밀당? 그게 뭐야? 좋으면 그냥 직진이고, 평생 너만 바라볼 인간 해바라기야...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#4263eb;font-weight:700;">🧠</span> 홍길동님은 입꼬리가 살짝 올라가 있어서 말투는 좀 투박해도 행동 하나하나에 다정함이 배어있어. 은근히 챙겨주...</div>
+      </div>
+    </div>
+    <!-- 찰떡/안맞는 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f0fff4;border-radius:8px;padding:6px;border:1px solid #b2f2bb;font-size:9px;text-align:center;">
+        <div style="color:#2f9e44;font-weight:700;margin-bottom:2px;">💚 베스트 매칭</div>
+        <img src="/gwansang-cards/gwansang (4).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">💳 도파민 플렉서상</div>
+      </div>
+      <div style="background:#fff5f5;border-radius:8px;padding:6px;border:1px solid #ffc9c9;font-size:9px;text-align:center;">
+        <div style="color:#c92a2a;font-weight:700;margin-bottom:2px;">⚡ 최악 매칭</div>
+        <img src="/gwansang-cards/gwansang (19).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">📱 인간 알고리즘상</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid rgba(212,175,55,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <!-- 타입 헤더 -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;">
+      <div style="background:#D4AF37;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.09</div>
+      <div>
+        <div style="font-size:13px;font-weight:900;color:#1A3C32;">📚 인간 챗GPT상</div>
+        <div style="font-size:10px;color:#888;">공부도 장비빨? 아니, 얜 그냥 뇌가 장비임</div>
+      </div>
+    </div>
+    <!-- 이미지 + 세션 내용 -->
+    <div style="display:flex;gap:10px;margin-bottom:10px;">
+      <div style="flex-shrink:0;text-align:center;">
+        <div style="background:#fafafa;border-radius:10px;padding:6px;border:1px solid rgba(212,175,55,0.2);">
+          <img src="/gwansang-cards/gwansang (9).png" alt="인간 챗GPT상" style="width:80px;height:80px;object-fit:contain;display:block;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:9px;color:#D4AF37;font-weight:700;margin-top:4px;">gwansang-cards</div>
+        <div style="font-size:8px;color:#aaa;">No.9.png</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#D4AF37;font-weight:700;">💰</span> 홍길동님은 이마가 광활해서 지식이 곧 현금이야. 몸으로 때우기보다 머리 써서 돈 버는 스타일이야. 주식 차트...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#e03131;font-weight:700;">❤️</span> 홍길동님은 반짝이는 눈동자로 네가 뭘 좋아하는지 MBTI부터 취향까지 싹 다 분석해서 공략할 거야. 좀 인위...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#4263eb;font-weight:700;">🧠</span> 홍길동님은 미간이 넓어서 논리적 사고 회로가 돌아가고 말싸움하면 절대 못 이겨. 감성보다는 논리가 앞서는 타...</div>
+      </div>
+    </div>
+    <!-- 찰떡/안맞는 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f0fff4;border-radius:8px;padding:6px;border:1px solid #b2f2bb;font-size:9px;text-align:center;">
+        <div style="color:#2f9e44;font-weight:700;margin-bottom:2px;">💚 베스트 매칭</div>
+        <img src="/gwansang-cards/gwansang (14).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">🔬 디테일 변태 장인상</div>
+      </div>
+      <div style="background:#fff5f5;border-radius:8px;padding:6px;border:1px solid #ffc9c9;font-size:9px;text-align:center;">
+        <div style="color:#c92a2a;font-weight:700;margin-bottom:2px;">⚡ 최악 매칭</div>
+        <img src="/gwansang-cards/gwansang (17).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">🍜 쩝쩝 박사 먹방러상</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid rgba(212,175,55,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <!-- 타입 헤더 -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;">
+      <div style="background:#D4AF37;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.10</div>
+      <div>
+        <div style="font-size:13px;font-weight:900;color:#1A3C32;">👑 갓벽한 대장상</div>
+        <div style="font-size:10px;color:#888;">가만히 있어도 애들이 알아서 모이는 알파 기질</div>
+      </div>
+    </div>
+    <!-- 이미지 + 세션 내용 -->
+    <div style="display:flex;gap:10px;margin-bottom:10px;">
+      <div style="flex-shrink:0;text-align:center;">
+        <div style="background:#fafafa;border-radius:10px;padding:6px;border:1px solid rgba(212,175,55,0.2);">
+          <img src="/gwansang-cards/gwansang (10).png" alt="갓벽한 대장상" style="width:80px;height:80px;object-fit:contain;display:block;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:9px;color:#D4AF37;font-weight:700;margin-top:4px;">gwansang-cards</div>
+        <div style="font-size:8px;color:#aaa;">No.10.png</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#D4AF37;font-weight:700;">💰</span> 홍길동님은 턱선이 단단해서 크게 벌고 크게 쓰는 통 큰 사람이야. 혼자 벌기보다 판 짜서 크게 먹는 스타일이...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#e03131;font-weight:700;">❤️</span> 홍길동님은 위엄 있는 눈썹 라인이 듬직함 원탑! 너를 지켜줘야 할 대상으로 생각하고 든든하게 울타리가 되어줄...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#4263eb;font-weight:700;">🧠</span> 홍길동님은 이마가 넓고 당당해서 책임감 과다인 보스 마인드가 강해. 내 사람들은 내가 챙긴다는 마인드라 가끔...</div>
+      </div>
+    </div>
+    <!-- 찰떡/안맞는 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f0fff4;border-radius:8px;padding:6px;border:1px solid #b2f2bb;font-size:9px;text-align:center;">
+        <div style="color:#2f9e44;font-weight:700;margin-bottom:2px;">💚 베스트 매칭</div>
+        <img src="/gwansang-cards/gwansang (13).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">💼 영앤리치 예비 CEO상</div>
+      </div>
+      <div style="background:#fff5f5;border-radius:8px;padding:6px;border:1px solid #ffc9c9;font-size:9px;text-align:center;">
+        <div style="color:#c92a2a;font-weight:700;margin-bottom:2px;">⚡ 최악 매칭</div>
+        <img src="/gwansang-cards/gwansang (11).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">🚀 알빠노 마이웨이상</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid rgba(212,175,55,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <!-- 타입 헤더 -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;">
+      <div style="background:#D4AF37;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.11</div>
+      <div>
+        <div style="font-size:13px;font-weight:900;color:#1A3C32;">🚀 알빠노 마이웨이상</div>
+        <div style="font-size:10px;color:#888;">한번 꽂히면 지구 끝까지 가는 직진남/녀</div>
+      </div>
+    </div>
+    <!-- 이미지 + 세션 내용 -->
+    <div style="display:flex;gap:10px;margin-bottom:10px;">
+      <div style="flex-shrink:0;text-align:center;">
+        <div style="background:#fafafa;border-radius:10px;padding:6px;border:1px solid rgba(212,175,55,0.2);">
+          <img src="/gwansang-cards/gwansang (11).png" alt="알빠노 마이웨이상" style="width:80px;height:80px;object-fit:contain;display:block;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:9px;color:#D4AF37;font-weight:700;margin-top:4px;">gwansang-cards</div>
+        <div style="font-size:8px;color:#aaa;">No.11.png</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#D4AF37;font-weight:700;">💰</span> 홍길동님은 미간에 강한 주름이 잡혀서 존버 기질이 보여. 남들 다 팔고 떠날 때 혼자 끝까지 버텨서 결국 떡...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#e03131;font-weight:700;">❤️</span> 홍길동님은 저돌적인 눈매가 한 번 너한테 꽂히면 세상이 두 쪽 나도 너만 좋아할 거야. 밀당 따위는 사치라고...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#4263eb;font-weight:700;">🧠</span> 홍길동님은 눈빛이 강렬해서 남이 뭐라든 알빠노? 내 갈 길 간다는 마인드라 스트레스는 안 받겠지만 주변 사람...</div>
+      </div>
+    </div>
+    <!-- 찰떡/안맞는 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f0fff4;border-radius:8px;padding:6px;border:1px solid #b2f2bb;font-size:9px;text-align:center;">
+        <div style="color:#2f9e44;font-weight:700;margin-bottom:2px;">💚 베스트 매칭</div>
+        <img src="/gwansang-cards/gwansang (12).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">🪨 무해한 힐러상</div>
+      </div>
+      <div style="background:#fff5f5;border-radius:8px;padding:6px;border:1px solid #ffc9c9;font-size:9px;text-align:center;">
+        <div style="color:#c92a2a;font-weight:700;margin-bottom:2px;">⚡ 최악 매칭</div>
+        <img src="/gwansang-cards/gwansang (10).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">👑 갓벽한 대장상</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid rgba(212,175,55,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <!-- 타입 헤더 -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;">
+      <div style="background:#D4AF37;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.12</div>
+      <div>
+        <div style="font-size:13px;font-weight:900;color:#1A3C32;">🪨 무해한 힐러상</div>
+        <div style="font-size:10px;color:#888;">전 재산 맡겨도 안 도망갈 쌉진국 멘탈</div>
+      </div>
+    </div>
+    <!-- 이미지 + 세션 내용 -->
+    <div style="display:flex;gap:10px;margin-bottom:10px;">
+      <div style="flex-shrink:0;text-align:center;">
+        <div style="background:#fafafa;border-radius:10px;padding:6px;border:1px solid rgba(212,175,55,0.2);">
+          <img src="/gwansang-cards/gwansang (12).png" alt="무해한 힐러상" style="width:80px;height:80px;object-fit:contain;display:block;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:9px;color:#D4AF37;font-weight:700;margin-top:4px;">gwansang-cards</div>
+        <div style="font-size:8px;color:#aaa;">No.12.png</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#D4AF37;font-weight:700;">💰</span> 홍길동님은 선한 눈망울에서 복이 흘러. 화려한 투자는 안 해도 성실하게 모아서 나중에 보면 제일 부자 되어 ...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#e03131;font-weight:700;">❤️</span> 홍길동님은 부드러운 입술 라인이 첫 만남에 불꽃은 안 튀어도 갈수록 진국이라는 게 느껴질 거야. 너를 위해 ...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#4263eb;font-weight:700;">🧠</span> 홍길동님은 맑은 눈빛이 네 고민을 자기 일처럼 들어줄 거야. 멘탈이 건강해서 옆에 있는 사람까지 행복하게 만...</div>
+      </div>
+    </div>
+    <!-- 찰떡/안맞는 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f0fff4;border-radius:8px;padding:6px;border:1px solid #b2f2bb;font-size:9px;text-align:center;">
+        <div style="color:#2f9e44;font-weight:700;margin-bottom:2px;">💚 베스트 매칭</div>
+        <img src="/gwansang-cards/gwansang (11).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">🚀 알빠노 마이웨이상</div>
+      </div>
+      <div style="background:#fff5f5;border-radius:8px;padding:6px;border:1px solid #ffc9c9;font-size:9px;text-align:center;">
+        <div style="color:#c92a2a;font-weight:700;margin-bottom:2px;">⚡ 최악 매칭</div>
+        <img src="/gwansang-cards/gwansang (13).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">💼 영앤리치 예비 CEO상</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid rgba(212,175,55,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <!-- 타입 헤더 -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;">
+      <div style="background:#D4AF37;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.13</div>
+      <div>
+        <div style="font-size:13px;font-weight:900;color:#1A3C32;">💼 영앤리치 예비 CEO상</div>
+        <div style="font-size:10px;color:#888;">직장 상사랑 맨날 싸울 상. 이 사람이 사장 하면 돼</div>
+      </div>
+    </div>
+    <!-- 이미지 + 세션 내용 -->
+    <div style="display:flex;gap:10px;margin-bottom:10px;">
+      <div style="flex-shrink:0;text-align:center;">
+        <div style="background:#fafafa;border-radius:10px;padding:6px;border:1px solid rgba(212,175,55,0.2);">
+          <img src="/gwansang-cards/gwansang (13).png" alt="영앤리치 예비 CEO상" style="width:80px;height:80px;object-fit:contain;display:block;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:9px;color:#D4AF37;font-weight:700;margin-top:4px;">gwansang-cards</div>
+        <div style="font-size:8px;color:#aaa;">No.13.png</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#D4AF37;font-weight:700;">💰</span> 홍길동님은 날카로운 눈매에서 야심이 보여. 돈의 흐름을 읽는 감각이 타고났어. 월급쟁이로는 그 그릇을 다 못...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#e03131;font-weight:700;">❤️</span> 홍길동님은 시원한 콧날이 구속하는 순간 멀어질 거야. 서로의 성장을 응원하는 쿨한 연애를 선호하는 타입이지....</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#4263eb;font-weight:700;">🧠</span> 홍길동님은 눈빛에 불꽃이 타올라서 고민할 시간에 일단 저지르고 봐. 수습은 나중에 하더라도 실행력 하나는 세...</div>
+      </div>
+    </div>
+    <!-- 찰떡/안맞는 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f0fff4;border-radius:8px;padding:6px;border:1px solid #b2f2bb;font-size:9px;text-align:center;">
+        <div style="color:#2f9e44;font-weight:700;margin-bottom:2px;">💚 베스트 매칭</div>
+        <img src="/gwansang-cards/gwansang (10).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">👑 갓벽한 대장상</div>
+      </div>
+      <div style="background:#fff5f5;border-radius:8px;padding:6px;border:1px solid #ffc9c9;font-size:9px;text-align:center;">
+        <div style="color:#c92a2a;font-weight:700;margin-bottom:2px;">⚡ 최악 매칭</div>
+        <img src="/gwansang-cards/gwansang (7).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">💻 워커홀릭 갓생러상</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid rgba(212,175,55,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <!-- 타입 헤더 -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;">
+      <div style="background:#D4AF37;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.14</div>
+      <div>
+        <div style="font-size:13px;font-weight:900;color:#1A3C32;">🔬 디테일 변태 장인상</div>
+        <div style="font-size:10px;color:#888;">대충 하는 꼴을 못 봄. 피곤하지만 멋있어</div>
+      </div>
+    </div>
+    <!-- 이미지 + 세션 내용 -->
+    <div style="display:flex;gap:10px;margin-bottom:10px;">
+      <div style="flex-shrink:0;text-align:center;">
+        <div style="background:#fafafa;border-radius:10px;padding:6px;border:1px solid rgba(212,175,55,0.2);">
+          <img src="/gwansang-cards/gwansang (14).png" alt="디테일 변태 장인상" style="width:80px;height:80px;object-fit:contain;display:block;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:9px;color:#D4AF37;font-weight:700;margin-top:4px;">gwansang-cards</div>
+        <div style="font-size:8px;color:#aaa;">No.14.png</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#D4AF37;font-weight:700;">💰</span> 홍길동님은 예리한 눈매에서 전문성이 느껴져. 라이선스나 자기만의 기술로 돈을 쓸어 담을 관상이야. 늙어서도 ...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#e03131;font-weight:700;">❤️</span> 홍길동님은 정돈된 눈썹에서 연애도 공부하듯 성실하게 해. 기념일엔 뭘 해야 한다는 공식이 머릿속에 박혀 있는...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#4263eb;font-weight:700;">🧠</span> 홍길동님은 높은 이마가 분석력을 보여줘서 모든 걸 데이터화하고 분석해야 직성이 풀려. 좀 피곤하긴 하겠지만 ...</div>
+      </div>
+    </div>
+    <!-- 찰떡/안맞는 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f0fff4;border-radius:8px;padding:6px;border:1px solid #b2f2bb;font-size:9px;text-align:center;">
+        <div style="color:#2f9e44;font-weight:700;margin-bottom:2px;">💚 베스트 매칭</div>
+        <img src="/gwansang-cards/gwansang (9).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">📚 인간 챗GPT상</div>
+      </div>
+      <div style="background:#fff5f5;border-radius:8px;padding:6px;border:1px solid #ffc9c9;font-size:9px;text-align:center;">
+        <div style="color:#c92a2a;font-weight:700;margin-bottom:2px;">⚡ 최악 매칭</div>
+        <img src="/gwansang-cards/gwansang (16).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">✈️ 프로 역마살러상</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid rgba(212,175,55,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <!-- 타입 헤더 -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;">
+      <div style="background:#D4AF37;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.15</div>
+      <div>
+        <div style="font-size:13px;font-weight:900;color:#1A3C32;">🎨 미친 감성 아티스트상</div>
+        <div style="font-size:10px;color:#888;">숨겨진 덕후력 200%. 감성 터짐</div>
+      </div>
+    </div>
+    <!-- 이미지 + 세션 내용 -->
+    <div style="display:flex;gap:10px;margin-bottom:10px;">
+      <div style="flex-shrink:0;text-align:center;">
+        <div style="background:#fafafa;border-radius:10px;padding:6px;border:1px solid rgba(212,175,55,0.2);">
+          <img src="/gwansang-cards/gwansang (15).png" alt="미친 감성 아티스트상" style="width:80px;height:80px;object-fit:contain;display:block;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:9px;color:#D4AF37;font-weight:700;margin-top:4px;">gwansang-cards</div>
+        <div style="font-size:8px;color:#aaa;">No.15.png</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#D4AF37;font-weight:700;">💰</span> 홍길동님은 M자 이마에서 창의력이 터져. 창의적인 아이디어나 디자인, 글로 돈 벌 상이야. 한 번 터지면 저...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#e03131;font-weight:700;">❤️</span> 홍길동님은 깊고 사연 있어 보이는 눈매가 데이트 코스도 평범한 건 싫어해. 너를 위해 시를 쓰거나 노래를 만...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#4263eb;font-weight:700;">🧠</span> 홍길동님은 눈동자가 촉촉하고 섬세해서 상처도 잘 받지만, 그만큼 타인의 감정도 잘 어루만져줘. 가끔 혼자만의...</div>
+      </div>
+    </div>
+    <!-- 찰떡/안맞는 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f0fff4;border-radius:8px;padding:6px;border:1px solid #b2f2bb;font-size:9px;text-align:center;">
+        <div style="color:#2f9e44;font-weight:700;margin-bottom:2px;">💚 베스트 매칭</div>
+        <img src="/gwansang-cards/gwansang (20).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">😐 겉바속촉 츤데레상</div>
+      </div>
+      <div style="background:#fff5f5;border-radius:8px;padding:6px;border:1px solid #ffc9c9;font-size:9px;text-align:center;">
+        <div style="color:#c92a2a;font-weight:700;margin-bottom:2px;">⚡ 최악 매칭</div>
+        <img src="/gwansang-cards/gwansang (14).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">🔬 디테일 변태 장인상</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid rgba(212,175,55,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <!-- 타입 헤더 -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;">
+      <div style="background:#D4AF37;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.16</div>
+      <div>
+        <div style="font-size:13px;font-weight:900;color:#1A3C32;">✈️ 프로 역마살러상</div>
+        <div style="font-size:10px;color:#888;">낯선 공항 냄새 맡아야 생기가 도는 타입</div>
+      </div>
+    </div>
+    <!-- 이미지 + 세션 내용 -->
+    <div style="display:flex;gap:10px;margin-bottom:10px;">
+      <div style="flex-shrink:0;text-align:center;">
+        <div style="background:#fafafa;border-radius:10px;padding:6px;border:1px solid rgba(212,175,55,0.2);">
+          <img src="/gwansang-cards/gwansang (16).png" alt="프로 역마살러상" style="width:80px;height:80px;object-fit:contain;display:block;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:9px;color:#D4AF37;font-weight:700;margin-top:4px;">gwansang-cards</div>
+        <div style="font-size:8px;color:#aaa;">No.16.png</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#D4AF37;font-weight:700;">💰</span> 홍길동님은 살짝 들린 콧망울에서 역동적 에너지가 느껴져. 국내보다는 해외, 안보다는 밖으로 돌아다닐 때 돈이...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#e03131;font-weight:700;">❤️</span> 홍길동님은 호기심 가득한 반짝이는 눈이 여행지에서 운명의 상대를 만날 확률이 높아. 이 사람과 사귀면 평생 ...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#4263eb;font-weight:700;">🧠</span> 홍길동님은 입꼬리가 항상 살짝 올라가 있어서 낯선 환경에서도 당황하지 않고 즐겨. 적응력이 좋아서 사막에서도...</div>
+      </div>
+    </div>
+    <!-- 찰떡/안맞는 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f0fff4;border-radius:8px;padding:6px;border:1px solid #b2f2bb;font-size:9px;text-align:center;">
+        <div style="color:#2f9e44;font-weight:700;margin-bottom:2px;">💚 베스트 매칭</div>
+        <img src="/gwansang-cards/gwansang (15).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">🎨 미친 감성 아티스트상</div>
+      </div>
+      <div style="background:#fff5f5;border-radius:8px;padding:6px;border:1px solid #ffc9c9;font-size:9px;text-align:center;">
+        <div style="color:#c92a2a;font-weight:700;margin-bottom:2px;">⚡ 최악 매칭</div>
+        <img src="/gwansang-cards/gwansang (3).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">🛡️ 지갑 수호신상</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid rgba(212,175,55,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <!-- 타입 헤더 -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;">
+      <div style="background:#D4AF37;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.17</div>
+      <div>
+        <div style="font-size:13px;font-weight:900;color:#1A3C32;">🍜 쩝쩝 박사 먹방러상</div>
+        <div style="font-size:10px;color:#888;">오늘 뭐 먹을지가 인생 최대의 고민</div>
+      </div>
+    </div>
+    <!-- 이미지 + 세션 내용 -->
+    <div style="display:flex;gap:10px;margin-bottom:10px;">
+      <div style="flex-shrink:0;text-align:center;">
+        <div style="background:#fafafa;border-radius:10px;padding:6px;border:1px solid rgba(212,175,55,0.2);">
+          <img src="/gwansang-cards/gwansang (17).png" alt="쩝쩝 박사 먹방러상" style="width:80px;height:80px;object-fit:contain;display:block;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:9px;color:#D4AF37;font-weight:700;margin-top:4px;">gwansang-cards</div>
+        <div style="font-size:8px;color:#aaa;">No.17.png</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#D4AF37;font-weight:700;">💰</span> 홍길동님은 도톰한 입술에서 먹복이 철철 흘러. 돈 버는 족족 입으로 들어가지만, 그만큼 먹는 걸로 스트레스 ...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#e03131;font-weight:700;">❤️</span> 홍길동님은 실룩거리는 콧방울이 너한테 맛있는 거 먹여줄 때 제일 행복해할걸? 최고의 맛집 메이트가 되어줄 거...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#4263eb;font-weight:700;">🧠</span> 홍길동님은 볼이 복스러워서 배부르면 세상 친절하고, 배고프면 예민해져. 이 사람 다루는 법은 아주 쉬워, 맛...</div>
+      </div>
+    </div>
+    <!-- 찰떡/안맞는 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f0fff4;border-radius:8px;padding:6px;border:1px solid #b2f2bb;font-size:9px;text-align:center;">
+        <div style="color:#2f9e44;font-weight:700;margin-bottom:2px;">💚 베스트 매칭</div>
+        <img src="/gwansang-cards/gwansang (18).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">💳 럭키 비키상</div>
+      </div>
+      <div style="background:#fff5f5;border-radius:8px;padding:6px;border:1px solid #ffc9c9;font-size:9px;text-align:center;">
+        <div style="color:#c92a2a;font-weight:700;margin-bottom:2px;">⚡ 최악 매칭</div>
+        <img src="/gwansang-cards/gwansang (9).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">📚 인간 챗GPT상</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid rgba(212,175,55,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <!-- 타입 헤더 -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;">
+      <div style="background:#D4AF37;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.18</div>
+      <div>
+        <div style="font-size:13px;font-weight:900;color:#1A3C32;">💳 럭키 비키상</div>
+        <div style="font-size:10px;color:#888;">숨 쉬듯 챙김 받는 댕댕이 재질. 인복이 로또급</div>
+      </div>
+    </div>
+    <!-- 이미지 + 세션 내용 -->
+    <div style="display:flex;gap:10px;margin-bottom:10px;">
+      <div style="flex-shrink:0;text-align:center;">
+        <div style="background:#fafafa;border-radius:10px;padding:6px;border:1px solid rgba(212,175,55,0.2);">
+          <img src="/gwansang-cards/gwansang (18).png" alt="럭키 비키상" style="width:80px;height:80px;object-fit:contain;display:block;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:9px;color:#D4AF37;font-weight:700;margin-top:4px;">gwansang-cards</div>
+        <div style="font-size:8px;color:#aaa;">No.18.png</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#D4AF37;font-weight:700;">💰</span> 홍길동님은 처진 눈매에서 인복이 터져. 내 돈 안 써도 주변에서 선물 주고 밥 사주는 운이 좋아. 은근히 실...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#e03131;font-weight:700;">❤️</span> 홍길동님은 동그란 코 끝이 보호 본능을 자극해서 너도 모르게 이 사람 챙겨주게 될걸? 보호 본능 자극하는 댕...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#4263eb;font-weight:700;">🧠</span> 홍길동님은 눈웃음이 천진난만해서 거절 못 하고 방실방실 웃는 상이라 어딜 가나 예쁨 받아. 누구에게나 친절하...</div>
+      </div>
+    </div>
+    <!-- 찰떡/안맞는 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f0fff4;border-radius:8px;padding:6px;border:1px solid #b2f2bb;font-size:9px;text-align:center;">
+        <div style="color:#2f9e44;font-weight:700;margin-bottom:2px;">💚 베스트 매칭</div>
+        <img src="/gwansang-cards/gwansang (17).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">🍜 쩝쩝 박사 먹방러상</div>
+      </div>
+      <div style="background:#fff5f5;border-radius:8px;padding:6px;border:1px solid #ffc9c9;font-size:9px;text-align:center;">
+        <div style="color:#c92a2a;font-weight:700;margin-bottom:2px;">⚡ 최악 매칭</div>
+        <img src="/gwansang-cards/gwansang (7).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">💻 워커홀릭 갓생러상</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid rgba(212,175,55,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <!-- 타입 헤더 -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;">
+      <div style="background:#D4AF37;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.19</div>
+      <div>
+        <div style="font-size:13px;font-weight:900;color:#1A3C32;">📱 인간 알고리즘상</div>
+        <div style="font-size:10px;color:#888;">가만히 있어도 좋아요 1000개 박힐 상</div>
+      </div>
+    </div>
+    <!-- 이미지 + 세션 내용 -->
+    <div style="display:flex;gap:10px;margin-bottom:10px;">
+      <div style="flex-shrink:0;text-align:center;">
+        <div style="background:#fafafa;border-radius:10px;padding:6px;border:1px solid rgba(212,175,55,0.2);">
+          <img src="/gwansang-cards/gwansang (19).png" alt="인간 알고리즘상" style="width:80px;height:80px;object-fit:contain;display:block;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:9px;color:#D4AF37;font-weight:700;margin-top:4px;">gwansang-cards</div>
+        <div style="font-size:8px;color:#aaa;">No.19.png</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#D4AF37;font-weight:700;">💰</span> 홍길동님은 화려한 눈매에서 스타성이 느껴져. 얼굴 자체가 자본이야. 광고 협찬이나 공동 구매 등 트렌디한 방...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#e03131;font-weight:700;">❤️</span> 홍길동님은 날카로운 브이라인 턱선이 주변에 경쟁자가 너무 많아서 피곤할 수도 있어. 네가 이 사람의 원픽 콘...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#4263eb;font-weight:700;">🧠</span> 홍길동님은 눈빛에 자기확신이 넘쳐서 스스로가 예쁘고 멋진 걸 너무 잘 알아. 관심받아야 에너지가 충전되는 외...</div>
+      </div>
+    </div>
+    <!-- 찰떡/안맞는 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f0fff4;border-radius:8px;padding:6px;border:1px solid #b2f2bb;font-size:9px;text-align:center;">
+        <div style="color:#2f9e44;font-weight:700;margin-bottom:2px;">💚 베스트 매칭</div>
+        <img src="/gwansang-cards/gwansang (15).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">🎨 미친 감성 아티스트상</div>
+      </div>
+      <div style="background:#fff5f5;border-radius:8px;padding:6px;border:1px solid #ffc9c9;font-size:9px;text-align:center;">
+        <div style="color:#c92a2a;font-weight:700;margin-bottom:2px;">⚡ 최악 매칭</div>
+        <img src="/gwansang-cards/gwansang (20).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">😐 겉바속촉 츤데레상</div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid rgba(212,175,55,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <!-- 타입 헤더 -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;">
+      <div style="background:#D4AF37;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.20</div>
+      <div>
+        <div style="font-size:13px;font-weight:900;color:#1A3C32;">😐 겉바속촉 츤데레상</div>
+        <div style="font-size:10px;color:#888;">첫인상은 마라맛, 알고 보면 마시멜로</div>
+      </div>
+    </div>
+    <!-- 이미지 + 세션 내용 -->
+    <div style="display:flex;gap:10px;margin-bottom:10px;">
+      <div style="flex-shrink:0;text-align:center;">
+        <div style="background:#fafafa;border-radius:10px;padding:6px;border:1px solid rgba(212,175,55,0.2);">
+          <img src="/gwansang-cards/gwansang (20).png" alt="겉바속촉 츤데레상" style="width:80px;height:80px;object-fit:contain;display:block;" onerror="this.style.display='none'"/>
+        </div>
+        <div style="font-size:9px;color:#D4AF37;font-weight:700;margin-top:4px;">gwansang-cards</div>
+        <div style="font-size:8px;color:#aaa;">No.20.png</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#D4AF37;font-weight:700;">💰</span> 홍길동님은 야무지게 다물린 입술에서 알뜰함이 보여. 명품 입을 것 같지만 사실은 적금 5개씩 붓는 실속파야....</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#e03131;font-weight:700;">❤️</span> 홍길동님은 매서운 눈매 뒤에 숨은 눈웃음이 좋아하는 사람 앞에선 말 한마디 못 하고 뚝딱거려. 그 서툰 모습...</div>
+        <div style="font-size:10px;color:#333;line-height:1.6;margin-bottom:4px;"><span style="color:#4263eb;font-weight:700;">🧠</span> 홍길동님은 미간에 살짝 힘이 들어가 있어서 혼자만의 세계가 뚜렷해서 카페 구석에서 혼자 웃고 있을 수도 있어...</div>
+      </div>
+    </div>
+    <!-- 찰떡/안맞는 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#f0fff4;border-radius:8px;padding:6px;border:1px solid #b2f2bb;font-size:9px;text-align:center;">
+        <div style="color:#2f9e44;font-weight:700;margin-bottom:2px;">💚 베스트 매칭</div>
+        <img src="/gwansang-cards/gwansang (8).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">🫶 순도 100% 진국상</div>
+      </div>
+      <div style="background:#fff5f5;border-radius:8px;padding:6px;border:1px solid #ffc9c9;font-size:9px;text-align:center;">
+        <div style="color:#c92a2a;font-weight:700;margin-bottom:2px;">⚡ 최악 매칭</div>
+        <img src="/gwansang-cards/gwansang (5).png" style="width:32px;height:32px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/><div style="color:#1A3C32;font-weight:700;">🦊 유죄인간 폭스상</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

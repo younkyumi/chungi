@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>기질도 결과창 미리보기</title>
+<!--
+  출처: src/components/tests/Gijildo.jsx
+  - TYPES 데이터: 57~265행 (양천리강 57~70행, 양지리강 110~122행 등)
+  - AXIS_ORDER: 275행 ["기운","인식","판단","생활"]
+  - AXIS_PAIRS: 276행 {"기운":["양","음"],"인식":["천","지"],"판단":["리","정"],"생활":["강","유"]}
+  - AXIS_HANJA_SHORT: 277행 {"기운":"氣運(기운)","인식":"認識(인식)","판단":"判斷(판단)","생활":"生活(생활)"}
+  - result JSX 구조: 792~1040행
+  - 듀얼 캐릭터 카드: 812~832행
+  - 싱크로율+chip row: 835~843행
+  - 4축 상세 비교: 850~862행
+  - 마음의 파동: 865~878행
+  - 찰떡/상극 매칭: 881~898행
+  - 해시태그 푸터: 900~904행
+  - 탭 nav (그룹1/2): 909~925행
+  - 탭1 타고난 기질 (sData): 930~1041행
+    - 170px 이미지 + 인용구: 935~953행
+    - 오행 분포 SVG radar: 956~1007행 (fill:rgba(212,175,55,0.25), stroke:#D4AF37)
+    - 6섹션 회색박스강조: 1009~1022행 (buildSubTabs → 783~789행)
+  - 탭2 살아온 기질 (qData): 1044~1138행 (같은 구조, 4각형 SVG)
+  - 샘플 데이터:
+    - 타고난(사주): 양천리강(청룡,ENTJ,#5cccff) — match:음지정유, anti:양지리강
+    - 살아온(테스트): 양지리강(백호,ESTJ,#FFB74D) — match:음천정유, anti:양천리강
+    - 차이 축: 인식(천↔지) → syncRate:75%
+    - 파동: A형 호수 80%
+-->
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#1A3C32;--ink2:#1E4A3D;--gold:#D4AF37;--gold3:#B8942E;--mist:#A8C4B8;}
+body{background:var(--ink);font-family:'Apple SD Gothic Neo',sans-serif;padding:20px;}
+.max-wrap{max-width:430px;margin:0 auto;}
+.white-card{background:#ffffff;border-radius:20px;overflow:hidden;border:1px solid rgba(212,175,55,0.3);box-shadow:0 10px 30px rgba(0,0,0,0.06);color:#333;margin-bottom:12px;}
+.brand-line{font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;padding:10px 16px;text-align:center;border-bottom:1px solid #f0f0f0;display:block;}
+.hash-footer{display:flex;justify-content:space-between;padding:10px 16px;margin-top:14px;font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;border-top:1px solid #f0f0f0;}
+.gray-box{background:#f8f9fa;border-radius:12px;padding:12px 14px;margin-bottom:14px;}
+.cross-scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;}
+.cross-card{flex-shrink:0;width:100px;background:#ffffff;border-radius:12px;padding:10px 8px;border:1px solid rgba(212,175,55,0.4);text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+</style>
+</head>
+<body>
+<div class="max-wrap">
+
+<!-- ═══════════ 메인 카드 (792~906행) ═══════════ -->
+<div class="white-card">
+  <!-- BrandLine (802행) -->
+  <div style="padding:10px 16px 14px;text-align:center;">
+    <div style="font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;padding-bottom:10px;margin-bottom:14px;margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px;border-bottom:1px solid #f0f0f0;">🔮 천기(天機) 오리지널 | 오행·음양으로 푸는 16가지 氣質圖</div>
+    <!-- 제목 (803행) -->
+    <div style="font-size:18px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;line-height:1.35;margin-bottom:8px;">🧬 홍길동님의 기질도</div>
+    <!-- 검사 정보 (805~808행) -->
+    <div style="font-size:10px;color:#888;font-weight:600;line-height:1.6;">
+      <div>👤 홍길동 : 1990.05.15. 午시생</div>
+      <div style="color:#aaa;">📅 2026-06-30 검사</div>
+    </div>
+  </div>
+
+  <!-- 듀얼 캐릭터 카드 (812~832행) -->
+  <!-- grid: 1fr 1fr, gap:8, bg:#fafafa, padding:18px 16px -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:18px 16px;background:#fafafa;">
+    <!-- 타고난 기질: 양천리강 (청룡, ENTJ, #5cccff) -->
+    <div style="background:linear-gradient(135deg,#5cccff10,#5cccff20);border:2px solid #5cccff80;border-radius:14px;padding:14px 10px;text-align:center;box-shadow:0 4px 16px #5cccff30;">
+      <!-- 라벨 chip (816행): bg:d.color, color:#fff, font-size:11 -->
+      <div style="display:inline-block;font-size:11px;color:#fff;font-weight:800;padding:5px 14px;border-radius:14px;background:#5cccff;margin-bottom:10px;letter-spacing:0.5px;box-shadow:0 2px 6px #5cccff55;">🔯 타고난 기질</div>
+      <!-- 이미지 128px (818행) — 실제 src: /guardians-2D-cards/guardian-1.png -->
+      <div style="width:128px;height:128px;background:#f0faff;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:56px;">🐲</div>
+      <!-- Type name (821행): font-size:17 serif #1A3C32 -->
+      <div style="font-size:17px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;">청룡형</div>
+      <!-- Subtitle (823행): font-size:10 #6b7280 -->
+      <div style="font-size:10px;color:#6b7280;font-weight:600;margin-top:1px;">하늘을 가르는 용</div>
+      <!-- 4자 코드 boxes (825~827행): width:18 height:18 bg:d.color color:#fff font-size:10 -->
+      <div style="display:flex;justify-content:center;gap:3px;margin:6px 0 4px;">
+        <span style="width:18px;height:18px;background:#5cccff;border:1px solid #5cccff;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;">양</span>
+        <span style="width:18px;height:18px;background:#5cccff;border:1px solid #5cccff;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;">천</span>
+        <span style="width:18px;height:18px;background:#5cccff;border:1px solid #5cccff;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;">리</span>
+        <span style="width:18px;height:18px;background:#5cccff;border:1px solid #5cccff;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;">강</span>
+      </div>
+      <!-- MBTI (829행): font-size:11 color:d.color fontWeight:800 -->
+      <div style="font-size:11px;color:#5cccff;font-weight:800;letter-spacing:0.2px;">사주 기반 · ENTJ</div>
+    </div>
+
+    <!-- 살아온 기질: 양지리강 (백호, ESTJ, #FFB74D) -->
+    <div style="background:linear-gradient(135deg,#FFB74D10,#FFB74D20);border:2px solid #FFB74D80;border-radius:14px;padding:14px 10px;text-align:center;box-shadow:0 4px 16px #FFB74D30;">
+      <div style="display:inline-block;font-size:11px;color:#fff;font-weight:800;padding:5px 14px;border-radius:14px;background:#FFB74D;margin-bottom:10px;letter-spacing:0.5px;box-shadow:0 2px 6px #FFB74D55;">🪞 살아온 기질</div>
+      <!-- 이미지: /guardians-2D-cards/guardian-5.png -->
+      <div style="width:128px;height:128px;background:#fff8f0;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:56px;">🐯</div>
+      <div style="font-size:17px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;">백호형</div>
+      <div style="font-size:10px;color:#6b7280;font-weight:600;margin-top:1px;">땅을 지키는 수호신</div>
+      <div style="display:flex;justify-content:center;gap:3px;margin:6px 0 4px;">
+        <span style="width:18px;height:18px;background:#FFB74D;border:1px solid #FFB74D;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;">양</span>
+        <span style="width:18px;height:18px;background:#FFB74D;border:1px solid #FFB74D;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;">지</span>
+        <span style="width:18px;height:18px;background:#FFB74D;border:1px solid #FFB74D;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;">리</span>
+        <span style="width:18px;height:18px;background:#FFB74D;border:1px solid #FFB74D;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;">강</span>
+      </div>
+      <div style="font-size:11px;color:#FFB74D;font-weight:800;letter-spacing:0.2px;">테스트 기반 · ESTJ</div>
+    </div>
+  </div>
+
+  <!-- 싱크로율 (835~838행) -->
+  <!-- isSame=false(다름), syncRate=75% → color:#D4AF37, ⚡ -->
+  <div style="display:flex;align-items:center;justify-content:center;gap:10px;padding:16px;background:#fafafa;flex-wrap:wrap;">
+    <div style="font-size:22px;font-weight:900;color:#D4AF37;">⚡ 75%</div>
+    <span style="font-size:11px;color:#666;font-weight:700;">1축 차이</span>
+  </div>
+  <!-- chip row (839~843행) -->
+  <div style="display:flex;justify-content:center;gap:6px;padding:0 16px 16px;background:#fafafa;flex-wrap:wrap;">
+    <span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:#fff0f3;color:#e03131;border:1px solid #ffe0e6;">🧬 ENTJ→ESTJ</span>
+    <span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:#fffbeb;color:#b45309;border:1px solid #fde68a;">🔯 청룡·백호형</span>
+    <!-- 파동 chip (842행): 파동 A형 80% -->
+    <span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:#e8fdf4;color:#054D95;border:1px solid #b2f5ea;">🌊 호수형 80%</span>
+  </div>
+
+  <!-- ⚖️ 4축 상세 비교 (850~862행) -->
+  <!-- AXIS_ORDER: 기운/인식/판단/생활, AXIS_HANJA_SHORT: 위 참조 -->
+  <div style="padding:20px 16px;background:#fff;">
+    <div style="font-size:11px;font-weight:800;color:#D4AF37;margin-bottom:14px;">⚖️ 4축 상세 비교</div>
+    <!-- 기운: 양=양 (일치) -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+      <span style="font-size:10px;color:#888;width:65px;flex-shrink:0;">氣運(기운)</span>
+      <span style="font-size:12px;font-weight:700;color:#1A3C32;background:#5cccff18;padding:3px 10px;border-radius:6px;">양</span>
+      <span style="font-size:11px;color:#059669;">＝</span>
+      <span style="font-size:12px;font-weight:700;color:#1A3C32;background:#FFB74D18;padding:3px 10px;border-radius:6px;">양</span>
+      <span style="font-size:9px;color:#059669;margin-left:auto;">일치</span>
+    </div>
+    <!-- 인식: 천≠지 (차이) -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+      <span style="font-size:10px;color:#888;width:65px;flex-shrink:0;">認識(인식)</span>
+      <span style="font-size:12px;font-weight:700;color:#1A3C32;background:#5cccff18;padding:3px 10px;border-radius:6px;">천</span>
+      <span style="font-size:11px;color:#D4AF37;">≠</span>
+      <span style="font-size:12px;font-weight:700;color:#1A3C32;background:#FFB74D18;padding:3px 10px;border-radius:6px;">지</span>
+      <span style="font-size:9px;color:#D4AF37;margin-left:auto;">차이</span>
+    </div>
+    <!-- 판단: 리=리 (일치) -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+      <span style="font-size:10px;color:#888;width:65px;flex-shrink:0;">判斷(판단)</span>
+      <span style="font-size:12px;font-weight:700;color:#1A3C32;background:#5cccff18;padding:3px 10px;border-radius:6px;">리</span>
+      <span style="font-size:11px;color:#059669;">＝</span>
+      <span style="font-size:12px;font-weight:700;color:#1A3C32;background:#FFB74D18;padding:3px 10px;border-radius:6px;">리</span>
+      <span style="font-size:9px;color:#059669;margin-left:auto;">일치</span>
+    </div>
+    <!-- 생활: 강=강 (일치) -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+      <span style="font-size:10px;color:#888;width:65px;flex-shrink:0;">生活(생활)</span>
+      <span style="font-size:12px;font-weight:700;color:#1A3C32;background:#5cccff18;padding:3px 10px;border-radius:6px;">강</span>
+      <span style="font-size:11px;color:#059669;">＝</span>
+      <span style="font-size:12px;font-weight:700;color:#1A3C32;background:#FFB74D18;padding:3px 10px;border-radius:6px;">강</span>
+      <span style="font-size:9px;color:#059669;margin-left:auto;">일치</span>
+    </div>
+  </div>
+
+  <!-- 🌊 마음의 파동 (865~878행) -->
+  <!-- A형=호수(#1565c0 #e3f2fd #90caf9) / T형=파도(#7b1fa2 #f3e5f5 #ce93d8) -->
+  <!-- waveType: A형 80%, T형 20% (리+강=20점, 정+유=4점 / total=24) -->
+  <div style="padding:20px 16px;background:#fff;">
+    <div style="font-size:11px;font-weight:800;color:#054D95;margin-bottom:12px;">🌊 마음의 파동</div>
+    <div style="display:flex;gap:8px;margin-bottom:6px;">
+      <!-- A형 활성 -->
+      <div style="flex:1;background:#e3f2fd;border:1px solid #90caf9;border-radius:10px;padding:8px;text-align:center;">
+        <div style="font-size:13px;">🏔️</div>
+        <div style="font-size:10px;font-weight:700;color:#1565c0;">A형 · 호수 80%</div>
+      </div>
+      <!-- T형 비활성 -->
+      <div style="flex:1;background:#fafafa;border:1px solid #eee;border-radius:10px;padding:8px;text-align:center;">
+        <div style="font-size:13px;">🌊</div>
+        <div style="font-size:10px;font-weight:700;color:#aaa;">T형 · 파도 20%</div>
+      </div>
+    </div>
+    <div style="font-size:10px;color:#555;line-height:1.6;">잔잔하고 단단한 호수형. 감정의 흔들림이 적고 안정적으로 나아가는 힘이 있어요.</div>
+  </div>
+
+  <!-- 💕 찰떡/상극 매칭 (881~898행) -->
+  <!-- grid 1fr 1fr 1fr 1fr (4칸) -->
+  <!-- 양천리강: match="음지정유", anti="양지리강" (67행) -->
+  <!-- 양지리강: match="음천정유", anti="양천리강" (119행) -->
+  <div style="padding:20px 16px;background:#fff;">
+    <div style="font-size:11px;font-weight:800;color:#c92a2a;margin-bottom:14px;">💕 찰떡 / ⚡ 상극 매칭</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;">
+      <!-- 타고난 찰떡 (bg:#fff5f5, border:#ffe0e6) — 음지정유 (코드 확인 67행, 음지정유 TYPES 미로드) -->
+      <div style="background:#fff5f5;border:1px solid #ffe0e6;border-radius:10px;padding:8px 5px;text-align:center;">
+        <div style="font-size:8.5px;font-weight:800;color:#c92a2a;margin-bottom:4px;word-break:keep-all;">🔯 타고난 찰떡</div>
+        <div style="font-size:24px;margin-bottom:3px;">🦋</div>
+        <div style="font-size:9.5px;font-weight:700;color:#1A3C32;line-height:1.3;">음지정유형<br><span style="font-size:8px;color:#888;">(코드:음지정유)</span></div>
+      </div>
+      <!-- 타고난 상극 (bg:#f8f9fa, border:#e6e6e6) — 양지리강(백호) (67행 anti) -->
+      <div style="background:#f8f9fa;border:1px solid #e6e6e6;border-radius:10px;padding:8px 5px;text-align:center;">
+        <div style="font-size:8.5px;font-weight:800;color:#666;margin-bottom:4px;word-break:keep-all;">🔯 타고난 상극</div>
+        <div style="font-size:24px;margin-bottom:3px;">🐯</div>
+        <div style="font-size:9.5px;font-weight:700;color:#1A3C32;line-height:1.3;">백호형</div>
+      </div>
+      <!-- 살아온 찰떡 (bg:#fff0f8, border:#ffd6ec) — 음천정유 (119행 match) -->
+      <div style="background:#fff0f8;border:1px solid #ffd6ec;border-radius:10px;padding:8px 5px;text-align:center;">
+        <div style="font-size:8.5px;font-weight:800;color:#a8205c;margin-bottom:4px;word-break:keep-all;">🪞 살아온 찰떡</div>
+        <div style="font-size:24px;margin-bottom:3px;">🦄</div>
+        <div style="font-size:9.5px;font-weight:700;color:#1A3C32;line-height:1.3;">음천정유형<br><span style="font-size:8px;color:#888;">(코드:음천정유)</span></div>
+      </div>
+      <!-- 살아온 상극 (bg:#f4f5f7, border:#dcdcdc) — 양천리강(청룡) (119행 anti) -->
+      <div style="background:#f4f5f7;border:1px solid #dcdcdc;border-radius:10px;padding:8px 5px;text-align:center;">
+        <div style="font-size:8.5px;font-weight:800;color:#555;margin-bottom:4px;word-break:keep-all;">🪞 살아온 상극</div>
+        <div style="font-size:24px;margin-bottom:3px;">🐲</div>
+        <div style="font-size:9.5px;font-weight:700;color:#1A3C32;line-height:1.3;">청룡형</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 해시태그 푸터 (900~904행) -->
+  <div class="hash-footer">
+    <span>#천기기질도 #성격분석 #기질분석 #동양식16유형 #홍길동 #백호형 #ESTJ</span>
+    <span style="font-weight:600;">🌐 천기.kr</span>
+  </div>
+</div>
+<!-- ═══════════ 메인 카드 끝 ═══════════ -->
+
+<!-- 탭 nav (909~925행) -->
+<!-- 그룹1: 🧬 타고난 기질 | 🪞 살아온 기질 -->
+<!-- 그룹2: ⚡ 두 기질 비교 분석 | 🌿 개운법 -->
+<!-- active: bg:#1A3C32 / inactive: bg:transparent border:#ddd -->
+<div class="white-card" style="padding:14px 12px 12px;">
+  <div style="text-align:center;font-size:11px;margin-bottom:10px;color:#D4AF37;font-weight:700;">👇 <b>탭 버튼</b>을 눌러 분야별 상세 리포트를 확인하세요!</div>
+  <!-- 그룹1 (913~916행) -->
+  <div style="display:flex;gap:5px;margin-bottom:5px;">
+    <button style="flex:1;padding:7px 6px;background:#1A3C32;border:1px solid #1A3C32;color:#fff;border-radius:10px;font-weight:700;cursor:pointer;font-family:inherit;font-size:11px;">🧬 타고난 기질</button>
+    <button style="flex:1;padding:7px 6px;background:transparent;border:1px solid #ddd;color:#1A3C32;border-radius:10px;font-weight:700;cursor:pointer;font-family:inherit;font-size:11px;">🪞 살아온 기질</button>
+  </div>
+  <!-- 그룹2 (919~923행) -->
+  <div style="display:flex;gap:5px;">
+    <button style="flex:1;padding:7px 6px;background:transparent;border:1px solid #ddd;color:#1A3C32;border-radius:10px;font-weight:700;cursor:pointer;font-family:inherit;font-size:11px;">⚡ 두 기질 비교 분석</button>
+    <button style="flex:1;padding:7px 6px;background:transparent;border:1px solid #ddd;color:#1A3C32;border-radius:10px;font-weight:700;cursor:pointer;font-family:inherit;font-size:11px;">🌿 개운법</button>
+  </div>
+</div>
+
+<!-- 탭1: 타고난 기질 (sData=양천리강 청룡 #5cccff) 활성화 상태 (930~1041행) -->
+<div class="white-card">
+  <!-- 헤더 (935~948행) -->
+  <div style="padding:10px 16px 14px;text-align:center;">
+    <div style="font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;padding-bottom:10px;margin-bottom:14px;margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px;border-bottom:1px solid #f0f0f0;">🔮 천기(天機) 오리지널 | 오행·음양으로 푸는 16가지 氣質圖</div>
+    <!-- 생년월일 + 사주코드 (937~938행) -->
+    <div style="font-size:12px;color:#555;font-weight:700;margin-bottom:3px;">홍길동 : 1990.05.15.</div>
+    <div style="font-size:11px;color:#5cccff;font-weight:800;margin-bottom:14px;">사주 : 양천리강 (陽天理剛) · ENTJ</div>
+    <!-- 170px 카드 이미지 + emoji overlay (940~945행) -->
+    <div style="position:relative;width:170px;height:170px;margin:0 auto 10px;">
+      <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:80px;z-index:0;opacity:0.9;">🐲</span>
+      <!-- 실제: <img src="/guardians-2D-cards/guardian-1.png" style="..." /> -->
+      <div style="width:170px;height:170px;background:#f0faff;border-radius:12px;position:relative;z-index:0;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 8px 22px #5cccff66);">
+        <span style="font-size:80px;">🐲</span>
+      </div>
+    </div>
+    <!-- 이름 font-size:26 serif (946행) -->
+    <div style="font-size:26px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;line-height:1.2;">청룡형</div>
+    <!-- 부제 (947행): font-size:13 color:sData.color fontStyle:italic -->
+    <div style="font-size:13px;color:#5cccff;font-weight:700;margin-top:6px;font-style:italic;">"하늘을 가르는 용"</div>
+  </div>
+
+  <!-- 인용구 (950~953행): bg:{sData.color}10, borderLeft:4px solid {sData.color} -->
+  <div style="padding:16px 16px 0;">
+    <div style="background:#5cccff10;border-left:4px solid #5cccff;border-radius:0 12px 12px 0;padding:14px 16px;margin-bottom:14px;">
+      <div style="font-size:12px;color:#555;line-height:1.75;font-style:italic;">"타고나길 <strong>청룡</strong>의 기운을 품고 오셨네요.<br>마치 하늘을 가르는 번개처럼, 청룡의 기운을 타고난 분은 어떤 상황에서도 주도권을 놓치지 않아요. 목표가 정해지면 주변의 시선이나 방해에 흔들리지 않고 앞으로 나아가는 추진력이 있어요."</div>
+    </div>
+  </div>
+
+  <!-- 오행 분포 SVG 거미줄 (956~1007행) -->
+  <!-- 5각형, cx=110 cy=110 maxR=85, fill:rgba(212,175,55,0.25), stroke:#D4AF37 -->
+  <!-- 오행 색: 목=#4CAF50 화=#ff6b6b 토=#FF8F00 금=#9E9E9E 수=#1A237E -->
+  <div style="padding:0 16px;margin-bottom:14px;">
+    <div style="font-size:11px;font-weight:800;color:#D4AF37;margin-bottom:10px;">🌿 사주 오행 분포 · 일간: 병(丙)</div>
+    <!-- 거미줄 차트 SVG (5축, 목25%/화35%/토15%/금15%/수10% 예시) -->
+    <div style="display:flex;justify-content:center;margin-bottom:10px;">
+      <svg width="280" height="240" viewBox="-50 -10 320 240" style="max-width:100%;height:auto;">
+        <!-- 가이드 격자 25%/50%/75%/100% -->
+        <polygon points="110,25 184.9,85.3 157.4,171.9 62.6,171.9 35.1,85.3" fill="none" stroke="#e0e0e0" stroke-width="0.6"/>
+        <polygon points="110,46.25 163.7,88.4 142.3,155.7 77.7,155.7 56.3,88.4" fill="none" stroke="#e0e0e0" stroke-width="0.6"/>
+        <polygon points="110,67.5 142.5,91.5 127.1,139.4 92.9,139.4 77.5,91.5" fill="none" stroke="#e0e0e0" stroke-width="0.6"/>
+        <polygon points="110,88.75 121.2,94.6 111.9,123.2 108.1,123.2 98.8,94.6" fill="none" stroke="#e0e0e0" stroke-width="0.6"/>
+        <!-- 축 라인 -->
+        <line x1="110" y1="110" x2="110" y2="25" stroke="#e8e8e8" stroke-width="0.6"/>
+        <line x1="110" y1="110" x2="184.9" y2="85.3" stroke="#e8e8e8" stroke-width="0.6"/>
+        <line x1="110" y1="110" x2="157.4" y2="171.9" stroke="#e8e8e8" stroke-width="0.6"/>
+        <line x1="110" y1="110" x2="62.6" y2="171.9" stroke="#e8e8e8" stroke-width="0.6"/>
+        <line x1="110" y1="110" x2="35.1" y2="85.3" stroke="#e8e8e8" stroke-width="0.6"/>
+        <!-- 데이터 도형 fill:rgba(212,175,55,0.25) stroke:#D4AF37 (998행) -->
+        <!-- 목25% r=21.25, 화35% r=29.75, 토15% r=12.75, 금15% r=12.75, 수10% r=8.5 -->
+        <path d="M110,88.75 L139.3,91.5 L127.1,136.1 L83.8,151.6 L71.3,91.5 Z"
+              fill="rgba(212,175,55,0.25)" stroke="#D4AF37" stroke-width="1.5"/>
+        <!-- 데이터 점 (1000행) 각 오행 색 -->
+        <circle cx="110" cy="88.75" r="3" fill="#4CAF50"/>
+        <circle cx="139.3" cy="91.5" r="3" fill="#ff6b6b"/>
+        <circle cx="127.1" cy="136.1" r="3" fill="#FF8F00"/>
+        <circle cx="83.8" cy="151.6" r="3" fill="#9E9E9E"/>
+        <circle cx="71.3" cy="91.5" r="3" fill="#1A237E"/>
+        <!-- 라벨 (1002행) -->
+        <text x="110" y="19" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="800" fill="#4CAF50">목 25%</text>
+        <text x="192" y="85" text-anchor="start" dominant-baseline="central" font-size="11" font-weight="800" fill="#ff6b6b">화 35%</text>
+        <text x="163" y="180" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="800" fill="#FF8F00">토 15%</text>
+        <text x="57" y="180" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="800" fill="#9E9E9E">금 15%</text>
+        <text x="28" y="85" text-anchor="end" dominant-baseline="central" font-size="11" font-weight="800" fill="#1A237E">수 10%</text>
+      </svg>
+    </div>
+    <div style="font-size:9px;color:#aaa;line-height:1.5;text-align:center;">가장 강한 오행이 홍길동님의 핵심 기운이에요.</div>
+  </div>
+
+  <!-- 6섹션 회색박스강조 (1009~1022행) -->
+  <!-- buildSubTabs(sData) → 783~789행 6개 항목 -->
+  <div style="padding:0 16px;">
+    <!-- 📌 성향 (key:0) -->
+    <div style="margin-bottom:14px;">
+      <div style="font-size:12px;font-weight:800;color:#333;margin-bottom:6px;">📌 타고난 성향: "청룡형의 본래 결을 한 문장으로"</div>
+      <div class="gray-box">
+        <div style="font-size:11px;color:#555;line-height:1.85;word-break:keep-all;margin-bottom:10px;">타고난 지도자의 결을 품은 분이에요. 직관으로 미래를 먼저 보고 논리로 길을 설계해, 강한 의지로 반드시 실현해내는 추진력이 있어요.</div>
+        <!-- badges: strengths (1016~1018행), color:#1a73e8, badgePrefix:"#" -->
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;background:#1a73e812;color:#1a73e8;border:1px solid #1a73e830;">#전략적 사고</span>
+          <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;background:#1a73e812;color:#1a73e8;border:1px solid #1a73e830;">#추진력</span>
+          <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;background:#1a73e812;color:#1a73e8;border:1px solid #1a73e830;">#카리스마</span>
+          <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;background:#1a73e812;color:#1a73e8;border:1px solid #1a73e830;">#비전 제시</span>
+        </div>
+      </div>
+    </div>
+    <!-- 💰 재물운 흐름 (key:1) -->
+    <div style="margin-bottom:14px;">
+      <div style="font-size:12px;font-weight:800;color:#333;margin-bottom:6px;">💰 재물운 흐름: "돈이 들어오는 길과 흩어지는 길"</div>
+      <div class="gray-box">
+        <div style="font-size:11px;color:#555;line-height:1.85;word-break:keep-all;">큰 그림을 보는 사주라 소소한 저축보다 과감한 투자나 사업에서 재물이 불어나요. 단, 속도를 조절하는 훈련이 필요해요.</div>
+      </div>
+    </div>
+    <!-- ❤️ 연애 성향 (key:2) -->
+    <div style="margin-bottom:14px;">
+      <div style="font-size:12px;font-weight:800;color:#333;margin-bottom:6px;">❤️ 연애 성향: "사랑하는 방식·끌리는 사람"</div>
+      <div class="gray-box">
+        <div style="font-size:11px;color:#555;line-height:1.85;word-break:keep-all;">연애에서도 주도권을 자연스럽게 잡으려는 결이에요. 빠르게 결정하고 분명하게 표현하는 매력이 있지만, 상대의 속도와 침묵을 존중해줄 때 관계가 훨씬 깊어져요.</div>
+      </div>
+    </div>
+    <!-- 💼 추천 직업 (key:3) -->
+    <div style="margin-bottom:14px;">
+      <div style="font-size:12px;font-weight:800;color:#333;margin-bottom:6px;">💼 추천 직업: "전략적 사고을 살리는 분야"</div>
+      <div class="gray-box">
+        <div style="font-size:11px;color:#555;line-height:1.85;word-break:keep-all;margin-bottom:10px;">청룡형의 전략적 사고 · 추진력이(가) 빛나는 일을 만났을 때 가장 멀리 가요.</div>
+        <!-- badges: jobs (63행) -->
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;background:#05996912;color:#059669;border:1px solid #05996930;">CEO</span>
+          <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;background:#05996912;color:#059669;border:1px solid #05996930;">정치가</span>
+          <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;background:#05996912;color:#059669;border:1px solid #05996930;">전략 컨설턴트</span>
+          <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;background:#05996912;color:#059669;border:1px solid #05996930;">군 지휘관</span>
+        </div>
+      </div>
+    </div>
+    <!-- 🌿 건강 주의점 (key:4) -->
+    <div style="margin-bottom:14px;">
+      <div style="font-size:12px;font-weight:800;color:#333;margin-bottom:6px;">🌿 건강 주의점: "몸과 마음의 흐름"</div>
+      <div class="gray-box">
+        <div style="font-size:11px;color:#555;line-height:1.85;word-break:keep-all;">넘치는 에너지로 스스로를 혹사하는 경향이 있어요. 간·담 계통을 주의하고 충분한 수면이 재물운도 지켜줘요.</div>
+      </div>
+    </div>
+    <!-- ⚠️ 주의할 점 (key:5) -->
+    <div style="margin-bottom:14px;">
+      <div style="font-size:12px;font-weight:800;color:#333;margin-bottom:6px;">⚠️ 주의할 점: "성장의 그림자"</div>
+      <div class="gray-box">
+        <div style="font-size:11px;color:#555;line-height:1.85;word-break:keep-all;">추진력이 강한 만큼 상대의 감정을 놓치기 쉬워요. 결과를 향해 빠르게 달려가다 보니 옆 사람의 속도나 마음의 신호를 못 보고 지나칠 때가 있어요. 잠깐 멈춰서 주변을 둘러보는 습관이 리더십을 더 단단하게 만들어줘요.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 해시태그 푸터 (1036~1039행) -->
+  <div class="hash-footer">
+    <span>#천기기질도 #성격분석 #기질분석 #동양식16유형 #홍길동 #백호형 #ESTJ</span>
+    <span style="font-weight:600;">🌐 천기.kr</span>
+  </div>
+</div>
+
+<!-- 탭2: 살아온 기질 예시 (탭2 구조는 탭1과 동일, qData=양지리강 백호 사용) -->
+<div class="white-card" style="padding:16px;">
+  <div style="font-size:11px;font-weight:700;color:#D4AF37;letter-spacing:1.5px;margin-bottom:10px;">🪞 살아온 기질 (탭 2 예시 — 구조 탭1과 동일, qData 사용)</div>
+
+  <div style="text-align:center;margin-bottom:16px;">
+    <div style="font-size:11px;color:#FFB74D;font-weight:800;margin-bottom:8px;">성격 : 양지리강 (陽地理剛) · ESTJ</div>
+    <div style="font-size:80px;">🐯</div>
+    <div style="font-size:20px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;margin-top:4px;">백호형</div>
+    <div style="font-size:13px;color:#FFB74D;font-style:italic;margin-top:4px;">"땅을 지키는 수호신"</div>
+  </div>
+
+  <!-- 인용구: bg:#FFB74D10, borderLeft:4px solid #FFB74D -->
+  <div style="background:#FFB74D10;border-left:4px solid #FFB74D;border-radius:0 12px 12px 0;padding:14px 16px;margin-bottom:14px;">
+    <div style="font-size:12px;color:#555;line-height:1.75;font-style:italic;">"살아오면서 <strong>백호</strong>처럼 세상을 마주해왔네요.<br>서방을 지키는 백호처럼, 이 기질의 분은 한번 맡은 것은 끝까지 지켜내요. 원칙이 있고, 체계적이고, 신뢰할 수 있는 사람이에요."</div>
+  </div>
+
+  <!-- 4각형 SVG 거미줄 (탭2에서는 4축 기질 비율 사용) -->
+  <div style="padding:0 4px;margin-bottom:14px;">
+    <div style="font-size:11px;font-weight:800;color:#FFB74D;margin-bottom:10px;">🪞 살아온 기질 4축 비율 · 양지리강 (ESTJ)</div>
+    <div style="display:flex;justify-content:center;margin-bottom:10px;">
+      <svg width="280" height="240" viewBox="-50 -10 320 240" style="max-width:100%;height:auto;">
+        <!-- 가이드 격자 4각형 -->
+        <polygon points="110,25 195,110 110,195 25,110" fill="none" stroke="#e0e0e0" stroke-width="0.6"/>
+        <polygon points="110,46.25 173.75,110 110,173.75 46.25,110" fill="none" stroke="#e0e0e0" stroke-width="0.6"/>
+        <polygon points="110,67.5 152.5,110 110,152.5 67.5,110" fill="none" stroke="#e0e0e0" stroke-width="0.6"/>
+        <polygon points="110,88.75 131.25,110 110,131.25 88.75,110" fill="none" stroke="#e0e0e0" stroke-width="0.6"/>
+        <!-- 축 라인 -->
+        <line x1="110" y1="110" x2="110" y2="25" stroke="#e8e8e8" stroke-width="0.6"/>
+        <line x1="110" y1="110" x2="195" y2="110" stroke="#e8e8e8" stroke-width="0.6"/>
+        <line x1="110" y1="110" x2="110" y2="195" stroke="#e8e8e8" stroke-width="0.6"/>
+        <line x1="110" y1="110" x2="25" y2="110" stroke="#e8e8e8" stroke-width="0.6"/>
+        <!-- 데이터: 기운-양70%, 인식-지65%, 판단-리75%, 생활-강80% -->
+        <path d="M110,50.5 L169.25,110 L110,181.25 L38.25,110 Z"
+              fill="#FFB74D30" stroke="#FFB74D" stroke-width="1.5"/>
+        <circle cx="110" cy="50.5" r="3" fill="#dc2626"/>
+        <circle cx="169.25" cy="110" r="3" fill="#7c3aed"/>
+        <circle cx="110" cy="181.25" r="3" fill="#16a34a"/>
+        <circle cx="38.25" cy="110" r="3" fill="#0ea5e9"/>
+        <text x="110" y="18" text-anchor="middle" font-size="10" font-weight="800" fill="#dc2626">기운 양 70%</text>
+        <text x="204" y="110" text-anchor="start" font-size="10" font-weight="800" fill="#7c3aed">인식 지 65%</text>
+        <text x="110" y="200" text-anchor="middle" font-size="10" font-weight="800" fill="#16a34a">판단 리 75%</text>
+        <text x="14" y="110" text-anchor="end" font-size="10" font-weight="800" fill="#0ea5e9">생활 강 80%</text>
+      </svg>
+    </div>
+    <div style="font-size:9px;color:#aaa;text-align:center;">각 축에서 더 강하게 나타난 쪽의 비율 · 테스트 응답 기반</div>
+  </div>
+
+  <!-- 6섹션 (탭1과 동일 패턴, qData 값 사용) -->
+  <!-- 📌 살아온 성향 -->
+  <div style="margin-bottom:14px;">
+    <div style="font-size:12px;font-weight:800;color:#333;margin-bottom:6px;">📌 살아온 성향: "백호형의 본래 결을 한 문장으로"</div>
+    <div class="gray-box">
+      <div style="font-size:11px;color:#555;line-height:1.85;word-break:keep-all;margin-bottom:10px;">질서와 책임감의 상징이에요. 현실을 정확히 파악하고 계획대로 실행하며 공동체를 굳건히 지키는 결을 가졌어요.</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;background:#1a73e812;color:#1a73e8;border:1px solid #1a73e830;">#책임감</span>
+        <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;background:#1a73e812;color:#1a73e8;border:1px solid #1a73e830;">#조직력</span>
+        <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;background:#1a73e812;color:#1a73e8;border:1px solid #1a73e830;">#실행력</span>
+        <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;background:#1a73e812;color:#1a73e8;border:1px solid #1a73e830;">#신뢰성</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ResultActions + 이것도 해볼래요 -->
+<div style="margin-bottom:10px;">
+  <button style="display:block;width:100%;padding:14px;border-radius:18px;background:linear-gradient(135deg,#D4AF37,#B8942E);color:#1A3C32;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:inherit;margin-bottom:9px;">🎊 결과 저장 / 공유</button>
+  <button style="display:block;width:100%;padding:14px;border-radius:18px;background:transparent;border:1px solid rgba(212,175,55,0.25);color:#D4AF37;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">🔄 다시 검사하기</button>
+</div>
+
+<div style="margin-bottom:20px;">
+  <div style="font-size:11px;font-weight:700;color:#A8C4B8;margin-bottom:6px;">✨ 이것도 해볼래요?</div>
+  <div class="cross-scroll">
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">☯️</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">사주 풀이</div><div style="font-size:9px;font-weight:700;color:#B8942E;">980원</div></div>
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">🌸</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">오늘의 운세</div><div style="font-size:9px;font-weight:700;color:#B8942E;">무료</div></div>
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">🃏</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">타로</div><div style="font-size:9px;font-weight:700;color:#B8942E;">무료</div></div>
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">🪞</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">내 관상보기</div><div style="font-size:9px;font-weight:700;color:#B8942E;">380원</div></div>
+  </div>
+</div>
+
+</div><!-- max-wrap 끝 -->
+</body>
+</html>

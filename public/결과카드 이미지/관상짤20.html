@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>천기 관상 리포트 - 츤데레상</title>
+<style>
+    /* 전체 배경: 깔끔하고 화사한 라이트 그레이 */
+    body {
+        background-color: #f4f5f7;
+        font-family: 'Pretendard', -apple-system, sans-serif;
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+        color: #333;
+    }
+
+    /* 카드 메인 디자인: 흰색 라운드 박스 & 부드러운 그림자 */
+    .card {
+        background: #ffffff;
+        border-radius: 24px;
+        width: 100%;
+        max-width: 400px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+        overflow: hidden;
+        border: 1px solid #eaeaea;
+    }
+
+    /* 상단 헤더 영역 */
+    .header {
+        background: #fcfcfd;
+        padding: 20px;
+        text-align: center;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .header-top {
+        font-size: 0.8em;
+        color: #888;
+        font-weight: 600;
+        margin-bottom: 15px;
+        letter-spacing: 0.5px;
+    }
+    .user-info {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+    }
+    .thumbnail {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: #ddd; /* 실제 유저 사진 들어갈 자리 */
+        border: 2px solid #fff;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2em;
+    }
+    .user-details { text-align: left; }
+    .user-name { font-weight: 800; font-size: 1.05em; color: #222; margin-bottom: 2px; }
+    .date { font-size: 0.75em; color: #999; }
+
+    /* AI 일러스트 영역 (가로 꽉 차게) */
+    .image-area {
+        width: 100%;
+        height: 280px;
+        background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #999;
+        font-weight: bold;
+    }
+
+    /* 상세 텍스트 영역 */
+    .content { padding: 24px; }
+    
+    .title-area { text-align: center; margin-bottom: 25px; }
+    .main-title { font-size: 1.5em; font-weight: 800; color: #1a1a1a; margin-bottom: 10px; }
+    .sub-title { 
+        font-size: 0.9em; 
+        color: #555; 
+        background: #f4f5f7; 
+        padding: 8px 14px; 
+        border-radius: 20px; 
+        display: inline-block; 
+        margin-bottom: 12px;
+    }
+    .highlight { font-weight: 800; color: #ff6b6b; display: block; margin-top: 5px; font-size: 1.05em;}
+
+    /* 궁합 박스 */
+    .match-box {
+        display: flex;
+        justify-content: space-between;
+        background: #fff5f5;
+        border: 1px solid #ffe3e3;
+        padding: 14px 16px;
+        border-radius: 16px;
+        margin-bottom: 10px;
+        font-size: 0.85em;
+        font-weight: 700;
+    }
+
+    /* 캡처 절취선 */
+    .divider {
+        height: 1px;
+        background: dashed 1px #ddd;
+        margin: 30px 0;
+        position: relative;
+        border-top: 2px dashed #eee;
+    }
+    .divider::after {
+        content: "✂️ 상세 리포트";
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #fff;
+        padding: 0 12px;
+        font-size: 0.8em;
+        color: #aaa;
+        font-weight: 600;
+    }
+
+    /* 상세 리포트 박스들 */
+    .detail-section { margin-bottom: 16px; }
+    .detail-title { font-size: 0.95em; font-weight: 800; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; color: #333;}
+    .detail-desc {
+        font-size: 0.9em;
+        color: #555;
+        line-height: 1.6;
+        background: #f8f9fa;
+        padding: 16px;
+        border-radius: 14px;
+        word-break: keep-all;
+    }
+
+    /* 천기의 한마디 */
+    .quote-box {
+        background: #f0f4ff;
+        border-radius: 14px;
+        padding: 16px;
+        text-align: center;
+        margin-top: 20px;
+    }
+    .quote-box p { margin: 0; font-size: 0.9em; font-weight: 600; color: #4263eb; line-height: 1.5; }
+
+    .footer { text-align: center; margin-top: 30px; font-size: 0.85em; color: #aaa; font-weight: 600;}
+</style>
+</head>
+<body>
+
+<div class="card">
+    <div class="header">
+        <div class="header-top">🔮 천기 오리지널 | 나만의 AI 관상 리포트</div>
+        <div class="user-info">
+            <div class="thumbnail">👤</div>
+            <div class="user-details">
+                <div class="user-name">🏷️ 김천기 님의 분석 결과</div>
+                <div class="date">🕒 2026.04.06 10:27</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="image-area">
+        [ 츤데레상 일러스트 영역 ]
+    </div>
+
+    <div class="content">
+        <div class="title-area">
+            <div class="main-title">🧊 겉바속촉 츤데레상</div>
+            <div class="sub-title">"😐 화난 거 아님. 낯가리는 중임"</div>
+            <span class="highlight">👉 첫인상은 마라맛🌶️, 알고 보면 솜사탕☁️</span>
+        </div>
+
+        <div class="match-box">
+            <div style="color: #e03131;">💖 찰떡: 유죄인간 폭스상</div>
+            <div style="color: #495057;">⚡ 상극: 맑은 눈의 광인상</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="detail-section">
+            <div class="detail-title">🔍 천기 AI가 포착한 킬포인트</div>
+            <div class="detail-desc" style="background:#fff3cd; border: 1px solid #ffe69c;">
+                가만히 있으면 서늘해 보이지만, 웃을 때 반전 매력을 만드는 매력적인 눈매와 야무지게 다물린 입술 라인!
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <div class="detail-title">💸 재물: 명품관 VIP상? 현실은 다이소 VIP</div>
+            <div class="detail-desc">첫인상만 보면 명품만 밝히게 생겼지만, 콧방울에 숨겨진 알뜰한 기운 덕분에 현실은 갓성비 따지는 실속파입니다. "비싼 건 비싸서 안 사고, 싼 건 싸서 안 산다"는 나름의 철학으로 은근히 통장 잔고를 든든하게 채워갑니다.</div>
+        </div>
+
+        <div class="detail-section">
+            <div class="detail-title">❤️ 애정: 뚝딱거리는 AI 로봇급 플러팅</div>
+            <div class="detail-desc">눈썹 결이 또렷해 철벽 남녀처럼 보이지만, 내 사람이라는 확신이 들면 지독한 순애보입니다. 플러팅할 때마다 고장 난 로봇처럼 뚝딱거리는데, 그 어설픔이 오히려 심장을 치는 엄청난 매력 포인트입니다.</div>
+        </div>
+
+        <div class="quote-box">
+            <p>🔮 "오해받아도 상처받지 마세요.<br>당신은 세상에서 제일 따뜻한 난로니까요 🥰"</p>
+        </div>
+
+        <div class="footer">🌐 chungi.kr</div>
+    </div>
+</div>
+
+</body>
+</html>

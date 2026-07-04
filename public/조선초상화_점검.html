@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>👑 조선초상화 60종 페르소나 점검본</title>
+<style>
+  body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#ece6da;margin:0;padding:18px;color:#222;}
+  h1{text-align:center;color:#1A3C32;}
+  .note{max-width:920px;margin:0 auto 18px;background:#fff;border-radius:12px;padding:14px 18px;font-size:13px;line-height:1.85;box-shadow:0 4px 14px rgba(0,0,0,.06);}
+  .note b{color:#b91c1c;}
+  .legend{max-width:920px;margin:0 auto 18px;background:#fff;border-radius:12px;padding:12px 18px;font-size:12.5px;line-height:1.9;box-shadow:0 4px 14px rgba(0,0,0,.06);}
+  table.sum{max-width:1000px;margin:0 auto 24px;border-collapse:collapse;background:#fff;font-size:12px;box-shadow:0 4px 14px rgba(0,0,0,.06);}
+  table.sum th,table.sum td{border:1px solid #e3dccb;padding:5px 8px;text-align:left;}
+  table.sum th{background:#1A3C32;color:#fff;position:sticky;top:0;}
+  table.sum tr:nth-child(even){background:#faf7f0;}
+  .cat-pill{font-weight:800;color:#16a34a;}
+  .wrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(440px,1fr));gap:16px;max-width:1340px;margin:0 auto;}
+  .card{background:#fff;border-radius:18px;padding:0;overflow:hidden;box-shadow:0 8px 22px rgba(0,0,0,.08);border:1px solid #e3dccb;}
+  .top{background:linear-gradient(135deg,#1A3C32,#2d5f4d);color:#fff;padding:14px 18px;}
+  .top .big{font-size:19px;font-weight:900;}
+  .top .sub{font-size:11px;color:#cfe5d8;margin-top:3px;}
+  .ph{width:100%;aspect-ratio:1/1;background:repeating-linear-gradient(45deg,#f3ecdd,#f3ecdd 12px,#ece2cd 12px,#ece2cd 24px);display:flex;align-items:center;justify-content:center;flex-direction:column;color:#9a8b6a;border-bottom:1px solid #f0ece2;}
+  .ph .pic{font-size:54px;}
+  .ph .lab{font-size:11px;font-weight:700;margin-top:8px;}
+  .sect{padding:12px 18px;border-bottom:1px solid #f0ece2;font-size:12.5px;line-height:1.8;}
+  .sect .lbl{font-size:10px;font-weight:800;color:#7A5C00;letter-spacing:1px;margin-bottom:5px;}
+  .sect.gold-bg{background:#fffdf5;}
+  .attrgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:8px 0;}
+  .attrgrid .ab{background:#fff;border:1px solid rgba(212,175,55,.35);border-radius:9px;padding:7px 2px;text-align:center;}
+  .attrgrid .ab .k{font-size:9px;color:#888;margin-bottom:3px;}
+  .attrgrid .ab .v{font-size:11px;font-weight:800;color:#7A5C00;}
+  .desclist{background:#fffdf5;border-radius:9px;padding:9px 12px;border:1px solid rgba(212,175,55,.2);font-size:11px;line-height:1.7;}
+  .matchbox{display:flex;gap:8px;margin-top:8px;}
+  .matchbox .mb{flex:1;text-align:center;border-radius:9px;padding:8px 4px;font-size:10.5px;line-height:1.4;}
+  .mb.good{background:#eff8f1;border:1.5px solid #86efac;color:#1e3a2a;}
+  .mb.bad{background:#fef2f2;border:1.5px solid #fcb6b6;color:#7c1d1d;}
+  .footer{padding:9px 16px;font-size:9px;color:#aaa;font-weight:600;border-top:1px solid #f0f0f0;}
+  em{color:#B8942E;font-style:normal;font-weight:800;}
+  .const{color:#1d72b8;font-weight:700;}
+  .ohtag{display:inline-block;background:#1A3C32;color:#fff;border-radius:6px;padding:1px 7px;font-size:10px;font-weight:700;}
+  details.err{max-width:1000px;margin:24px auto 0;background:#fff;border-radius:12px;padding:12px 18px;box-shadow:0 4px 14px rgba(0,0,0,.06);font-size:12.5px;line-height:1.9;}
+  details.err summary{font-weight:800;color:#1A3C32;cursor:pointer;}
+</style>
+</head>
+<body>
+<h1>👑 조선초상화 60종 페르소나 풀 결과 점검본</h1>
+<div class="note">
+  <b>📌 목적</b> — 조선초상화(sid <code>joseon_portrait</code>) 결과팝업의 모든 가짓수(페르소나 60종 × 각 섹션)를 한 화면에 펼쳤어. 직접 읽고 오타·어색한 문구·어미 중복 잡아줘.<br>
+  샘플 유저 = <span class="const">규미</span>님 기준. PAGE1(전생 시나리오·소개)·PAGE2(관상 분석·다섯 가지 결·찰떡/상극·안내)을 페르소나마다 그대로 렌더했어.<br>
+  ⚠️ <b>합성 일러스트는 placeholder</b>(빗금 박스). 실제론 AI 화공이 사진을 합성해. 텍스트만 점검하는 용도야.<br>
+  ⚠️ vibe_age 어미는 코드가 <code>replace(/한$/,"")</code> 후 끝이 "한"이면 "한"을 다시 붙여(중후→중후한). 그래서 이론상 "중후한한" 중복은 안 나야 정상 — 아래 카드에서 실제 출력 확인해줘.
+</div>
+<div class="legend">
+  <em>골드 글씨</em> = <b>페르소나 고유값</b>(persona·desc·attrs·ohaeng·category) — 60종마다 달라야 의미 있음.<br>
+  <span class="const">파란 글씨</span> = <b>공통 고정문</b>(코드에 박힌 템플릿 문장) — 페르소나가 바뀌어도 안 변하거나, category/ohaeng만 갈아끼우는 틀.<br>
+  찰떡/상극 = 오행 상생(木→火→土→金→水→木)·상극(木↔土, 土↔水, 水↔火, 火↔金, 金↔木)으로 같은 성별 우선 자동 매칭.
+</div>
+<table class="sum" id="sumtable"><thead><tr><th>#</th><th>페르소나</th><th>성별</th><th>신분(class)</th><th>분야(category)</th><th>오행</th><th>관상(gwansang)</th><th>존재감</th><th>지성</th><th>성향</th><th>강도</th><th>분위기</th></tr></thead><tbody></tbody></table>
+<div class="wrap" id="wrap"></div>
+
+<details class="err">
+  <summary>🚫 에러 페르소나 6종 (사진 부적합 시 — 결과 대신 에러 카드)</summary>
+  <div id="errlist"></div>
+</details>
+
+<script>
+const USER={name:"규미"};
+
+// ===== 코드에서 그대로 가져온 데이터 (joseon_portrait_types.json types[]) =====
+const TYPES=[
+{"id":1,"persona":"대군","gender":"男","class":"최상위 왕족","category":"royalty","icon":"👑","gwansang":"황금손 미다스상","desc":"빨간 곤룡포의 자신만만한 귀공자, 평생 부귀영화","attrs":{"presence":"위엄","intellect":"지적","extroversion":"외향","intensity":"강렬","vibe_age":"노숙한"},"ohaeng":"火"},
+{"id":2,"persona":"대비","gender":"女","class":"최상위 왕족","category":"royalty","icon":"👸","gwansang":"여왕벌 카리스마상","desc":"적의(赤衣) 입은 위엄있는 노년 王실 절대권력","attrs":{"presence":"위엄","intellect":"지적","extroversion":"내향","intensity":"강렬","vibe_age":"노숙한"},"ohaeng":"火"},
+{"id":3,"persona":"왕세자","gender":"男","class":"최상위 왕족","category":"royalty","icon":"🎖️","gwansang":"차세대 리더상","desc":"흑색 곤룡포, 차기 왕의 무게감과 책임감","attrs":{"presence":"위엄","intellect":"지적","extroversion":"내향","intensity":"단정","vibe_age":"중후한"},"ohaeng":"木"},
+{"id":4,"persona":"왕세자빈","gender":"女","class":"최상위 왕족","category":"royalty","icon":"💍","gwansang":"차세대 퀸상","desc":"우아한 단아함, 미래 중전의 압박감","attrs":{"presence":"위엄","intellect":"지적","extroversion":"내향","intensity":"단정","vibe_age":"중후한"},"ohaeng":"木"},
+{"id":5,"persona":"옹주","gender":"女","class":"왕족","category":"royalty","icon":"🌸","gwansang":"꽃옹주상","desc":"비주얼·자유분방, 사랑받고 자란 公主","attrs":{"presence":"발랄","intellect":"직관","extroversion":"외향","intensity":"푸근","vibe_age":"앳된"},"ohaeng":"火"},
+{"id":6,"persona":"평강공주","gender":"女","class":"왕족","category":"royalty","icon":"🏹","gwansang":"온달의 아내상","desc":"결단력·실행력 있는 王실 女리더","attrs":{"presence":"위엄","intellect":"실용","extroversion":"외향","intensity":"강렬","vibe_age":"중후한"},"ohaeng":"金"},
+{"id":7,"persona":"영의정","gender":"男","class":"최상위 양반","category":"yangban","icon":"🏛️","gwansang":"영앤리치 예비 CEO상","desc":"1품 최고 관료, 야망과 실행력","attrs":{"presence":"위엄","intellect":"지적","extroversion":"외향","intensity":"단정","vibe_age":"노숙한"},"ohaeng":"土"},
+{"id":8,"persona":"정경부인","gender":"女","class":"최상위 양반","category":"yangban","icon":"💎","gwansang":"조선의 미세스 CEO상","desc":"정1품 부인, 가문 경영하는 마님","attrs":{"presence":"위엄","intellect":"지적","extroversion":"내향","intensity":"단정","vibe_age":"중후한"},"ohaeng":"土"},
+{"id":9,"persona":"사헌부 감찰","gender":"男","class":"양반/관리","category":"yangban","icon":"📋","gwansang":"지갑 수호신상","desc":"1원도 안 놓치는 차갑고 이성적인 뇌섹남","attrs":{"presence":"위엄","intellect":"지적","extroversion":"내향","intensity":"단정","vibe_age":"중후한"},"ohaeng":"金"},
+{"id":10,"persona":"집현전 학자","gender":"男","class":"양반/학자","category":"yangban","icon":"🎓","gwansang":"인간 챗GPT상","desc":"조선의 모든 지식을 꿰뚫는 지능형","attrs":{"presence":"온화","intellect":"지적","extroversion":"내향","intensity":"단정","vibe_age":"중후한"},"ohaeng":"水"},
+{"id":11,"persona":"신사임당","gender":"女","class":"양반/예술가","category":"yangban","icon":"🖌️","gwansang":"조선의 천재 작가상","desc":"시·서·화 다 잘하는 멀티 학식녀","attrs":{"presence":"온화","intellect":"지적","extroversion":"내향","intensity":"단정","vibe_age":"중후한"},"ohaeng":"水"},
+{"id":12,"persona":"허난설헌","gender":"女","class":"양반/시인","category":"yangban","icon":"📜","gwansang":"비운의 천재 시인상","desc":"우수에 잠긴 감성 여류 시인","attrs":{"presence":"온화","intellect":"직관","extroversion":"내향","intensity":"단정","vibe_age":"앳된"},"ohaeng":"水"},
+{"id":13,"persona":"꽃선비","gender":"男","class":"양반/유생","category":"yangban","icon":"📚","gwansang":"얼굴천재 프리패스상","desc":"얼굴로 과거 급제할 비주얼 끝판왕","attrs":{"presence":"발랄","intellect":"지적","extroversion":"외향","intensity":"단정","vibe_age":"앳된"},"ohaeng":"木"},
+{"id":14,"persona":"한량","gender":"男","class":"양반/돈 많은 백수","category":"yangban","icon":"🎭","gwansang":"도파민 플렉서상","desc":"노는 게 제일 좋은 베짱이 훈남","attrs":{"presence":"발랄","intellect":"직관","extroversion":"외향","intensity":"푸근","vibe_age":"앳된"},"ohaeng":"火"},
+{"id":15,"persona":"풍류 예인남","gender":"男","class":"중인/예술가","category":"yangban","icon":"🎵","gwansang":"유죄인간 폭스상","desc":"거문고 든 매력남, 가만히 있어도 홀리는","attrs":{"presence":"발랄","intellect":"직관","extroversion":"외향","intensity":"강렬","vibe_age":"중후한"},"ohaeng":"火"},
+{"id":16,"persona":"암행어사","gender":"男","class":"양반/특수 관료","category":"yangban","icon":"🦸","gwansang":"히어로 정의구현상","desc":"정의와 암약, 조선의 다크나이트","attrs":{"presence":"위엄","intellect":"지적","extroversion":"내향","intensity":"강렬","vibe_age":"중후한"},"ohaeng":"金"},
+{"id":17,"persona":"내의원 의관","gender":"男","class":"중인/전문직","category":"jungin","icon":"💊","gwansang":"워커홀릭 갓생러상","desc":"일할 때 도파민 터지는 男 의사","attrs":{"presence":"온화","intellect":"지적","extroversion":"내향","intensity":"단정","vibe_age":"중후한"},"ohaeng":"水"},
+{"id":18,"persona":"내의원 의녀","gender":"女","class":"중인/전문직","category":"jungin","icon":"🩺","gwansang":"워커홀릭 갓생러녀상","desc":"여성 의료인의 정점, 똑똑한 일중독","attrs":{"presence":"온화","intellect":"지적","extroversion":"내향","intensity":"단정","vibe_age":"중후한"},"ohaeng":"水"},
+{"id":19,"persona":"관상감 천문학자","gender":"男","class":"중인/기술직","category":"jungin","icon":"🔭","gwansang":"디테일 변태 장인상","desc":"1mm 오차도 안 놓치는 완벽주의","attrs":{"presence":"온화","intellect":"지적","extroversion":"내향","intensity":"단정","vibe_age":"중후한"},"ohaeng":"水"},
+{"id":20,"persona":"도화서 화원","gender":"男","class":"중인/화가","category":"jungin","icon":"🎨","gwansang":"미친 감성 아티스트상","desc":"혼자만의 세계가 뚜렷한 미친 감성 천재","attrs":{"presence":"발랄","intellect":"직관","extroversion":"내향","intensity":"단정","vibe_age":"중후한"},"ohaeng":"木"},
+{"id":21,"persona":"역관","gender":"男","class":"중인/통역","category":"jungin","icon":"🌍","gwansang":"글로벌 인재상","desc":"외국어 능통한 엘리트 중인","attrs":{"presence":"발랄","intellect":"지적","extroversion":"외향","intensity":"단정","vibe_age":"중후한"},"ohaeng":"水"},
+{"id":22,"persona":"율관","gender":"男","class":"중인/법률","category":"jungin","icon":"⚖️","gwansang":"법률 전문가상","desc":"논리·정확함, 조선의 변호사","attrs":{"presence":"위엄","intellect":"지적","extroversion":"내향","intensity":"단정","vibe_age":"중후한"},"ohaeng":"金"},
+{"id":23,"persona":"풍수가","gender":"男","class":"중인/풍수","category":"jungin","icon":"🧭","gwansang":"공간의 마에스트로상","desc":"기맥·지세 읽는 직관 신비주의","attrs":{"presence":"위엄","intellect":"직관","extroversion":"내향","intensity":"강렬","vibe_age":"노숙한"},"ohaeng":"土"},
+{"id":24,"persona":"심마니","gender":"男","class":"평민/약초꾼","category":"jungin","icon":"🌿","gwansang":"산속 도사상","desc":"산삼 캐며 자연과 교감하는 고독한 장인","attrs":{"presence":"온화","intellect":"직관","extroversion":"내향","intensity":"푸근","vibe_age":"노숙한"},"ohaeng":"木"},
+{"id":25,"persona":"장군","gender":"男","class":"양반/고위 무관","category":"warrior","icon":"🛡️","gwansang":"갓벽한 대장상","desc":"질 수 없다는 책임감 끝판왕","attrs":{"presence":"위엄","intellect":"실용","extroversion":"외향","intensity":"강렬","vibe_age":"중후한"},"ohaeng":"金"},
+{"id":26,"persona":"여검객 홍계월","gender":"女","class":"무관","category":"warrior","icon":"🗡️","gwansang":"여전사 홍계월상","desc":"남장하고 검 든 여전사, 결연한 표정","attrs":{"presence":"위엄","intellect":"실용","extroversion":"내향","intensity":"강렬","vibe_age":"중후한"},"ohaeng":"金"},
+{"id":27,"persona":"호위무사","gender":"男","class":"중인/무관","category":"warrior","icon":"⚔️","gwansang":"순도 100% 진국상","desc":"한번 정 주면 끝까지 지키는 상남자","attrs":{"presence":"온화","intellect":"실용","extroversion":"내향","intensity":"강렬","vibe_age":"중후한"},"ohaeng":"金"},
+{"id":28,"persona":"포수","gender":"男","class":"평민/사냥꾼","category":"warrior","icon":"🏹","gwansang":"야생 헌터상","desc":"산속 호랑이 쫓는 고독한 사냥꾼","attrs":{"presence":"온화","intellect":"실용","extroversion":"내향","intensity":"강렬","vibe_age":"중후한"},"ohaeng":"金"},
+{"id":29,"persona":"의병","gender":"男","class":"평민/의병","category":"warrior","icon":"🔥","gwansang":"정의의 의병상","desc":"나라 위해 일어선 희생·정의감","attrs":{"presence":"위엄","intellect":"실용","extroversion":"외향","intensity":"강렬","vibe_age":"중후한"},"ohaeng":"火"},
+{"id":30,"persona":"지밀상궁","gender":"女","class":"궁녀/관료","category":"palace","icon":"🔑","gwansang":"엄격한 비서실장상","desc":"내전 지밀 담당, 1mm도 안 봐주는 정5품","attrs":{"presence":"위엄","intellect":"지적","extroversion":"내향","intensity":"단정","vibe_age":"중후한"},"ohaeng":"金"},
+{"id":31,"persona":"수방상궁","gender":"女","class":"궁녀/관료","category":"palace","icon":"🪡","gwansang":"1mm 자수 장인상","desc":"궁중 자수방 총괄, 완벽주의 끝판왕","attrs":{"presence":"온화","intellect":"지적","extroversion":"내향","intensity":"단정","vibe_age":"중후한"},"ohaeng":"水"},
+{"id":32,"persona":"수라간 상궁","gender":"女","class":"궁녀/관료","category":"palace","icon":"🍲","gwansang":"쩝쩝박사 먹방러상","desc":"식탐과 미각이 뛰어난 쩝쩝박사","attrs":{"presence":"온화","intellect":"실용","extroversion":"외향","intensity":"푸근","vibe_age":"중후한"},"ohaeng":"土"},
+{"id":33,"persona":"침선비","gender":"女","class":"궁녀/장인","category":"palace","icon":"🧵","gwansang":"궁중 자수녀상","desc":"바느질 한 땀에 영혼 갈아넣는 장인","attrs":{"presence":"온화","intellect":"직관","extroversion":"내향","intensity":"단정","vibe_age":"중후한"},"ohaeng":"木"},
+{"id":34,"persona":"숙수","gender":"男","class":"중인/요리","category":"palace","icon":"🍳","gwansang":"조선 男 셰프상","desc":"궁중·관청의 男 요리사","attrs":{"presence":"온화","intellect":"실용","extroversion":"외향","intensity":"푸근","vibe_age":"중후한"},"ohaeng":"土"},
+{"id":35,"persona":"내시","gender":"男","class":"중인/궁중관료","category":"palace","icon":"🔐","gwansang":"왕실 비서상","desc":"왕 곁의 男 관료, 신중·충성","attrs":{"presence":"위엄","intellect":"지적","extroversion":"내향","intensity":"단정","vibe_age":"노숙한"},"ohaeng":"水"},
+{"id":36,"persona":"승려","gender":"男","class":"종교","category":"religion","icon":"📿","gwansang":"깨달은 선승상","desc":"가사 두른 男 승려, 깨달음·고행","attrs":{"presence":"위엄","intellect":"직관","extroversion":"내향","intensity":"단정","vibe_age":"노숙한"},"ohaeng":"木"},
+{"id":37,"persona":"비구니","gender":"女","class":"종교","category":"religion","icon":"🕊️","gwansang":"절제 수행자상","desc":"속세 떠난 女 승려, 내면의 평온","attrs":{"presence":"온화","intellect":"직관","extroversion":"내향","intensity":"단정","vibe_age":"중후한"},"ohaeng":"木"},
+{"id":38,"persona":"무녀","gender":"女","class":"종교/예능","category":"religion","icon":"🌙","gwansang":"원조 타로마스터상","desc":"방울·신주 든 女 무당, 신기·접신","attrs":{"presence":"위엄","intellect":"직관","extroversion":"외향","intensity":"강렬","vibe_age":"중후한"},"ohaeng":"火"},
+{"id":39,"persona":"박수무당","gender":"男","class":"종교/예능","category":"religion","icon":"⚡","gwansang":"男 무속인상","desc":"방울·부적 든 男 무당","attrs":{"presence":"위엄","intellect":"직관","extroversion":"외향","intensity":"강렬","vibe_age":"중후한"},"ohaeng":"火"},
+{"id":40,"persona":"도사","gender":"男","class":"종교/은자","category":"religion","icon":"🍃","gwansang":"신선급 도인상","desc":"산속 동굴의 백발 도사, 신비주의","attrs":{"presence":"위엄","intellect":"직관","extroversion":"내향","intensity":"강렬","vibe_age":"노숙한"},"ohaeng":"木"},
+{"id":41,"persona":"일패명기","gender":"女","class":"중인/예인","category":"performer","icon":"🎼","gwansang":"유죄인간 폭스녀상","desc":"황진이급 시·서·악 갖춘 예술가급 명기","attrs":{"presence":"발랄","intellect":"직관","extroversion":"외향","intensity":"강렬","vibe_age":"중후한"},"ohaeng":"火"},
+{"id":42,"persona":"사당패녀","gender":"女","class":"천민/예인","category":"performer","icon":"🥁","gwansang":"여 인싸 광대상","desc":"북·장구 든 女 사당패, 무대 인싸","attrs":{"presence":"발랄","intellect":"실용","extroversion":"외향","intensity":"강렬","vibe_age":"중후한"},"ohaeng":"火"},
+{"id":43,"persona":"시장 광대","gender":"男","class":"천민/예인","category":"performer","icon":"🎪","gwansang":"인간 알고리즘상","desc":"알고리즘이 무조건 픽할 男 인싸 기질","attrs":{"presence":"발랄","intellect":"직관","extroversion":"외향","intensity":"강렬","vibe_age":"중후한"},"ohaeng":"火"},
+{"id":44,"persona":"남자 명창","gender":"男","class":"천민/예인","category":"performer","icon":"🎤","gwansang":"조선의 男 디바상","desc":"판소리 男 명창, 서편제·동편제 거목","attrs":{"presence":"발랄","intellect":"직관","extroversion":"외향","intensity":"강렬","vibe_age":"중후한"},"ohaeng":"火"},
+{"id":45,"persona":"여자 명창","gender":"女","class":"천민/예인","category":"performer","icon":"🎙️","gwansang":"조선의 女 디바상","desc":"판소리 女 명창, 이화중선 같은 전설","attrs":{"presence":"발랄","intellect":"직관","extroversion":"외향","intensity":"강렬","vibe_age":"중후한"},"ohaeng":"火"},
+{"id":46,"persona":"거상","gender":"男","class":"중인/부유한 상인","category":"merchant","icon":"💰","gwansang":"강남 건물주상","desc":"돈 냄새 기가 막히게 맡는 힙한 男 상인","attrs":{"presence":"위엄","intellect":"실용","extroversion":"외향","intensity":"단정","vibe_age":"중후한"},"ohaeng":"土"},
+{"id":47,"persona":"김만덕","gender":"女","class":"평민/거상","category":"merchant","icon":"💹","gwansang":"조선의 워런 버핏녀상","desc":"제주 출신 실존 女 거상","attrs":{"presence":"위엄","intellect":"실용","extroversion":"외향","intensity":"단정","vibe_age":"중후한"},"ohaeng":"土"},
+{"id":48,"persona":"보부상","gender":"男","class":"평민/상인","category":"merchant","icon":"🎒","gwansang":"프로 역마살러상","desc":"어딜 던져놔도 오아시스 찾는 적응력","attrs":{"presence":"발랄","intellect":"실용","extroversion":"외향","intensity":"푸근","vibe_age":"중후한"},"ohaeng":"土"},
+{"id":49,"persona":"매분구","gender":"女","class":"평민/행상","category":"merchant","icon":"💄","gwansang":"장돌뱅이녀상","desc":"화장품 광주리 이고 장터 도는 女 행상","attrs":{"presence":"발랄","intellect":"실용","extroversion":"외향","intensity":"푸근","vibe_age":"중후한"},"ohaeng":"土"},
+{"id":50,"persona":"객주","gender":"男","class":"중인/도매상","category":"merchant","icon":"🏪","gwansang":"도매상 큰손상","desc":"객주집 운영, 거래 중개의 큰손","attrs":{"presence":"위엄","intellect":"실용","extroversion":"외향","intensity":"단정","vibe_age":"중후한"},"ohaeng":"土"},
+{"id":51,"persona":"농부","gender":"男","class":"평민","category":"commoner","icon":"👨‍🌾","gwansang":"성실한 가장상","desc":"인구 70%, 묵묵히 땅 가꾸는 근면","attrs":{"presence":"온화","intellect":"실용","extroversion":"외향","intensity":"푸근","vibe_age":"중후한"},"ohaeng":"土"},
+{"id":52,"persona":"농부의 처","gender":"女","class":"평민","category":"commoner","icon":"👩‍🌾","gwansang":"근면 안주인상","desc":"노동·인내, 가족 위해 헌신","attrs":{"presence":"온화","intellect":"실용","extroversion":"외향","intensity":"푸근","vibe_age":"중후한"},"ohaeng":"土"},
+{"id":53,"persona":"어부","gender":"男","class":"평민","category":"commoner","icon":"🎣","gwansang":"바다의 사나이상","desc":"바다 위 자유로운 영혼","attrs":{"presence":"온화","intellect":"실용","extroversion":"외향","intensity":"강렬","vibe_age":"중후한"},"ohaeng":"水"},
+{"id":54,"persona":"잠녀(해녀)","gender":"女","class":"평민","category":"commoner","icon":"🌊","gwansang":"제주 억척녀상","desc":"바다에 뛰어드는 강인한 女 노동자","attrs":{"presence":"위엄","intellect":"실용","extroversion":"외향","intensity":"강렬","vibe_age":"중후한"},"ohaeng":"水"},
+{"id":55,"persona":"옹기장인","gender":"男","class":"평민/장인","category":"commoner","icon":"🏺","gwansang":"알빠노 마이웨이상","desc":"남 눈치 안 보고 자기 작품에만 몰입","attrs":{"presence":"위엄","intellect":"실용","extroversion":"내향","intensity":"단정","vibe_age":"중후한"},"ohaeng":"土"},
+{"id":56,"persona":"대장장이","gender":"男","class":"평민/장인","category":"commoner","icon":"🔨","gwansang":"겉바속촉 츤데레상","desc":"터프하지만 속은 말랑말랑한 마시멜로","attrs":{"presence":"위엄","intellect":"실용","extroversion":"내향","intensity":"강렬","vibe_age":"중후한"},"ohaeng":"金"},
+{"id":57,"persona":"직조녀","gender":"女","class":"평민/장인","category":"commoner","icon":"🧶","gwansang":"베틀 장인녀상","desc":"베틀 앞 무뚝뚝, 한 올 한 올 정성","attrs":{"presence":"위엄","intellect":"실용","extroversion":"내향","intensity":"단정","vibe_age":"중후한"},"ohaeng":"木"},
+{"id":58,"persona":"주막 주모","gender":"女","class":"평민/인싸","category":"commoner","icon":"🍶","gwansang":"무해한 힐러상","desc":"고민 상담소 차려도 될 정도의 인복","attrs":{"presence":"온화","intellect":"실용","extroversion":"외향","intensity":"푸근","vibe_age":"중후한"},"ohaeng":"土"},
+{"id":59,"persona":"주막 알바생","gender":"男","class":"평민","category":"commoner","icon":"🐕","gwansang":"럭키비키상","desc":"눈치 0단이지만 주변에서 알아서 챙겨줌","attrs":{"presence":"발랄","intellect":"실용","extroversion":"외향","intensity":"푸근","vibe_age":"앳된"},"ohaeng":"土"},
+{"id":60,"persona":"찬모","gender":"女","class":"평민/요리","category":"commoner","icon":"🥘","gwansang":"푸근한 찬모상","desc":"양반가 부엌 운영하는 푸근한 어멈","attrs":{"presence":"온화","intellect":"실용","extroversion":"외향","intensity":"푸근","vibe_age":"중후한"},"ohaeng":"土"}
+];
+const ERRORS=[
+{"id":"E1","persona":"도깨비","icon":"👹","gwansang":"인간계 이탈상","error_msg":"사람 사진을 올려주세요!"},
+{"id":"E2","persona":"심령","icon":"👻","gwansang":"전설의 고향상","error_msg":"밝고 선명한 사진을 올려주세요!"},
+{"id":"E3","persona":"도깨비 분신","icon":"👥","gwansang":"분신술 장인상","error_msg":"1명만 나온 사진을 올려주세요!"},
+{"id":"E4","persona":"꼬마 도령","icon":"👶","gwansang":"천하무적 뽀시래기상","error_msg":"으른(?) 사진을 올려주세요!"},
+{"id":"E5","persona":"복면 자객","icon":"🥷","gwansang":"신비주의 철벽보안상","error_msg":"얼굴이 다 나온 사진을 올려주세요!"},
+{"id":"E6","persona":"목판화","icon":"🖼️","gwansang":"2차원 종이인간상","error_msg":"현실 세계 사람 사진을 올려주세요!"}
+];
+
+const nm=USER.name;
+
+// ===== page.tsx 헬퍼 그대로 포팅 =====
+// _josa: 받침 기반 조사
+function josa(name,type){ // type: '은는'|'을를'|'이가'
+  if(!name)return type==="은는"?"는":type==="을를"?"를":"가";
+  const lc=name.charCodeAt(name.length-1);
+  if(lc<0xAC00||lc>0xD7A3){const m={은는:"는",을를:"를",이가:"가"};return m[type];}
+  const jong=(lc-0xAC00)%28;
+  if(type==="은는")return jong?"은":"는";
+  if(type==="을를")return jong?"을":"를";
+  return jong?"이":"가";
+}
+const C=s=>`<span class="const">${s}</span>`; // 공통 고정문
+const G=s=>`<em>${s}</em>`; // 페르소나 고유
+
+// _joseonStory (전생 시나리오) — category별 고정문, ohaeng/이름만 치환
+function joseonStory(rt,who){
+  const oh={"火":"불처럼 뜨거운 열정","水":"물처럼 깊고 유연한 지혜","木":"나무처럼 곧게 자라는 의지","金":"쇠처럼 단단한 결단력","土":"흙처럼 든든한 신뢰감"};
+  const ohaeng=oh[rt.ohaeng]||"독특한 기운";
+  const cat={
+    royalty:`궁궐 깊은 곳에서 ${who}님은 ${ohaeng}으로 사람들을 다스렸을 거예요. 한 번 입을 열면 모두가 귀 기울이고, 한 번 미소 지으면 신하들이 무릎 꿇었죠. 평생 부귀영화 속에서 살았지만, 그만큼 외로움과 책임도 컸어요. 단, 권력 다툼 속에서 늘 한 발 앞을 내다봐야 했답니다.`,
+    yangban:`사대부 ${who}님은 ${ohaeng}으로 학문과 예의의 길을 걸었을 거예요. 사랑채에서 손님을 맞고 글을 쓰며 후학을 가르쳤죠. 가문의 자존심을 지키면서도 시대를 읽는 눈이 있었어요. 글 한 줄이 사람을 살리고 죽일 수 있는 시대였답니다.`,
+    jungin:`중인 신분 ${who}님은 ${ohaeng}으로 전문 영역에서 두각을 나타냈을 거예요. 양반과 평민 사이에서 실력으로 승부했던 사람들 — 의술·역관·산학 등에서 인정받았죠. 신분의 한계는 있었지만, ${who}님 같은 인재는 어디서든 빛이 났어요.`,
+    warrior:`무인 ${who}님은 ${ohaeng}으로 칼과 활을 다뤘을 거예요. 전장에서는 두려움 없이 앞장서고, 평시에도 흐트러짐이 없었죠. 충(忠)과 의(義)를 목숨처럼 여긴 사람 — 한 번 약속한 것은 끝까지 지키는 ${who}님이었답니다.`,
+    palace:`궁녀 ${who}님은 ${ohaeng}으로 궁궐의 보이지 않는 손이 되었을 거예요. 왕실의 일거수일투족을 챙기고, 비밀을 지키며, 정확한 판단으로 신뢰를 쌓았죠. 보이지 않게 가장 중요한 일을 한 사람 — 궁궐은 ${who}님 같은 사람으로 돌아갔어요.`,
+    religion:`종교인 ${who}님은 ${ohaeng}으로 세속을 떠나 마음의 길을 걸었을 거예요. 사람들의 고민과 슬픔을 들어주고, 조용히 위로를 건넸죠. 시끄러운 세상에서 가장 평온한 미소를 가진 사람 — ${who}님 앞에 서면 누구나 마음이 편해졌답니다.`,
+    performer:`예인 ${who}님은 ${ohaeng}으로 무대 위에서 빛났을 거예요. 한 곡 한 마디에 사람들을 울리고 웃겼죠. 화려한 박수를 받으면서도 자신만의 예술혼을 잃지 않았어요. 신분은 낮아도 마음만은 누구보다 자유로웠답니다.`,
+    merchant:`상인 ${who}님은 ${ohaeng}으로 시장을 누비며 큰 부(富)를 일궜을 거예요. 사람을 보는 눈, 흐름을 읽는 감각 — 신분의 한계를 실력으로 뛰어넘은 사람이에요. 평생 일군 재산이 후손까지 흘렀고, ${who}님의 이름은 상도(商道)의 본보기로 남았답니다.`,
+    commoner:`서민 ${who}님은 ${ohaeng}으로 일상의 한 자리를 든든히 지켰을 거예요. 화려하진 않아도 정직하게 일하고, 사람을 아끼는 마음으로 살았죠. 진짜 조선을 만든 건 ${who}님 같은 사람들 — 흙냄새 나는 손에서 나라가 자랐어요.`,
+  };
+  return cat[rt.category]||cat.commoner;
+}
+
+// PAGE1 desc 보강 박스 ohaeng 문구
+function ohaengClause(oh){
+  return oh==="木"?" 성장·창의·문기(文氣)가 가득한":oh==="火"?" 열정·매력·카리스마가 넘치는":oh==="土"?" 안정·신뢰·풍요로움을 갖춘":oh==="金"?" 결단·의리·정의가 빛났던":" 지혜·깊이·수행이 깊었던";
+}
+
+// 다섯 가지 결 — 라벨/설명/현대매칭/시대맥락
+const ATTR_LABELS={presence:"존재감",intellect:"지성",extroversion:"성향",intensity:"강도",vibe_age:"분위기"};
+const ATTR_DESC={
+  presence:{위엄:"묵직한 첫인상, 자리를 채우는 결",온화:"편안하게 다가오는 따뜻한 결",발랄:"기분 좋은 에너지를 주는 첫인상"},
+  intellect:{지적:"차분히 통찰하는 머리 결",직관:"느낌으로 꿰뚫는 감각 결",실용:"현실에 발 디딘 똑부러진 결"},
+  extroversion:{외향:"사람 속에서 빛나는 결",내향:"혼자만의 시간이 채우는 결"},
+  intensity:{강렬:"한 번 보면 잊히지 않는 결",단정:"절제와 균형이 빚은 결",푸근:"마음을 녹이는 부드러운 결"},
+  vibe_age:{앳된:"젊고 신선한 분위기의 결",중후한:"농익은 깊이가 느껴지는 결",노숙한:"삶의 무게가 묻어나는 결"},
+};
+const MODERN_MATCH={
+  royalty:"정치인·CEO·셀럽 (영향력 큰 리더)",yangban:"교수·전문직·고위 공무원 (지식·권위)",jungin:"의사·변호사·전문 기술자 (전문성)",warrior:"군인·경찰·운동선수 (강한 의지)",palace:"방송인·아나운서·연예인 (대중 노출)",religion:"심리상담사·요가강사·작가 (영성·치유)",performer:"예술가·뮤지션·인플루언서 (창의·표현)",merchant:"사업가·마케터·트레이더 (재물 감각)",commoner:"장인·자영업·크리에이터 (성실·실속)",
+};
+const ERA_CONTEXT={
+  royalty:"조선 전체 시기 · 왕실 중심",yangban:"조선 전기~후기 · 사대부 사회",jungin:"조선 후기 · 전문 직업 발달",warrior:"조선 전체 · 변방·국경 수호",palace:"조선 전체 · 궁중 봉직",religion:"조선 전체 · 사찰·서원·민간",performer:"조선 후기 · 예능 발달",merchant:"조선 후기 (17~19세기) · 상업 발달",commoner:"조선 전체 · 백성의 일상",
+};
+
+// vibe_age 출력 헬퍼 — 코드와 동일: replace(/한$/,"") 후 끝이 "한"이면 "한" 재부착
+function vibeBase(v){return String(v).replace(/한$/,"");}
+function vibeSuffix(v){return String(v).endsWith("한")?"한":"";}
+
+// 오행 상생/상극
+const ohSheng={木:"火",火:"土",土:"金",金:"水",水:"木"};
+const ohKeuk={木:"土",土:"水",水:"火",火:"金",金:"木"};
+function findMatch(oh,myId,myG){
+  return TYPES.find(t=>t.id!==myId&&t.ohaeng===oh&&t.gender===myG)||TYPES.find(t=>t.id!==myId&&t.ohaeng===oh);
+}
+
+// ===== 요약 표 =====
+const tb=document.querySelector('#sumtable tbody');
+TYPES.forEach(t=>{
+  const a=t.attrs;
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td>${t.id}</td><td>${t.icon} <b>${t.persona}</b></td><td>${t.gender}</td><td>${t.class}</td><td class="cat-pill">${t.category}</td><td>${t.ohaeng}</td><td>${t.gwansang}</td><td>${a.presence}</td><td>${a.intellect}</td><td>${a.extroversion}</td><td>${a.intensity}</td><td>${vibeBase(a.vibe_age)+vibeSuffix(a.vibe_age)}</td>`;
+  tb.appendChild(tr);
+});
+
+// ===== 풀 카드 =====
+const wrap=document.getElementById('wrap');
+TYPES.forEach(t=>{
+  const a=t.attrs;
+  const genderKo=t.gender==="男"?"남자":"여자";
+
+  // PAGE1 페르소나 헤더 desc 보강
+  const descBox=`📜 <strong>${G(t.persona)}${josa(t.persona,"이가")} 어떤 사람?</strong><br>${G(t.desc)}`
+    +(t.class&&t.ohaeng?`<span style="display:block;margin-top:6px;color:#555;">조선시대 ${G(t.class)} 신분으로 살았던 인물로, ${G(t.ohaeng+" 기운")}을 타고나${C(ohaengClause(t.ohaeng))} ${genderKo}였답니다.</span>`:``);
+
+  // 전생 시나리오
+  const story=joseonStory(t,nm);
+
+  // PAGE2 핵심 인상
+  const impress=`최첨단 AI 화공이 ${C(nm+"님")}의 사진을 분석해, 얼굴의 이목구비·표정·분위기에서 조선시대 ${G(t.persona)}의 전형적인 인상을 포착했어요.`
+    +`<br><span style="display:block;margin-top:6px;color:#666;">`
+    +`${G(a.presence)}한 존재감, ${G(a.intellect)}인 지성, ${G(a.intensity)}한 강도, ${G(vibeBase(a.vibe_age))}${vibeSuffix(a.vibe_age)} 분위기`
+    +` — ${C("조선 60종 페르소나 중 가장 닮은 신분이에요.")}</span>`
+    +`<span style="display:block;margin-top:6px;font-size:11px;color:#888;font-style:italic;">그래서 AI가 ${nm}님의 사진을 토대로 위 조선 초상화를 합성해드렸답니다.</span>`;
+
+  // 다섯 가지 결 그리드
+  let grid='';
+  for(const k of["presence","intellect","extroversion","intensity","vibe_age"]){
+    const v=a[k];
+    grid+=`<div class="ab"><div class="k">${ATTR_LABELS[k]}</div><div class="v">${k==="vibe_age"?vibeBase(v):v}</div></div>`;
+  }
+  // 결 한줄 풀이
+  let descLines='';
+  for(const k of["presence","intellect","extroversion","intensity","vibe_age"]){
+    const v=a[k];const d=ATTR_DESC[k]&&ATTR_DESC[k][v];if(!d)continue;
+    if(k==="vibe_age"){descLines+=`<div>${G(vibeBase(v))}${vibeSuffix(v)} ${ATTR_LABELS[k]} — ${d}</div>`;}
+    else{descLines+=`<div>${G(v)}한 ${ATTR_LABELS[k]} — ${d}</div>`;}
+  }
+  const modern=MODERN_MATCH[t.category]||'';
+  const era=ERA_CONTEXT[t.category]||'';
+
+  // 찰떡/상극
+  const bestT=findMatch(ohSheng[t.ohaeng],t.id,t.gender);
+  const worstT=findMatch(ohKeuk[t.ohaeng],t.id,t.gender);
+  let matchHTML='';
+  if(bestT||worstT){
+    matchHTML=`<div class="matchbox">`
+      +(bestT?`<div class="mb good">💚 찰떡<br><b>${bestT.icon} ${bestT.persona}</b><br><span style="font-size:9px;">${bestT.ohaeng} 기운 · ${bestT.gender==="男"?"남자":"여자"}</span></div>`:'')
+      +(worstT?`<div class="mb bad">⚡ 상극<br><b>${worstT.icon} ${worstT.persona}</b><br><span style="font-size:9px;">${worstT.ohaeng} 기운 · ${worstT.gender==="男"?"남자":"여자"}</span></div>`:'')
+      +`</div><div style="font-size:9px;color:#888;text-align:center;margin-top:6px;">오행 상생(${t.ohaeng}→${ohSheng[t.ohaeng]})·상극(${t.ohaeng}↔${ohKeuk[t.ohaeng]}) 기반</div>`;
+  }
+
+  const hashtags=`#천기관상 #조선초상화 #${nm} #조선시대신분 #${t.persona.replace(/\s/g,"")}`;
+
+  const c=document.createElement('div');
+  c.className='card';
+  c.innerHTML=`
+   <div class="top">
+     <div class="big">${t.id}. ${t.icon} ${G(t.persona)}</div>
+     <div class="sub">${G(t.class)} · ${G(t.gender==="男"?"남자":"여자")} · ${G(t.ohaeng+" 기운")} · 관상 "${G(t.gwansang)}"</div>
+   </div>
+   <div class="ph"><div class="pic">${t.icon}</div><div class="lab">[합성 일러스트 placeholder]</div><div style="font-size:9px;margin-top:3px;color:#b0a280;">joseon (${t.id}).png</div></div>
+
+   <div class="sect"><div class="lbl">— PAGE 1 —</div>
+     <div style="font-size:11px;color:#888;">${C("조선시대 신분으로 그린 초상화")} · ${C("👑 "+nm+"님의 조선시대 모습")}</div>
+   </div>
+
+   <div class="sect gold-bg"><div class="lbl">📜 어떤 사람? (페르소나 헤더)</div>${descBox}</div>
+
+   <div class="sect"><div class="lbl">✨ 500년 전 전생 시나리오 ${C("(category 고정문)")}</div>
+     <div style="font-size:11px;color:#7A5C00;margin-bottom:6px;">${C("만약 "+nm+"님이 조선시대에 태어났다면…")}</div>
+     ${C(story)}
+   </div>
+
+   <div class="sect"><div class="lbl">✨ 조선 초상화 소개 ${C("(전 페르소나 동일)")}</div>
+     ${C("조선 초상화는 AI 화공이 내 얼굴을 분석해서, 조선시대 60종 페르소나(왕족·양반·중인·무인·궁녀·예인·상인·서민 등) 중 가장 닮은 신분으로 그려주는 콘텐츠예요.")}
+   </div>
+
+   <div class="footer">${G(hashtags)} &nbsp;·&nbsp; 🌐 천기.kr</div>
+
+   <div class="sect"><div class="lbl">— PAGE 2 —</div>
+     <div style="font-size:11px;color:#888;">${C("🔍 어떻게 "+t.persona+josa(t.persona,"이가")+" 나왔을까?")}</div>
+   </div>
+
+   <div class="sect gold-bg"><div class="lbl">🔍 AI가 포착한 핵심 인상</div>${impress}</div>
+
+   <div class="sect"><div class="lbl">✨ 얼굴이 풍기는 다섯 가지 결</div>
+     <div class="attrgrid">${grid}</div>
+     <div class="desclist">${descLines}</div>
+     ${modern?`<div style="margin-top:8px;font-size:11px;color:#1e3a5f;background:#f0f7ff;border-radius:9px;padding:8px 11px;border:1px solid rgba(5,77,149,.15);">🎯 <b>${C("현대 직업으로 치면")}</b> — ${C(modern)}</div>`:''}
+     ${era?`<div style="margin-top:6px;font-size:11px;color:#7A5C00;background:#fef9e7;border-radius:9px;padding:8px 11px;border:1px solid rgba(212,175,55,.2);">🕰️ <b>${C("시대 맥락")}</b> — ${C(era)}</div>`:''}
+   </div>
+
+   <div class="sect"><div class="lbl">💞 내 신분과 케미 좋은 / 안 좋은 신분</div>${matchHTML}</div>
+
+   <div class="sect"><div class="lbl">💡 안내 ${C("(전 페르소나 동일)")}</div>
+     ${C("천기 AI가 60종 신분 중 가장 가까운 인물을 골라드린 거예요. 같은 사진도 다른 각도·표정에서는 다른 결과가 나올 수 있어요!")}
+   </div>
+
+   <div class="footer">${G(hashtags)} &nbsp;·&nbsp; 🌐 천기.kr</div>
+  `;
+  wrap.appendChild(c);
+});
+
+// ===== 에러 카드 =====
+const el=document.getElementById('errlist');
+el.innerHTML='<div style="margin-top:10px;">'+ERRORS.map(e=>
+  `<div style="padding:8px 0;border-bottom:1px solid #f0ece2;">${e.icon} <b>${e.persona}</b> <span style="color:#888;font-size:11px;">(${e.gwansang})</span> → 에러 메시지: <em>"${e.error_msg}"</em></div>`
+).join('')+'</div>';
+</script>
+</body>
+</html>

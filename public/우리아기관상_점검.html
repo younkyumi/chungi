@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍼 우리 아기 관상 20종 결과 점검본</title>
+<style>
+  body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#ece6da;margin:0;padding:18px;color:#222;}
+  h1{text-align:center;color:#1A3C32;}
+  .note{max-width:900px;margin:0 auto 18px;background:#fff;border-radius:12px;padding:14px 18px;font-size:13px;line-height:1.85;box-shadow:0 4px 14px rgba(0,0,0,.06);}
+  .note b{color:#b91c1c;}
+  .legend{max-width:900px;margin:0 auto 18px;background:#fff;border-radius:12px;padding:12px 18px;font-size:12.5px;line-height:1.9;box-shadow:0 4px 14px rgba(0,0,0,.06);}
+  em{color:#B8942E;font-style:normal;font-weight:800;}
+  .fix{color:#555;font-weight:700;background:#f1efe8;border-radius:5px;padding:1px 6px;}
+  table.sum{max-width:1000px;margin:0 auto 24px;border-collapse:collapse;background:#fff;font-size:12.5px;box-shadow:0 4px 14px rgba(0,0,0,.06);}
+  table.sum th,table.sum td{border:1px solid #e3dccb;padding:6px 9px;text-align:left;}
+  table.sum th{background:#1A3C32;color:#fff;}
+  table.sum tr:nth-child(even){background:#faf7f0;}
+  .wrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:16px;max-width:1320px;margin:0 auto;}
+  .card{background:#fff;border-radius:18px;padding:0;overflow:hidden;box-shadow:0 8px 22px rgba(0,0,0,.08);border:1px solid rgba(201,167,78,0.3);}
+  .top{background:linear-gradient(135deg,#1A3C32,#2d5f4d);color:#fff;padding:16px 18px;text-align:center;}
+  .top .ph{width:84px;height:84px;border-radius:14px;background:rgba(255,255,255,.08);border:1px dashed rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 8px;}
+  .top .big{font-size:19px;font-weight:900;}
+  .top .kw{font-size:11px;color:#cfe5d8;margin-top:4px;}
+  .scoreband{background:#fafafa;padding:10px 16px;text-align:center;font-size:12px;border-bottom:1px solid #f0ece2;}
+  .pill{display:inline-block;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;margin:2px;}
+  .pill.pur{background:#f0e6ff;color:#7c3aed;}
+  .pill.gold{background:#fffbeb;color:#b45309;}
+  .pill.red{background:#fff0f3;color:#e03131;}
+  .pill.green{background:#e8fdf4;color:#059669;}
+  .pill.blue{background:#e8f4fd;color:#1a73e8;}
+  .sect{padding:12px 18px;border-bottom:1px solid #f0ece2;font-size:13px;line-height:1.8;}
+  .sect .lbl{font-size:10px;font-weight:800;color:#1A3C32;letter-spacing:1px;margin-bottom:5px;}
+  .sect .part{font-size:10px;color:#999;font-style:italic;margin-bottom:6px;}
+  .sect.match{background:#fffdf5;}
+  .cert{background:linear-gradient(135deg,#1A3C32,#2d5f4d 50%,#1A3C32);color:#E8E8EC;padding:18px;text-align:center;border:3px double #C0C0C8;border-radius:14px;margin:12px;}
+  .cert .label{font-size:9px;letter-spacing:3px;color:#C0C0C8;margin-bottom:6px;}
+  .cert .cname{font-size:18px;font-weight:900;color:#E8E8EC;margin:10px 0;}
+  .cert .body{font-size:12px;line-height:1.9;opacity:.92;margin:10px 0;}
+  .cert .tags{font-size:10px;color:#C0C0C8;font-style:italic;}
+  .aigen{display:inline-block;font-size:9px;font-weight:700;color:#777;background:#eee;border-radius:4px;padding:1px 6px;margin-left:4px;vertical-align:middle;}
+</style>
+</head>
+<body>
+<h1>🍼 우리 아기 관상 — 20종 캐릭터 결과 점검본</h1>
+<div class="note">
+  <b>📌 점검 목적</b> — "우리 아기 관상"(sid: <code>baby_gwansang</code>, 980원) 결과팝업의 모든 가짓수(아기 캐릭터 20종)를 한 화면에 나열했어. 읽으면서 오타·어색한 문구·매칭 오류를 잡아줘.<br>
+  <b>⚠️ 중요</b> — 이 콘텐츠의 본문 텍스트(첫인상·천재성·재물·교우·건강·육아 6탭의 body, 점수, 진학유형, 직업, 보석/동물, 인증서 본문 등)는 <b>전부 Gemini AI가 사진을 보고 즉석 생성</b>해. 코드에 박혀 있는 고정 텍스트가 아니야. 따라서 아래 카드의 본문은 <span class="aigen">AI 생성</span> 표시로 대체했고, <b>정적으로 점검 가능한 건 (1) 20종 캐릭터의 이름·이모지·기질 키워드·매칭 얼굴특징 (2) 화면 고정 라벨/제목/분석부위/배지 문구</b>야.
+</div>
+<div class="legend">
+  <em>골드 글씨</em> = <b>캐릭터 고유</b> (이름·이모지·기질·매칭 얼굴특징) — 20종마다 달라야 의미 있음. 시스템 프롬프트(<code>api/baby-gwansang/route.ts</code>)에 박힌 값이라 정적 점검 가능.<br>
+  <span class="fix">회색칩</span> = <b>20종 공통 고정문</b> (탭 제목·라벨·분석부위·배지 문구) — page.tsx에 하드코딩.<br>
+  <span class="aigen">AI 생성</span> = 사진별로 매번 달라지는 AI 응답 (정적 점검 불가, 실제 결과로만 확인).
+</div>
+
+<h2 style="text-align:center;color:#1A3C32;">📐 20종 공통 화면 골격 (한 번만 — 모든 캐릭터 동일)</h2>
+<div class="note" style="max-width:1000px;">
+  <b>헤더</b> <span class="fix">우리 아기 관상 상세 리포트</span> / <span class="fix">🍼 {풀네임} 아기의 관상보기</span> / 검사정보 라인<br>
+  <b>스캔 비주얼</b> 사진 + 레이저스캔 + <span class="fix">우리 아기 관상 스캐닝 완료 ✓</span><br>
+  <b>점수띠</b> <span class="aigen">{총점}점</span> ⭐⭐⭐⭐⭐ <span class="aigen">{상위 %}</span> · 배지 <span class="pill pur">🧒 천재성 {n}%</span> <span class="pill gold">💰 재물그릇 {등급}</span> <span class="pill red">🌟 인복 만점</span><br>
+  <b>탭 안내</b> <span class="fix">👇 아래 탭 버튼을 눌러 분야별 상세 리포트를 확인하세요!</span><br>
+  <b>탭 구성 (6칸 1·4·1)</b>:
+  <span class="pill green">🐣 첫인상</span>
+  <span class="pill green">🧒 천재성</span>
+  <span class="pill green">💰 재물</span>
+  <span class="pill green">🤝 교우</span>
+  <span class="pill green">🩺 건강</span>
+  <span class="pill green">🍼 엄마아빠를 위한 육아 비방</span><br>
+  <b>탭별 고정 라벨·분석부위</b><br>
+  · 🐣 <span class="fix">우리 {nm}, 첫인상 한마디</span> + <span class="fix">🌟 10년 후 {nm}의 모습</span> 박스<br>
+  · 🧒 <span class="fix">{nm}의 천재성 &amp; 예술감각</span> / 분석부위 <span class="fix">이마 + 눈 + 입</span> / <span class="fix">🧒 천재 유형: {…}</span> + 예술분야 칩<br>
+  · 💰 <span class="fix">{nm}의 재물운 &amp; 학업운</span> / 분석부위 <span class="fix">코 + 볼 + 이마 + 귀</span> / <span class="fix">🏫 천기가 본 예상 진학</span> 박스<br>
+  · 🤝 <span class="fix">{nm}의 교우관계 &amp; 리더십</span> / 분석부위 <span class="fix">눈썹 + 볼 + 턱</span> / <span class="fix">🎯 미래 직업 TOP 3</span> + 👫찰떡/⚡주의 친구 (다른 캐릭터로 매칭)<br>
+  · 🩺 <span class="fix">{nm}의 건강 &amp; 에너지</span> / 분석부위 <span class="fix">찰색 + 인중</span> / <span class="fix">💎 수호 보석</span> + <span class="fix">🦊 수호 동물</span><br>
+  · 🍼 <span class="fix">엄마아빠를 위한 육아 비방</span> + <span class="fix">📅 이번 주 {nm}에게 해주면 좋을 것</span> + <span class="fix">💌 {nm}이/가 엄마아빠에게</span> + <span class="fix">🔮 천기의 한마디</span><br>
+  <b>인증서</b> <span class="fix">👑 천상의 관상 인증서</span> / <span class="fix">CHUNGI ORIGINALS — Baby Face Reading Certificate</span> / <span class="fix">THIS BABY IS — "{캐릭터명}"</span> / 본문(AI) / 태그(AI) / 도장 <span class="fix">天機 認證</span><br>
+  <b>해시태그</b> <span class="fix">#천기관상 #우리아기관상 #{이름} #{총점}점 #{캐릭터명}</span><br>
+  <b>도감</b> <span class="fix">📚 20종 아기 캐릭터 전체 도감 보기</span> · 광고 4종(부모자식궁합·태몽·돌잡이·이름풀이)
+</div>
+
+<table class="sum" id="sumtable"><thead><tr><th>#</th><th>캐릭터</th><th>도감 표기명</th><th>기질 키워드</th><th>매칭 얼굴 특징(프롬프트)</th></tr></thead><tbody></tbody></table>
+
+<div class="wrap" id="wrap"></div>
+
+<h2 style="text-align:center;color:#1A3C32;margin-top:32px;">🚨 에러 케이스 6종 (사진 인식 실패 시)</h2>
+<div class="note" style="max-width:1000px;">
+  type_id 21~26 — 사진이 아기가 아닐 때 결과 대신 에러카드 표시. <span class="fix">⚠️ ERROR!! ERROR!!</span> / <span class="fix">사진을 인식 할 수 없습니다.</span> 고정.<br>
+  · 21 <em>동물/사물</em> (image_type: animal) — "🐾 멍상·냥상 보러가기" 버튼<br>
+  · 22 <em>흐릿/어두움</em> (unclear)<br>
+  · 23 <em>2명 이상</em> (multi)<br>
+  · 24 <em>성인(아기 X)</em> (adult) — "🔍 내 관상보기 하러가기" 버튼<br>
+  · 25 <em>얼굴 가림</em> (masked)<br>
+  · 26 <em>그림/캐릭터</em> (illustration)<br>
+  ⚠️ 에러카드 제목/안내(result.name·detail·guide)도 AI 생성이라 정적 점검 불가.
+</div>
+
+<script>
+// 20종 캐릭터 — 시스템 프롬프트(api/baby-gwansang/route.ts) + 도감 그리드(page.tsx) 기준
+const CHARS=[
+ {e:"☀️",name:"세상을 밝히는 꼬마 태양",dex:"꼬마 태양",kw:"밝고 활발 · 복두꺼비",face:"코끝 옹골차게 둥근, 살집형 코",grp:"통통·복덩이"},
+ {e:"🐷",name:"복덩이 황금 아기돼지",dex:"아기돼지",kw:"복덩이 부자상 · 돼지",face:"콧대 시원하게 뻗고 통통한 볼·후덕한 인상",grp:"통통·복덩이"},
+ {e:"🐹",name:"쏙쏙 모으는 알뜰 햄찌",dex:"알뜰 햄찌",kw:"절약·야무진 · 햄스터",face:"입술 얇고 야무지게 다물어진 입",grp:"야무지·또렷"},
+ {e:"🦢",name:"날아오를 아기 학",dex:"아기 학",kw:"우아·고고한 · 학",face:"화려한 눈썹 + 또렷한 인상",grp:"활기·반짝"},
+ {e:"🦊",name:"영리한 아기 여우",dex:"아기 여우",kw:"똑똑·재치 · 구미호",face:"길고 살짝 위로 올라간 눈꼬리",grp:"매력·도화"},
+ {e:"🦌",name:"눈부신 꽃사슴 베이비",dex:"꽃사슴",kw:"미모·우아 · 꽃사슴",face:"황금비율 + 균형잡힌 이목구비",grp:"사랑·온화"},
+ {e:"🐧",name:"부지런한 똑똑 펭귄",dex:"똑똑 펭귄",kw:"성실·근면 · 까마귀",face:"뚜렷하고 진한 미간",grp:"리더·강단"},
+ {e:"🐶",name:"세상 순한 포근 강아지",dex:"포근 강아지",kw:"순수·온화 · 삽살개",face:"둥근 턱선 + 선한 눈 + 푸근한 얼굴",grp:"사랑·온화"},
+ {e:"🦉",name:"지혜로운 아기 부엉이",dex:"아기 부엉이",kw:"지혜·신중 · 부엉이",face:"넓고 시원한 이마 + 총명한 눈빛",grp:"총명·집중"},
+ {e:"🦁",name:"용감한 꼬마 사자왕",dex:"꼬마 사자왕",kw:"리더·용감 · 해치",face:"단단한 턱 + 위엄있는 눈썹",grp:"리더·강단"},
+ {e:"🐗",name:"돌진하는 뚝심 베이비",dex:"뚝심 베이비",kw:"뚝심·추진력 · 멧돼지",face:"강한 미간 + 진한 눈썹",grp:"리더·강단"},
+ {e:"🐑",name:"사랑 듬뿍 포근 양",dex:"포근 양",kw:"사랑·포근 · 양",face:"선한 큰 눈 + 부드러운 입술",grp:"사랑·온화"},
+ {e:"🐲",name:"하늘을 품은 아기 용",dex:"아기 용",kw:"큰 인물·대기 · 용",face:"날카롭게 빠진 눈매 + 시원한 콧대",grp:"리더·강단"},
+ {e:"🐭",name:"눈썰미 만점 똘똘이",dex:"똘똘이",kw:"눈썰미·민첩 · 쥐",face:"예리한 눈 + 높은 이마",grp:"야무지·또렷"},
+ {e:"🦋",name:"감성 만개 나비 베이비",dex:"나비 베이비",kw:"감성·예술 · 공작",face:"깊은 눈 + 감성적인 이마 라인",grp:"총명·집중"},
+ {e:"🕊️",name:"세계를 누빌 아기 새",dex:"아기 새",kw:"자유·역마 · 제비",face:"들린 콧망울 + 반짝이는 호기심 가득 눈",grp:"활기·반짝"},
+ {e:"🐿️",name:"냠냠 먹보 다람쥐",dex:"먹보 다람쥐",kw:"먹복·식도락 · 다람쥐",face:"도톰한 입술 + 통통한 볼 + 동그란 콧방울",grp:"통통·복덩이"},
+ {e:"🍀",name:"행운 듬뿍 클로버 베이비",dex:"클로버",kw:"행운·복 · 강아지",face:"처진 눈매 + 동그란 코 + 환한 미소",grp:"사랑·온화"},
+ {e:"🌟",name:"반짝반짝 별빛 아기",dex:"별빛 아기",kw:"별빛·특별 · 고양이",face:"화려한 눈매 + V라인 작은 턱",grp:"매력·도화"},
+ {e:"🐯",name:"도도한 아기 호랑이",dex:"아기 호랑이",kw:"도도·카리스마 · 흑호",face:"매서운 눈빛 + 야무진 입",grp:"야무지·또렷"},
+];
+
+// 요약 표
+const tb=document.querySelector('#sumtable tbody');
+CHARS.forEach((c,i)=>{
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td>${i+1}</td><td>${c.e} ${c.name}</td><td>${c.dex}</td><td>${c.kw}</td><td>${c.face}</td>`;
+  tb.appendChild(tr);
+});
+
+// 카드
+const wrap=document.getElementById('wrap');
+const AI='<span class="aigen">AI 생성</span>';
+CHARS.forEach((c,i)=>{
+  const el=document.createElement('div');
+  el.className='card';
+  el.innerHTML=`
+   <div class="top">
+     <div class="ph">${c.e}</div>
+     <div class="big">${i+1}. ${c.e} ${c.name}</div>
+     <div class="kw">기질: <em style="color:#FFD700;">${c.kw}</em></div>
+   </div>
+   <div class="scoreband">
+     <span class="aigen">{총점}점</span> ⭐⭐⭐⭐⭐ <span class="aigen">{상위 %}</span><br>
+     <span class="pill pur">🧒 천재성 {n}%</span><span class="pill gold">💰 재물그릇 {등급}</span><span class="pill red">🌟 인복 만점</span>
+   </div>
+   <div class="sect">
+     <div class="lbl">🎯 매칭 얼굴 특징 (프롬프트 기준 · 계열: ${c.grp})</div>
+     <em>${c.face}</em>
+   </div>
+   <div class="sect">
+     <div class="lbl">🐣 첫인상 한마디</div>${AI}
+   </div>
+   <div class="sect">
+     <div class="lbl">🧒 천재성 &amp; 예술감각</div>
+     <div class="part">분석부위: 이마 + 눈 + 입</div>${AI}
+     <div style="margin-top:6px;"><span class="fix">🧒 천재 유형</span> ${AI} · <span class="fix">예술분야 칩</span> ${AI}</div>
+   </div>
+   <div class="sect">
+     <div class="lbl">💰 재물운 &amp; 학업운</div>
+     <div class="part">분석부위: 코 + 볼 + 이마 + 귀</div>${AI}
+     <div style="margin-top:6px;"><span class="fix">💰 재물 그릇(소/중/대/왕)</span> ${AI} · <span class="fix">📝 잘할 과목</span> ${AI} · <span class="fix">🏫 예상 진학</span> ${AI}</div>
+   </div>
+   <div class="sect">
+     <div class="lbl">🤝 교우관계 &amp; 리더십</div>
+     <div class="part">분석부위: 눈썹 + 볼 + 턱</div>${AI}
+     <div style="margin-top:6px;"><span class="fix">🎯 미래 직업 TOP 3</span> ${AI}</div>
+   </div>
+   <div class="sect match">
+     <div class="lbl">👫 찰떡 / ⚡ 주의할 친구 (다른 20종 캐릭터로 매칭)</div>
+     <span class="fix">👫 찰떡 궁합</span> ${AI} <span class="fix">⚡ 주의</span> ${AI}
+   </div>
+   <div class="sect">
+     <div class="lbl">🩺 건강 &amp; 에너지</div>
+     <div class="part">분석부위: 찰색 + 인중</div>${AI}
+     <div style="margin-top:6px;"><span class="fix">⚡ 에너지(높음/보통/차분)</span> ${AI} · <span class="fix">💎 수호 보석</span> ${AI} · <span class="fix">🦊 수호 동물</span> ${AI}</div>
+   </div>
+   <div class="sect">
+     <div class="lbl">🍼 엄마아빠를 위한 육아 비방</div>${AI}
+     <div style="margin-top:6px;"><span class="fix">📅 이번 주 해주면 좋을 것</span> ${AI} · <span class="fix">💌 아기가 엄마아빠에게</span> ${AI} · <span class="fix">🔮 천기의 한마디</span> ${AI}</div>
+   </div>
+   <div class="cert">
+     <div class="label">CHUNGI ORIGINALS · THIS BABY IS</div>
+     <div class="ph" style="background:rgba(255,255,255,.08);border-color:rgba(192,192,200,.4);color:#fff;margin:8px auto;">${c.e}</div>
+     <div class="cname">"${c.name}"</div>
+     <div class="body">인증서 본문 ${AI}</div>
+     <div class="tags">#태그 4개 ${AI} · 도장 天機 認證</div>
+   </div>
+   <div class="sect" style="border-bottom:none;">
+     <div class="lbl">#️⃣ 해시태그</div>
+     <span class="fix">#천기관상 #우리아기관상 #{이름}</span> <span class="aigen">#{총점}점</span> <em>#${c.name.replace(/\s/g,'')}</em>
+   </div>
+  `;
+  wrap.appendChild(el);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>조선 초상화 결과 UX 아이디어</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&display=swap&family=Nanum+Myeongjo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#1A3C32;color:#fff;font-family:'Pretendard','Noto Serif KR',sans-serif;padding:20px;display:flex;justify-content:center;}
+.wrap{max-width:420px;width:100%;}
+h1{color:#D4AF37;font-size:18px;margin-bottom:6px;}
+.sub{color:#aaa;font-size:11px;margin-bottom:20px;}
+.sec{background:rgba(255,255,255,0.04);border:1px dashed rgba(212,175,55,0.4);border-radius:14px;padding:14px;color:#fff;font-size:11px;line-height:1.7;margin-bottom:16px;}
+.sec b{color:#D4AF37;font-size:13px;}
+
+/* 두루마리 컨셉 */
+.scroll{background:linear-gradient(180deg,#f4e4c1 0%,#e8d4a8 50%,#f4e4c1 100%);border-radius:14px;padding:28px 24px;margin-bottom:18px;box-shadow:0 10px 30px rgba(0,0,0,0.35),inset 0 0 60px rgba(139,111,28,0.2);position:relative;color:#3d2817;}
+.scroll::before,.scroll::after{content:"";position:absolute;left:0;right:0;height:18px;background:linear-gradient(180deg,#8b6f1c,#6d5510);}
+.scroll::before{top:0;border-radius:14px 14px 0 0;box-shadow:inset 0 -4px 6px rgba(0,0,0,0.2);}
+.scroll::after{bottom:0;border-radius:0 0 14px 14px;box-shadow:inset 0 4px 6px rgba(0,0,0,0.2);}
+.scroll-hd{text-align:center;font-family:'Nanum Myeongjo','Noto Serif KR',serif;margin-bottom:18px;border-bottom:2px solid #8b6f1c;padding-bottom:12px;}
+.scroll-hd .seal{color:#c92a2a;font-size:10px;font-weight:900;letter-spacing:4px;margin-bottom:4px;}
+.scroll-hd .title{font-size:22px;font-weight:900;color:#3d2817;margin-bottom:6px;}
+.scroll-hd .sub-t{font-size:10px;color:#6d5510;}
+
+.portrait{width:200px;height:260px;margin:0 auto 16px;background:linear-gradient(180deg,#e8d4a8 0%,#d4b98c 100%);border:6px double #6d5510;display:flex;align-items:center;justify-content:center;position:relative;box-shadow:0 6px 18px rgba(0,0,0,0.25);}
+.portrait-icon{font-size:90px;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.2));}
+.portrait-label{position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);background:#c92a2a;color:#fff;padding:4px 16px;border-radius:20px;font-size:11px;font-weight:900;letter-spacing:1px;box-shadow:0 3px 8px rgba(0,0,0,0.3);}
+
+.badge-row{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;}
+.badge{background:rgba(139,111,28,0.15);border:1px solid #8b6f1c;color:#3d2817;padding:4px 10px;border-radius:14px;font-size:10px;font-weight:700;}
+
+.scroll h3{font-family:'Nanum Myeongjo',serif;font-size:13px;font-weight:900;color:#8b1c1c;margin:14px 0 8px;border-left:4px solid #c92a2a;padding-left:10px;}
+.scroll p{font-size:11.5px;color:#3d2817;line-height:1.85;}
+.scroll .korean-quote{background:rgba(201,160,78,0.15);border-left:3px solid #c92a2a;padding:10px 12px;font-style:italic;font-size:11px;color:#5a4316;margin:10px 0;border-radius:6px;}
+
+.scroll-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0;}
+.stat{background:rgba(139,111,28,0.12);border:1px solid rgba(139,111,28,0.3);border-radius:10px;padding:10px 4px;text-align:center;}
+.stat .l{font-size:9px;color:#6d5510;font-weight:700;letter-spacing:1px;}
+.stat .v{font-size:16px;font-weight:900;color:#c92a2a;font-family:'Nanum Myeongjo',serif;}
+
+.seal-stamp{display:flex;justify-content:flex-end;margin-top:18px;}
+.seal-stamp div{width:70px;height:70px;background:rgba(201,42,42,0.9);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:6px;font-family:'Nanum Myeongjo',serif;font-weight:900;transform:rotate(-8deg);box-shadow:0 4px 10px rgba(201,42,42,0.4);}
+.seal-stamp .sa{font-size:11px;margin-bottom:2px;}
+.seal-stamp .sb{font-size:18px;line-height:1;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>👑 조선 초상화 결과 페이지 아이디어</h1>
+<div class="sub">조선왕조실록 + 두루마리 감성. 20종 신분 중 매칭</div>
+
+<div class="sec">
+  <b>🎨 컨셉:</b> 조선왕조실록/두루마리 고서 느낌<br>
+  • <b>컬러:</b> 한지 베이지 + 주홍 낙관 + 먹색<br>
+  • <b>폰트:</b> 명조체 (Nanum Myeongjo / Noto Serif KR)<br>
+  • <b>포인트:</b> 상단·하단 두루마리 봉 + 사방 낙관 도장
+</div>
+
+<!-- 조선 초상화 결과 카드 -->
+<div class="scroll">
+  <div class="scroll-hd">
+    <div class="seal">— 天 機 實 錄 —</div>
+    <div class="title">朝鮮 肖像 證</div>
+    <div class="sub-t">조선 초상 증 · Joseon Portrait Certificate</div>
+  </div>
+
+  <!-- 초상화 프레임 -->
+  <div class="portrait">
+    <div class="portrait-icon">👑</div>
+    <div class="portrait-label">王</div>
+  </div>
+
+  <div style="text-align:center;margin-bottom:8px;">
+    <div style="font-family:'Nanum Myeongjo',serif;font-size:20px;font-weight:900;color:#3d2817;">"만백성의 아버지, 어진 성군"</div>
+    <div style="font-size:11px;color:#6d5510;margin-top:4px;">— 윤규미 님의 조선시대 신분 —</div>
+  </div>
+
+  <!-- 주요 스탯 -->
+  <div class="scroll-stats">
+    <div class="stat"><div class="l">신 분</div><div class="v">정1품</div></div>
+    <div class="stat"><div class="l">녹 봉</div><div class="v">만석</div></div>
+    <div class="stat"><div class="l">수 명</div><div class="v">천수</div></div>
+  </div>
+
+  <div class="badge-row">
+    <span class="badge">#왕의상</span>
+    <span class="badge">#어진성군</span>
+    <span class="badge">#정1품</span>
+    <span class="badge">#천명의주인</span>
+  </div>
+
+  <!-- 섹션 1: 타고난 기운 -->
+  <h3>🎴 타고난 기운</h3>
+  <p><b>윤규미</b> 님은 <b>이마가 훤칠하고 눈빛에 깊이</b>가 있어 조선시대였다면 궁궐 깊은 곳에서 만백성을 다스렸을 상입니다. 타고난 통치의 기질이 얼굴에 그대로 새겨져 있습니다.</p>
+
+  <div class="korean-quote">"얼굴에 왕의 기가 서렸으니, 아랫사람을 부리고 위에서 군림할 팔자로다."</div>
+
+  <!-- 섹션 2: 삶의 이야기 -->
+  <h3>📜 조선에서의 삶</h3>
+  <p>문무를 겸비한 성군(聖君)으로 태평성대를 여실 분. 백성을 사랑하여 세종대왕과 같은 애민(愛民) 정신을 가졌으며, 외교와 국방 모두에 능하셨을 것입니다.</p>
+
+  <!-- 섹션 3: 현생과의 연결 -->
+  <h3>🔮 현생과의 연결</h3>
+  <p>전생의 <b>통솔력</b>이 현생에도 이어져, 어디를 가든 사람을 이끄는 자리에 서게 됩니다. 회사에서는 상사급, 모임에서는 리더 역할이 자연스럽습니다.</p>
+
+  <!-- 섹션 4: 찰떡 신분 -->
+  <h3>💕 궁합이 맞는 조선 신분</h3>
+  <p><b>중전마마</b>(마음의 안식처) / <b>대제학</b>(든든한 참모) / <b>장군</b>(용맹한 호위). 전생의 측근들이 현생에서도 곁에 있을 가능성이 높습니다.</p>
+
+  <h3>⚡ 조심할 신분</h3>
+  <p><b>의적</b>(왕권 위협) / <b>무관 독재자</b>(권력 다툼). 현생에서도 비슷한 기질의 사람과 부딪힙니다.</p>
+
+  <!-- 낙관 -->
+  <div class="seal-stamp">
+    <div>
+      <div class="sa">天 機</div>
+      <div class="sb">認</div>
+    </div>
+  </div>
+
+  <div style="font-size:9px;color:#6d5510;text-align:center;margin-top:14px;font-style:italic;">— 天機 實錄 · 甲辰年 三月 吉日 ·  천기.kr —</div>
+</div>
+
+<div class="sec">
+  <b>✨ UX 포인트:</b><br>
+  • 🎴 두루마리 배경 + 명조체 = "실록" 정통감<br>
+  • 🖼️ 초상화 액자 + 신분 라벨(王/武官/선비 등) 주홍색 도장 느낌<br>
+  • 📊 3개 스탯 (신분/녹봉/수명) 한자 숫자로 → 고풍<br>
+  • 🏷️ 해시태그는 한자/한글 섞어서 SNS 공유감<br>
+  • 🔴 낙관 도장(天機 認) 한쪽 귀퉁이 → 정통성<br>
+  • 💕 찰떡/상극 신분 = 다른 사용자 공유 + 인연 유도
+</div>
+
+<div class="sec" style="background:rgba(212,175,55,0.08);">
+  <b>🎯 퍼널 (결과 뒤):</b><br>
+  • 👪 "우리 가족은 조선시대 어떤 신분?" → 부모·자식 궁합<br>
+  • 👑 "같은 신분 친구 매칭" → 베프 궁합<br>
+  • 📜 "조선 초상화 실물 굿즈" → 굿즈샵<br>
+  • 🎴 "내 타로는?" → 조선 타로
+</div>
+
+</div>
+</body>
+</html>

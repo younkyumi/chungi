@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>댕댕상 결과창 미리보기</title>
+<!--
+  출처: src/app/page.tsx
+  - PetGwansangModal result JSX: 12061~12260행
+  - isDog=true (댕댕상)
+  - id="pet-capture" (12061행)
+  - border: `1px solid ${accent}60` — accent는 강아지 종류별 색상 (dog 기준)
+  - BrandLine: "우리 댕댕이 관상 상세 리포트" (12064행)
+  - 제목: "🐶 홍길동의 관상보기" (12066행)
+  - laserScan: height:180, color:accent
+  - 점수(gold) + 별(gold) + 상위%
+  - 칩: 등급별 레이블(💎명품/✨귀한/💕사랑스러운/🌸특별한) + charm_score%
+  - 탭 3줄 (compact):
+    - 그룹1: 🐶첫인상 (풀너비)
+    - 그룹2: 🧠성격/💕인연/💰재물/🩺건강 (4등분)
+    - 그룹3: 🍀케어 비방 (풀너비)
+  - TAB 0 (첫인상): killpoint(borderLeft:4px solid accent) + story(4px solid #D4AF37)
+  - TAB 1 (성격): borderLeft:4px solid #4263eb
+  - TAB 2 (재물): borderLeft:4px solid #D4AF37
+  - TAB 3 (건강): borderLeft:4px solid #059669
+  - TAB 4 (인연): borderLeft:4px solid #e03131 + PET_MATCH 찰떡/안맞는 친구 2x2 grid
+    - petCardSrc: /dog-cards/dog (id).png (1~20종)
+  - 어울리는 집사: bg:#fdf4ff, border:#f5d0fe
+  - hash footer
+
+  accent 샘플: dog 종류에 따라 다름 — 샘플로 #f59e0b (황금) 사용
+  laserScan animation CSS: keyframes로 레이저 효과
+-->
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#1A3C32;--gold:#D4AF37;--mist:#A8C4B8;}
+body{background:#1A3C32;font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;padding:20px;}
+.max-wrap{max-width:430px;margin:0 auto;}
+.white-card{background:#ffffff;border-radius:20px;overflow:hidden;border:1px solid rgba(245,158,11,0.38);box-shadow:0 10px 30px rgba(0,0,0,0.06);color:#333;margin-bottom:12px;}
+.brand-line-inner{font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;padding:10px 16px;text-align:center;border-bottom:1px solid #f0f0f0;}
+.hash-footer{display:flex;justify-content:space-between;padding:10px 16px;margin-top:14px;font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;border-top:1px solid #f0f0f0;}
+.gray-box{background:#f8f9fa;border-radius:12px;padding:12px 14px;margin-bottom:10px;}
+.cross-scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;}
+.cross-card{flex-shrink:0;width:100px;background:#fff;border-radius:12px;padding:10px 8px;border:1px solid rgba(212,175,55,0.4);text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+/* laserScan 애니메이션 */
+@keyframes laserMove{0%{top:0}100%{top:calc(100% - 3px)}}
+@keyframes laserGlow{0%,100%{opacity:0.6}50%{opacity:1}}
+.laser-scan-area{position:relative;height:180px;background:linear-gradient(135deg,#fdf8f0,#fff8eb);border-radius:12px;overflow:hidden;margin:14px 16px;display:flex;align-items:center;justify-content:center;}
+.laser-line{position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#f59e0b,transparent);animation:laserMove 2s ease-in-out infinite alternate, laserGlow 1s ease-in-out infinite;pointer-events:none;}
+/* 탭 */
+.tab-row{display:grid;gap:4px;padding:8px 16px 4px;}
+.tab-btn{padding:8px 6px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid #eee;background:#f8f9fa;color:#555;text-align:center;}
+.tab-btn.active{background:#1A3C32;color:#fff;border-color:#1A3C32;}
+</style>
+</head>
+<body>
+<div class="max-wrap">
+
+<!-- ═══════════ 메인 결과 카드 id="pet-capture" ═══════════ -->
+<!-- accent = #f59e0b 샘플 (강아지 종류별 다름) -->
+<div class="white-card">
+  <!-- BrandLine (12064행) -->
+  <div style="padding:10px 16px 0;text-align:center;">
+    <div class="brand-line-inner">우리 댕댕이 관상 상세 리포트</div>
+    <div style="font-size:18px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;line-height:1.35;">🐶 초코의 관상보기</div>
+    <div style="font-size:10px;color:#888;font-weight:600;margin-top:6px;line-height:1.6;">
+      <div>👤 홍길동 · 반려견 : 초코 (포메라니안, 3세)</div>
+      <div style="color:#aaa;">📅 2026-06-30 분석</div>
+    </div>
+  </div>
+
+  <!-- laserScan 영역 (height:180) -->
+  <div class="laser-scan-area">
+    <div class="laser-line"></div>
+    <!-- 업로드된 반려견 사진 자리 -->
+    <div style="text-align:center;">
+      <div style="font-size:64px;margin-bottom:6px;">🐕</div>
+      <div style="font-size:10px;color:#f59e0b;font-weight:700;">AI 관상 분석 중...</div>
+    </div>
+  </div>
+
+  <!-- 점수 + 별 + 상위% (12090행~) -->
+  <div style="padding:14px 16px;text-align:center;">
+    <!-- 점수: gold -->
+    <div style="font-size:36px;font-weight:900;color:#D4AF37;font-family:'Noto Serif KR',serif;line-height:1;">92</div>
+    <div style="font-size:12px;color:#aaa;margin-bottom:6px;">/100점</div>
+    <!-- 별: gold -->
+    <div style="font-size:14px;color:#D4AF37;letter-spacing:1.5px;margin-bottom:8px;">★★★★★</div>
+    <!-- 상위% -->
+    <div style="font-size:11px;color:#555;margin-bottom:10px;">상위 <strong style="color:#D4AF37;">8%</strong> 댕댕이</div>
+    <!-- 칩: 등급 + charm_score -->
+    <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;">
+      <span style="font-size:11px;padding:4px 12px;border-radius:12px;background:rgba(245,158,11,0.15);color:#f59e0b;border:1px solid rgba(245,158,11,0.4);font-weight:800;">💎 명품 관상</span>
+      <span style="font-size:11px;padding:4px 12px;border-radius:12px;background:#fef3c7;color:#92400e;border:1px solid #fde68a;font-weight:700;">✨ 매력 94%</span>
+    </div>
+  </div>
+
+  <!-- 탭 3줄 (compact) -->
+  <!-- 그룹1: 🐶첫인상 (풀너비) -->
+  <div class="tab-row" style="grid-template-columns:1fr;">
+    <div class="tab-btn active">🐶 첫인상</div>
+  </div>
+  <!-- 그룹2: 🧠성격/💕인연/💰재물/🩺건강 (4등분) -->
+  <div class="tab-row" style="grid-template-columns:1fr 1fr 1fr 1fr;">
+    <div class="tab-btn">🧠 성격</div>
+    <div class="tab-btn">💕 인연</div>
+    <div class="tab-btn">💰 재물</div>
+    <div class="tab-btn">🩺 건강</div>
+  </div>
+  <!-- 그룹3: 🍀케어 비방 (풀너비) -->
+  <div class="tab-row" style="grid-template-columns:1fr;margin-bottom:8px;">
+    <div class="tab-btn">🍀 케어 비방</div>
+  </div>
+
+  <!-- TAB 0: 첫인상 내용 (12120행~) -->
+  <div style="padding:12px 16px;">
+    <!-- killpoint: borderLeft:4px solid accent (#f59e0b) -->
+    <div class="gray-box" style="border-left:4px solid #f59e0b;">
+      <div style="font-size:10px;font-weight:800;color:#f59e0b;letter-spacing:1px;margin-bottom:6px;">✦ 첫인상 킬포인트</div>
+      <div style="font-size:12px;color:#555;line-height:1.75;word-break:keep-all;">처음 봤을 때 가장 눈에 띄는 특징은 <strong style="color:#f59e0b;">황금빛 털과 빛나는 눈망울</strong>이에요. 사람들의 시선을 단번에 사로잡는 타고난 외모를 가졌어요. 주변을 환하게 밝히는 분위기 메이커형이에요.</div>
+    </div>
+    <!-- story: borderLeft:4px solid #D4AF37 -->
+    <div class="gray-box" style="border-left:4px solid #D4AF37;margin-bottom:0;">
+      <div style="font-size:10px;font-weight:800;color:#D4AF37;letter-spacing:1px;margin-bottom:6px;">📖 관상 이야기</div>
+      <div style="font-size:12px;color:#555;line-height:1.75;word-break:keep-all;">이 댕댕이는 보는 이의 마음을 따뜻하게 하는 특별한 기운을 가졌어요. 넓은 이마와 반짝이는 눈이 <strong style="color:#7A5C00;">총명함과 순수함</strong>을 동시에 표현하고 있어요. 만나는 모든 사람에게 행복을 전하는 귀한 인연이 될 댕댕이예요.</div>
+    </div>
+  </div>
+
+  <!-- 찰떡/안맞는 친구 (TAB 4 인연) 참고 섹션 -->
+  <div style="padding:0 16px 14px;">
+    <div style="font-size:10px;font-weight:800;color:#e03131;letter-spacing:1px;margin-bottom:8px;">💕 찰떡 친구 & 주의 친구</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+      <!-- 찰떡 -->
+      <div style="background:#fdf4ff;border:1px solid #f5d0fe;border-radius:10px;padding:10px;text-align:center;">
+        <div style="font-size:9px;font-weight:800;color:#7c3aed;margin-bottom:6px;">💞 찰떡 친구</div>
+        <div style="width:52px;height:52px;border-radius:50%;background:#f0e8ff;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;font-size:28px;">🐩</div>
+        <div style="font-size:11px;font-weight:700;color:#1A3C32;">푸들형</div>
+        <div style="font-size:9px;color:#888;margin-top:2px;">함께하면 시너지</div>
+      </div>
+      <!-- 주의 -->
+      <div style="background:#fff5f5;border:1px solid #fecaca;border-radius:10px;padding:10px;text-align:center;">
+        <div style="font-size:9px;font-weight:800;color:#e03131;margin-bottom:6px;">⚠️ 주의 친구</div>
+        <div style="width:52px;height:52px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;font-size:28px;">🐺</div>
+        <div style="font-size:11px;font-weight:700;color:#1A3C32;">허스키형</div>
+        <div style="font-size:9px;color:#888;margin-top:2px;">에너지 충돌 주의</div>
+      </div>
+    </div>
+    <!-- 어울리는 집사: bg:#fdf4ff, border:#f5d0fe -->
+    <div style="background:#fdf4ff;border:1px solid #f5d0fe;border-radius:10px;padding:10px 12px;">
+      <div style="font-size:10px;font-weight:800;color:#7c3aed;margin-bottom:6px;">👤 어울리는 집사</div>
+      <div style="font-size:11px;color:#555;line-height:1.7;">활발하고 에너지 넘치는 집사와 궁합이 최고예요. 산책을 좋아하고 애정 표현을 아끼지 않는 분이라면 이 댕댕이와 평생 베프가 될 거예요.</div>
+    </div>
+  </div>
+
+  <!-- 해시태그 푸터 -->
+  <div class="hash-footer">
+    <span>#천기관상 #댕댕상 #반려견관상 #강아지관상 #무료관상</span>
+    <span style="font-weight:600;">🌐 천기.kr</span>
+  </div>
+</div>
+
+<!-- 광고배너 2x2 -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(212,175,55,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">🐱</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">냥냥상?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">냥냥상 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(199,21,133,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">🪞</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">내 관상은?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">내관상보기 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(155,143,212,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">📸</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">관상짤?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">관상짤 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(212,175,55,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">🍼</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">아기 관상?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">우리아기관상 →</div>
+  </div>
+</div>
+
+<!-- 도감 버튼 (line 12365): isDog → linear-gradient(135deg,#fff7ed,#ffedd5), color:#c2410c, border:rgba(230,126,34,0.4) -->
+<button style="width:100%;padding:14px;margin-bottom:12px;background:linear-gradient(135deg,#fff7ed,#ffedd5);color:#c2410c;border:2px solid rgba(230,126,34,0.4);border-radius:14px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;">
+  📚 20종 댕댕이 품종 전체 도감 보기
+</button>
+
+<!-- ResultActions -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+  <button style="padding:12px;background:#f8f9fa;border:1px solid #eee;border-radius:12px;font-size:12px;font-weight:700;color:#333;cursor:pointer;">📸 이미지 저장</button>
+  <button style="padding:12px;background:#f8f9fa;border:1px solid #eee;border-radius:12px;font-size:12px;font-weight:700;color:#333;cursor:pointer;">🔗 공유하기</button>
+</div>
+
+<!-- 버튼 -->
+<button style="width:100%;padding:14px;background:#D4AF37;color:#1A3C32;border:none;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;margin-bottom:6px;">확인 완료</button>
+
+</div>
+
+
+
+<!-- ═══ 전체 20종 댕댕이 캐릭터 도감 ═══ -->
+<div style="background:#fff8e8;border-radius:16px;padding:16px;margin-top:16px;border:1px solid #B8942E40;">
+  <div style="font-size:13px;font-weight:900;color:#B8942E;text-align:center;margin-bottom:4px;">🐶 전체 20종 댕댕이 캐릭터 도감</div>
+  <div style="font-size:10px;color:#888;text-align:center;margin-bottom:14px;">결과카드 찰떡/안맞는 친구 섹션에서 아래 일러스트 사용</div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #B8942E30;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="background:#F4E0A0;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.01</div>
+      <div style="font-size:13px;font-weight:900;color:#1A3C32;">💰 돈복 부자상</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <!-- 본인 캐릭터 카드 -->
+      <div style="text-align:center;">
+        <div style="font-size:9px;color:#B8942E;font-weight:700;margin-bottom:4px;">🎴 캐릭터 일러스트</div>
+        <div style="background:#fafafa;border-radius:10px;padding:8px;border:1px solid #B8942E20;">
+          <img src="/dog-cards/dog (1).png" alt="돈복 부자상" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+          <div style="font-size:11px;font-weight:700;color:#1A3C32;margin-top:4px;">💰 돈복 부자상</div>
+        </div>
+      </div>
+      <!-- 찰떡/안맞는 친구 -->
+      <div>
+        <div style="font-size:9px;color:#c92a2a;font-weight:700;margin-bottom:4px;">💕 찰떡 친구</div>
+        <div style="background:#fff5f5;border-radius:10px;padding:6px;border:1px solid #ffccd0;text-align:center;margin-bottom:6px;">
+          <img src="/dog-cards/dog (5).png" alt="홀리는 매혹가상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">😏 홀리는 매혹가상</div>
+        </div>
+        <div style="font-size:9px;color:#8b6f1c;font-weight:700;margin-bottom:4px;">⚡ 안 맞는 친구</div>
+        <div style="background:#f8f9fa;border-radius:10px;padding:6px;border:1px solid #e6d5a8;text-align:center;">
+          <img src="/dog-cards/dog (9).png" alt="한 방에 마스터 천재상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🧠 한 방에 마스터 천재상</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #B8942E30;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="background:#F4E0A0;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.02</div>
+      <div style="font-size:13px;font-weight:900;color:#1A3C32;">🏦 럭셔리 금수저상</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <!-- 본인 캐릭터 카드 -->
+      <div style="text-align:center;">
+        <div style="font-size:9px;color:#B8942E;font-weight:700;margin-bottom:4px;">🎴 캐릭터 일러스트</div>
+        <div style="background:#fafafa;border-radius:10px;padding:8px;border:1px solid #B8942E20;">
+          <img src="/dog-cards/dog (2).png" alt="럭셔리 금수저상" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+          <div style="font-size:11px;font-weight:700;color:#1A3C32;margin-top:4px;">🏦 럭셔리 금수저상</div>
+        </div>
+      </div>
+      <!-- 찰떡/안맞는 친구 -->
+      <div>
+        <div style="font-size:9px;color:#c92a2a;font-weight:700;margin-bottom:4px;">💕 찰떡 친구</div>
+        <div style="background:#fff5f5;border-radius:10px;padding:6px;border:1px solid #ffccd0;text-align:center;margin-bottom:6px;">
+          <img src="/dog-cards/dog (6).png" alt="비주얼 갓상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">✨ 비주얼 갓상</div>
+        </div>
+        <div style="font-size:9px;color:#8b6f1c;font-weight:700;margin-bottom:4px;">⚡ 안 맞는 친구</div>
+        <div style="background:#f8f9fa;border-radius:10px;padding:6px;border:1px solid #e6d5a8;text-align:center;">
+          <img src="/dog-cards/dog (10).png" alt="카리스마 대장상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">👑 카리스마 대장상</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #B8942E30;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="background:#F4E0A0;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.03</div>
+      <div style="font-size:13px;font-weight:900;color:#1A3C32;">🧮 야무진 알뜰상</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <!-- 본인 캐릭터 카드 -->
+      <div style="text-align:center;">
+        <div style="font-size:9px;color:#B8942E;font-weight:700;margin-bottom:4px;">🎴 캐릭터 일러스트</div>
+        <div style="background:#fafafa;border-radius:10px;padding:8px;border:1px solid #B8942E20;">
+          <img src="/dog-cards/dog (3).png" alt="야무진 알뜰상" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+          <div style="font-size:11px;font-weight:700;color:#1A3C32;margin-top:4px;">🧮 야무진 알뜰상</div>
+        </div>
+      </div>
+      <!-- 찰떡/안맞는 친구 -->
+      <div>
+        <div style="font-size:9px;color:#c92a2a;font-weight:700;margin-bottom:4px;">💕 찰떡 친구</div>
+        <div style="background:#fff5f5;border-radius:10px;padding:6px;border:1px solid #ffccd0;text-align:center;margin-bottom:6px;">
+          <img src="/dog-cards/dog (7).png" alt="갓생러 워커홀릭상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🏃 갓생러 워커홀릭상</div>
+        </div>
+        <div style="font-size:9px;color:#8b6f1c;font-weight:700;margin-bottom:4px;">⚡ 안 맞는 친구</div>
+        <div style="background:#f8f9fa;border-radius:10px;padding:6px;border:1px solid #e6d5a8;text-align:center;">
+          <img src="/dog-cards/dog (11).png" alt="마이웨이 야성상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🐺 마이웨이 야성상</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #B8942E30;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="background:#F4E0A0;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.04</div>
+      <div style="font-size:13px;font-weight:900;color:#1A3C32;">🎨 감성 아티스트상</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <!-- 본인 캐릭터 카드 -->
+      <div style="text-align:center;">
+        <div style="font-size:9px;color:#B8942E;font-weight:700;margin-bottom:4px;">🎴 캐릭터 일러스트</div>
+        <div style="background:#fafafa;border-radius:10px;padding:8px;border:1px solid #B8942E20;">
+          <img src="/dog-cards/dog (4).png" alt="감성 아티스트상" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+          <div style="font-size:11px;font-weight:700;color:#1A3C32;margin-top:4px;">🎨 감성 아티스트상</div>
+        </div>
+      </div>
+      <!-- 찰떡/안맞는 친구 -->
+      <div>
+        <div style="font-size:9px;color:#c92a2a;font-weight:700;margin-bottom:4px;">💕 찰떡 친구</div>
+        <div style="background:#fff5f5;border-radius:10px;padding:6px;border:1px solid #ffccd0;text-align:center;margin-bottom:6px;">
+          <img src="/dog-cards/dog (8).png" alt="세상 순한 천사상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🤗 세상 순한 천사상</div>
+        </div>
+        <div style="font-size:9px;color:#8b6f1c;font-weight:700;margin-bottom:4px;">⚡ 안 맞는 친구</div>
+        <div style="background:#f8f9fa;border-radius:10px;padding:6px;border:1px solid #e6d5a8;text-align:center;">
+          <img src="/dog-cards/dog (12).png" alt="옆에 있어 주는 힐러상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">💕 옆에 있어 주는 힐러상</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #B8942E30;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="background:#F4E0A0;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.05</div>
+      <div style="font-size:13px;font-weight:900;color:#1A3C32;">😏 홀리는 매혹가상</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <!-- 본인 캐릭터 카드 -->
+      <div style="text-align:center;">
+        <div style="font-size:9px;color:#B8942E;font-weight:700;margin-bottom:4px;">🎴 캐릭터 일러스트</div>
+        <div style="background:#fafafa;border-radius:10px;padding:8px;border:1px solid #B8942E20;">
+          <img src="/dog-cards/dog (5).png" alt="홀리는 매혹가상" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+          <div style="font-size:11px;font-weight:700;color:#1A3C32;margin-top:4px;">😏 홀리는 매혹가상</div>
+        </div>
+      </div>
+      <!-- 찰떡/안맞는 친구 -->
+      <div>
+        <div style="font-size:9px;color:#c92a2a;font-weight:700;margin-bottom:4px;">💕 찰떡 친구</div>
+        <div style="background:#fff5f5;border-radius:10px;padding:6px;border:1px solid #ffccd0;text-align:center;margin-bottom:6px;">
+          <img src="/dog-cards/dog (1).png" alt="돈복 부자상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">💰 돈복 부자상</div>
+        </div>
+        <div style="font-size:9px;color:#8b6f1c;font-weight:700;margin-bottom:4px;">⚡ 안 맞는 친구</div>
+        <div style="background:#f8f9fa;border-radius:10px;padding:6px;border:1px solid #e6d5a8;text-align:center;">
+          <img src="/dog-cards/dog (13).png" alt="도도한 보스상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🎩 도도한 보스상</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #B8942E30;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="background:#F4E0A0;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.06</div>
+      <div style="font-size:13px;font-weight:900;color:#1A3C32;">✨ 비주얼 갓상</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <!-- 본인 캐릭터 카드 -->
+      <div style="text-align:center;">
+        <div style="font-size:9px;color:#B8942E;font-weight:700;margin-bottom:4px;">🎴 캐릭터 일러스트</div>
+        <div style="background:#fafafa;border-radius:10px;padding:8px;border:1px solid #B8942E20;">
+          <img src="/dog-cards/dog (6).png" alt="비주얼 갓상" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+          <div style="font-size:11px;font-weight:700;color:#1A3C32;margin-top:4px;">✨ 비주얼 갓상</div>
+        </div>
+      </div>
+      <!-- 찰떡/안맞는 친구 -->
+      <div>
+        <div style="font-size:9px;color:#c92a2a;font-weight:700;margin-bottom:4px;">💕 찰떡 친구</div>
+        <div style="background:#fff5f5;border-radius:10px;padding:6px;border:1px solid #ffccd0;text-align:center;margin-bottom:6px;">
+          <img src="/dog-cards/dog (2).png" alt="럭셔리 금수저상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🏦 럭셔리 금수저상</div>
+        </div>
+        <div style="font-size:9px;color:#8b6f1c;font-weight:700;margin-bottom:4px;">⚡ 안 맞는 친구</div>
+        <div style="background:#f8f9fa;border-radius:10px;padding:6px;border:1px solid #e6d5a8;text-align:center;">
+          <img src="/dog-cards/dog (14).png" alt="디테일 변태 장인상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🔍 디테일 변태 장인상</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #B8942E30;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="background:#F4E0A0;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.07</div>
+      <div style="font-size:13px;font-weight:900;color:#1A3C32;">🏃 갓생러 워커홀릭상</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <!-- 본인 캐릭터 카드 -->
+      <div style="text-align:center;">
+        <div style="font-size:9px;color:#B8942E;font-weight:700;margin-bottom:4px;">🎴 캐릭터 일러스트</div>
+        <div style="background:#fafafa;border-radius:10px;padding:8px;border:1px solid #B8942E20;">
+          <img src="/dog-cards/dog (7).png" alt="갓생러 워커홀릭상" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+          <div style="font-size:11px;font-weight:700;color:#1A3C32;margin-top:4px;">🏃 갓생러 워커홀릭상</div>
+        </div>
+      </div>
+      <!-- 찰떡/안맞는 친구 -->
+      <div>
+        <div style="font-size:9px;color:#c92a2a;font-weight:700;margin-bottom:4px;">💕 찰떡 친구</div>
+        <div style="background:#fff5f5;border-radius:10px;padding:6px;border:1px solid #ffccd0;text-align:center;margin-bottom:6px;">
+          <img src="/dog-cards/dog (3).png" alt="야무진 알뜰상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🧮 야무진 알뜰상</div>
+        </div>
+        <div style="font-size:9px;color:#8b6f1c;font-weight:700;margin-bottom:4px;">⚡ 안 맞는 친구</div>
+        <div style="background:#f8f9fa;border-radius:10px;padding:6px;border:1px solid #e6d5a8;text-align:center;">
+          <img src="/dog-cards/dog (15).png" alt="비오는 날 감성상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🌧️ 비오는 날 감성상</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #B8942E30;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="background:#F4E0A0;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.08</div>
+      <div style="font-size:13px;font-weight:900;color:#1A3C32;">🤗 세상 순한 천사상</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <!-- 본인 캐릭터 카드 -->
+      <div style="text-align:center;">
+        <div style="font-size:9px;color:#B8942E;font-weight:700;margin-bottom:4px;">🎴 캐릭터 일러스트</div>
+        <div style="background:#fafafa;border-radius:10px;padding:8px;border:1px solid #B8942E20;">
+          <img src="/dog-cards/dog (8).png" alt="세상 순한 천사상" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+          <div style="font-size:11px;font-weight:700;color:#1A3C32;margin-top:4px;">🤗 세상 순한 천사상</div>
+        </div>
+      </div>
+      <!-- 찰떡/안맞는 친구 -->
+      <div>
+        <div style="font-size:9px;color:#c92a2a;font-weight:700;margin-bottom:4px;">💕 찰떡 친구</div>
+        <div style="background:#fff5f5;border-radius:10px;padding:6px;border:1px solid #ffccd0;text-align:center;margin-bottom:6px;">
+          <img src="/dog-cards/dog (4).png" alt="감성 아티스트상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🎨 감성 아티스트상</div>
+        </div>
+        <div style="font-size:9px;color:#8b6f1c;font-weight:700;margin-bottom:4px;">⚡ 안 맞는 친구</div>
+        <div style="background:#f8f9fa;border-radius:10px;padding:6px;border:1px solid #e6d5a8;text-align:center;">
+          <img src="/dog-cards/dog (16).png" alt="어디든 달려가는 모험상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🌍 어디든 달려가는 모험상</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #B8942E30;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="background:#F4E0A0;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.09</div>
+      <div style="font-size:13px;font-weight:900;color:#1A3C32;">🧠 한 방에 마스터 천재상</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <!-- 본인 캐릭터 카드 -->
+      <div style="text-align:center;">
+        <div style="font-size:9px;color:#B8942E;font-weight:700;margin-bottom:4px;">🎴 캐릭터 일러스트</div>
+        <div style="background:#fafafa;border-radius:10px;padding:8px;border:1px solid #B8942E20;">
+          <img src="/dog-cards/dog (9).png" alt="한 방에 마스터 천재상" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+          <div style="font-size:11px;font-weight:700;color:#1A3C32;margin-top:4px;">🧠 한 방에 마스터 천재상</div>
+        </div>
+      </div>
+      <!-- 찰떡/안맞는 친구 -->
+      <div>
+        <div style="font-size:9px;color:#c92a2a;font-weight:700;margin-bottom:4px;">💕 찰떡 친구</div>
+        <div style="background:#fff5f5;border-radius:10px;padding:6px;border:1px solid #ffccd0;text-align:center;margin-bottom:6px;">
+          <img src="/dog-cards/dog (13).png" alt="도도한 보스상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🎩 도도한 보스상</div>
+        </div>
+        <div style="font-size:9px;color:#8b6f1c;font-weight:700;margin-bottom:4px;">⚡ 안 맞는 친구</div>
+        <div style="background:#f8f9fa;border-radius:10px;padding:6px;border:1px solid #e6d5a8;text-align:center;">
+          <img src="/dog-cards/dog (17).png" alt="쩝쩝 박사 먹방상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🍖 쩝쩝 박사 먹방상</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #B8942E30;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="background:#F4E0A0;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.10</div>
+      <div style="font-size:13px;font-weight:900;color:#1A3C32;">👑 카리스마 대장상</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <!-- 본인 캐릭터 카드 -->
+      <div style="text-align:center;">
+        <div style="font-size:9px;color:#B8942E;font-weight:700;margin-bottom:4px;">🎴 캐릭터 일러스트</div>
+        <div style="background:#fafafa;border-radius:10px;padding:8px;border:1px solid #B8942E20;">
+          <img src="/dog-cards/dog (10).png" alt="카리스마 대장상" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+          <div style="font-size:11px;font-weight:700;color:#1A3C32;margin-top:4px;">👑 카리스마 대장상</div>
+        </div>
+      </div>
+      <!-- 찰떡/안맞는 친구 -->
+      <div>
+        <div style="font-size:9px;color:#c92a2a;font-weight:700;margin-bottom:4px;">💕 찰떡 친구</div>
+        <div style="background:#fff5f5;border-radius:10px;padding:6px;border:1px solid #ffccd0;text-align:center;margin-bottom:6px;">
+          <img src="/dog-cards/dog (14).png" alt="디테일 변태 장인상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🔍 디테일 변태 장인상</div>
+        </div>
+        <div style="font-size:9px;color:#8b6f1c;font-weight:700;margin-bottom:4px;">⚡ 안 맞는 친구</div>
+        <div style="background:#f8f9fa;border-radius:10px;padding:6px;border:1px solid #e6d5a8;text-align:center;">
+          <img src="/dog-cards/dog (18).png" alt="만나면 행운 오는 럭키상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🍀 만나면 행운 오는 럭키상</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #B8942E30;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="background:#F4E0A0;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.11</div>
+      <div style="font-size:13px;font-weight:900;color:#1A3C32;">🐺 마이웨이 야성상</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <!-- 본인 캐릭터 카드 -->
+      <div style="text-align:center;">
+        <div style="font-size:9px;color:#B8942E;font-weight:700;margin-bottom:4px;">🎴 캐릭터 일러스트</div>
+        <div style="background:#fafafa;border-radius:10px;padding:8px;border:1px solid #B8942E20;">
+          <img src="/dog-cards/dog (11).png" alt="마이웨이 야성상" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+          <div style="font-size:11px;font-weight:700;color:#1A3C32;margin-top:4px;">🐺 마이웨이 야성상</div>
+        </div>
+      </div>
+      <!-- 찰떡/안맞는 친구 -->
+      <div>
+        <div style="font-size:9px;color:#c92a2a;font-weight:700;margin-bottom:4px;">💕 찰떡 친구</div>
+        <div style="background:#fff5f5;border-radius:10px;padding:6px;border:1px solid #ffccd0;text-align:center;margin-bottom:6px;">
+          <img src="/dog-cards/dog (15).png" alt="비오는 날 감성상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🌧️ 비오는 날 감성상</div>
+        </div>
+        <div style="font-size:9px;color:#8b6f1c;font-weight:700;margin-bottom:4px;">⚡ 안 맞는 친구</div>
+        <div style="background:#f8f9fa;border-radius:10px;padding:6px;border:1px solid #e6d5a8;text-align:center;">
+          <img src="/dog-cards/dog (19).png" alt="패턴 분석왕상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🖥️ 패턴 분석왕상</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #B8942E30;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="background:#F4E0A0;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.12</div>
+      <div style="font-size:13px;font-weight:900;color:#1A3C32;">💕 옆에 있어 주는 힐러상</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <!-- 본인 캐릭터 카드 -->
+      <div style="text-align:center;">
+        <div style="font-size:9px;color:#B8942E;font-weight:700;margin-bottom:4px;">🎴 캐릭터 일러스트</div>
+        <div style="background:#fafafa;border-radius:10px;padding:8px;border:1px solid #B8942E20;">
+          <img src="/dog-cards/dog (12).png" alt="옆에 있어 주는 힐러상" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+          <div style="font-size:11px;font-weight:700;color:#1A3C32;margin-top:4px;">💕 옆에 있어 주는 힐러상</div>
+        </div>
+      </div>
+      <!-- 찰떡/안맞는 친구 -->
+      <div>
+        <div style="font-size:9px;color:#c92a2a;font-weight:700;margin-bottom:4px;">💕 찰떡 친구</div>
+        <div style="background:#fff5f5;border-radius:10px;padding:6px;border:1px solid #ffccd0;text-align:center;margin-bottom:6px;">
+          <img src="/dog-cards/dog (16).png" alt="어디든 달려가는 모험상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🌍 어디든 달려가는 모험상</div>
+        </div>
+        <div style="font-size:9px;color:#8b6f1c;font-weight:700;margin-bottom:4px;">⚡ 안 맞는 친구</div>
+        <div style="background:#f8f9fa;border-radius:10px;padding:6px;border:1px solid #e6d5a8;text-align:center;">
+          <img src="/dog-cards/dog (20).png" alt="안 좋아하는 척 츤데레상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">😤 안 좋아하는 척 츤데레상</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #B8942E30;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="background:#F4E0A0;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.13</div>
+      <div style="font-size:13px;font-weight:900;color:#1A3C32;">🎩 도도한 보스상</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <!-- 본인 캐릭터 카드 -->
+      <div style="text-align:center;">
+        <div style="font-size:9px;color:#B8942E;font-weight:700;margin-bottom:4px;">🎴 캐릭터 일러스트</div>
+        <div style="background:#fafafa;border-radius:10px;padding:8px;border:1px solid #B8942E20;">
+          <img src="/dog-cards/dog (13).png" alt="도도한 보스상" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+          <div style="font-size:11px;font-weight:700;color:#1A3C32;margin-top:4px;">🎩 도도한 보스상</div>
+        </div>
+      </div>
+      <!-- 찰떡/안맞는 친구 -->
+      <div>
+        <div style="font-size:9px;color:#c92a2a;font-weight:700;margin-bottom:4px;">💕 찰떡 친구</div>
+        <div style="background:#fff5f5;border-radius:10px;padding:6px;border:1px solid #ffccd0;text-align:center;margin-bottom:6px;">
+          <img src="/dog-cards/dog (9).png" alt="한 방에 마스터 천재상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🧠 한 방에 마스터 천재상</div>
+        </div>
+        <div style="font-size:9px;color:#8b6f1c;font-weight:700;margin-bottom:4px;">⚡ 안 맞는 친구</div>
+        <div style="background:#f8f9fa;border-radius:10px;padding:6px;border:1px solid #e6d5a8;text-align:center;">
+          <img src="/dog-cards/dog (5).png" alt="홀리는 매혹가상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">😏 홀리는 매혹가상</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #B8942E30;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="background:#F4E0A0;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.14</div>
+      <div style="font-size:13px;font-weight:900;color:#1A3C32;">🔍 디테일 변태 장인상</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <!-- 본인 캐릭터 카드 -->
+      <div style="text-align:center;">
+        <div style="font-size:9px;color:#B8942E;font-weight:700;margin-bottom:4px;">🎴 캐릭터 일러스트</div>
+        <div style="background:#fafafa;border-radius:10px;padding:8px;border:1px solid #B8942E20;">
+          <img src="/dog-cards/dog (14).png" alt="디테일 변태 장인상" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+          <div style="font-size:11px;font-weight:700;color:#1A3C32;margin-top:4px;">🔍 디테일 변태 장인상</div>
+        </div>
+      </div>
+      <!-- 찰떡/안맞는 친구 -->
+      <div>
+        <div style="font-size:9px;color:#c92a2a;font-weight:700;margin-bottom:4px;">💕 찰떡 친구</div>
+        <div style="background:#fff5f5;border-radius:10px;padding:6px;border:1px solid #ffccd0;text-align:center;margin-bottom:6px;">
+          <img src="/dog-cards/dog (10).png" alt="카리스마 대장상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">👑 카리스마 대장상</div>
+        </div>
+        <div style="font-size:9px;color:#8b6f1c;font-weight:700;margin-bottom:4px;">⚡ 안 맞는 친구</div>
+        <div style="background:#f8f9fa;border-radius:10px;padding:6px;border:1px solid #e6d5a8;text-align:center;">
+          <img src="/dog-cards/dog (6).png" alt="비주얼 갓상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">✨ 비주얼 갓상</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #B8942E30;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="background:#F4E0A0;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.15</div>
+      <div style="font-size:13px;font-weight:900;color:#1A3C32;">🌧️ 비오는 날 감성상</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <!-- 본인 캐릭터 카드 -->
+      <div style="text-align:center;">
+        <div style="font-size:9px;color:#B8942E;font-weight:700;margin-bottom:4px;">🎴 캐릭터 일러스트</div>
+        <div style="background:#fafafa;border-radius:10px;padding:8px;border:1px solid #B8942E20;">
+          <img src="/dog-cards/dog (15).png" alt="비오는 날 감성상" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+          <div style="font-size:11px;font-weight:700;color:#1A3C32;margin-top:4px;">🌧️ 비오는 날 감성상</div>
+        </div>
+      </div>
+      <!-- 찰떡/안맞는 친구 -->
+      <div>
+        <div style="font-size:9px;color:#c92a2a;font-weight:700;margin-bottom:4px;">💕 찰떡 친구</div>
+        <div style="background:#fff5f5;border-radius:10px;padding:6px;border:1px solid #ffccd0;text-align:center;margin-bottom:6px;">
+          <img src="/dog-cards/dog (11).png" alt="마이웨이 야성상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🐺 마이웨이 야성상</div>
+        </div>
+        <div style="font-size:9px;color:#8b6f1c;font-weight:700;margin-bottom:4px;">⚡ 안 맞는 친구</div>
+        <div style="background:#f8f9fa;border-radius:10px;padding:6px;border:1px solid #e6d5a8;text-align:center;">
+          <img src="/dog-cards/dog (7).png" alt="갓생러 워커홀릭상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🏃 갓생러 워커홀릭상</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #B8942E30;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="background:#F4E0A0;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.16</div>
+      <div style="font-size:13px;font-weight:900;color:#1A3C32;">🌍 어디든 달려가는 모험상</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <!-- 본인 캐릭터 카드 -->
+      <div style="text-align:center;">
+        <div style="font-size:9px;color:#B8942E;font-weight:700;margin-bottom:4px;">🎴 캐릭터 일러스트</div>
+        <div style="background:#fafafa;border-radius:10px;padding:8px;border:1px solid #B8942E20;">
+          <img src="/dog-cards/dog (16).png" alt="어디든 달려가는 모험상" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+          <div style="font-size:11px;font-weight:700;color:#1A3C32;margin-top:4px;">🌍 어디든 달려가는 모험상</div>
+        </div>
+      </div>
+      <!-- 찰떡/안맞는 친구 -->
+      <div>
+        <div style="font-size:9px;color:#c92a2a;font-weight:700;margin-bottom:4px;">💕 찰떡 친구</div>
+        <div style="background:#fff5f5;border-radius:10px;padding:6px;border:1px solid #ffccd0;text-align:center;margin-bottom:6px;">
+          <img src="/dog-cards/dog (12).png" alt="옆에 있어 주는 힐러상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">💕 옆에 있어 주는 힐러상</div>
+        </div>
+        <div style="font-size:9px;color:#8b6f1c;font-weight:700;margin-bottom:4px;">⚡ 안 맞는 친구</div>
+        <div style="background:#f8f9fa;border-radius:10px;padding:6px;border:1px solid #e6d5a8;text-align:center;">
+          <img src="/dog-cards/dog (8).png" alt="세상 순한 천사상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🤗 세상 순한 천사상</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #B8942E30;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="background:#F4E0A0;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.17</div>
+      <div style="font-size:13px;font-weight:900;color:#1A3C32;">🍖 쩝쩝 박사 먹방상</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <!-- 본인 캐릭터 카드 -->
+      <div style="text-align:center;">
+        <div style="font-size:9px;color:#B8942E;font-weight:700;margin-bottom:4px;">🎴 캐릭터 일러스트</div>
+        <div style="background:#fafafa;border-radius:10px;padding:8px;border:1px solid #B8942E20;">
+          <img src="/dog-cards/dog (17).png" alt="쩝쩝 박사 먹방상" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+          <div style="font-size:11px;font-weight:700;color:#1A3C32;margin-top:4px;">🍖 쩝쩝 박사 먹방상</div>
+        </div>
+      </div>
+      <!-- 찰떡/안맞는 친구 -->
+      <div>
+        <div style="font-size:9px;color:#c92a2a;font-weight:700;margin-bottom:4px;">💕 찰떡 친구</div>
+        <div style="background:#fff5f5;border-radius:10px;padding:6px;border:1px solid #ffccd0;text-align:center;margin-bottom:6px;">
+          <img src="/dog-cards/dog (1).png" alt="돈복 부자상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">💰 돈복 부자상</div>
+        </div>
+        <div style="font-size:9px;color:#8b6f1c;font-weight:700;margin-bottom:4px;">⚡ 안 맞는 친구</div>
+        <div style="background:#f8f9fa;border-radius:10px;padding:6px;border:1px solid #e6d5a8;text-align:center;">
+          <img src="/dog-cards/dog (15).png" alt="비오는 날 감성상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🌧️ 비오는 날 감성상</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #B8942E30;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="background:#F4E0A0;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.18</div>
+      <div style="font-size:13px;font-weight:900;color:#1A3C32;">🍀 만나면 행운 오는 럭키상</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <!-- 본인 캐릭터 카드 -->
+      <div style="text-align:center;">
+        <div style="font-size:9px;color:#B8942E;font-weight:700;margin-bottom:4px;">🎴 캐릭터 일러스트</div>
+        <div style="background:#fafafa;border-radius:10px;padding:8px;border:1px solid #B8942E20;">
+          <img src="/dog-cards/dog (18).png" alt="만나면 행운 오는 럭키상" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+          <div style="font-size:11px;font-weight:700;color:#1A3C32;margin-top:4px;">🍀 만나면 행운 오는 럭키상</div>
+        </div>
+      </div>
+      <!-- 찰떡/안맞는 친구 -->
+      <div>
+        <div style="font-size:9px;color:#c92a2a;font-weight:700;margin-bottom:4px;">💕 찰떡 친구</div>
+        <div style="background:#fff5f5;border-radius:10px;padding:6px;border:1px solid #ffccd0;text-align:center;margin-bottom:6px;">
+          <img src="/dog-cards/dog (1).png" alt="돈복 부자상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">💰 돈복 부자상</div>
+        </div>
+        <div style="font-size:9px;color:#8b6f1c;font-weight:700;margin-bottom:4px;">⚡ 안 맞는 친구</div>
+        <div style="background:#f8f9fa;border-radius:10px;padding:6px;border:1px solid #e6d5a8;text-align:center;">
+          <img src="/dog-cards/dog (16).png" alt="어디든 달려가는 모험상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🌍 어디든 달려가는 모험상</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #B8942E30;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="background:#F4E0A0;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.19</div>
+      <div style="font-size:13px;font-weight:900;color:#1A3C32;">🖥️ 패턴 분석왕상</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <!-- 본인 캐릭터 카드 -->
+      <div style="text-align:center;">
+        <div style="font-size:9px;color:#B8942E;font-weight:700;margin-bottom:4px;">🎴 캐릭터 일러스트</div>
+        <div style="background:#fafafa;border-radius:10px;padding:8px;border:1px solid #B8942E20;">
+          <img src="/dog-cards/dog (19).png" alt="패턴 분석왕상" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+          <div style="font-size:11px;font-weight:700;color:#1A3C32;margin-top:4px;">🖥️ 패턴 분석왕상</div>
+        </div>
+      </div>
+      <!-- 찰떡/안맞는 친구 -->
+      <div>
+        <div style="font-size:9px;color:#c92a2a;font-weight:700;margin-bottom:4px;">💕 찰떡 친구</div>
+        <div style="background:#fff5f5;border-radius:10px;padding:6px;border:1px solid #ffccd0;text-align:center;margin-bottom:6px;">
+          <img src="/dog-cards/dog (3).png" alt="야무진 알뜰상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🧮 야무진 알뜰상</div>
+        </div>
+        <div style="font-size:9px;color:#8b6f1c;font-weight:700;margin-bottom:4px;">⚡ 안 맞는 친구</div>
+        <div style="background:#f8f9fa;border-radius:10px;padding:6px;border:1px solid #e6d5a8;text-align:center;">
+          <img src="/dog-cards/dog (14).png" alt="디테일 변태 장인상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🔍 디테일 변태 장인상</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid #B8942E30;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="background:#F4E0A0;color:#1A3C32;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;flex-shrink:0;">No.20</div>
+      <div style="font-size:13px;font-weight:900;color:#1A3C32;">😤 안 좋아하는 척 츤데레상</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <!-- 본인 캐릭터 카드 -->
+      <div style="text-align:center;">
+        <div style="font-size:9px;color:#B8942E;font-weight:700;margin-bottom:4px;">🎴 캐릭터 일러스트</div>
+        <div style="background:#fafafa;border-radius:10px;padding:8px;border:1px solid #B8942E20;">
+          <img src="/dog-cards/dog (20).png" alt="안 좋아하는 척 츤데레상" style="width:80px;height:80px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.display='none'"/>
+          <div style="font-size:11px;font-weight:700;color:#1A3C32;margin-top:4px;">😤 안 좋아하는 척 츤데레상</div>
+        </div>
+      </div>
+      <!-- 찰떡/안맞는 친구 -->
+      <div>
+        <div style="font-size:9px;color:#c92a2a;font-weight:700;margin-bottom:4px;">💕 찰떡 친구</div>
+        <div style="background:#fff5f5;border-radius:10px;padding:6px;border:1px solid #ffccd0;text-align:center;margin-bottom:6px;">
+          <img src="/dog-cards/dog (14).png" alt="디테일 변태 장인상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">🔍 디테일 변태 장인상</div>
+        </div>
+        <div style="font-size:9px;color:#8b6f1c;font-weight:700;margin-bottom:4px;">⚡ 안 맞는 친구</div>
+        <div style="background:#f8f9fa;border-radius:10px;padding:6px;border:1px solid #e6d5a8;text-align:center;">
+          <img src="/dog-cards/dog (12).png" alt="옆에 있어 주는 힐러상" style="width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px;" onerror="this.style.display='none'"/>
+          <div style="font-size:9px;font-weight:700;color:#1A3C32;">💕 옆에 있어 주는 힐러상</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

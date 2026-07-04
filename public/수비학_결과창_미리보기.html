@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>수비학 결과창 미리보기</title>
+<!--
+  출처: src/app/page.tsx
+  - NumerologyModal result JSX: 12664~12900행
+  - id="numerology-capture"
+  - DARK THEME — pageCardStyle: background:theme.bg, color:#fff (white카드 아님)
+  - 소울넘버 7 기본 테마 사용 (THEMES[7], 12690행)
+    - bg: linear-gradient(180deg,#1a0528 0%,#0a0210 100%)
+    - ring: linear-gradient(135deg,#8e44ad,#a569bd)
+    - accent: #a569bd
+    - accent2: #d5a6e8
+    - soft: rgba(142,68,173,0.3)
+    - text: #d5c8e0
+    - hint: #8870a0
+  - PAGE 1: 원형이미지 220×220 + 소울넘버/soul_name + 행운석/수호성 chips
+  - PAGE 2: 7탭 (4+3 레이아웃) — 영혼의 정체/빛과 그림자/시간의 강/재물·인연 + 영혼의 식탁/분기별 기운/주파수 깨우기
+  - hashFootNum: #천기수비학 #소울넘버{n} #{soul_name} #{personName}
+  - brandTopNum: "🔮 천기(天機) 오리지널 | 우주의 암호 해독 수비학 리포트"
+  - 이미지: /subihak-cards/number_img{soul_number}.jpg
+-->
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#1A3C32;--gold:#D4AF37;}
+body{background:#1A3C32;font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;padding:20px;}
+.max-wrap{max-width:430px;margin:0 auto;}
+/* DARK THEME 카드 (수비학 전용) */
+.dark-card{
+  background:linear-gradient(180deg,#1a0528 0%,#0a0210 100%);
+  border:1px solid rgba(142,68,173,0.3);
+  border-radius:20px;
+  overflow:hidden;
+  padding:0 20px;
+  color:#fff;
+  box-shadow:0 0 40px rgba(142,68,173,0.3);
+  margin-bottom:12px;
+}
+.brand-top-num{
+  text-align:center;
+  font-size:9px;
+  color:#aaa;
+  font-weight:600;
+  letter-spacing:0.3px;
+  padding:10px 0;
+  margin:0 0 14px;
+  margin-left:0;
+  border-bottom:1px solid rgba(142,68,173,0.3);
+}
+.hash-foot-num{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:14px;
+  padding:10px 0;
+  border-top:1px solid rgba(142,68,173,0.3);
+  flex-wrap:wrap;
+  gap:4px;
+  font-size:9px;
+  color:#aaa;
+  font-weight:600;
+  letter-spacing:0.3px;
+}
+.sub-box{
+  margin-bottom:12px;
+  background:rgba(255,255,255,0.04);
+  padding:14px 16px;
+  border-radius:12px;
+  border-left:3px solid #a569bd;
+}
+.sub-box-title{
+  color:#d5a6e8;
+  font-size:11.5px;
+  font-weight:800;
+  margin-bottom:6px;
+}
+.sub-box-text{
+  font-size:11px;
+  line-height:1.85;
+  color:#d5c8e0;
+  word-break:keep-all;
+}
+.tab-btn-dark{
+  flex:1;
+  padding:7px 4px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(142,68,173,0.3);
+  color:#d5c8e0;
+  border-radius:9px;
+  font-weight:700;
+  cursor:pointer;
+  font-family:inherit;
+  font-size:10px;
+  text-align:center;
+}
+.tab-btn-dark.active{
+  background:#a569bd;
+  border-color:#a569bd;
+  color:#0a0a0a;
+}
+.month-box{
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(142,68,173,0.3);
+  border-radius:10px;
+  padding:10px 12px;
+  margin-bottom:12px;
+}
+.info-chip{
+  background:rgba(142,68,173,0.3);
+  border:1px solid rgba(142,68,173,0.3);
+  padding:8px 14px;
+  border-radius:20px;
+  font-size:11px;
+  color:#d5a6e8;
+  font-weight:700;
+}
+.grid-box{
+  background:rgba(142,68,173,0.3);
+  border:1px solid rgba(165,105,189,0.2);
+  border-radius:12px;
+  padding:12px 8px;
+  text-align:center;
+  min-height:96px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+</style>
+</head>
+<body>
+<div class="max-wrap">
+
+<!-- ═══════════ numerology-capture wrapper ═══════════ -->
+<div id="numerology-capture" style="display:flex;flex-direction:column;gap:12;margin-bottom:12px;">
+
+<!-- ═══ PAGE 1 ═══ 헤더 + 원형이미지 + 소울넘버 + 행운석/수호성 -->
+<div class="dark-card">
+  <div class="brand-top-num">🔮 천기(天機) 오리지널 | 우주의 암호 해독 수비학 리포트</div>
+
+  <!-- 사용자 정보 -->
+  <div style="text-align:center;font-size:10px;color:#8870a0;font-weight:600;margin-bottom:12px;line-height:1.6;">
+    <div>홍길동 · 1990-07-15 양력 · 미상시</div>
+    <div style="opacity:0.7;">📅 2026-06-30 분석</div>
+  </div>
+
+  <!-- 원형 이미지 220×220 (ring: linear-gradient) -->
+  <div style="width:220px;height:220px;margin:0 auto 12px;border-radius:50%;padding:4px;background:linear-gradient(135deg,#8e44ad,#a569bd);box-shadow:0 0 40px rgba(142,68,173,0.3);">
+    <!-- /subihak-cards/number_img7.jpg -->
+    <div style="width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#3a0060,#6a20a0);display:flex;align-items:center;justify-content:center;font-size:64px;">🔮</div>
+  </div>
+
+  <!-- 소울넘버 -->
+  <div style="text-align:center;font-size:28px;color:#a569bd;font-weight:900;margin-bottom:4px;">소울 넘버 : 7</div>
+  <div style="text-align:center;font-size:15px;color:#d5a6e8;font-weight:700;margin-bottom:12px;">[ 탐구자 ]</div>
+
+  <!-- quote -->
+  <div style="text-align:center;font-style:italic;color:#8870a0;font-size:11px;line-height:1.7;padding:0 6px;margin-bottom:12px;word-break:keep-all;">
+    "홍길동님은 우주의 신호를 먼저 감지하는 영혼이에요. 침묵 속에서 진리를 탐구하고, 혼자만의 시간에서 에너지를 충전합니다."
+  </div>
+
+  <!-- 행운석 + 수호성 chips -->
+  <div style="display:flex;justify-content:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+    <div class="info-chip">✨ 행운석 : 아메시스트</div>
+    <div class="info-chip">🪐 수호성 : 해왕성</div>
+  </div>
+
+  <!-- hash footer -->
+  <div class="hash-foot-num">
+    <span>#천기수비학 #소울넘버7 #탐구자 #홍길동</span>
+    <span style="font-weight:600;">🌐 천기.kr</span>
+  </div>
+</div>
+
+<!-- ═══ PAGE 2 ═══ 영혼의 본질 — 7탭 -->
+<div class="dark-card">
+  <div class="brand-top-num">🔮 천기(天機) 오리지널 | 우주의 암호 해독 수비학 리포트</div>
+
+  <!-- 제목 -->
+  <div style="text-align:center;font-size:20px;font-weight:900;color:#a569bd;font-family:'Noto Serif KR','Batang',serif;margin-bottom:6px;">🔮 홍길동님의 영혼의 본질</div>
+  <div style="text-align:center;font-size:11px;color:#a569bd;font-weight:700;margin-bottom:12px;">👇 아래 탭 버튼을 눌러 분야별 상세 리포트를 확인하세요!</div>
+
+  <!-- 탭 4+3 레이아웃 -->
+  <div style="margin-bottom:12px;">
+    <!-- 첫 번째 줄: 4개 탭 -->
+    <div style="display:flex;gap:5px;margin-bottom:5px;">
+      <div class="tab-btn-dark active">✨ 영혼의 정체</div>
+      <div class="tab-btn-dark">💫 빛과 그림자</div>
+      <div class="tab-btn-dark">⏳ 시간의 강</div>
+      <div class="tab-btn-dark">💰 재물·인연</div>
+    </div>
+    <!-- 두 번째 줄: 3개 탭 -->
+    <div style="display:flex;gap:5px;">
+      <div class="tab-btn-dark">🌿 영혼의 식탁</div>
+      <div class="tab-btn-dark">📅 분기별 기운</div>
+      <div class="tab-btn-dark">🧘 주파수 깨우기</div>
+    </div>
+  </div>
+
+  <!-- 탭 본문 — 챕터 헤더 -->
+  <div style="min-height:120px;margin-bottom:12px;">
+    <!-- 챕터 헤더: borderBottom 2px solid accent66 -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:2px solid rgba(165,105,189,0.4);">
+      <div style="font-size:32px;filter:drop-shadow(0 0 8px rgba(142,68,173,0.3));">✨</div>
+      <div style="flex:1;">
+        <div style="font-size:18px;font-weight:900;color:#a569bd;font-family:'Noto Serif KR','Batang',serif;letter-spacing:-0.3px;">영혼의 정체</div>
+        <div style="font-size:10px;color:#8870a0;font-style:italic;margin-top:1px;">"누구로 태어났나"</div>
+      </div>
+    </div>
+
+    <!-- ⚡ 영혼의 결 -->
+    <div class="sub-box">
+      <div class="sub-box-title">⚡ 영혼의 결</div>
+      <div class="sub-box-text">홍길동님의 영혼에는 깊은 탐구심과 직관력이 새겨져 있어요. 겉으론 조용해 보이지만 내면에서는 끊임없이 진리를 향해 나아가고 있답니다. 혼자만의 사색 속에서 가장 빛나는 통찰을 만들어내는 영혼이에요.</div>
+    </div>
+
+    <!-- 🧠 심층 성격 -->
+    <div class="sub-box">
+      <div class="sub-box-title">🧠 심층 성격</div>
+      <div class="sub-box-text">분석적이고 섬세한 홍길동님은 표면 아래 숨겨진 패턴을 꿰뚫어보는 능력이 있어요. 소수의 깊은 관계를 선호하고, 감정보다 이성으로 세상을 이해하려는 경향이 있지만, 그 내면에는 풍부한 감수성이 자리하고 있답니다.</div>
+    </div>
+
+    <!-- 🤫 무의식 갈망 -->
+    <div class="sub-box" style="margin-bottom:0;">
+      <div class="sub-box-title">🤫 무의식 갈망</div>
+      <div class="sub-box-text">홍길동님의 무의식 깊은 곳에는 '진정한 이해'에 대한 갈망이 자리해요. 누군가에게 완전히 이해받고 싶은 욕구, 그리고 자신이 발견한 진리를 세상과 나누고 싶은 소망이 담겨있어요.</div>
+    </div>
+
+    <!-- 닮은 유명인 (영혼의 정체 탭 하단) -->
+    <div style="margin-top:12px;background:rgba(255,255,255,0.04);padding:14px 16px;border-radius:12px;border-left:3px solid #a569bd;">
+      <div style="color:#d5a6e8;font-size:11.5px;font-weight:800;margin-bottom:8px;">✨ 홍길동님과 닮은 소울넘버 7 유명인 10명</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px;justify-content:center;">
+        <a style="font-size:10px;font-weight:700;color:#d5c8e0;padding:4px 8px;background:rgba(142,68,173,0.3);border:1px solid rgba(165,105,189,0.2);border-radius:12px;text-decoration:none;">🔢 정약용</a>
+        <a style="font-size:10px;font-weight:700;color:#d5c8e0;padding:4px 8px;background:rgba(142,68,173,0.3);border:1px solid rgba(165,105,189,0.2);border-radius:12px;text-decoration:none;">🔢 조용필</a>
+        <a style="font-size:10px;font-weight:700;color:#d5c8e0;padding:4px 8px;background:rgba(142,68,173,0.3);border:1px solid rgba(165,105,189,0.2);border-radius:12px;text-decoration:none;">🔢 김영하</a>
+        <a style="font-size:10px;font-weight:700;color:#d5c8e0;padding:4px 8px;background:rgba(142,68,173,0.3);border:1px solid rgba(165,105,189,0.2);border-radius:12px;text-decoration:none;">🔢 이어령</a>
+        <a style="font-size:10px;font-weight:700;color:#d5c8e0;padding:4px 8px;background:rgba(142,68,173,0.3);border:1px solid rgba(165,105,189,0.2);border-radius:12px;text-decoration:none;">🔢 박찬욱</a>
+      </div>
+      <div style="font-size:9px;color:#8870a0;text-align:center;line-height:1.6;">이름 클릭 시 네이버 검색</div>
+    </div>
+  </div>
+
+  <!-- ── 분기별 기운 탭 미리보기 (접힘 상태 표시용) ── -->
+  <div style="border-top:1px solid rgba(142,68,173,0.2);padding-top:14px;margin-bottom:12px;">
+    <div style="color:#d5a6e8;font-size:10px;font-weight:800;margin-bottom:8px;text-align:center;">📅 분기별 기운 탭 샘플</div>
+    <!-- months_h1 샘플 -->
+    <div style="margin-bottom:12px;background:rgba(255,255,255,0.04);padding:14px 16px;border-radius:12px;border-left:3px solid #d5a6e8;">
+      <div style="color:#d5a6e8;font-size:11.5px;font-weight:800;margin-bottom:8px;">🌠 2026 중반기 (5~8월)</div>
+      <div class="month-box">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;gap:6px;flex-wrap:wrap;">
+          <span style="font-size:11px;color:#d5a6e8;font-weight:800;">7월</span>
+          <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(142,68,173,0.3);color:#a569bd;">주파수 78% · 상승기</span>
+        </div>
+        <div style="font-size:11px;color:#d5c8e0;line-height:1.6;">내면의 통찰력이 최고조에 달하는 시기예요. 중요한 결정을 내리기에 좋은 때입니다.</div>
+      </div>
+      <div class="month-box" style="margin-bottom:0;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;gap:6px;flex-wrap:wrap;">
+          <span style="font-size:11px;color:#d5a6e8;font-weight:800;">8월</span>
+          <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(142,68,173,0.3);color:#a569bd;">주파수 65% · 내실</span>
+        </div>
+        <div style="font-size:11px;color:#d5c8e0;line-height:1.6;">조용히 에너지를 비축하는 달이에요. 무리한 확장보다 내실을 다지세요.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 주파수 깨우기 탭 미리보기 ── -->
+  <div style="border-top:1px solid rgba(142,68,173,0.2);padding-top:14px;margin-bottom:12px;">
+    <div style="color:#d5a6e8;font-size:10px;font-weight:800;margin-bottom:8px;text-align:center;">🧘 주파수 깨우기 탭 샘플</div>
+
+    <!-- 매일의 주파수 동기화 루틴 -->
+    <div style="margin-bottom:12px;background:rgba(255,255,255,0.04);padding:14px 16px;border-radius:12px;border-left:3px solid #a569bd;">
+      <div class="sub-box-title">🧘 매일의 주파수 동기화 루틴</div>
+      <div class="sub-box-text">아침에 5분간 명상을 하며 하루를 시작하세요. 자연 속에서 산책하며 직관을 깨우고, 저녁에는 하루를 돌아보는 일기를 적어요. 보라색이나 남색 계열의 물건을 가까이 두면 에너지 동기화에 도움이 됩니다.</div>
+    </div>
+
+    <!-- 6박스 그리드 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+      <div class="grid-box">
+        <div style="font-size:24px;margin-bottom:4px;">🔢</div>
+        <div style="font-size:9px;color:#d5a6e8;font-weight:800;">영혼의 처방 숫자</div>
+        <div style="font-size:11px;font-weight:900;color:#a569bd;margin-top:3px;word-break:keep-all;">7, 16, 25</div>
+      </div>
+      <div class="grid-box">
+        <div style="width:24px;height:24px;border-radius:50%;background:#8E44AD;border:2px solid rgba(255,255,255,0.4);margin:0 auto 4px;"></div>
+        <div style="font-size:9px;color:#d5a6e8;font-weight:800;">절대 행운 컬러</div>
+        <div style="font-size:11px;font-weight:900;color:#a569bd;margin-top:3px;word-break:keep-all;">지혜의 퍼플</div>
+      </div>
+      <div class="grid-box">
+        <div style="font-size:24px;margin-bottom:4px;">🧭</div>
+        <div style="font-size:9px;color:#d5a6e8;font-weight:800;">수호 방향</div>
+        <div style="font-size:11px;font-weight:900;color:#a569bd;margin-top:3px;">북쪽</div>
+      </div>
+      <div class="grid-box">
+        <div style="font-size:24px;margin-bottom:4px;">⏱️</div>
+        <div style="font-size:9px;color:#d5a6e8;font-weight:800;">동기화 시간</div>
+        <div style="font-size:11px;font-weight:900;color:#a569bd;margin-top:3px;">오후 9~11시</div>
+      </div>
+    </div>
+
+    <!-- 천기의 한마디 (무지개 박스) -->
+    <div style="margin-bottom:12px;border-radius:16px;padding:1.5px;background-image:linear-gradient(135deg,#ffb8b8,#ffd9a8,#b8e0c8,#bcd6f0,#cdc5e8);box-shadow:0 4px 14px rgba(155,143,212,0.15);">
+      <div style="background:#fafbfd;border-radius:14.5px;padding:20px 18px;text-align:center;">
+        <div style="font-size:13px;color:#1A3C32;letter-spacing:1.5px;font-weight:900;margin-bottom:10px;">🔮 천기의 한마디</div>
+        <div style="font-size:13px;color:#1A3C32;font-weight:700;line-height:1.85;word-break:keep-all;font-family:'Noto Serif KR','Batang',serif;">
+          홍길동님, 고요한 내면에 우주의 지혜가 깃들어 있어요. 세상이 시끄러울수록 당신의 침묵은 더욱 빛납니다. 두려워하지 말고 당신만의 속도로 나아가세요.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- hash footer -->
+  <div class="hash-foot-num">
+    <span>#천기수비학 #소울넘버7 #탐구자 #홍길동</span>
+    <span style="font-weight:600;">🌐 천기.kr</span>
+  </div>
+</div>
+
+</div><!-- /numerology-capture -->
+
+<!-- ─── 마스터넘버 11 케이스 (THEMES[11]) ─── -->
+<!-- THEMES[11]: bg:linear-gradient(180deg,#1a0a1a 0%,#0a0205 100%), ring:linear-gradient(135deg,#e8d5ff,#c8a8ed), accent:#d8b8f0, accent2:#f0e0ff, soft:rgba(232,213,255,0.3), text:#e0d0ed, hint:#a890c0 -->
+<div style="max-width:430px;margin:24px auto 0;">
+  <div style="font-size:9px;color:rgba(255,255,255,0.4);text-align:center;margin-bottom:8px;letter-spacing:1px;">※ 마스터넘버 11 케이스 (소울넘버 11)</div>
+
+  <!-- PAGE 1: 원형이미지 + 소울넘버/soul_name -->
+  <div style="background:linear-gradient(180deg,#1a0a1a 0%,#0a0205 100%);border:1px solid rgba(216,184,240,0.4);border-radius:20px;overflow:hidden;padding:0 20px;color:#fff;box-shadow:0 0 40px rgba(216,184,240,0.4);margin-bottom:12px;">
+    <div style="text-align:center;font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;padding:10px 0;margin:0 0 14px;border-bottom:1px solid rgba(216,184,240,0.3);">🔮 천기(天機) 오리지널 | 우주의 암호 해독 수비학 리포트</div>
+
+    <!-- 원형 이미지 220×220 -->
+    <div style="display:flex;justify-content:center;padding:16px 0 12px;">
+      <div style="width:220px;height:220px;border-radius:50%;overflow:hidden;border:4px solid transparent;background:linear-gradient(#1a0a1a,#1a0a1a) padding-box,linear-gradient(135deg,#e8d5ff,#c8a8ed) border-box;box-shadow:0 0 30px rgba(216,184,240,0.5);display:flex;align-items:center;justify-content:center;">
+        <div style="text-align:center;color:#e0d0ed;">
+          <div style="font-size:36px;margin-bottom:8px;">✨</div>
+          <div style="font-size:10px;font-weight:700;color:#d8b8f0;">/subihak-cards/number_img11.jpg</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 마스터넘버 배지 -->
+    <div style="text-align:center;margin-bottom:8px;">
+      <div style="display:inline-block;background:linear-gradient(135deg,#e8d5ff,#c8a8ed);color:#1a0a1a;font-size:9px;font-weight:900;padding:3px 10px;border-radius:10px;letter-spacing:1px;">✦ MASTER NUMBER</div>
+    </div>
+
+    <!-- 소울넘버 표시 -->
+    <div style="text-align:center;margin-bottom:6px;">
+      <div style="font-size:11px;color:#a890c0;font-weight:700;letter-spacing:2px;margin-bottom:4px;">SOUL NUMBER</div>
+      <div style="font-size:60px;font-weight:900;background:linear-gradient(135deg,#e8d5ff,#c8a8ed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;">11</div>
+      <div style="font-size:20px;font-weight:800;color:#f0e0ff;margin-top:4px;font-family:'Noto Serif KR','Batang',serif;">선지자</div>
+    </div>
+
+    <!-- soul_description -->
+    <div style="text-align:center;font-style:italic;color:#a890c0;font-size:11px;line-height:1.7;padding:0 6px;margin-bottom:12px;word-break:keep-all;">
+      "홍길동님은 영적 직관이 특별히 강한 영혼이에요. 빛과 어둠 사이에서 다리 역할을 하며, 높은 감수성으로 타인의 감정을 먼저 느끼는 선구자예요."
+    </div>
+
+    <!-- 행운석 + 수호성 chips -->
+    <div style="display:flex;justify-content:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+      <div style="font-size:11px;font-weight:700;color:#d8b8f0;background:rgba(232,213,255,0.3);border:1px solid rgba(216,184,240,0.4);border-radius:20px;padding:5px 12px;">✨ 행운석 : 문스톤</div>
+      <div style="font-size:11px;font-weight:700;color:#d8b8f0;background:rgba(232,213,255,0.3);border:1px solid rgba(216,184,240,0.4);border-radius:20px;padding:5px 12px;">🌙 수호성 : 달</div>
+    </div>
+
+    <!-- hash footer -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding:10px 0;border-top:1px solid rgba(216,184,240,0.3);flex-wrap:wrap;font-size:9px;color:#a890c0;font-weight:600;">
+      <span>#천기수비학 #소울넘버11 #선지자 #마스터넘버 #홍길동</span>
+      <span style="font-weight:600;">🌐 천기.kr</span>
+    </div>
+  </div>
+</div>
+
+<!-- 📚 12 소울넘버 전체 도감 버튼 -->
+<button style="width:100%;padding:14px;margin-top:10px;margin-bottom:10px;background:linear-gradient(135deg,#fef9e7,#fff8db);color:#6b21a8;border:2px solid rgba(155,143,212,0.4);border-radius:14px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;">
+  📚 12 소울넘버 전체 도감 보기 (찰떡·상극 포함)
+</button>
+
+<!-- 광고배너 2x2 -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(155,143,212,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">☯️</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">내 사주는?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">사주 풀이 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(74,144,217,0.25);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">🌊</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">이름의 파동은?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">파동 성명학 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(212,175,55,0.25);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">🃏</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">오늘의 카드는?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">오늘의 타로 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(255,107,107,0.25);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">🪞</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">내 관상은?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">내관상보기 →</div>
+  </div>
+</div>
+
+<!-- ResultActions -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+  <button style="padding:12px;background:#f8f9fa;border:1px solid #eee;border-radius:12px;font-size:12px;font-weight:700;color:#333;cursor:pointer;">📸 이미지 저장</button>
+  <button style="padding:12px;background:#f8f9fa;border:1px solid #eee;border-radius:12px;font-size:12px;font-weight:700;color:#333;cursor:pointer;">🔗 공유하기</button>
+</div>
+
+<!-- 확인 버튼 -->
+<button style="width:100%;padding:14px;background:#D4AF37;color:#1A3C32;border:none;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;">확인 완료</button>
+
+</div>
+</body>
+</html>

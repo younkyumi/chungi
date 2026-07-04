@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        :root {
+            --bg-deep-green: #1A3D1A;
+            --point-gold: #C9A74E;
+            --point-yellow: #F4E0A0;
+            --text-white: #FFFFFF;
+            --soft-green: #3A5F3A;
+        }
+
+        .premium-popup {
+            background-color: var(--bg-deep-green);
+            color: var(--text-white);
+            border: 2px solid var(--point-gold);
+            border-radius: 24px;
+            padding: 45px 30px;
+            text-align: center;
+            max-width: 440px;
+            font-family: 'Noto Serif KR', serif;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+            line-height: 1.6;
+        }
+
+        /* 도입부 서사 */
+        .intro-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--point-yellow);
+            margin-bottom: 10px;
+        }
+        .intro-sub {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 25px;
+            word-break: keep-all;
+        }
+
+        /* [Visual] AI 정밀 스캔 컴포넌트 */
+        .scan-visual-box {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--soft-green);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .face-outline {
+            position: absolute;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 130px; opacity: 0.3; filter: grayscale(1);
+        }
+
+        .laser-line {
+            position: absolute; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--point-gold), transparent);
+            box-shadow: 0 0 15px var(--point-gold);
+            animation: laserMove 3s infinite ease-in-out;
+        }
+
+        /* 관상학적 정밀 분석 리스트 */
+        .physiognomy-list {
+            text-align: left;
+            margin-bottom: 35px;
+            font-family: 'Spoqa Han Sans Neo', sans-serif;
+        }
+
+        .feature-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .feature-icon { font-size: 24px; }
+        .feature-content b { color: var(--point-yellow); font-size: 15px; display: block; margin-bottom: 2px; }
+        .feature-content span { font-size: 13px; color: #C1D1C1; display: block; }
+
+        /* 빅데이터 강조 */
+        .tech-info {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 13px;
+            color: var(--point-gold);
+            margin-bottom: 30px;
+            word-break: keep-all;
+        }
+
+        /* 버튼 */
+        .btn-start {
+            background: linear-gradient(180deg, #D29C44 0%, #AA7B30 100%);
+            color: white; width: 100%; padding: 22px;
+            border: none; border-radius: 16px;
+            font-size: 18px; font-weight: 900;
+            cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        }
+
+        @keyframes laserMove {
+            0% { top: 0%; opacity: 0; }
+            50% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="premium-popup">
+        <h2 class="intro-text">🔍 내 관상 초정밀 진단</h2>
+        <p class="intro-sub">
+            "얼굴은 내면의 거울이자,<br>운명이 기록된 한 장의 지도입니다."
+        </p>
+
+        <div class="scan-visual-box">
+            <div class="laser-line"></div>
+            <div class="face-outline">👤</div>
+            <div style="position: absolute; bottom: 10px; right: 15px; font-size: 9px; color: #4A7F4A; font-family: monospace;">
+                BIG_DATA_SCANNING... [OK]
+            </div>
+        </div>
+
+        <div class="physiognomy-list">
+            <div class="feature-item">
+                <div class="feature-icon">👁️</div>
+                <div class="feature-content">
+                    <b>눈(애정과 지혜)</b>
+                    <span>세상을 바라보는 창이자, 사람이 모이는 척도</span>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">👃</div>
+                <div class="feature-content">
+                    <b>코(재물과 자아)</b>
+                    <span>내면의 줏대와 일평생 모이는 재물의 크기</span>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">👄</div>
+                <div class="feature-content">
+                    <b>입과 턱(말년과 인복)</b>
+                    <span>인생의 후반부를 받쳐주는 든든한 기반</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tech-info">
+            천기의 AI 관상가는 수만 건의 관상학 빅데이터를 바탕으로,<br>
+            당신의 얼굴에 숨겨진 진짜 운명의 흐름을 짚어냅니다.
+        </div>
+
+        <p style="font-size: 13px; margin-bottom: 25px; color: var(--text-white); opacity: 0.8;">
+            지금 사진을 올려, 당신의 얼굴에 기록된<br><b>인생의 내비게이션</b>을 확인해 보세요.
+        </p>
+
+        <button class="btn-start">나의 운명 확인하기 (980원) →</button>
+    </div>
+</body>
+</html>

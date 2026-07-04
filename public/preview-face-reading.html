@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>천기 내관상보기 결과 미리보기</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#1A3C32;font-family:'Pretendard','Noto Serif KR',sans-serif;display:flex;justify-content:center;padding:20px;}
+.wrap{max-width:420px;width:100%;}
+
+/* 흰 카드 */
+.card{background:#fff;border-radius:20px;overflow:hidden;border:1px solid rgba(201,167,78,0.3);box-shadow:0 10px 30px rgba(0,0,0,0.1);color:#333;margin-bottom:16px;}
+
+/* 헤더 */
+.header{padding:18px 16px 10px;text-align:center;border-bottom:1px solid #f0f0f0;}
+.header .sub{font-size:9px;color:#aaa;letter-spacing:0.3px;margin-bottom:4px;}
+.header .name{font-size:16px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR',serif;}
+.header .char-name{font-size:13px;font-weight:800;color:#D4AF37;margin-top:4px;}
+
+/* 스캔 영역 */
+.scan{position:relative;width:100%;height:220px;background:rgba(0,0,0,0.05);overflow:hidden;border-bottom:1px solid #f0f0f0;}
+.scan img.face{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);height:100%;opacity:0.25;filter:grayscale(100%);}
+.scan .laser{position:absolute;width:100%;height:3px;background:linear-gradient(90deg,transparent,#C9A74E,transparent);box-shadow:0 0 20px #C9A74E;animation:laserScan 3s infinite ease-in-out;}
+.scan .point{position:absolute;width:8px;height:8px;background:#F4E0A0;border-radius:50%;box-shadow:0 0 12px #F4E0A0;animation:pulsePoint 2s infinite;}
+.scan .log{position:absolute;bottom:8px;right:12px;font-size:10px;color:#C9A74E;font-weight:600;}
+
+/* 점수 + 등급 바 */
+.score-bar{display:flex;align-items:center;justify-content:center;gap:12px;padding:14px 16px;border-bottom:1px solid #f0f0f0;background:#fafafa;}
+.score-bar .score{font-size:28px;font-weight:900;color:#D4AF37;}
+.score-bar .grade{font-size:14px;font-weight:900;color:#fff;background:#1A3C32;padding:4px 14px;border-radius:20px;}
+.score-bar .percent{font-size:11px;color:#888;font-weight:600;}
+
+/* 하단 고정 스탯 바 */
+.stat-bar{display:flex;justify-content:center;gap:10px;padding:10px 16px;background:#fafafa;border-bottom:1px solid #f0f0f0;}
+.stat-bar .stat{font-size:10px;font-weight:700;padding:4px 12px;border-radius:20px;}
+.stat-bar .charm{background:#fff0f3;color:#e03131;border:1px solid #ffe0e6;}
+.stat-bar .wealth{background:#fffbeb;color:#b45309;border:1px solid #fde68a;}
+.stat-bar .level{background:#f0e6ff;color:#7c3aed;border:1px solid #e8d5f5;}
+
+/* 탭 버튼 그리드 */
+.tabs{padding:12px;display:flex;flex-direction:column;gap:6px;border-bottom:1px solid #f0f0f0;}
+.tab-row{display:flex;gap:6px;}
+.tab-row.full .tab{flex:1;}
+.tab-row.three .tab{flex:1;}
+.tab-row.five .tab{flex:1;}
+.tab{padding:8px 4px;background:transparent;border:1px solid #ddd;color:#1A3C32;border-radius:10px;font-size:10px;font-weight:700;cursor:pointer;text-align:center;transition:all .2s;font-family:inherit;}
+.tab.on{background:#1A3C32;color:#fff;border-color:#1A3C32;}
+.tab:hover{border-color:#C9A74E;}
+
+/* 콘텐츠 */
+.content{padding:18px 16px;}
+.content .sec-title{font-size:15px;font-weight:800;color:#1A3C32;text-align:center;margin-bottom:10px;}
+.content .sec-body{background:#f8f9fa;border-radius:12px;padding:14px;border-left:4px solid #1A3C32;margin-bottom:12px;}
+.content .sec-body p{font-size:12px;color:#444;line-height:1.85;word-break:keep-all;}
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:4px 12px;border-radius:20px;margin:0 3px 6px;}
+.badge.mbti{background:#f0e6ff;color:#7c3aed;}
+.badge.job{background:#e8f4fd;color:#1a73e8;}
+.badge.warn{background:#fde8e8;color:#DC3545;}
+.badge.color{background:#fdf8e8;color:#b45309;}
+.badge.dir{background:#e8fdf4;color:#059669;}
+.badge.match-good{background:#fff0f3;color:#e03131;}
+.badge.match-bad{background:#f0f0f0;color:#666;}
+
+/* 전생 연동 */
+.joseon-link{background:linear-gradient(135deg,rgba(201,167,78,0.1),rgba(26,61,26,0.05));border:1px solid rgba(201,167,78,0.3);border-radius:12px;padding:12px;text-align:center;margin-bottom:12px;cursor:pointer;}
+.joseon-link .title{font-size:12px;font-weight:700;color:#1A3C32;}
+.joseon-link .sub{font-size:10px;color:#888;margin-top:3px;}
+
+.tags{font-size:8px;color:#bbb;text-align:center;padding:0 16px 16px;}
+
+@keyframes laserScan{0%{top:0%;opacity:0}20%{opacity:1}80%{opacity:1}100%{top:100%;opacity:0}}
+@keyframes pulsePoint{0%,100%{opacity:0;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div style="text-align:center;color:#D4AF37;font-size:16px;font-weight:900;margin-bottom:16px;">🔍 내관상보기 결과 카드 미리보기</div>
+
+<!-- ━━━ 메인 카드 ━━━ -->
+<div class="card">
+  <!-- 헤더 -->
+  <div class="header">
+    <div class="sub">🔮 천기(天機) 오리지널 | 초정밀 관상 상세 리포트</div>
+    <div class="name">윤규미님 관상보기</div>
+    <div class="char-name">"만인의 심장 저격수"</div>
+  </div>
+
+  <!-- 스캔 비주얼 (확대) -->
+  <div class="scan">
+    <img class="face" src="/윤규미.jfif" alt="">
+    <div class="laser"></div>
+    <div class="point" style="top:20%;left:50%;animation-delay:0s;"></div>
+    <div class="point" style="top:20%;left:35%;animation-delay:0.3s;"></div>
+    <div class="point" style="top:20%;left:65%;animation-delay:0.3s;"></div>
+    <div class="point" style="top:40%;left:40%;animation-delay:0.6s;"></div>
+    <div class="point" style="top:40%;left:60%;animation-delay:0.6s;"></div>
+    <div class="point" style="top:50%;left:50%;animation-delay:0.9s;"></div>
+    <div class="point" style="top:70%;left:50%;animation-delay:1.2s;"></div>
+    <div class="point" style="top:75%;left:30%;animation-delay:1.5s;"></div>
+    <div class="point" style="top:75%;left:70%;animation-delay:1.5s;"></div>
+    <div class="log">AI 정밀 스캐닝 완료 ✓</div>
+  </div>
+
+  <!-- 점수 -->
+  <div class="score-bar">
+    <div class="score">87점</div>
+    <div class="percent">대한민국 상위 12%</div>
+  </div>
+
+  <!-- 고정 스탯 바 -->
+  <div class="stat-bar">
+    <span class="stat charm">💖 도화살 92%</span>
+    <span class="stat wealth">💰 재물그릇 大</span>
+    <span class="stat level">🏆 A등급</span>
+  </div>
+
+  <!-- 탭 버튼 그리드 -->
+  <div class="tabs">
+    <div class="tab-row full">
+      <button class="tab on">✨ 첫인상</button>
+    </div>
+    <div class="tab-row three">
+      <button class="tab">🌅 초년</button>
+      <button class="tab">☀️ 중년</button>
+      <button class="tab">🌙 말년</button>
+    </div>
+    <div class="tab-row five" style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;">
+      <button class="tab">💕 애정</button>
+      <button class="tab">🧠 성격</button>
+      <button class="tab">💰 직업</button>
+      <button class="tab">💖 매력</button>
+      <button class="tab">🩺 건강</button>
+    </div>
+    <div class="tab-row full">
+      <button class="tab">🍀 개운법 & 천기의 한마디</button>
+    </div>
+  </div>
+
+  <!-- 콘텐츠: 첫인상 -->
+  <div class="content">
+    <div class="sec-title">윤규미님, 처음 뵙겠습니다</div>
+    <div class="sec-body">
+      <p>규미님, 사진을 딱 보자마자 느껴지는 건 '참 오래 참으셨다'는 겁니다. 남들은 규미님이 화려해 보인다고 하겠지만, 사실 속은 시커멓게 타들어 간 적이 많으시죠? 하지만 걱정 마세요. 규미님의 이목구비에서 느껴지는 건 강한 회복 탄력성이에요. 넘어져도 다시 일어나는 불사조 같은 기운이 얼굴 전체에서 뿜어져 나옵니다.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ━━━ 초년운 예시 ━━━ -->
+<div class="card">
+  <div class="header">
+    <div class="sub">🔮 천기(天機) 오리지널 | 초정밀 관상 상세 리포트</div>
+    <div class="name" style="font-size:18px;">🌅 초년운 · 인복</div>
+    <div style="font-size:10px;color:#888;margin-top:4px;">분석 부위: 이마 + 눈썹</div>
+  </div>
+  <div class="content">
+    <div class="sec-title">규미님의 초년운 (이마·눈썹)</div>
+    <div class="sec-body">
+      <p>규미님의 이마가 넓고 깨끗한 편이라 초년에 학업운이 좋았을 거예요. 근데 눈썹 끝이 살짝 흐려지는 게 보이는데, 20대 초반에 혼자 고민하던 시기가 있었죠? 부모님과의 관계에서 오는 압박감이 있었을 수 있어요. 하지만 눈썹 숱 자체는 가지런해서 친구복이 있는 편이에요. 힘들 때 옆에서 버텨준 사람이 있었을 거예요. 그 사람 잘 챙기세요, 평생 인연입니다.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━ 애정 예시 (관상궁합 광고) ━━━ -->
+<div class="card">
+  <div class="header">
+    <div class="sub">🔮 천기(天機) 오리지널 | 초정밀 관상 상세 리포트</div>
+    <div class="name" style="font-size:18px;">💕 애정 · 인연</div>
+    <div style="font-size:10px;color:#888;margin-top:4px;">분석 부위: 눈 + 눈꼬리</div>
+  </div>
+  <div class="content">
+    <div class="sec-title">규미님의 연애는요...</div>
+    <div class="sec-body">
+      <p>규미님 눈꼬리가 살짝 올라가 있어서 지기 싫어하는 자존심이 연애에도 그대로 나와요. 먼저 좋아한다고 절대 안 하는 타입이죠? 근데 한번 빠지면 올인하는 극과 극 스타일이에요. 결혼은 32~35세 사이가 최적기예요. 배우자는 턱이 둥글고 웃을 때 눈이 사라지는 사람이면 찰떡이에요.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━ 직업 예시 ━━━ -->
+<div class="card">
+  <div class="header">
+    <div class="sub">🔮 천기(天機) 오리지널 | 초정밀 관상 상세 리포트</div>
+    <div class="name" style="font-size:18px;">💰 직업 · 적성</div>
+    <div style="font-size:10px;color:#888;margin-top:4px;">분석 부위: 코 + 법령(팔자주름)</div>
+  </div>
+  <div class="content">
+    <div class="sec-title">규미님이 돈 버는 법</div>
+    <div class="sec-body">
+      <p>규미님 코에서 느껴지는 건 '자기 사업을 해야 하는 관상'이에요. 남 밑에서 일하면 스트레스로 병나요. 법령선이 입 옆까지 깔끔하게 내려와서 40대부터는 본인 브랜드로 승부해야 합니다. 돈 새는 구멍? 솔직히 인간관계에 쓰는 돈이 좀 많으시죠?</p>
+    </div>
+    <div style="display:flex;gap:6px;justify-content:center;margin-bottom:12px;flex-wrap:wrap;">
+      <span class="badge job">🎯 브랜드 대표</span>
+      <span class="badge job">🎯 크리에이터</span>
+      <span class="badge job">🎯 컨설턴트</span>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━ 말년 예시 ━━━ -->
+<div class="card">
+  <div class="header">
+    <div class="sub">🔮 천기(天機) 오리지널 | 초정밀 관상 상세 리포트</div>
+    <div class="name" style="font-size:18px;">🌙 말년 · 기반</div>
+    <div style="font-size:10px;color:#888;margin-top:4px;">분석 부위: 입 + 턱 + 귀 + 와잠(눈밑애교살) + 인중</div>
+  </div>
+  <div class="content">
+    <div class="sec-title">규미님의 말년운</div>
+    <div class="sec-body">
+      <p>규미님 귀가 적당히 두툼해서 조상 덕이 있는 편이에요. 턱선도 균형 잡혀있어서 50대 이후에는 가만히 있어도 사람과 돈이 굴러들어오는 덕장의 길을 걷게 됩니다. 특히 눈 밑 와잠(애교살) 기운이 찰지네요! 이건 자식의 기운이 예사롭지 않다는 뜻이에요. 자식이 부모보다 더 크게 이름을 떨칠 '청출어람'의 상이니 자식 농사 걱정은 붙들어 매셔도 됩니다. 다만 인중 끝이 살짝 흐릿한 건 자식에게 너무 퍼주다가 본인 실속 못 챙길 수 있으니 주의하세요!</p>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━ 매력/도화 예시 ━━━ -->
+<div class="card">
+  <div class="header">
+    <div class="sub">🔮 천기(天機) 오리지널 | 초정밀 관상 상세 리포트</div>
+    <div class="name" style="font-size:18px;">💖 매력 · 도화</div>
+  </div>
+  <div class="content">
+    <div class="sec-title">규미님의 치명적 매력</div>
+    <div class="sec-body">
+      <p>규미님 눈 밑 애교살이 자연스럽게 올라와 있어서 웃을 때 사람들이 무장해제 당하는 타입이에요. 입술도 적당히 도톰해서 말할 때 묘한 매력이 있어요. 가만히 있으면 차가워 보이는데 웃는 순간 '어? 이 사람 귀엽다' 하고 반전을 느끼게 만드는 치명적인 갭이 있습니다.</p>
+    </div>
+    <!-- 도화살 게이지 -->
+    <div style="background:#fff0f3;border:1px solid #ffe0e6;border-radius:12px;padding:10px 12px;margin-bottom:8px;">
+      <div style="font-size:11px;font-weight:800;color:#e03131;margin-bottom:6px;">💖 도화살 지수</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+        <div style="flex:1;height:10px;background:#ffe3e8;border-radius:5px;overflow:hidden;"><div style="height:100%;width:92%;background:linear-gradient(90deg,#ff6b6b,#e03131);border-radius:5px;"></div></div>
+        <span style="font-size:16px;font-weight:900;color:#e03131;">92%</span>
+      </div>
+      <div style="font-size:10px;color:#c92a2a;">가만히 있어도 홀리는 치사량급 도화 기운</div>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━ 개운법 + 천기 한마디 예시 ━━━ -->
+<div class="card">
+  <div class="header">
+    <div class="sub">🔮 천기(天機) 오리지널 | 초정밀 관상 상세 리포트</div>
+    <div class="name" style="font-size:18px;">🍀 개운법 & 천기의 한마디</div>
+  </div>
+  <div class="content">
+    <div class="sec-title">운을 바꾸는 비방</div>
+    <div class="sec-body">
+      <p>규미님의 차가운 눈빛을 보완하기 위해 따뜻한 계열의 옷을 자주 입으시고, 미간을 찌푸리는 습관을 고치면 막혀있던 인복이 봇물 터지듯 들어올 거예요. 이마를 살짝 덮는 헤어스타일이 관운을 열어줍니다.</p>
+    </div>
+
+    <div style="display:flex;gap:8px;justify-content:center;margin-bottom:12px;flex-wrap:wrap;">
+      <span class="badge color">🎨 행운 컬러: 따뜻한 코랄</span>
+      <span class="badge dir">🧭 행운 방위: 남동쪽</span>
+    </div>
+
+    <!-- 찰떡/상극 궁합 -->
+    <div style="display:flex;gap:8px;margin-bottom:12px;">
+      <div style="flex:1;background:#fff5f5;border:1px solid #ffe3e3;border-radius:12px;padding:10px;text-align:center;">
+        <div style="font-size:9px;font-weight:700;color:#e03131;">💕 찰떡 관상</div>
+        <div style="font-size:10px;color:#333;margin-top:4px;line-height:1.5;">입술이 도톰한 사람을 만나야 말년 인복이 채워집니다</div>
+      </div>
+      <div style="flex:1;background:#f8f9fa;border:1px solid #eee;border-radius:12px;padding:10px;text-align:center;">
+        <div style="font-size:9px;font-weight:700;color:#495057;">⚡ 상극 관상</div>
+        <div style="font-size:10px;color:#333;margin-top:4px;line-height:1.5;">콧날이 날카로운 사람과는 재물운이 충돌합니다</div>
+      </div>
+    </div>
+
+    <!-- 천기의 한마디 -->
+    <div style="background:#f0f4ff;border-radius:12px;padding:14px;text-align:center;margin-bottom:8px;">
+      <div style="font-size:12px;font-weight:600;color:#4263eb;line-height:1.7;">🔮 "규미님, 얼굴에서 강한 회복력이 느껴져요. 지금까지 많이 힘들었지만, 당신의 관상은 넘어질수록 더 강해지는 불사조의 관상입니다. 자신감 가지세요!"</div>
+    </div>
+  </div>
+
+  <!-- 고정 스탯 바 (하단) -->
+  <div class="stat-bar" style="border-top:1px solid #f0f0f0;border-bottom:none;">
+    <span class="stat charm">💖 도화살 92%</span>
+    <span class="stat wealth">💰 재물그릇 大</span>
+    <span class="stat level">🏆 A등급</span>
+  </div>
+
+  <div style="padding:0 16px 16px;display:flex;justify-content:space-between;align-items:center;">
+    <div style="font-size:8px;color:#bbb;">#천기관상 #87점 #대한민국상위12% #만인의심장저격수</div>
+    <span style="font-size:8px;color:#ccc;font-weight:600;">🌐 천기.kr</span>
+  </div>
+</div>
+
+<!-- ━━━ 광고 배너 (크로스셀링) - 카드 바깥 ━━━ -->
+<div class="card">
+  <div style="padding:14px 16px;">
+    <div style="font-size:11px;font-weight:800;color:#1A3C32;text-align:center;margin-bottom:10px;">🔮 규미님을 위한 더 많은 운명</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div class="joseon-link" style="margin-bottom:0;padding:10px 6px;">
+        <div style="font-size:14px;">📜</div>
+        <div class="title" style="font-size:10px;">조선 초상화</div>
+        <div class="sub" style="font-size:8px;">나의 전생 직업 · 380원</div>
+      </div>
+      <div class="joseon-link" style="border-color:rgba(255,107,107,0.3);background:linear-gradient(135deg,rgba(255,107,107,0.08),rgba(255,240,243,0.3));margin-bottom:0;padding:10px 6px;">
+        <div style="font-size:14px;">💑</div>
+        <div class="title" style="font-size:10px;">관상 궁합</div>
+        <div class="sub" style="font-size:8px;">연인/친구 · 1,480원</div>
+      </div>
+      <div class="joseon-link" style="border-color:rgba(74,144,217,0.3);background:linear-gradient(135deg,rgba(74,144,217,0.08),rgba(232,244,253,0.3));margin-bottom:0;padding:10px 6px;">
+        <div style="font-size:14px;">💼</div>
+        <div class="title" style="font-size:10px;">비즈니스 궁합</div>
+        <div class="sub" style="font-size:8px;">사업파트너 · 1,480원</div>
+      </div>
+      <div class="joseon-link" style="border-color:rgba(255,183,77,0.2);background:linear-gradient(135deg,rgba(255,183,77,0.06),rgba(255,248,225,0.3));margin-bottom:0;padding:10px 6px;">
+        <div style="font-size:14px;">🍼</div>
+        <div class="title" style="font-size:10px;">우리 아기 관상</div>
+        <div class="sub" style="font-size:8px;">아기 운명 · 980원</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

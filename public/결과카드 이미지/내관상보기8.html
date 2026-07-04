@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --bg-deep-green: #1A3D1A; /* 사이트 메인 컬러 */
+            --point-gold: #C9A74E; /* 전통 금색 */
+            --point-yellow: #F4E0A0; /* 노란색 포인트 유지 */
+            --text-white: #FFFFFF;
+            --card-white: #FFFFFF; /* 흰 바탕 결과 카드 */
+            --border-soft: #3A5F3A; /* 연한 녹색 구분선 */
+        }
+
+        body {
+            background-color: var(--bg-deep-green); /* 전체 배경은 짙은 녹색 */
+            margin: 0;
+            padding: 20px;
+            font-family: 'Noto Serif KR', serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* [핵심] 상단 결과 카드 (흰 바탕, 단청 테두리) */
+        .report-card {
+            width: 100%;
+            max-width: 450px;
+            background-color: var(--card-white);
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid rgba(201, 167, 78, 0.3); /* 연한 금색 테두리 */
+            margin-bottom: 25px; /* 하단 섹션과 명확한 분리 */
+        }
+
+        /* 팝업 상단 전통 처마 디자인 */
+        .report-card::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140%;
+            height: 30px;
+            background-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="50" viewBox="0 0 600 50"><path d="M0,35 Q150,5 300,35 Q450,65 600,35" stroke="%23AA7B30" stroke-width="2" fill="none" /></svg>');
+            background-size: cover;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* 제목 섹션 (흰 바탕 위에 짙은 녹색 텍스트) */
+        .card-header {
+            padding: 25px 20px 15px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .title {
+            color: var(--bg-deep-green);
+            font-size: 24px;
+            font-weight: 900;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subtitle {
+            color: #333333;
+            font-size: 14px;
+            font-weight: 700;
+            margin: 5px 0 0;
+        }
+
+        /* 스캐너 비주얼 영역 (사진 업로드 전) */
+        .scan-container {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            background: rgba(0,0,0,0.1); /* 약간 어두운 오버레이 */
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        /* 분석 대상 가상 얼굴 (이미지 경로를 우리 앱의 대표 캐릭터로 설정하세요) */
+        .target-face {
+            position: absolute;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 140px; opacity: 0.3; filter: grayscale(100%);
+        }
+
+        /* 분석 포인트들 (띵띵 효과) */
+        .analysis-point {
+            position: absolute;
+            width: 6px; height: 6px; background: var(--point-gold); border-radius: 50%;
+            box-shadow: 0 0 10px var(--point-gold); opacity: 0; animation: pulsePoint 2s infinite;
+        }
+
+        /* 레이저 스캔 라인 */
+        .laser-line {
+            position: absolute; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--point-gold), transparent);
+            box-shadow: 0 0 15px var(--point-gold);
+            animation: laserMove 3s infinite ease-in-out;
+        }
+
+        /* [핵심] 부위별 퀵 내비게이션 (탭) */
+        .part-nav {
+            display: flex;
+            background: rgba(0,0,0,0.05);
+            padding: 10px;
+            gap: 10px;
+            overflow-x: auto;
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .part-btn {
+            white-space: nowrap;
+            padding: 8px 15px;
+            background: none;
+            border: 1px solid var(--bg-deep-green);
+            color: var(--bg-deep-green);
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .part-btn.active {
+            background: var(--bg-deep-green);
+            color: var(--card-white);
+        }
+
+        /* 리포트 본문 콘텐츠 */
+        .report-content {
+            padding: 25px 20px;
+            color: #333333;
+            text-align: left;
+        }
+
+        /* 분석 카드 스타일 */
+        .analysis-card {
+            background: rgba(0,0,0,0.03);
+            border-radius: 12px;
+            padding: 20px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--bg-deep-green);
+        }
+
+        .highlight-yellow {
+            color: var(--point-yellow);
+            font-weight: 900;
+            text-align: center;
+            display: block;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .disclaimer {
+            font-size: 11px;
+            color: #666666;
+            text-align: center;
+            margin-top: -10px;
+        }
+
+        /* [핵심] 하단 분리된 추가 섹션 (짙은 녹색 바탕) */
+        .additional-sections {
+            width: 100%;
+            max-width: 450px;
+            background-color: var(--bg-deep-green);
+            border-radius: 20px;
+            padding: 25px 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            border: 1px solid var(--point-gold);
+        }
+
+        /* 공유하기 섹션 */
+        .share-section {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-white);
+            border: 1px solid var(--point-gold);
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+        }
+
+        /* 굿즈 추천 섹션 */
+        .goods-section {
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            padding: 15px;
+            border: 1px solid var(--soft-green);
+            text-align: left;
+        }
+
+        .goods-title {
+            color: var(--point-gold);
+            font-size: 14px;
+            font-weight: 700;
+            margin: 0 0 10px;
+        }
+
+        .goods-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .goods-img {
+            width: 50px;
+            height: 50px;
+            background: #fff;
+            border-radius: 8px;
+        }
+
+        .goods-name {
+            color: var(--text-white);
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .goods-desc {
+            color: var(--point-yellow);
+            font-size: 12px;
+        }
+
+        .btn-add {
+            background: var(--point-gold);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        /* 메인 액션 버튼 */
+        .action-section {
+            margin-top: auto;
+        }
+
+        .analyze-btn {
+            background: linear-gradient(180deg, var(--point-gold) 0%, #AA7B30 100%);
+            color: var(--text-white);
+            border: none;
+            border-radius: 14px;
+            padding: 20px 0;
+            font-size: 18px;
+            font-weight: 900;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        /* 애니메이션 */
+        @keyframes laserMove {
+            0% { top: 0%; opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        @keyframes pulsePoint {
+            0% { opacity: 0; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+            100% { opacity: 0; transform: scale(1); }
+        }
+
+        /* 스크롤바 숨기기 */
+        .part-nav::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="report-card">
+        <div class="card-header">
+            <h1 class="title">🪞 천기(天機) AI 정밀 리포트</h1>
+            <p class="subtitle">윤규미님, 하늘이 감춘 당신의 운명을 판독했습니다.</p>
+        </div>
+
+        <div class="scan-container">
+            <div class="laser-line"></div>
+            <div class="target-face">👤</div>
+
+            <div class="analysis-point" style="top: 35%; left: 40%; animation-delay: 0.5s;"></div>
+            <div class="analysis-point" style="top: 35%; left: 60%; animation-delay: 0.8s;"></div>
+            <div class="analysis-point" style="top: 55%; left: 50%; animation-delay: 1.2s;"></div>
+            <div class="analysis-point" style="top: 75%; left: 50%; animation-delay: 1.5s;"></div>
+
+            <p style="position: absolute; bottom: 10px; right: 15px; font-size: 13px; color: var(--point-gold); margin: 0;">AI 정밀 스캐닝 중...</p>
+        </div>
+
+        <div class="part-nav">
+            <button class="part-btn active" onclick="activateTab(0)">총평</button>
+            <button class="part-btn" onclick="activateTab(1)">이마</button>
+            <button class="part-btn" onclick="activateTab(2)">눈</button>
+            <button class="part-btn" onclick="activateTab(3)">코</button>
+            <button class="part-btn" onclick="activateTab(4)">입/턱</button>
+            <button class="part-btn" onclick="activateTab(5)">건강/비방</button>
+        </div>
+
+        <div class="report-content">
+            <h2 class="highlight-yellow">"겉은 냉철한 선비, 속은 뜨거운 불꽃" 상</h2>
+            
+            <div class="analysis-card">
+                <b>소름 돋는 첫인상 팩폭:</b><br>
+                윤규미님, 얼굴을 보자마자 느껴지는 건 '참 오래 참으셨다'는 겁니다. 남들은 규미님이 화려해 보인다고 하겠지만, 사실 속은 시커멓게 타들어 간 적이 많으시죠?
+            </div>
+            
+            <p style="text-align: center; font-size: 13px; color: #666666; word-break: keep-all;">
+                동양의 오랜 통계학인 관상학 이론을 바탕으로<br>사진에 숨겨진 인생의 내비게이션을 확인해보세요.
+            </p>
+        </div>
+    </div>
+
+    <div class="additional-sections">
+        <div class="share-section">
+            <button class="btn-secondary" onclick="shareKakao()">💬 카톡 공유</button>
+            <button class="btn-secondary" onclick="copyLink()">🔗 링크 복사</button>
+        </div>
+
+        <div class="goods-section">
+            <p class="goods-title">✨ 규미님을 위한 개운(開運) 굿즈</p>
+            <div class="goods-item">
+                <div class="goods-img"></div>
+                <div style="flex: 1;">
+                    <span class="goods-name">황금 잉어 자수 키링</span><br>
+                    <span class="goods-desc">재물운을 가둬주는 비방템</span>
+                </div>
+                <button class="btn-add">담기</button>
+            </div>
+        </div>
+
+        <div class="action-section">
+            <button class="analyze-btn">🚀 3초 만에 관상 정밀 분석하기 →</button>
+            <p class="disclaimer">(이후 회당 380원의 프리미엄 유료 서비스입니다)</p>
+        </div>
+    </div>
+
+    <script>
+        // 탭 활성화 로직
+        function activateTab(index) {
+            const tabs = document.querySelectorAll('.part-btn');
+            tabs.forEach((tab, i) => {
+                tab.classList.toggle('active', i === index);
+            });
+            // 실제 콘텐츠 변경 로직은 클로드에게 요청하여 구현해야 합니다.
+        }
+
+        // 공유하기 로직 (예시)
+        function shareKakao() { alert('카카오톡 공유 기능을 구현할 예정입니다.'); }
+        function copyLink() { alert('링크 복사 기능을 구현할 예정입니다.'); }
+    </script>
+</body>
+</html>

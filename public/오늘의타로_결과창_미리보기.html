@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>오늘의타로 결과창 미리보기</title>
+<!--
+  출처: src/app/page.tsx
+  - TodayTarotModal result JSX: 16875~16930행
+  - id="tarot-capture" (16875행)
+  - border: "1px solid rgba(155,143,212,0.3)" (바이올렛)
+  - BrandLine: "오늘의 운명 한 장" (16878행)
+  - 카드 이미지: width:180, aspectRatio 7/12, boxShadow rgba(155,143,212,0.3) (16890행)
+  - 역방향: rotate(180deg), 역방향 배지 (16892행)
+  - isGood 뱃지: ☀️/🌙 (16900~16903행)
+  - 오늘의 카드 메시지: borderLeft 4px solid #D4AF37 (16908행)
+  - 카드 해석: borderLeft 4px solid #C8834A (16913행)
+  - 카드 의미: borderLeft 4px solid #9B8FD4 (16917행)
+  - 광고배너 2x2: 16941~16946행
+  - 이것도 해볼래요 6개: 16952행
+  - hash footer: #천기타로 #오늘의타로 #무료타로 #조선타로 (16928행)
+-->
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#1A3C32;--gold:#D4AF37;--mist:#A8C4B8;}
+body{background:#1A3C32;font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;padding:20px;}
+.max-wrap{max-width:430px;margin:0 auto;}
+.white-card{background:#ffffff;border-radius:20px;overflow:hidden;border:1px solid rgba(155,143,212,0.3);box-shadow:0 10px 30px rgba(0,0,0,0.06);color:#333;margin-bottom:12px;}
+.brand-line-inner{font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;padding:10px 16px;text-align:center;border-bottom:1px solid #f0f0f0;}
+.hash-footer{display:flex;justify-content:space-between;padding:10px 16px;margin-top:14px;font-size:9px;color:#aaa;font-weight:600;letter-spacing:0.3px;border-top:1px solid #f0f0f0;}
+.gray-box{background:#f8f9fa;border-radius:12px;padding:14px;margin-bottom:12px;}
+.cross-scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;}
+.cross-card{flex-shrink:0;width:100px;background:#fff;border-radius:12px;padding:10px 8px;border:1px solid rgba(212,175,55,0.4);text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+</style>
+</head>
+<body>
+<div class="max-wrap">
+
+<!-- ═══════════ 메인 결과 카드 id="tarot-capture" (16875행) ═══════════ -->
+<div class="white-card">
+  <!-- 헤더 (16877~16886행) -->
+  <div style="padding:10px 16px 0;text-align:center;">
+    <div class="brand-line-inner">오늘의 운명 한 장</div>
+    <div style="font-size:18px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;line-height:1.35;">홍길동님의 오늘의 카드</div>
+    <div style="font-size:10px;color:#888;font-weight:600;margin-top:6px;line-height:1.6;">
+      <div>👤 홍길동 : 1990.05.15. 午시생 · 양력 · 남성</div>
+      <div style="color:#aaa;">📅 2026-06-30 검사</div>
+    </div>
+  </div>
+
+  <!-- 카드 이미지 (16888~16894행) -->
+  <!-- width:180, aspectRatio 7/12, borderRadius:16, boxShadow rgba(155,143,212,0.3) -->
+  <div style="display:flex;justify-content:center;padding:20px 0;background:#fafafa;">
+    <div style="width:180px;aspect-ratio:7/12;border-radius:16px;overflow:hidden;box-shadow:0 8px 24px rgba(155,143,212,0.3);position:relative;background:linear-gradient(135deg,#f5f3ff,#ede9fe);display:flex;align-items:center;justify-content:center;">
+      <!-- 실제 src: todayCard.img → /tarot-cards/major-0.png 등 -->
+      <div style="text-align:center;padding:20px;">
+        <div style="font-size:52px;margin-bottom:8px;">🃏</div>
+        <div style="font-size:10px;color:#9B8FD4;font-weight:700;">조선 타로</div>
+        <div style="font-size:8px;color:#c4b5fd;margin-top:4px;">/tarot-cards/major-0.png</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 카드명 + 키워드 (16896~16904행) -->
+  <div style="padding:14px 16px;text-align:center;">
+    <!-- todayCard.name 색상: #9B8FD4 (16898행) -->
+    <div style="font-size:18px;font-weight:900;color:#9B8FD4;font-family:'Noto Serif KR','Batang',serif;">천령 (The Fool)</div>
+    <div style="font-size:11px;color:#888;margin-top:3px;">The Fool (메이저 0번)</div>
+    <!-- isGood=true → #e8fdf4 배경, #b2f5ea 테두리 (16900행) -->
+    <div style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:4px 12px;border-radius:20px;background:#e8fdf4;border:1px solid #b2f5ea;">
+      <span style="font-size:14px;">☀️</span>
+      <span style="font-size:11px;font-weight:700;color:#059669;">좋은 기운의 날</span>
+    </div>
+  </div>
+
+  <!-- 리딩 메시지 (16906~16920행) -->
+  <div style="padding:16px;">
+    <!-- 오늘의 카드 메시지: borderLeft 4px solid #D4AF37 (16908행) -->
+    <div class="gray-box" style="border-left:4px solid #D4AF37;">
+      <div style="font-size:10px;font-weight:700;color:#D4AF37;margin-bottom:6px;letter-spacing:1px;">✦ 오늘의 카드 메시지</div>
+      <div style="font-size:12px;color:#555;line-height:1.75;word-break:keep-all;">새로운 시작의 설렘과 순수한 용기를 상징해요. 홍길동님, 이 카드는 오늘 홍길동님의 흐름에 <strong style="color:#7A5C00;">앞으로 나아가라는</strong> 신호를 보내고 있어요. 마음이 이끄는 방향대로 한 걸음 내디뎌도 좋은 날이에요. 작은 선택 하나가 의외의 행운을 부를 수 있어요.</div>
+    </div>
+    <!-- 카드 해석: borderLeft 4px solid #C8834A (16913행) -->
+    <div class="gray-box" style="border-left:4px solid #C8834A;">
+      <div style="font-size:10px;font-weight:700;color:#C8834A;margin-bottom:6px;letter-spacing:1px;">🃏 카드 해석</div>
+      <div style="font-size:12px;color:#555;line-height:1.75;word-break:keep-all;"><strong style="color:#7A5C00;">천령 (The Fool)</strong> — 서양 타로의 <em style="color:#888;">The Fool</em>에 해당하는 조선 타로예요. 메이저 아르카나 22장 중 한 장으로, 인생의 큰 흐름을 짚어주는 카드. 긍정의 기운이 강하게 흐르는 장면이에요.</div>
+    </div>
+    <!-- 카드 의미: borderLeft 4px solid #9B8FD4 (16917행) -->
+    <div class="gray-box" style="border-left:4px solid #9B8FD4;margin-bottom:0;">
+      <div style="font-size:10px;font-weight:700;color:#9B8FD4;margin-bottom:6px;letter-spacing:1px;">🔮 카드 의미</div>
+      <div style="font-size:12px;color:#555;line-height:1.75;word-break:keep-all;">새로운 출발, 순수한 열정, 두려움 없는 도전을 상징해요. 이 카드의 핵심 메시지는 <strong style="color:#7A5C00;">흐름을 따라 자연스럽게</strong>라는 거예요. 홍길동님 안에 이미 답이 있으니, 외부보다 내 마음의 소리에 귀 기울여보세요.</div>
+    </div>
+  </div>
+
+  <!-- 해시태그 푸터 (16927~16930행) -->
+  <div class="hash-footer">
+    <span>#천기타로 #오늘의타로 #무료타로 #조선타로</span>
+    <span style="font-weight:600;">🌐 천기.kr</span>
+  </div>
+</div>
+
+<!-- ─── 역방향 케이스 (isReversed=true, isGood=false) ─── -->
+<div class="white-card" style="margin-top:24px;">
+  <div style="padding:10px 16px 0;text-align:center;">
+    <div class="brand-line-inner">오늘의 운명 한 장 — 역방향 케이스</div>
+    <div style="font-size:18px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;line-height:1.35;">홍길동님의 오늘의 카드</div>
+    <div style="font-size:10px;color:#888;font-weight:600;margin-top:6px;line-height:1.6;">
+      <div>👤 홍길동 : 1990.05.15. 午시생 · 양력 · 남성</div>
+      <div style="color:#aaa;">📅 2026-07-01 검사</div>
+    </div>
+  </div>
+
+  <!-- 역방향: transform:rotate(180deg) + "뒤집힘" 배지 (16888~16894행) -->
+  <div style="display:flex;justify-content:center;padding:20px 0;background:#fafafa;">
+    <div style="width:180px;aspect-ratio:7/12;border-radius:16px;overflow:hidden;box-shadow:0 8px 24px rgba(155,143,212,0.3);position:relative;background:linear-gradient(135deg,#f5f3ff,#ede9fe);display:flex;align-items:center;justify-content:center;transform:rotate(180deg);">
+      <div style="text-align:center;padding:20px;transform:rotate(180deg);">
+        <div style="font-size:52px;margin-bottom:8px;">🃏</div>
+        <div style="font-size:10px;color:#9B8FD4;font-weight:700;">조선 타로</div>
+        <div style="font-size:8px;color:#c4b5fd;margin-top:4px;">/tarot-cards/major-16.png</div>
+      </div>
+      <!-- 뒤집힘 배지 -->
+      <div style="position:absolute;top:8px;left:8px;background:rgba(155,143,212,0.9);color:#fff;font-size:9px;font-weight:700;padding:3px 7px;border-radius:10px;transform:rotate(180deg);">뒤집힘</div>
+    </div>
+  </div>
+
+  <!-- 카드명 + 역방향 칩 -->
+  <div style="padding:14px 16px;text-align:center;">
+    <div style="font-size:18px;font-weight:900;color:#9B8FD4;font-family:'Noto Serif KR','Batang',serif;">탑 (The Tower) (역방향)</div>
+    <div style="font-size:11px;color:#888;margin-top:3px;">The Tower (메이저 16번) · 역방향</div>
+    <!-- isGood=false + isReversed → purple 칩 (16900행) -->
+    <div style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:4px 12px;border-radius:20px;background:#f3e8ff;border:1px solid #d8b4fe;">
+      <span style="font-size:14px;">🌙</span>
+      <span style="font-size:11px;font-weight:700;color:#7c3aed;">주의가 필요한 날</span>
+    </div>
+  </div>
+
+  <!-- 리딩 메시지 -->
+  <div style="padding:16px;">
+    <div class="gray-box" style="border-left:4px solid #D4AF37;">
+      <div style="font-size:10px;font-weight:700;color:#D4AF37;margin-bottom:6px;letter-spacing:1px;">✦ 오늘의 카드 메시지</div>
+      <div style="font-size:12px;color:#555;line-height:1.75;word-break:keep-all;">예상치 못한 변화나 충격이 있을 수 있어요. 홍길동님, 역방향으로 나타난 이 카드는 오늘 <strong style="color:#7c3aed;">기존 구조의 흔들림</strong>을 경고하고 있어요. 중요한 결정은 잠시 미루고, 변화에 유연하게 대비하세요.</div>
+    </div>
+    <div class="gray-box" style="border-left:4px solid #C8834A;">
+      <div style="font-size:10px;font-weight:700;color:#C8834A;margin-bottom:6px;letter-spacing:1px;">🃏 카드 해석</div>
+      <div style="font-size:12px;color:#555;line-height:1.75;word-break:keep-all;"><strong style="color:#7A5C00;">탑 (The Tower)</strong> — 서양 타로의 <em style="color:#888;">The Tower</em>에 해당하는 조선 타로예요. 역방향이므로 충격이 내면화되거나 지연될 수 있어요. 메이저 아르카나 중에서도 변화의 에너지가 강한 카드예요.</div>
+    </div>
+    <div class="gray-box" style="border-left:4px solid #9B8FD4;margin-bottom:0;">
+      <div style="font-size:10px;font-weight:700;color:#9B8FD4;margin-bottom:6px;letter-spacing:1px;">🔮 카드 의미</div>
+      <div style="font-size:12px;color:#555;line-height:1.75;word-break:keep-all;">급격한 변화, 무너짐을 통한 해방, 필연적 전환점을 상징해요. 역방향에서는 그 에너지가 내면 혹은 지연된 형태로 발현돼요. 이 카드의 핵심 메시지는 <strong style="color:#7c3aed;">준비하고 유연하게</strong>라는 거예요.</div>
+    </div>
+  </div>
+
+  <div class="hash-footer">
+    <span>#천기타로 #오늘의타로 #역방향케이스 #검증용</span>
+    <span style="font-weight:600;">🌐 천기.kr</span>
+  </div>
+</div>
+
+<!-- ─── 마이너 아르카나 컵 슈트 케이스 (suit="cup") ─── -->
+<div class="white-card" style="margin-top:24px;">
+  <div style="padding:10px 16px 0;text-align:center;">
+    <div class="brand-line-inner">오늘의 운명 한 장 — 마이너(컵) 슈트 케이스</div>
+    <div style="font-size:18px;font-weight:900;color:#1A3C32;font-family:'Noto Serif KR','Batang',serif;line-height:1.35;">홍길동님의 오늘의 카드</div>
+    <div style="font-size:10px;color:#888;font-weight:600;margin-top:6px;line-height:1.6;">
+      <div>👤 홍길동 : 1990.05.15. 午시생 · 양력 · 남성</div>
+      <div style="color:#aaa;">📅 2026-07-01 검사</div>
+    </div>
+  </div>
+
+  <div style="display:flex;justify-content:center;padding:20px 0;background:#fafafa;">
+    <div style="width:180px;aspect-ratio:7/12;border-radius:16px;overflow:hidden;box-shadow:0 8px 24px rgba(155,143,212,0.3);background:linear-gradient(135deg,#eff6ff,#dbeafe);display:flex;align-items:center;justify-content:center;">
+      <div style="text-align:center;padding:20px;">
+        <div style="font-size:52px;margin-bottom:8px;">🃏</div>
+        <div style="font-size:10px;color:#3b82f6;font-weight:700;">조선 타로 · 컵</div>
+        <div style="font-size:8px;color:#93c5fd;margin-top:4px;">/tarot-cards/cup-7.png</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 카드명 + isGood=true 칩 -->
+  <div style="padding:14px 16px;text-align:center;">
+    <div style="font-size:18px;font-weight:900;color:#9B8FD4;font-family:'Noto Serif KR','Batang',serif;">환상의 잔 (Seven of Cups)</div>
+    <div style="font-size:11px;color:#888;margin-top:3px;">Seven of Cups · 컵 7번</div>
+    <div style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:4px 12px;border-radius:20px;background:#e8fdf4;border:1px solid #b2f5ea;">
+      <span style="font-size:14px;">☀️</span>
+      <span style="font-size:11px;font-weight:700;color:#059669;">좋은 기운의 날</span>
+    </div>
+  </div>
+
+  <div style="padding:16px;">
+    <div class="gray-box" style="border-left:4px solid #D4AF37;">
+      <div style="font-size:10px;font-weight:700;color:#D4AF37;margin-bottom:6px;letter-spacing:1px;">✦ 오늘의 카드 메시지</div>
+      <div style="font-size:12px;color:#555;line-height:1.75;word-break:keep-all;">풍부한 상상력과 다양한 선택지가 홍길동님 앞에 펼쳐져 있어요. 오늘은 <strong style="color:#7A5C00;">감정의 흐름을 따라</strong> 마음이 원하는 방향을 살펴보세요. 너무 많은 선택에 혼란스러울 수 있으니 한 가지에 집중해보세요.</div>
+    </div>
+    <div class="gray-box" style="border-left:4px solid #C8834A;">
+      <div style="font-size:10px;font-weight:700;color:#C8834A;margin-bottom:6px;letter-spacing:1px;">🃏 카드 해석</div>
+      <!-- suit==="cup" → "컵(물 기운) — 감정·인연·치유의 결" (16910~16915행) -->
+      <div style="font-size:12px;color:#555;line-height:1.75;word-break:keep-all;"><strong style="color:#7A5C00;">환상의 잔</strong> — 서양 타로의 <em style="color:#888;">Seven of Cups</em>에 해당하는 조선 타로예요. 컵(물 기운) — 감정·인연·치유의 결이에요. 카드 안에 담긴 장면이 홍길동님의 오늘을 이야기하고 있어요.</div>
+    </div>
+    <div class="gray-box" style="border-left:4px solid #9B8FD4;margin-bottom:0;">
+      <div style="font-size:10px;font-weight:700;color:#9B8FD4;margin-bottom:6px;letter-spacing:1px;">🔮 카드 의미</div>
+      <div style="font-size:12px;color:#555;line-height:1.75;word-break:keep-all;">환상, 선택의 풍요로움, 욕망과 이상 사이의 균형을 상징해요. 컵 슈트의 에너지가 감정·인연·치유의 결로 흐르는 날이에요. 이 카드의 핵심 메시지는 <strong style="color:#7A5C00;">마음이 이끄는 대로</strong>예요.</div>
+    </div>
+  </div>
+
+  <div class="hash-footer">
+    <span>#천기타로 #오늘의타로 #컵슈트케이스 #검증용</span>
+    <span style="font-weight:600;">🌐 천기.kr</span>
+  </div>
+</div>
+
+<!-- 78장 도감 버튼 (16934행) -->
+<button style="width:100%;padding:14px;margin-bottom:10px;background:linear-gradient(135deg,#fef9e7,#fff8db);color:#6b21a8;border:2px solid rgba(155,143,212,0.4);border-radius:14px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;">
+  📚 78장 조선 타로 전체 도감 보기 (오늘 뽑힌 카드 포함)
+</button>
+
+<!-- 내일 자정 안내 (16938행) -->
+<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:9px;margin-bottom:10px;text-align:center;">
+  <span style="font-size:10px;color:#A8C4B8;">🌙 내일 자정이 지나면 새로운 카드가 뽑혀요</span>
+</div>
+
+<!-- 광고배너 2x2 (16941~16946행) -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(95,196,158,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">✨</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">YES/NO?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">YES/NO 타로 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(212,175,55,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">🌙</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">오늘 운세?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">오늘운세 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(199,21,133,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">📸</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">내 관상짤?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">관상짤 →</div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:12px 8px;border:2px solid rgba(155,143,212,0.3);text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <div style="font-size:22px;margin-bottom:4px;">☯️</div>
+    <div style="font-size:12px;font-weight:900;color:#0a1f1a;margin-bottom:3px;">내 사주?</div>
+    <div style="font-size:9px;font-weight:600;color:#666;">사주 풀이 →</div>
+  </div>
+</div>
+
+<!-- ResultActions -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+  <button style="padding:12px;background:#f8f9fa;border:1px solid #eee;border-radius:12px;font-size:12px;font-weight:700;color:#333;cursor:pointer;">📸 이미지 저장</button>
+  <button style="padding:12px;background:#f8f9fa;border:1px solid #eee;border-radius:12px;font-size:12px;font-weight:700;color:#333;cursor:pointer;">🔗 공유하기</button>
+</div>
+
+<!-- 이것도 해볼래요 (16951~16960행) -->
+<div style="margin-bottom:10px;">
+  <div style="font-size:11px;font-weight:700;color:#A8C4B8;margin-bottom:6px;">✨ 이것도 해볼래요?</div>
+  <div class="cross-scroll">
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">❤️</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">연애 타로</div><div style="font-size:9px;font-weight:700;color:#B8942E;">980원</div></div>
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">💰</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">재물 타로</div><div style="font-size:9px;font-weight:700;color:#B8942E;">980원</div></div>
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">💼</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">진로 타로</div><div style="font-size:9px;font-weight:700;color:#B8942E;">980원</div></div>
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">🌿</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">건강 타로</div><div style="font-size:9px;font-weight:700;color:#B8942E;">980원</div></div>
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">🌟</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">인생 타로</div><div style="font-size:9px;font-weight:700;color:#B8942E;">980원</div></div>
+    <div class="cross-card"><div style="font-size:22px;margin-bottom:4px;">✨</div><div style="font-size:11px;font-weight:900;margin-bottom:2px;color:#0a1f1a;">YES/NO</div><div style="font-size:9px;font-weight:700;color:#B8942E;">무료</div></div>
+  </div>
+</div>
+
+<!-- 버튼 (16963~16964행) -->
+<button style="width:100%;padding:14px;background:#D4AF37;color:#1A3C32;border:none;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;margin-bottom:6px;">확인 완료</button>
+<button style="width:100%;padding:14px;background:rgba(255,255,255,0.06);color:#aaa;border:1px solid rgba(255,255,255,0.1);border-radius:14px;font-size:14px;font-weight:800;cursor:not-allowed;font-family:inherit;opacity:0.55;">🛠️ 굿즈샵 준비중</button>
+
+</div>
+</body>
+</html>
