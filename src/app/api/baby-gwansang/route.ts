@@ -217,7 +217,7 @@ export async function POST(request: NextRequest) {
       systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
       contents: [{ parts: [
         { inlineData: { mimeType: resolvedMediaType, data: base64Image } },
-        { text: "이 아기의 관상을 정밀 분석해줘. 풀네임: " + babyName + ". {nm}=\"" + friendlyName + "\", {full}=\"" + babyName + "\"으로 치환. JSON만 출력. 아기가 아니면 image_type:\"not_baby\"." + focusHint }
+        { text: "[STEP 1 — 캐릭터 결정 (사진만)] 사진의 얼굴 특징(눈·코·입·볼·이마·턱)만 보고 character_type을 먼저 확정해. 사전질문·아래 내용은 이 단계에서 절대 참고 금지.\n[STEP 2 — 텍스트 개인화] STEP 1에서 확정한 character_type은 고정. 아래 사전질문을 참고해 각 섹션 텍스트만 개인화:\n풀네임: " + babyName + ". {nm}=\"" + friendlyName + "\", {full}=\"" + babyName + "\"으로 치환. JSON만 출력. 아기가 아니면 image_type:\"not_baby\"." + focusHint }
       ]}],
       generationConfig: { temperature: 0.1, maxOutputTokens: 12288, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 1024 } },
     });

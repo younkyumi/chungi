@@ -188,7 +188,7 @@ export async function POST(request: NextRequest) {
       contents: [{
         parts: [
           { inlineData: { mimeType: resolvedMediaType, data: base64Image } },
-          { text: "이 사람의 관상을 정밀 분석하여 인생 상담 리포트를 작성해줘.\n이름: " + personName + ". {nm}은 \"" + personName + "\"으로 치환해서 써줘.\n" + questionContext + "\n⚠️ 반드시 JSON만 출력. 사람이 아니면 image_type: \"not_human\"으로." }
+          { text: "[STEP 1 — 캐릭터 결정 (사진만)] 사진의 얼굴 특징(코·눈·입·이마·턱·미간)만 보고 character_type을 먼저 확정해. 사전질문·아래 내용은 이 단계에서 절대 참고 금지.\n[STEP 2 — 텍스트 개인화] STEP 1에서 확정한 character_type은 고정. 아래 사전질문을 참고해 각 탭 텍스트만 개인화:\n이름: " + personName + ". {nm}은 \"" + personName + "\"으로 치환해서 써줘.\n" + questionContext + "\n⚠️ 반드시 JSON만 출력. 사람이 아니면 image_type: \"not_human\"으로." }
         ]
       }],
       generationConfig: {
