@@ -140,6 +140,7 @@ export async function POST(request: NextRequest) {
         if (c1j?.type_dad && typeof c1j.type_dad === "string") typeDad = c1j.type_dad;
       }
     } catch {}
+    console.log(`[parent-child-compat] Call-1 type_child="${typeChild ?? "FAILED"}" type_mom="${typeMom ?? "FAILED"}" type_dad="${typeDad ?? "FAILED"}"`);
 
     // === CALL 2: 전체 가족 궁합 분석 (type_name 고정, temperature 0.7) ===
     const fixedRule = (typeChild && typeMom && typeDad)

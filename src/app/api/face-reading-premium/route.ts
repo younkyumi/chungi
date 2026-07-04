@@ -237,9 +237,11 @@ export async function POST(request: NextRequest) {
         if (typeof ct === "number" && ct >= 1 && ct <= 20) characterType = ct;
       }
     } catch {}
+    console.log(`[face-reading-premium] Call-1 character_type=${characterType ?? "FAILED(fallback)"}`);
 
     // === CALL 2: 전체 분석 (character_type 고정, temperature 0.7) ===
     const fixedRule = characterType !== null ? `⚠️ character_type은 반드시 ${characterType}. 절대 변경 불가.\n\n` : "";
+    console.log(`[face-reading-premium] Call-2 fixedRule injected=${characterType !== null}`);
     const reqBody = JSON.stringify({
       systemInstruction: { parts: [{ text: fixedRule + SYSTEM_PROMPT }] },
       contents: [{

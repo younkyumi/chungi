@@ -129,9 +129,11 @@ export async function POST(request: NextRequest) {
         if (c1j?.type_b && typeof c1j.type_b === "string") typeB = c1j.type_b;
       }
     } catch {}
+    console.log(`[gwansang-compat] Call-1 type_a="${typeA ?? "FAILED"}" type_b="${typeB ?? "FAILED"}"`);
 
     // === CALL 2: 전체 궁합 분석 (type_name 고정, temperature 0.7) ===
     const fixedRule = (typeA && typeB) ? `⚠️ person_a.type_name은 반드시 "${typeA}", person_b.type_name은 반드시 "${typeB}". 절대 변경 불가.\n\n` : "";
+    console.log(`[gwansang-compat] Call-2 fixedRule injected=${!!(typeA && typeB)}`);
     const reqBody = JSON.stringify({
       systemInstruction: { parts: [{ text: fixedRule + SYSTEM_PROMPT }] },
       contents: [{ parts: [
