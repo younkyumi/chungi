@@ -132,6 +132,42 @@ ${personaList}
 도감에 등록된 20종 캐릭터 이름만 써야 사용자가 도감에서 찾아 표시할 수 있음.`;
 }
 
+// ── Call-1 전용 prompt: character_type 확정만 (사전질문 컨텍스트 없음) ──
+const CHAR1_PROMPT_PET = `반려동물 사진의 외모·관상 특징(눈매·입·코·털·표정·자세)만 보고 character_type(1~20)을 결정해.
+
+[20종 — 핵심 관상 cue]
+재물·돈: 1(돈복부자-코 발달+입꼬리 올라간 자신감 표정) 2(럭셔리금수저-풍성한 털+여유로운 눈빛) 3(야무진알뜰-작고 다부진 체구+또렷한 눈)
+예술·매력: 4(감성아티스트-우아한 자태+깊은 눈빛) 5(홀리는매혹가-길고 위로 올라간 눈매+도도한 표정) 6(비주얼갓-황금비율+또렷한 이목구비)
+지능·근면: 7(갓생러워커홀릭-활동적 체형+똘똘한 눈빛+쫑긋한 귀) 9(한방에마스터천재-또렷하고 영리한 눈빛+집중된 표정)
+리더·독립: 10(카리스마대장-큰 체구+단단한 턱+위엄있는 자세) 11(마이웨이야성-야성적이고 강인한 외모+강한 눈빛) 13(도도한보스-도도하고 시크한 표정+절제된 동작)
+힐러·순수: 8(세상순한천사-둥근 얼굴+선한 눈매+부드럽게 처진 귀) 12(옆에있어주는힐러-부드러운 눈매+처진 귀+따뜻한 표정) 18(만나면행운럭키-둥글고 환한 인상+복스러운 얼굴)
+장인·감성: 14(디테일변태장인-길쭉한 코+작고 예리한 눈+응시하는 표정) 15(비오는날감성-우수에 찬 깊은 눈빛+긴 귀나 털) 19(패턴분석왕-짙은 눈썹·콧수염 라인+차분한 눈빛)
+식도락·역마: 17(쩝쩝박사먹방-통통한 볼+도톰한 입술+식탐 가득 표정) 16(어디든달려가는모험-강렬한 눈빛+활발한 자세)
+츤데레: 20(안좋아하는척츤데레-작은 체구+까칠한 표정+도도한 눈빛)
+
+⚠️ 2·8·12·18 자동 매칭 금지. 관상 근거 명확해야만 선택.
+JSON만: {"character_type": N}`;
+
+async function callGeminiPet(body: string): Promise<Response> {
+  const MODELS = ["gemini-2.0-flash", "gemini-2.5-flash", "gemini-2.5-flash-lite"];
+  let res: Response | null = null;
+  for (const model of MODELS) {
+    const url = getGeminiUrl(model);
+    for (let i = 0; i < 2; i++) {
+      res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body });
+      if (res.ok) return res;
+      const err = await res.clone().json().catch(() => null);
+      const msg = err?.error?.message || "";
+      if (msg.includes("high demand") || msg.includes("overloaded") || res.status === 503 || res.status === 429) {
+        await new Promise(r => setTimeout(r, 1000));
+        continue;
+      }
+      break;
+    }
+  }
+  return res!;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -147,36 +183,40 @@ export async function POST(request: NextRequest) {
     const base64Image = imageData.includes(",") ? imageData.split(",")[1] : imageData;
     const resolvedMediaType = ["image/jpeg", "image/png", "image/gif", "image/webp"].includes(mediaType) ? mediaType : "image/jpeg";
 
-    const reqBody = JSON.stringify({
-      systemInstruction: { parts: [{ text: getSystemPrompt(species as "dog" | "cat") }] },
+    // === CALL 1: character_type 확정 (사진만, 사전질문 없음) ===
+    const char1Body = JSON.stringify({
+      systemInstruction: { parts: [{ text: CHAR1_PROMPT_PET }] },
       contents: [{ parts: [
         { inlineData: { mimeType: resolvedMediaType, data: base64Image } },
-        { text: `[STEP 1 — 캐릭터 결정 (사진만)] 사진의 외모·관상 특징(눈매·입·코·털·표정·자세)만 보고 character_type을 먼저 확정해. 아래 내용은 이 단계에서 절대 참고 금지.\n[STEP 2 — 텍스트 개인화] STEP 1에서 확정한 character_type은 고정. 분석 텍스트를 풍성하게 작성해:\n이름: ${personName}. {nm}은 "${personName}"으로 치환. JSON만 출력.` }
+        { text: "character_type 결정. JSON만: {\"character_type\": N}" }
       ]}],
-      generationConfig: { temperature: 0.1, maxOutputTokens: 8192, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 1024 } },
+      generationConfig: { temperature: 0.1, maxOutputTokens: 20, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 0 } },
     });
-
-    // v510: 모델 우선순위 2.0→2.5→Lite (부하 낮은 순), retry 2회 0.8s 백오프
-    const MODELS = ["gemini-2.0-flash", "gemini-2.5-flash", "gemini-2.5-flash-lite"];
-    let geminiRes: Response | null = null;
-    outer: for (const model of MODELS) {
-      const url = getGeminiUrl(model);
-      for (let attempt = 0; attempt < 2; attempt++) {
-        geminiRes = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: reqBody });
-        if (geminiRes.ok) break outer;
-        const errCheck = await geminiRes.clone().json().catch(() => null);
-        const errMsg = errCheck?.error?.message || "";
-        const isHighDemand = errMsg.includes("high demand") || errMsg.includes("overloaded") || geminiRes.status === 503;
-        const isRateLimit = geminiRes.status === 429;
-        if (isHighDemand || isRateLimit) {
-          if (attempt === 0) await new Promise(r => setTimeout(r, 800));
-          continue;
-        }
-        break;
+    let characterType: number | null = null;
+    try {
+      const c1 = await callGeminiPet(char1Body);
+      if (c1.ok) {
+        const c1d = await c1.json();
+        const c1t = (c1d?.candidates?.[0]?.content?.parts || []).reduce((s: string, p: {text?: string}) => p.text ? p.text : s, "");
+        const c1j = JSON.parse(c1t.replace(/```json\n?|\n?```/g, "").trim());
+        const ct = c1j?.character_type;
+        if (typeof ct === "number" && ct >= 1 && ct <= 20) characterType = ct;
       }
-    }
+    } catch {}
 
-    const geminiData = await geminiRes!.json();
+    // === CALL 2: 전체 분석 (character_type 고정, temperature 0.7) ===
+    const fixedRule = characterType !== null ? `⚠️ character_type은 반드시 ${characterType}. 절대 변경 불가.\n\n` : "";
+    const reqBody = JSON.stringify({
+      systemInstruction: { parts: [{ text: fixedRule + getSystemPrompt(species as "dog" | "cat") }] },
+      contents: [{ parts: [
+        { inlineData: { mimeType: resolvedMediaType, data: base64Image } },
+        { text: `이 반려동물의 관상을 정밀 분석해줘. 이름: ${personName}. {nm}은 "${personName}"으로 치환. JSON만 출력.` }
+      ]}],
+      generationConfig: { temperature: 0.7, maxOutputTokens: 8192, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 1024 } },
+    });
+    const geminiRes = await callGeminiPet(reqBody);
+
+    const geminiData = await geminiRes.json();
     if (geminiData.error) {
       const errMsg = geminiData.error.message || "";
       const isQuota = geminiData.error.code === 429 || geminiData.error.status === "RESOURCE_EXHAUSTED" || errMsg.includes("exceeded your current quota");

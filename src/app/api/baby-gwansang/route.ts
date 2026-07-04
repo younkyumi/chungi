@@ -196,6 +196,41 @@ const SYSTEM_PROMPT = `[ROLE]
 ❌ "푸들 같은 친구와 잘 맞아요" / "코가 동글한 친구" (캐릭터명 없으면 도감 매칭 불가)
 이유: 사용자가 천기 도감에서 매칭 캐릭터를 찾아 표시할 수 있도록.`;
 
+// ── Call-1 전용 prompt: character_type 확정만 (사전질문 컨텍스트 없음) ──
+const CHAR1_PROMPT = `아기 사진의 얼굴 특징(눈·코·입·볼·이마·턱)만 보고 character_type(1~20)을 결정해.
+
+[20종 — 핵심 관상 cue]
+통통·복덩이: 1(태양-코끝 둥근 살집형코) 2(아기돼지-콧대 뻗고 통통한 볼) 17(다람쥐-도톰한 입술+통통볼+동그란 콧방울)
+야무지·또렷: 3(햄찌-얇고 야무진 입) 14(똘똘이-예리한 눈+높은 이마) 20(호랑이-매서운 눈빛+야무진 입)
+활기·반짝: 4(학-화려한 눈썹+또렷한 인상) 16(아기새-들린 콧망울+반짝이는 눈)
+매력·도화: 5(여우-길고 위로 올라간 눈꼬리) 19(별빛-화려한 눈매+V라인 작은 턱)
+총명·집중: 9(부엉이-넓고 시원한 이마+총명한 눈빛) 15(나비-깊은 눈+감성적 이마 라인)
+리더·강단: 7(펭귄-뚜렷하고 진한 미간) 10(사자왕-단단한 턱+위엄있는 눈썹) 11(뚝심-강한 미간+진한 눈썹) 13(용-날카롭게 빠진 눈매+시원한 콧대)
+사랑·온화: 6(꽃사슴-황금비율+균형잡힌 이목구비) 8(강아지-둥근 턱선+선한 눈+푸근한 얼굴) 12(양-선한 큰 눈+부드러운 입술) 18(클로버-처진 눈매+동그란 코+환한 미소)
+
+⚠️ 6·8·12·18 자동 매칭 금지 — 해당 특징이 얼굴에 명확히 보일 때만 선택.
+JSON만: {"character_type": N}`;
+
+async function callGemini(body: string): Promise<Response> {
+  const MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-flash-lite"];
+  let res: Response | null = null;
+  for (const model of MODELS) {
+    const url = getGeminiUrl(model);
+    for (let i = 0; i < 2; i++) {
+      res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body });
+      if (res.ok) return res;
+      const err = await res.clone().json().catch(() => null);
+      const msg = err?.error?.message || "";
+      if (msg.includes("high demand") || msg.includes("overloaded") || res.status === 503 || res.status === 429) {
+        await new Promise(r => setTimeout(r, 1000));
+        continue;
+      }
+      break;
+    }
+  }
+  return res!;
+}
+
 export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
@@ -213,37 +248,40 @@ export async function POST(request: NextRequest) {
     const focusHint = (questions as any).focus && !String((questions as any).focus).includes("전체") && !String((questions as any).focus).includes("skip")
       ? `\n사전질문 — 부모님이 가장 궁금해하는 것: ${(questions as any).focus}` : "";
 
-    const reqBody = JSON.stringify({
-      systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+    // === CALL 1: character_type 확정 (사진만, 사전질문 없음) ===
+    const char1Body = JSON.stringify({
+      systemInstruction: { parts: [{ text: CHAR1_PROMPT }] },
       contents: [{ parts: [
         { inlineData: { mimeType: resolvedMediaType, data: base64Image } },
-        { text: "[STEP 1 — 캐릭터 결정 (사진만)] 사진의 얼굴 특징(눈·코·입·볼·이마·턱)만 보고 character_type을 먼저 확정해. 사전질문·아래 내용은 이 단계에서 절대 참고 금지.\n[STEP 2 — 텍스트 개인화] STEP 1에서 확정한 character_type은 고정. 아래 사전질문을 참고해 각 섹션 텍스트만 개인화:\n풀네임: " + babyName + ". {nm}=\"" + friendlyName + "\", {full}=\"" + babyName + "\"으로 치환. JSON만 출력. 아기가 아니면 image_type:\"not_baby\"." + focusHint }
+        { text: "character_type 결정. JSON만: {\"character_type\": N}" }
       ]}],
-      generationConfig: { temperature: 0.1, maxOutputTokens: 12288, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 1024 } },
+      generationConfig: { temperature: 0.1, maxOutputTokens: 20, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 0 } },
     });
-
-    // 다중 모델 폴백: 2.5 Flash → 2.0 Flash → 1.5 Flash
-    const MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-flash-lite"];
-    let geminiRes: Response | null = null;
-    outer: for (const model of MODELS) {
-      const url = getGeminiUrl(model);
-      for (let attempt = 0; attempt < 3; attempt++) {
-        geminiRes = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: reqBody });
-        if (geminiRes.ok) break outer;
-        const errCheck = await geminiRes.clone().json().catch(() => null);
-        const errMsg = errCheck?.error?.message || "";
-        const isHighDemand = errMsg.includes("high demand") || errMsg.includes("overloaded") || geminiRes.status === 503;
-        const isRateLimit = geminiRes.status === 429;
-        if (isHighDemand || isRateLimit) {
-          await new Promise(r => setTimeout(r, 1000));
-          continue;
-        }
-        break;
+    let characterType: number | null = null;
+    try {
+      const c1 = await callGemini(char1Body);
+      if (c1.ok) {
+        const c1d = await c1.json();
+        const c1t = (c1d?.candidates?.[0]?.content?.parts || []).reduce((s: string, p: {text?: string}) => p.text ? p.text : s, "");
+        const c1j = JSON.parse(c1t.replace(/```json\n?|\n?```/g, "").trim());
+        const ct = c1j?.character_type;
+        if (typeof ct === "number" && ct >= 1 && ct <= 20) characterType = ct;
       }
-      console.log(`[baby-gwansang] ${model} exhausted, trying next model...`);
-    }
+    } catch {}
 
-    const geminiData = await geminiRes!.json();
+    // === CALL 2: 전체 분석 (character_type 고정, temperature 0.7) ===
+    const fixedRule = characterType !== null ? `⚠️ character_type은 반드시 ${characterType}. 절대 변경 불가.\n\n` : "";
+    const reqBody = JSON.stringify({
+      systemInstruction: { parts: [{ text: fixedRule + SYSTEM_PROMPT }] },
+      contents: [{ parts: [
+        { inlineData: { mimeType: resolvedMediaType, data: base64Image } },
+        { text: "이 아기의 관상을 정밀 분석해줘. 풀네임: " + babyName + ". {nm}=\"" + friendlyName + "\", {full}=\"" + babyName + "\"으로 치환. JSON만 출력. 아기가 아니면 image_type:\"not_baby\"." + focusHint }
+      ]}],
+      generationConfig: { temperature: 0.7, maxOutputTokens: 12288, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 1024 } },
+    });
+    const geminiRes = await callGemini(reqBody);
+
+    const geminiData = await geminiRes.json();
     if (geminiData.error) return NextResponse.json({ error: "AI 분석 중 오류: " + (geminiData.error.message || "").substring(0, 100) }, { status: 500 });
 
     const parts = geminiData?.candidates?.[0]?.content?.parts || [];

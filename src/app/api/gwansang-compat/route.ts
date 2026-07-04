@@ -67,6 +67,32 @@ const SYSTEM_PROMPT = `[ROLE]
 [에러] 얼굴 인식 실패: {"error":"face_not_found"}
 `;
 
+// ── Call-1 전용 prompt: type_name 확정만 (모드 컨텍스트 없음) ──
+const CHAR1_PROMPT = `두 사람의 얼굴 특징(코·눈·입·이마·턱)만 보고 각각의 관상 유형명을 결정해.
+얼굴에서 가장 두드러진 특징 1개로 창의적이고 특색 있는 관상 유형명(8~15자) 결정.
+⚠️ 이름·관계·모드는 이 단계에서 완전 무시. 사진만 본다.
+JSON만: {"type_a": "관상유형명", "type_b": "관상유형명"}`;
+
+async function callGemini(body: string): Promise<Response> {
+  const MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-flash-lite"];
+  let res: Response | null = null;
+  for (const model of MODELS) {
+    const url = getGeminiUrl(model);
+    for (let i = 0; i < 2; i++) {
+      res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body });
+      if (res.ok) return res;
+      const err = await res.clone().json().catch(() => null);
+      const msg = err?.error?.message || "";
+      if (msg.includes("high demand") || msg.includes("overloaded") || res.status === 503 || res.status === 429) {
+        await new Promise(r => setTimeout(r, 1000));
+        continue;
+      }
+      break;
+    }
+  }
+  return res!;
+}
+
 export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
@@ -80,37 +106,44 @@ export async function POST(request: NextRequest) {
     const mType = ["image/jpeg","image/png","image/gif","image/webp"].includes(mediaType) ? mediaType : "image/jpeg";
 
     const modeLabel = mode === "business" ? "비즈니스 사업 궁합" : mode === "bff" ? "베프 우정 궁합" : mode === "fan" ? "최애·팬심 궁합" : mode === "enemy" ? "악연·상극 궁합" : "커플 애정 궁합";
-    const reqBody = JSON.stringify({
-      systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+
+    // === CALL 1: type_name 확정 (사진만, 모드 없음) ===
+    const char1Body = JSON.stringify({
+      systemInstruction: { parts: [{ text: CHAR1_PROMPT }] },
       contents: [{ parts: [
         { inlineData: { mimeType: mType, data: b64_1 } },
         { inlineData: { mimeType: mType, data: b64_2 } },
-        { text: "[STEP 1 — 관상 유형 결정 (사진만)] 두 사람의 얼굴 특징(코·눈·입·이마·턱)만 보고 person_a.type_name, person_b.type_name을 먼저 확정해. 모드/관계 유형은 이 단계에서 절대 참고 금지.\n[STEP 2 — 텍스트 개인화] STEP 1에서 확정한 type_name은 고정. 아래 모드 기준으로 궁합 텍스트 개인화:\n첫 번째 사진은 " + name1 + ", 두 번째 사진은 " + name2 + "입니다. 모드: " + mode + " (" + modeLabel + "). {nm1}=\"" + name1 + "\", {nm2}=\"" + name2 + "\"으로 치환. JSON만 출력." }
+        { text: "두 사람의 관상 유형명 결정. JSON만: {\"type_a\": \"유형명\", \"type_b\": \"유형명\"}" }
       ]}],
-      generationConfig: { temperature: 0.1, maxOutputTokens: 4096, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 512 } },
+      generationConfig: { temperature: 0.1, maxOutputTokens: 60, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 0 } },
     });
-
-    // 다중 모델 폴백 — 한 모델 high demand/quota 시 다음 모델 시도
-    const MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-flash-lite"];
-    let geminiRes: Response | null = null;
-    outer: for (const model of MODELS) {
-      const url = getGeminiUrl(model);
-      for (let attempt = 0; attempt < 3; attempt++) {
-        geminiRes = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: reqBody });
-        if (geminiRes.ok) break outer;
-        const errCheck = await geminiRes.clone().json().catch(() => null);
-        const msg = errCheck?.error?.message || "";
-        const retry = msg.includes("high demand") || msg.includes("overloaded") || geminiRes.status === 503 || geminiRes.status === 429;
-        if (retry) {
-          await new Promise(r => setTimeout(r, 2000 * Math.pow(2, attempt)));
-          continue;
-        }
-        break;
+    let typeA: string | null = null;
+    let typeB: string | null = null;
+    try {
+      const c1 = await callGemini(char1Body);
+      if (c1.ok) {
+        const c1d = await c1.json();
+        const c1t = (c1d?.candidates?.[0]?.content?.parts || []).reduce((s: string, p: {text?: string}) => p.text ? p.text : s, "");
+        const c1j = JSON.parse(c1t.replace(/```json\n?|\n?```/g, "").trim());
+        if (c1j?.type_a && typeof c1j.type_a === "string") typeA = c1j.type_a;
+        if (c1j?.type_b && typeof c1j.type_b === "string") typeB = c1j.type_b;
       }
-      console.log(`[gwansang-compat] ${model} exhausted, trying next...`);
-    }
+    } catch {}
 
-    const geminiData = await geminiRes!.json();
+    // === CALL 2: 전체 궁합 분석 (type_name 고정, temperature 0.7) ===
+    const fixedRule = (typeA && typeB) ? `⚠️ person_a.type_name은 반드시 "${typeA}", person_b.type_name은 반드시 "${typeB}". 절대 변경 불가.\n\n` : "";
+    const reqBody = JSON.stringify({
+      systemInstruction: { parts: [{ text: fixedRule + SYSTEM_PROMPT }] },
+      contents: [{ parts: [
+        { inlineData: { mimeType: mType, data: b64_1 } },
+        { inlineData: { mimeType: mType, data: b64_2 } },
+        { text: "첫 번째 사진은 " + name1 + ", 두 번째 사진은 " + name2 + "입니다. 모드: " + mode + " (" + modeLabel + "). {nm1}=\"" + name1 + "\", {nm2}=\"" + name2 + "\"으로 치환. JSON만 출력." }
+      ]}],
+      generationConfig: { temperature: 0.7, maxOutputTokens: 4096, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 512 } },
+    });
+    const geminiRes = await callGemini(reqBody);
+
+    const geminiData = await geminiRes.json();
     if (geminiData.error) return NextResponse.json({ error: "AI 분석 중 오류: " + (geminiData.error.message || "").substring(0, 100) }, { status: 500 });
 
     const parts = geminiData?.candidates?.[0]?.content?.parts || [];

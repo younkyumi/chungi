@@ -161,6 +161,40 @@ const SYSTEM_PROMPT = `[ROLE]
 - 얼굴 가림: {"image_type":"masked","type_id":25}
 - 그림/캐릭터: {"image_type":"illustration","type_id":26}`;
 
+// ── Call-1 전용 prompt: character_type 확정만 (사전질문 컨텍스트 없음) ──
+const CHAR1_PROMPT = `사진의 얼굴 특징(코·눈·입·이마·턱·미간)만 보고 character_type(1~20)을 결정해.
+
+[20종 — 핵심 관상 cue]
+재물·돈: 1(황금손미다스-코끝 둥글고 옹골찬 살집형코+콧방울 도톰) 2(강남건물주-콧대 길고 시원하게 뻗음+코뿌리 살집) 3(지갑수호신-입술 얇고 야무지게 다물어진 입) 17(쩝쩝박사-도톰한 입술+둥근 콧방울+볼살)
+매력·도화: 4(도파민플렉서-진하고 화려한 눈썹+또렷한 인상) 5(유죄인간폭스-길고 살짝 위로 올라간 눈꼬리) 18(럭키비키-처진 눈매+동그란 코+환한 미소) 19(인간알고리즘-화려한 눈매+V라인 턱+작은 얼굴)
+지성·총명: 9(인간챗GPT-넓고 시원한 이마+총명한 눈빛) 14(디테일변태장인-예리하고 좁은 눈+높고 단정한 이마) 15(미친감성아티스트-M자 이마+깊고 그윽한 눈)
+리더·강단: 10(갓벽한대장-단단하고 각진 턱+위엄 있는 짙은 눈썹) 11(알빠노마이웨이-강한 미간 주름+고집 있는 인상) 13(영앤리치예비CEO-날카롭고 길게 빠진 눈매+시원한 콧대) 20(겉바속촉츤데레-매서운 눈빛+야무지게 다문 입)
+성실·따뜻: 6(얼굴천재프리패스-황금비율+균형잡힌 이목구비) 7(워커홀릭갓생러-뚜렷하고 진한 미간+절제된 인상) 8(순도100%진국-둥근 턱선+선한 눈+푸근한 얼굴) 12(무해한힐러-선하고 큰 눈+부드러운 입술+동그란 얼굴)
+활동·역마: 16(프로역마살러-위로 들린 콧망울+반짝이는 호기심 눈)
+
+⚠️ 5·6·8·9·13·18 자동 매칭 금지 — 명확한 얼굴 근거 있어야만 선택.
+JSON만: {"character_type": N}`;
+
+async function callGemini(body: string): Promise<Response> {
+  const MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-flash-lite"];
+  let res: Response | null = null;
+  for (const model of MODELS) {
+    const url = getGeminiUrl(model);
+    for (let i = 0; i < 2; i++) {
+      res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body });
+      if (res.ok) return res;
+      const err = await res.clone().json().catch(() => null);
+      const msg = err?.error?.message || "";
+      if (msg.includes("high demand") || msg.includes("overloaded") || res.status === 503 || res.status === 429) {
+        await new Promise(r => setTimeout(r, 1000));
+        continue;
+      }
+      break;
+    }
+  }
+  return res!;
+}
+
 export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
@@ -183,45 +217,47 @@ export async function POST(request: NextRequest) {
 - 나이대: ${questions.age || "미응답"}
 - 현재 상황: ${questions.situ || questions.situation || "미응답"}`;
 
+    // === CALL 1: character_type 확정 (사진만, 사전질문 없음) ===
+    const char1Body = JSON.stringify({
+      systemInstruction: { parts: [{ text: CHAR1_PROMPT }] },
+      contents: [{ parts: [
+        { inlineData: { mimeType: resolvedMediaType, data: base64Image } },
+        { text: "character_type 결정. JSON만: {\"character_type\": N}" }
+      ]}],
+      generationConfig: { temperature: 0.1, maxOutputTokens: 20, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 0 } },
+    });
+    let characterType: number | null = null;
+    try {
+      const c1 = await callGemini(char1Body);
+      if (c1.ok) {
+        const c1d = await c1.json();
+        const c1t = (c1d?.candidates?.[0]?.content?.parts || []).reduce((s: string, p: {text?: string}) => p.text ? p.text : s, "");
+        const c1j = JSON.parse(c1t.replace(/```json\n?|\n?```/g, "").trim());
+        const ct = c1j?.character_type;
+        if (typeof ct === "number" && ct >= 1 && ct <= 20) characterType = ct;
+      }
+    } catch {}
+
+    // === CALL 2: 전체 분석 (character_type 고정, temperature 0.7) ===
+    const fixedRule = characterType !== null ? `⚠️ character_type은 반드시 ${characterType}. 절대 변경 불가.\n\n` : "";
     const reqBody = JSON.stringify({
-      systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+      systemInstruction: { parts: [{ text: fixedRule + SYSTEM_PROMPT }] },
       contents: [{
         parts: [
           { inlineData: { mimeType: resolvedMediaType, data: base64Image } },
-          { text: "[STEP 1 — 캐릭터 결정 (사진만)] 사진의 얼굴 특징(코·눈·입·이마·턱·미간)만 보고 character_type을 먼저 확정해. 사전질문·아래 내용은 이 단계에서 절대 참고 금지.\n[STEP 2 — 텍스트 개인화] STEP 1에서 확정한 character_type은 고정. 아래 사전질문을 참고해 각 탭 텍스트만 개인화:\n이름: " + personName + ". {nm}은 \"" + personName + "\"으로 치환해서 써줘.\n" + questionContext + "\n⚠️ 반드시 JSON만 출력. 사람이 아니면 image_type: \"not_human\"으로." }
+          { text: "이 사람의 관상을 정밀 분석해줘. 이름: " + personName + ". {nm}은 \"" + personName + "\"으로 치환해서 써줘.\n" + questionContext + "\n⚠️ 반드시 JSON만 출력. 사람이 아니면 image_type: \"not_human\"으로." }
         ]
       }],
       generationConfig: {
-        temperature: 0.1,
+        temperature: 0.7,
         maxOutputTokens: 8192,
         responseMimeType: "application/json",
         thinkingConfig: { thinkingBudget: 1024 },
       },
     });
+    const geminiRes = await callGemini(reqBody);
 
-    // 다중 모델 폴백: 2.5 Flash → 2.0 Flash → 1.5 Flash
-    const MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-flash-lite"];
-    let geminiRes: Response | null = null;
-    outer: for (const model of MODELS) {
-      const url = getGeminiUrl(model);
-      for (let attempt = 0; attempt < 3; attempt++) {
-        geminiRes = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: reqBody });
-        if (geminiRes.ok) break outer;
-        const errCheck = await geminiRes.clone().json().catch(() => null);
-        const errMsg = errCheck?.error?.message || "";
-        const isHighDemand = errMsg.includes("high demand") || errMsg.includes("overloaded") || geminiRes.status === 503;
-        const isRateLimit = geminiRes.status === 429;
-        if (isHighDemand || isRateLimit) {
-          console.log(`[face-reading] ${model} attempt ${attempt+1} failed (${geminiRes.status}), retrying...`);
-          await new Promise(r => setTimeout(r, 2000 * Math.pow(2, attempt)));
-          continue;
-        }
-        break;
-      }
-      console.log(`[face-reading] ${model} exhausted, trying next model...`);
-    }
-
-    const geminiData = await geminiRes!.json();
+    const geminiData = await geminiRes.json();
 
     if (geminiData.error) {
       const errMsg = geminiData.error.message || "";
