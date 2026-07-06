@@ -33,6 +33,29 @@ const PET_PERSONAS: Record<number, Persona> = {
   20: { trait:"츤데레형", emoji:"😤", name:"안 좋아하는 척 츤데레상", gwansang:"작은 체구·까칠한 표정, 도도한 눈빛이지만 섬세한 주름", breed_hint_dog:"치와와·요크셔테리어", breed_hint_cat:"스핑크스·코니시렉스" },
 };
 
+const PET_FIXED: Record<number, { total_score: number; charm_score: number }> = {
+  1:  { total_score: 93, charm_score: 82 },
+  2:  { total_score: 95, charm_score: 80 },
+  3:  { total_score: 88, charm_score: 72 },
+  4:  { total_score: 91, charm_score: 92 },
+  5:  { total_score: 93, charm_score: 97 },
+  6:  { total_score: 96, charm_score: 96 },
+  7:  { total_score: 90, charm_score: 77 },
+  8:  { total_score: 92, charm_score: 86 },
+  9:  { total_score: 94, charm_score: 80 },
+  10: { total_score: 96, charm_score: 85 },
+  11: { total_score: 89, charm_score: 74 },
+  12: { total_score: 92, charm_score: 89 },
+  13: { total_score: 95, charm_score: 88 },
+  14: { total_score: 90, charm_score: 74 },
+  15: { total_score: 91, charm_score: 91 },
+  16: { total_score: 88, charm_score: 81 },
+  17: { total_score: 90, charm_score: 84 },
+  18: { total_score: 96, charm_score: 94 },
+  19: { total_score: 91, charm_score: 80 },
+  20: { total_score: 88, charm_score: 87 },
+};
+
 export const maxDuration = 60;
 
 function getSystemPrompt(species: "dog" | "cat") {
@@ -253,6 +276,15 @@ export async function POST(request: NextRequest) {
     const { parseGeminiJson } = await import("@/lib/gemini-parse");
     const parsed = parseGeminiJson(rawText);
     if (!parsed) return NextResponse.json({ error: "AI 응답 파싱 실패", debug: rawText.substring(0, 300) }, { status: 500 });
+
+    // character_type별 고정값 덮어쓰기 (score·charm)
+    const ctNum = typeof parsed.character_type === "number" ? parsed.character_type : null;
+    if (ctNum && PET_FIXED[ctNum]) {
+      const fix = PET_FIXED[ctNum];
+      parsed.total_score = fix.total_score;
+      parsed.charm_score = fix.charm_score;
+      console.log(`[pet-gwansang] FIXED applied: ct=${ctNum} score=${fix.total_score} charm=${fix.charm_score}`);
+    }
 
     // 점수 → 등급/상위% 코드 연동 (AI 불일치 방지)
     if (parsed.total_score && typeof parsed.total_score === "number") {

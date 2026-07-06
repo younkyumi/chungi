@@ -187,6 +187,29 @@ JSON만:
   }
 }`;
 
+const FACE_FIXED: Record<number, { total_score: number; charm_score: number; wealth_grade: string }> = {
+  1:  { total_score: 92, charm_score: 82, wealth_grade: "왕" },
+  2:  { total_score: 95, charm_score: 80, wealth_grade: "왕" },
+  3:  { total_score: 88, charm_score: 72, wealth_grade: "대" },
+  4:  { total_score: 93, charm_score: 95, wealth_grade: "중" },
+  5:  { total_score: 97, charm_score: 97, wealth_grade: "중" },
+  6:  { total_score: 98, charm_score: 96, wealth_grade: "대" },
+  7:  { total_score: 90, charm_score: 77, wealth_grade: "대" },
+  8:  { total_score: 91, charm_score: 86, wealth_grade: "중" },
+  9:  { total_score: 94, charm_score: 80, wealth_grade: "대" },
+  10: { total_score: 96, charm_score: 85, wealth_grade: "왕" },
+  11: { total_score: 89, charm_score: 74, wealth_grade: "중" },
+  12: { total_score: 92, charm_score: 89, wealth_grade: "소" },
+  13: { total_score: 97, charm_score: 88, wealth_grade: "왕" },
+  14: { total_score: 91, charm_score: 74, wealth_grade: "대" },
+  15: { total_score: 93, charm_score: 92, wealth_grade: "소" },
+  16: { total_score: 88, charm_score: 81, wealth_grade: "중" },
+  17: { total_score: 90, charm_score: 84, wealth_grade: "중" },
+  18: { total_score: 96, charm_score: 94, wealth_grade: "대" },
+  19: { total_score: 97, charm_score: 91, wealth_grade: "중" },
+  20: { total_score: 94, charm_score: 87, wealth_grade: "대" },
+};
+
 async function callGemini(body: string): Promise<Response> {
   const MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-flash-lite"];
   let res: Response | null = null;
@@ -320,6 +343,16 @@ export async function POST(request: NextRequest) {
       else if (imgType === "masked" || imgType === "hidden_face") typeId = 25;
       else if (imgType === "illustration" || imgType === "2d_character") typeId = 26;
       return NextResponse.json({ result: { image_type: imgType, type_id: typeId, is_error: true } });
+    }
+
+    // character_type별 고정값 덮어쓰기 (score·charm·wealth)
+    const ctNum = typeof parsed.character_type === "number" ? parsed.character_type : null;
+    if (ctNum && FACE_FIXED[ctNum]) {
+      const fix = FACE_FIXED[ctNum];
+      parsed.total_score  = fix.total_score;
+      parsed.charm_score  = fix.charm_score;
+      parsed.wealth_grade = fix.wealth_grade;
+      console.log(`[face-reading-premium] FIXED applied: ct=${ctNum} score=${fix.total_score} charm=${fix.charm_score} wealth=${fix.wealth_grade}`);
     }
 
     // 점수 → 등급/상위% 코드 연동 (AI 불일치 방지)

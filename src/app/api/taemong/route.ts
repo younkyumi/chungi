@@ -18,7 +18,9 @@ export async function GET(req: NextRequest) {
       .eq("is_lucky", true)
       .limit(5);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    const pick = (data || [])[Math.floor(Math.random() * (data?.length || 1))];
+    const today = new Date();
+    const dateSeed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+    const pick = (data || [])[dateSeed % (data?.length || 1)];
     return NextResponse.json({ matched: !!pick, taemong: pick || null, lucky_random: true });
   }
 
