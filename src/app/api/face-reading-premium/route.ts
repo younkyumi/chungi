@@ -158,7 +158,7 @@ const SYSTEM_PROMPT = `[ROLE]
 - 흐릿/어두움: {"image_type":"unclear","type_id":22}
 - 2명 이상: {"image_type":"multi","type_id":23}
 - 아기/유아: {"image_type":"baby","type_id":24}
-- 얼굴 가림: {"image_type":"masked","type_id":25}
+- 얼굴 가림 (스티커·이모지 오버레이·인스타/스냅챗 AR필터·손·마스크·선글라스 등으로 눈·코·입 중 하나라도 가려진 경우 — 부분 가림도 포함): {"image_type":"masked","type_id":25}
 - 그림/캐릭터: {"image_type":"illustration","type_id":26}`;
 
 // ── Call-1 전용 prompt: character_type 확정만 (사전질문 컨텍스트 없음) ──
