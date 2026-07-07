@@ -79,18 +79,23 @@ JSON만: {"type_a": "관상유형명", "type_b": "관상유형명"}`;
 async function callGemini(body: string): Promise<Response> {
   const MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-flash-lite"];
   let res: Response | null = null;
-  for (const model of MODELS) {
+  outer: for (const model of MODELS) {
     const url = getGeminiUrl(model);
-    for (let i = 0; i < 2; i++) {
-      res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body });
-      if (res.ok) return res;
-      const err = await res.clone().json().catch(() => null);
-      const msg = err?.error?.message || "";
-      if (msg.includes("high demand") || msg.includes("overloaded") || res.status === 503 || res.status === 429) {
-        await new Promise(r => setTimeout(r, 1000));
-        continue;
+    for (let i = 0; i < 3; i++) {
+      try {
+        res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body });
+        if (res.ok) break outer;
+        const err = await res.clone().json().catch(() => null);
+        const msg = (err?.error?.message || "") + " " + (err?.error?.status || "");
+        const isOverload = res.status === 503 || res.status === 429 || /overload|high demand|UNAVAILABLE/i.test(msg);
+        if (isOverload) {
+          if (i < 2) await new Promise(r => setTimeout(r, 1500 * (i + 1)));
+          continue;
+        }
+        break;
+      } catch {
+        if (i < 2) await new Promise(r => setTimeout(r, 1000));
       }
-      break;
     }
   }
   return res!;
