@@ -904,6 +904,7 @@ function FunLoader({duration=4000,onDone,type="saju"}:{duration?:number,onDone:(
       <div style={{fontSize:12,color:"var(--gold)",fontWeight:700,marginBottom:16}}>{pct}%</div>
       {/* 재미 멘트 */}
       <div style={{fontSize:12,color:"var(--mist)",lineHeight:1.6,minHeight:40,padding:"0 10px"}}>{msgs[msgIdx]}</div>
+      {pct>=85&&duration>=10000&&<div style={{fontSize:11,color:"rgba(212,175,55,0.65)",marginTop:8,lineHeight:1.6}}>🌐 AI 서버가 혼잡해서 조금 더 걸리고 있어요 — 잠시만 기다려주세요</div>}
       <LoadingHint/>
     </div>
   );
@@ -12018,7 +12019,7 @@ function PetGwansangModal({species,onClose,cart,setCart,onGoShop,addHistory,isLo
 
     {step==="preqs"&&<PreQuestionFlow embedded svcId={svcId} iconTitle={`${petEmoji} ${svcName}`} subtitle="더 정확한 분석을 위해" initialQStep={preQStartIdx} initialAnswers={preQA} onComplete={(ans)=>{setPreQStartIdx(0);onPreqsDone(ans);}} onClose={()=>{setPreQStartIdx(0);setStep("upload");}}/>}
     {step==="pay"&&<><div className="mt">{petEmoji} {svcName}</div><div className="ms">우리 {personName} · 6탭 정밀 관상 분석 · 980원</div><PayStepComp price="980원" onPay={pay} onBack={()=>{const totalQs=(PRE_Q_CONFIG[svcId]||[]).length;setPreQStartIdx(Math.max(0,totalQs-1));setStep("preqs");}} loading={loading} svcId={svcId}/></>}
-    {step==="loading"&&<FunLoader duration={5000} onDone={()=>{}} type="face"/>}
+    {step==="loading"&&<FunLoader duration={20000} onDone={()=>{}} type="face"/>}
     {step==="needLogin"&&<>
       <div style={{textAlign:"center",padding:"20px 0"}}>
         <div style={{fontSize:36,marginBottom:8}}>🔒</div>
@@ -12662,7 +12663,7 @@ function NumerologyModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,on
         </>;
       })()}
       {step==="pay"&&<><div className="mt">🔢 수비학 · 소울넘버</div><div className="ms">생년월일로 풀어내는 영혼의 숫자 · 980원</div><PayStepComp price="980원" onPay={pay} onBack={()=>setStep("preQ")} loading={loading} svcId="numerology"/></>}
-      {step==="loading"&&<FunLoader duration={5000} onDone={()=>{}} type="saju"/>}
+      {step==="loading"&&<FunLoader duration={15000} onDone={()=>{}} type="saju"/>}
       {step==="result"&&r&&(()=>{
         // v314: 소울넘버 표준 컬러 — AI가 다른 색 줘도 강제 통일 (예: 8=빨강, 5=파랑)
         const _SOUL_COLOR:Record<number,string>={
