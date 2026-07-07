@@ -210,7 +210,7 @@ async function callGeminiPet(body: string): Promise<Response> {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { imageData, mediaType = "image/jpeg", personName = "우리 아이", species = "dog" } = body;
+    const { imageData, mediaType = "image/jpeg", personName = "우리 아이", species = "dog", questions = {} } = body;
 
     if (!imageData) {
       return NextResponse.json({ error: "이미지가 필요합니다." }, { status: 400 });
@@ -251,9 +251,18 @@ export async function POST(request: NextRequest) {
       ? `⚠️ 외모 관찰값 고정 (모든 섹션에서 반드시 일관되게 언급):\n눈매: ${faceObs["눈매"] || ""}\n코: ${faceObs["코"] || ""}\n입: ${faceObs["입"] || ""}\n털: ${faceObs["털"] || ""}\n체형: ${faceObs["체형"] || ""}\n전체인상: ${faceObs["전체"] || ""}\n\n`
       : "";
     const fixedRule = (characterType !== null ? `⚠️ character_type은 반드시 ${characterType}. 절대 변경 불가.\n` : "") + faceObsRule;
-    console.log(`[pet-gwansang] Call-2 ct_fixed=${characterType !== null} face_obs_fixed=${!!faceObs}`);
+
+    // 사전질문 답변 주입 — 집사 말 vs 관상 대비 지시
+    const callsign = species === "dog" ? "댕댕이" : "냥이";
+    const qPersonality = (questions as Record<string,string>).personality || "";
+    const qBreed = (questions as Record<string,string>).breed || "";
+    const preQRule = (qPersonality || qBreed)
+      ? `\n⚠️ 집사 사전정보 (성격·스토리 섹션에 반드시 반영):\n${qBreed ? `- 집사가 말한 견/묘종 계열: "${qBreed}"\n` : ""}${qPersonality ? `- 집사가 말한 성격: "${qPersonality}"\n` : ""}관상에서 읽힌 성격과 집사 말을 비교해서 성격 섹션에서 명시적으로 언급할 것.\n일치하면: "집사님이 ${callsign}을 정확히 파악하고 계세요 🎯 관상에서도 딱 그 모습이 보여요" 톤.\n불일치하면: "관상만 보면 [관상 특징]${callsign}이지만, 집사님 눈엔 ${qPersonality}로 보인다면 그건 [합리적 설명] 때문일 수 있어요" 톤.\n⚠️ "${qPersonality}" 키워드를 성격 섹션 본문에 한 번 이상 직접 언급 필수.\n`
+      : "";
+
+    console.log(`[pet-gwansang] Call-2 ct_fixed=${characterType !== null} face_obs_fixed=${!!faceObs} preQ_ok=${!!(qPersonality||qBreed)}`);
     const reqBody = JSON.stringify({
-      systemInstruction: { parts: [{ text: fixedRule + getSystemPrompt(species as "dog" | "cat") }] },
+      systemInstruction: { parts: [{ text: fixedRule + preQRule + getSystemPrompt(species as "dog" | "cat") }] },
       contents: [{ parts: [
         { inlineData: { mimeType: resolvedMediaType, data: base64Image } },
         { text: `이 반려동물의 관상을 정밀 분석해줘. 이름: ${personName}. {nm}은 "${personName}"으로 치환. JSON만 출력.` }

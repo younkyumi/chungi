@@ -11882,7 +11882,7 @@ function PetGwansangModal({species,onClose,cart,setCart,onGoShop,addHistory,isLo
       const timeout=setTimeout(()=>controller.abort(),120000);
       const res=await fetch("/api/pet-gwansang",{
         method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({imageData:imgBase64,personName,species}),
+        body:JSON.stringify({imageData:imgBase64,personName,species,questions:preQA}),
         signal:controller.signal,
       });
       clearTimeout(timeout);
