@@ -5967,7 +5967,7 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
                   <div style={{position:"absolute",top:8,left:12,fontFamily:"monospace",fontSize:9,color:"#fad45f"}}>CHUNGI_DOG v2.0</div>
                 </div>
 
-                {/* 10가지 분석 항목 */}
+                {/* 9가지 분석 항목 */}
                 <div style={{textAlign:"left",marginBottom:16}}>
                   {[
                     {icon:"🐾",title:"우리 댕댕이 첫인상",desc:"품종 기반 전체 기운, 타고난 아우라"},
@@ -5975,7 +5975,6 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
                     {icon:"💰",title:"집사의 재물운 연결",desc:"댕댕이 기운이 끌어오는 복"},
                     {icon:"🩺",title:"건강 & 에너지",desc:"체질, 활력 레벨, 주의 포인트"},
                     {icon:"💕",title:"집사와의 인연",desc:"전생부터 이어진 궁합 지수"},
-                    {icon:"🎯",title:"판타지 클래스 비유",desc:"힐러/전사/마법사 등 RPG 매칭"},
                     {icon:"🍀",title:"맞춤 견생 비방",desc:"수호 아이템, 행운 컬러, 놀이"},
                     {icon:"✨",title:"천기의 한마디",desc:"우리 댕댕이만을 위한 운명 메시지"},
                     {icon:"🐶",title:"댕댕 캐릭터 카드",desc:"20종 중 1종 매칭! 나만의 인증서"},
@@ -6033,7 +6032,7 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
                   <div style={{position:"absolute",top:8,left:12,fontFamily:"monospace",fontSize:9,color:"#58d68d"}}>CHUNGI_CAT v2.0</div>
                 </div>
 
-                {/* 10가지 분석 항목 */}
+                {/* 9가지 분석 항목 */}
                 <div style={{textAlign:"left",marginBottom:16}}>
                   {[
                     {icon:"🐾",title:"우리 냥이 첫인상",desc:"품종 기반 전체 기운, 신비로운 아우라"},
@@ -6041,7 +6040,6 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
                     {icon:"💰",title:"집사의 재물운 연결",desc:"냥이 기운이 끌어오는 복"},
                     {icon:"🩺",title:"건강 & 에너지",desc:"체질, 활력 레벨, 주의 포인트"},
                     {icon:"💕",title:"집사와의 인연",desc:"전생부터 이어진 궁합 지수"},
-                    {icon:"🎯",title:"판타지 클래스 비유",desc:"마녀/영매/귀족 등 RPG 매칭"},
                     {icon:"🍀",title:"맞춤 묘생 비방",desc:"수호 아이템, 행운 컬러, 놀이"},
                     {icon:"✨",title:"천기의 한마디",desc:"우리 냥이만을 위한 운명 메시지"},
                     {icon:"🐱",title:"냥냥 캐릭터 카드",desc:"20종 중 1종 매칭! 나만의 인증서"},
@@ -11949,7 +11947,6 @@ function PetGwansangModal({species,onClose,cart,setCart,onGoShop,addHistory,isLo
             {icon:"💰",title:"집사의 재물운 연결",desc:`${petLabel} 기운이 끌어오는 복`},
             {icon:"🩺",title:"건강 & 에너지",desc:"체질, 활력 레벨, 주의 포인트"},
             {icon:"💕",title:"집사와의 인연",desc:"전생부터 이어진 궁합 지수"},
-            {icon:"🎯",title:"판타지 클래스 비유",desc:"힐러/전사/마법사 등 RPG 매칭"},
             {icon:"🍀",title:`맞춤 ${isDog?"견생":"묘생"} 비방`,desc:"수호 아이템, 행운 컬러"},
             {icon:"✨",title:"천기의 한마디",desc:`우리 ${petLabel}만을 위한 운명 메시지`},
             {icon:petEmoji,title:`${isDog?"댕댕":"냥냥"} 캐릭터 카드`,desc:"20종 중 1종 매칭! 나만의 인증서"},

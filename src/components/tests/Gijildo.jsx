@@ -351,6 +351,42 @@ const PRE_Q2=[
   {emoji:"🌤️",label:"휴식·공백·은퇴 중"},
 ];
 
+// v(기질도 개인화 강화): 연애/직업 사전질문 답변을 "타입 위에 얹는" 상황별 적용 조언. 타입 본문(d.love/d.jobs)은 그대로 두고 서브섹션으로만 추가
+function loveSituational(d,preQ1,personName,isNature){
+  const s1=d.strengths?.[0]||"이 결";
+  const s2=d.strengths?.[1]||s1;
+  if(!preQ1||preQ1==="skip"){
+    const generic=`${d.name}형의 연애 방식은 상황과 무관하게 대체로 ${s1}을(를) 앞세우는 쪽이에요.`;
+    return isNature?`본래 성향은 이런데, 지금 상황에 대입해보면 — ${generic}`:generic;
+  }
+  const templates={
+    "솔로, 연애에 관심 없음":`지금은 연애보다 나에게 집중하는 시기네요. ${d.name}형은 혼자 있는 시간에 ${s1}이(가) 오히려 더 빛나는 타입이라, 지금처럼 스스로를 채우는 것도 잘 맞는 선택이에요.`,
+    "솔로, 좋은 인연을 원함":`지금은 혼자지만, 이 기질대로라면 좋은 인연을 만났을 때 ${s1}을(를) 앞세워 마음을 여는 편이에요. 급하게 다가가기보다 이 결을 믿고 기다려도 좋아요.`,
+    "달달한 연애 중":`지금 연애가 한창이신데, 이 ${s1} 성향이 상대에게는 부담이 될 수도 있으니 가끔은 한 발짝 떨어져서 숨 쉴 틈을 주는 것도 필요해요.`,
+    "오랜 연인 또는 결혼 고려 중":`오래된 관계일수록 ${d.name}형 특유의 ${s1}이(가) 무뎌지기 쉬워요. 다음 단계를 고민 중이라면 처음 끌렸던 그 결을 다시 꺼내보는 게 도움이 될 거예요.`,
+    "결혼 중 (기혼)":`결혼 생활에서는 ${s1}보다 ${s2}이(가) 더 자주 시험대에 오르는 편이에요. 배우자에게 이 기질을 설명해주는 것만으로도 오해가 줄어들 수 있어요.`,
+    "이별·상처 회복 중":`지금은 회복이 먼저인 시기예요. ${d.name}형은 ${s1} 덕분에 아물고 나면 이전보다 더 단단한 방식으로 사랑할 수 있는 결이니, 지금은 스스로를 다그치지 마세요.`,
+  };
+  const body=templates[preQ1]||templates["솔로, 좋은 인연을 원함"];
+  return isNature?`본래 성향은 이런데, 지금 상황에 대입해보면 — ${body}`:body;
+}
+function jobSituational(d,preQ2,personName){
+  const s1=d.strengths?.[0]||"강점";
+  const job1=d.jobs?.[0]||"관련 분야";
+  if(!preQ2||preQ2==="skip"){
+    return `${d.name}형은 어떤 환경에 있든 ${s1}을(를) 살릴 방법을 스스로 찾아내는 타입이에요.`;
+  }
+  const templates={
+    "학생 (중·고·대학)":`진로를 고민할 시기라면, ${d.name}형의 ${s1}을(를) 살릴 수 있는 ${job1} 같은 분야를 눈여겨보는 것도 방법이에요.`,
+    "취준생·고시·자격증 준비":`지금은 결과를 기다리는 시간이 힘들 수 있는데, ${d.name}형의 ${s1}은(는) 면접이나 서류에서 확실한 무기가 돼요. 이 강점을 자기소개서 한 줄에 녹여보세요.`,
+    "직장인·회사원":`지금 조직 안에서는 ${s1}을(를) 티 나지 않게 발휘하는 게 오히려 인정받는 지름길이에요. 작은 프로젝트에서부터 이 결을 드러내 보세요.`,
+    "자영업·사업·프리랜서":`지금 하는 일에 이 통찰력을 이렇게 써보세요 — ${d.name}형 특유의 ${s1}을(를) 고객과의 신뢰를 쌓는 무기로 활용하면 확실히 차별화돼요.`,
+    "주부·육아":`육아나 살림 안에서도 ${s1}은(는) 그대로 발휘돼요. 아이나 가족을 대할 때 이 기질을 인지하고 있으면 스스로를 덜 다그치게 될 거예요.`,
+    "휴식·공백·은퇴 중":`지금 같은 공백기는 ${d.name}형의 ${s1}을(를) 재정비할 좋은 기회예요. 다음 스텝을 정할 때 이 강점을 중심에 두고 그려보세요.`,
+  };
+  return templates[preQ2]||templates["직장인·회사원"];
+}
+
 // ━━━ 메인 컴포넌트 ━━━
 export default function GijildoModal({onClose,selectedPerson,addHistory,cart,setCart,onGoShop,onOpenService,isLoggedIn,onLoginRequest,onRequestPerson,preloadResult=null,forceIntro=false,helpers={}}){
   const birth=selectedPerson?.birth?(()=>{
@@ -1016,6 +1052,13 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
                   {s.badges&&s.badges.length>0&&<div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
                     {s.badges.map(b=>(<span key={b} style={{fontSize:11,fontWeight:700,padding:"4px 10px",borderRadius:20,background:`${s.color}12`,color:s.color,border:`1px solid ${s.color}30`}}>{s.badgePrefix||""}{b}</span>))}
                   </div>}
+                  {(s.key===2||s.key===3)&&(()=>{
+                    const situ=s.key===2?loveSituational(sData,preQ1,personName,true):jobSituational(sData,preQ2,personName);
+                    return <div style={{marginTop:10,paddingTop:10,borderTop:"1px dashed rgba(212,175,55,0.35)"}}>
+                      <div style={{fontSize:10,fontWeight:800,color:"#D4AF37",marginBottom:5}}>💬 지금 {personName}님 상황에서는</div>
+                      <div style={{fontSize:11,color:"#555",lineHeight:1.85,wordBreak:"keep-all"}}>{situ}</div>
+                    </div>;
+                  })()}
                 </div>
               </div>
             ))}
@@ -1130,6 +1173,13 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
                   {s.badges&&s.badges.length>0&&<div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
                     {s.badges.map(b=>(<span key={b} style={{fontSize:11,fontWeight:700,padding:"4px 10px",borderRadius:20,background:`${s.color}12`,color:s.color,border:`1px solid ${s.color}30`}}>{s.badgePrefix||""}{b}</span>))}
                   </div>}
+                  {(s.key===2||s.key===3)&&(()=>{
+                    const situ=s.key===2?loveSituational(qData,preQ1,personName,false):jobSituational(qData,preQ2,personName);
+                    return <div style={{marginTop:10,paddingTop:10,borderTop:"1px dashed rgba(212,175,55,0.35)"}}>
+                      <div style={{fontSize:10,fontWeight:800,color:"#D4AF37",marginBottom:5}}>💬 지금 {personName}님 상황에서는</div>
+                      <div style={{fontSize:11,color:"#555",lineHeight:1.85,wordBreak:"keep-all"}}>{situ}</div>
+                    </div>;
+                  })()}
                 </div>
               </div>
             ))}
