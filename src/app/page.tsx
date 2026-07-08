@@ -19764,7 +19764,7 @@ function DreamModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
   const[dream,setDream]=useState(preloadResult?.dream||"");
   const[loading,setLoading]=useState(false);
   const[mode,setMode]=useState<"dream"|"taemong">(preloadResult?.mode||(dreamPendingMode as any)||"dream");
-  const[tmTab,setTmTab]=useState(0); // v777: 태몽 결과 탭 (0:태몽해석 1:타고난기질 2:미래흐름 3:육아처방전)
+  const[tmTab,setTmTab]=useState(0); // v(2026-07-08): 태몽 결과 탭 (0:타고난기질 1:미래흐름 2:육아처방전 3:아이에게)
   const[showPayDone,setShowPayDone]=useState(false);
   const[result,setResult]=useState<any>(preloadResult||null);
   const[loadPct,setLoadPct]=useState(0);
@@ -19873,7 +19873,8 @@ function DreamModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
                   "💡 한 끗 차이 태몽 — 키워드 하나로 성별이 달라져요",
                   "🌱 타고난 기질 — 영혼의 오행 + 강점·부모·전생 인연",
                   "🌟 미래의 흐름 — 학업·재능 시기 + 직업·결혼운",
-                  "🍼 육아 처방전 — 이름·태교·양육 + 영혼의 첫 인사",
+                  "🍼 육아 처방전 — 이름·태명 추천 + 태교·양육 가이드",
+                  "👶 아이에게 — 영혼의 첫 인사 + 천기의 한마디",
                 ]},
               ].map(f=>(
                 <div key={f.t} style={{display:"flex",gap:10,marginBottom:12,alignItems:"flex-start"}}>
@@ -19958,21 +19959,19 @@ function DreamModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
         })()}
 
         {step==="result"&&result&&<>
-          {/* 화이트 결과 카드 */}
-          <div id={`${mode}-capture`} style={{background:"#ffffff",borderRadius:20,overflow:"hidden",border:"1px solid rgba(212,175,55,0.3)",boxShadow:"0 10px 30px rgba(0,0,0,0.06)",marginBottom:12,color:"#333"}}>
+          {/* 화이트 결과 카드 — v(2026-07-08): 태몽은 PAGE1/2/3 독립 카드로 시각 분리(Gijildo 패턴), 꿈해몽은 단일 카드 유지 */}
+          {mode==="taemong"?(
+          <div id="taemong-capture" style={{display:"flex",flexDirection:"column",gap:12,marginBottom:12}}>
+            {/* PAGE 1 — 개요 (헤더 포함, 독립 카드) */}
+            <div style={{background:"#ffffff",borderRadius:20,overflow:"hidden",border:"1px solid rgba(212,175,55,0.3)",boxShadow:"0 10px 30px rgba(0,0,0,0.06)",color:"#333"}}>
             <div style={{padding:"10px 16px 8px",textAlign:"center"}}>
-              <BrandLine>{mode==="taemong"?"AI 태몽 정밀 분석":"꿈 해몽"}</BrandLine>
-              <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>{mode==="taemong"?"🌙 말씀하신 태몽 정밀 분석":"💭 말씀하신 꿈에 대한 해몽"}</div>
-              {/* v322: 검사 정보 (꿈/태몽 모두 full) */}
+              <BrandLine>AI 태몽 정밀 분석</BrandLine>
+              <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>🌙 말씀하신 태몽 정밀 분석</div>
               <div style={{fontSize:10,color:"#888",fontWeight:600,marginTop:6,lineHeight:1.6}}>
                 {selectedPerson?.birth&&<div>👤 {selectedPerson?.name||"나"} : {selectedPerson.birth}{selectedPerson?.time&&selectedPerson.time!=="모름"?` · ${selectedPerson.time}생`:"생"}{selectedPerson?.calendar?` · ${selectedPerson.calendar}`:""}{selectedPerson?.gender?` · ${selectedPerson.gender}`:""}</div>}
                 <div style={{color:"#aaa"}}>{formatTestDateLine(preloadResult?._testDate)}</div>
               </div>
             </div>
-
-            {mode==="taemong"?<>
-              {/* v795: PAGE 1 카드 — 개요 (흰 inner 카드, 연회색 패널 위) */}
-              <div style={{background:"#fff",borderRadius:16,boxShadow:"0 2px 10px rgba(0,0,0,0.06)",overflow:"hidden",margin:"4px 10px 12px"}}>
               {/* 사용자 입력 태몽 + 도장 박스 (꿈해몽 패턴) */}
               <div style={{padding:"14px 16px 6px"}}>
                 <div style={{position:"relative",background:"linear-gradient(135deg,#fef9c3 0%,#fff 60%,#fdf4ff 100%)",border:"2px solid #fde68a",borderRadius:16,padding:"18px 18px 16px",boxShadow:"0 6px 20px rgba(212,175,55,0.12)",overflow:"hidden"}}>
@@ -20070,19 +20069,18 @@ function DreamModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
                 ))}
               </div>}
               </div>{/* PAGE 1 개요 카드 닫기 */}
-              {/* v795: PAGE 2 카드 — 탭 nav */}
-              <div style={{background:"#fff",borderRadius:16,boxShadow:"0 2px 10px rgba(0,0,0,0.06)",overflow:"hidden",margin:"0 10px 12px",padding:"4px 0"}}>
-              {/* v802: 태몽 결과 탭 — 개요 아래 3탭 (태몽해석 탭 제거, 오행은 타고난기질로 이동) */}
+              {/* PAGE 2 — 탭 nav (독립 카드) */}
+              <div style={{background:"#ffffff",borderRadius:20,overflow:"hidden",border:"1px solid rgba(212,175,55,0.3)",boxShadow:"0 10px 30px rgba(0,0,0,0.06)",padding:"4px 0"}}>
+              {/* v(2026-07-08): 4탭 구조 — 육아처방전에서 "아이에게"(영혼의 첫인사·천기의 한마디) 분리 */}
               <div style={{textAlign:"center",padding:"14px 16px 4px",fontSize:11,color:"#D4AF37",fontWeight:700}}><span className="tab-hint-blink">👇 아래 탭을 눌러 자세한 풀이를 확인하세요!</span></div>
-              <div className="result-tabs" style={{padding:"0 16px 8px",display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:5}}>
-                {[{i:0,ic:"🌱",lb:"타고난 기질"},{i:1,ic:"🌟",lb:"미래의 흐름"},{i:2,ic:"🍼",lb:"육아 처방전"}].map(t=>(
-                  <button key={t.i} onClick={()=>setTmTab(t.i)} style={{padding:"9px 4px",background:tmTab===t.i?"#1A3C32":"transparent",border:`1px solid ${tmTab===t.i?"#1A3C32":"#ddd"}`,color:tmTab===t.i?"#fff":"#1A3C32",borderRadius:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>{t.ic} {t.lb}</button>
+              <div className="result-tabs" style={{padding:"0 16px 8px",display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:5}}>
+                {[{i:0,ic:"🌱",lb:"타고난 기질"},{i:1,ic:"🌟",lb:"미래의 흐름"},{i:2,ic:"🍼",lb:"육아 처방전"},{i:3,ic:"👶",lb:"아이에게"}].map(t=>(
+                  <button key={t.i} onClick={()=>setTmTab(t.i)} style={{padding:"9px 2px",background:tmTab===t.i?"#1A3C32":"transparent",border:`1px solid ${tmTab===t.i?"#1A3C32":"#ddd"}`,color:tmTab===t.i?"#fff":"#1A3C32",borderRadius:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit",fontSize:11}}>{t.ic} {t.lb}</button>
                 ))}
               </div>
               </div>{/* PAGE 2 탭 카드 닫기 */}
-              {/* v795: PAGE 3 카드 — 선택 탭 상세 내용 */}
-              <div style={{background:"#fff",borderRadius:16,boxShadow:"0 2px 10px rgba(0,0,0,0.06)",overflow:"hidden",margin:"0 10px 4px"}}>
-                {/* v799: PAGE 3 상단 브랜딩 (사용자: 내용 페이지엔 브랜딩+해시태그 필수) */}
+              {/* PAGE 3 — 선택 탭 상세 내용 (독립 카드) */}
+              <div style={{background:"#ffffff",borderRadius:20,overflow:"hidden",border:"1px solid rgba(212,175,55,0.3)",boxShadow:"0 10px 30px rgba(0,0,0,0.06)",color:"#333"}}>
                 <div style={{padding:"10px 16px 2px",textAlign:"center"}}><BrandLine>AI 태몽 정밀 분석 · 상세</BrandLine></div>
               {tmTab===0&&<>
               {/* 아이 영혼의 색깔 (오행) — v776: 파랑 배경 제거 */}
@@ -20197,34 +20195,26 @@ function DreamModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
                 </div>
               </div>
               {/* v802: 행운 5종 제거 (사용자 결정 — 육아처방전 탭 간결화) */}
-              {/* 같은 태몽 후기 — v778: 배경색 제거 */}
-              <div style={{padding:"12px 16px"}}>
-                <div style={{fontSize:13,color:"#7e22ce",letterSpacing:1,fontWeight:800,marginBottom:6}}>👥 같은 태몽 꾼 부모님들</div>
-                <div style={{fontSize:11,color:"#555",lineHeight:1.85,fontStyle:"italic"}}>
-                  · "정말 태몽 그대로 닮았어요. 신기해요!" — 1년 전 회원 A<br/>
-                  · "아이가 지금 4살인데 태몽 풀이대로 정말 {result.gender==="아들"?"활발하고 리더십 있어요":result.gender==="딸"?"섬세하고 예술적이에요":"균형 잡힌 아이로 자라요"}" — 회원 B<br/>
-                  · "친정엄마한테 보여드렸더니 옛날 태몽 풀이랑 똑같다고 놀라셨어요" — 회원 C<br/>
-                  <span style={{fontSize:9,color:"#aaa",fontStyle:"normal"}}>※ 천기 태몽 회원 익명 사례 발췌</span>
-                </div>
-              </div>
-              {/* 💌 영혼의 첫 인사 — v778: 배경색/CH.5 라벨 제거 → 깔끔한 구분선 */}
-              <div style={{padding:"18px 16px 4px",textAlign:"center",borderTop:"1px solid #f0f0f0"}}>
+              </>}
+              {/* v(2026-07-08): 탭3 "아이에게" 신설 — 영혼의 첫인사 + 천기의 한마디. 아이가 부모에게 보내는 편지 컨셉 */}
+              {tmTab===3&&<>
+              <div style={{padding:"16px 16px 4px",textAlign:"center"}}>
                 <div style={{fontSize:15,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang',serif",letterSpacing:-0.3}}>💌 영혼의 첫 인사</div>
-                <div style={{fontSize:10,color:"#888",fontStyle:"italic",marginTop:3}}>세상에 오기 전 부모님께</div>
+                <div style={{fontSize:10,color:"#888",fontStyle:"italic",marginTop:3}}>세상에 오기 전, 아이가 부모님께 쓰는 편지</div>
               </div>
-              {/* 부모님께 드리는 메시지 */}
+              {/* 부모님께 드리는 메시지 — 편지 컨셉 */}
               <div style={{padding:"12px 16px",background:"#fff7ed"}}>
-                <div style={{fontSize:13,color:"#c2410c",letterSpacing:1,fontWeight:800,marginBottom:6}}>💌 영혼이 부모님께 보내는 인사</div>
+                <div style={{fontSize:13,color:"#c2410c",letterSpacing:1,fontWeight:800,marginBottom:6}}>💌 영혼이 부모님께 보내는 편지</div>
                 <div style={{fontSize:11.5,color:"#5a4316",lineHeight:1.95,fontStyle:"italic"}}>
-                  "{result.gender==="아들"?"엄마, 아빠. 저는 두 분을 보고 왔어요. 두 분이 부모가 되기 전부터 저는 두 분을 알았어요. 강하게, 그러나 다정하게 키워주세요. 제가 이 세상에서 무엇을 할 수 있을지 함께 발견해주세요.":result.gender==="딸"?"엄마, 아빠. 저는 따뜻함이 흐르는 두 분을 보고 왔어요. 제 마음이 너무 섬세해서 가끔 흔들릴 거예요. 그때 그저 곁에 있어주세요. 저는 두 분을 닮은 사람이 될 거예요.":"엄마, 아빠. 저는 두 분의 마음의 균형을 보고 왔어요. 어떤 곳에서도 잘 적응하는 아이로 자랄게요. 두 분이 서로를 사랑하는 모습이 제게 가장 큰 가르침이에요."}"<br/><br/>
-                  <span style={{fontStyle:"normal",color:"#7A5C00"}}>— 영혼의 첫 인사 (천기가 받아 적은 메시지)</span>
+                  "{result.gender==="아들"?"엄마, 아빠. 저는 두 분을 보고 왔어요. 두 분이 부모가 되기 전부터 저는 두 분을 알았어요. 강하게, 그러나 다정하게 키워주세요. 제가 이 세상에서 무엇을 할 수 있을지 함께 발견해주세요. 태어나면 꼭 안아주세요, 그 품이 그리웠거든요.":result.gender==="딸"?"엄마, 아빠. 저는 따뜻함이 흐르는 두 분을 보고 왔어요. 제 마음이 너무 섬세해서 가끔 흔들릴 거예요. 그때 그저 곁에 있어주세요. 저는 두 분을 닮은 사람이 될 거예요. 태어나면 꼭 안아주세요, 그 품이 그리웠거든요.":"엄마, 아빠. 저는 두 분의 마음의 균형을 보고 왔어요. 어떤 곳에서도 잘 적응하는 아이로 자랄게요. 두 분이 서로를 사랑하는 모습이 제게 가장 큰 가르침이에요. 태어나면 꼭 안아주세요, 그 품이 그리웠거든요."}"<br/><br/>
+                  <span style={{fontStyle:"normal",color:"#7A5C00"}}>— 영혼의 첫 인사 (천기가 받아 적은 편지)</span>
                 </div>
               </div>
               {/* v517: 천기의 한마디 — 무지개 박스 표준 통일 (다른 콘텐츠와 동일) */}
               <div style={{margin:"14px 16px",borderRadius:16,padding:1.5,backgroundImage:"linear-gradient(135deg,#ffb8b8,#ffd9a8,#b8e0c8,#bcd6f0,#cdc5e8)",boxShadow:"0 4px 14px rgba(155,143,212,0.08)"}}>
                 <div style={{background:"#fafbfd",borderRadius:14.5,padding:"20px 18px",textAlign:"center"}}>
                   <div style={{fontSize:13,color:"#1A3C32",letterSpacing:1.5,fontWeight:900,marginBottom:10}}>🔮 천기의 한마디</div>
-                  <div style={{fontSize:13,color:"#1A3C32",fontWeight:700,lineHeight:1.85,wordBreak:"keep-all" as any,fontFamily:"'Noto Serif KR','Batang',serif"}}>"이 태몽을 받은 부모님께 — 아이는 이미 당신을 선택했어요. 두려움보다 설렘으로 맞이하세요. 사랑이 가득한 태교가 가장 큰 선물입니다. 10년 후, 20년 후 이 풀이를 다시 읽어보시면 깜짝 놀라실 거예요. 천기는 미리 알고 있었답니다. 🌟"</div>
+                  <div style={{fontSize:13,color:"#1A3C32",fontWeight:700,lineHeight:1.85,wordBreak:"keep-all" as any,fontFamily:"'Noto Serif KR','Batang',serif"}}>"이 태몽을 받은 부모님께 — 아이는 이미 당신을 선택했어요. 두려움보다 설렘으로 맞이하세요. 사랑이 가득한 태교가 가장 큰 선물입니다. 10년 후, 20년 후 이 편지를 다시 읽어보시면 깜짝 놀라실 거예요. 천기는 미리 알고 있었답니다. 🌟"</div>
                 </div>
               </div>
               </>}
@@ -20234,7 +20224,17 @@ function DreamModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
                 <span style={{fontWeight:600}}>🌐 천기.kr</span>
               </div>
               </div>{/* PAGE 3 내용 카드 닫기 */}
-            </>:<>
+          </div>
+          ):(
+          <div id="dream-capture" style={{background:"#ffffff",borderRadius:20,overflow:"hidden",border:"1px solid rgba(212,175,55,0.3)",boxShadow:"0 10px 30px rgba(0,0,0,0.06)",marginBottom:12,color:"#333"}}>
+            <div style={{padding:"10px 16px 8px",textAlign:"center"}}>
+              <BrandLine>꿈 해몽</BrandLine>
+              <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>💭 말씀하신 꿈에 대한 해몽</div>
+              <div style={{fontSize:10,color:"#888",fontWeight:600,marginTop:6,lineHeight:1.6}}>
+                {selectedPerson?.birth&&<div>👤 {selectedPerson?.name||"나"} : {selectedPerson.birth}{selectedPerson?.time&&selectedPerson.time!=="모름"?` · ${selectedPerson.time}생`:"생"}{selectedPerson?.calendar?` · ${selectedPerson.calendar}`:""}{selectedPerson?.gender?` · ${selectedPerson.gender}`:""}</div>}
+                <div style={{color:"#aaa"}}>{formatTestDateLine(preloadResult?._testDate)}</div>
+              </div>
+            </div>
               {/* 사용자 입력 꿈 + 흉/길몽 강화 박스 (드라마틱 그라데이션 + 도장 효과) */}
               <div style={{padding:"14px 16px 6px"}}>
                 <div style={{position:"relative",background:result.good?"linear-gradient(135deg,#fef9c3 0%,#fff 60%,#f0fdf4 100%)":"linear-gradient(135deg,#fff5f5 0%,#fff 60%,#fef2f2 100%)",border:`2px solid ${result.good?"#fde68a":"#fecaca"}`,borderRadius:16,padding:"18px 18px 16px",boxShadow:result.good?"0 6px 20px rgba(212,175,55,0.12)":"0 6px 20px rgba(220,38,38,0.10)",overflow:"hidden"}}>
@@ -20354,14 +20354,14 @@ function DreamModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
                   </div>
                 </div>
               </div>
-            </>}
 
-            {/* 푸터 해시태그 — v799: 태몽은 PAGE3 카드 안 자체 푸터 → 꿈해몽만 표시(중복 방지) */}
-            {mode!=="taemong"&&<div style={{display:"flex",justifyContent:"space-between",padding:"10px 16px 10px",marginTop:14,fontSize:9,color:"#aaa",fontWeight:600,letterSpacing:0.3,borderTop:"1px solid #f0f0f0"}}>
-              <span>{`#천기꿈해몽 #꿈해몽 #${selectedPerson?.name||"나"} #${result.good?"길몽":"흉몽"} #${(result.title||"꿈").replace(/\s/g,"")}`}</span>
-              <span style={{fontWeight:600}}>🌐 천기.kr</span>
-            </div>}
+              {/* 푸터 해시태그 (꿈해몽) */}
+              <div style={{display:"flex",justifyContent:"space-between",padding:"10px 16px 10px",marginTop:14,fontSize:9,color:"#aaa",fontWeight:600,letterSpacing:0.3,borderTop:"1px solid #f0f0f0"}}>
+                <span>{`#천기꿈해몽 #꿈해몽 #${selectedPerson?.name||"나"} #${result.good?"길몽":"흉몽"} #${(result.title||"꿈").replace(/\s/g,"")}`}</span>
+                <span style={{fontWeight:600}}>🌐 천기.kr</span>
+              </div>
           </div>
+          )}
 
           {!isLoggedIn&&(
             <div style={{background:"rgba(212,175,55,0.08)",border:"1px solid rgba(212,175,55,0.15)",borderRadius:12,padding:"12px",marginBottom:12,textAlign:"center"}}>
