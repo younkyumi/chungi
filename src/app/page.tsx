@@ -5765,30 +5765,31 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
         .then(r=>r.json()).then(j=>{if(j.result)setRealAnalysis(j.result);}).catch(()=>{});
     }
   },[step,svc.id,imgSrc]);
-  // v(2026-07-08): 궁합 5종 — seed 공식 대신 실제 /api/gwansang-compat 호출
+  // v(2026-07-08): 궁합 5종 + 부모자식궁합 — seed 공식 대신 실제 API 호출
   const COMPAT5_MODE_MAP:Record<string,string>={gwansang_compat:"couple",bff_compat:"bff",fan_compat:"fan",biz_gwansang:"business",enemy_compat:"enemy"};
+  const COMPAT_MODE_MAP:Record<string,string>={...COMPAT5_MODE_MAP,parent_child_compat:"family"};
   useEffect(()=>{
     if(step!=="loading")return;
-    const cmode=COMPAT5_MODE_MAP[svc.id];
-    if(!cmode)return;
+    if(!COMPAT_MODE_MAP[svc.id])return;
     if(!imgSrc||!imgSrc2)return;
     if(compatResult||compatErr)return; // 이미 시도함(성공/실패 불문 재요청 방지)
     let cancelled=false;
-    fetch("/api/gwansang-compat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
-      imageData1:imgSrc,imageData2:imgSrc2,mediaType:"image/jpeg",
-      name1:form.name||selectedPerson?.name||"나",name2:selectedPerson2?.name||"상대",
-      mode:cmode,questions:preQ,
-    })}).then(r=>r.json()).then(j=>{
+    const isFamily=svc.id==="parent_child_compat";
+    const url=isFamily?"/api/parent-child-compat":"/api/gwansang-compat";
+    const bodyObj:any=isFamily
+      ?{imageData1:imgSrc,imageData2:imgSrc2,mediaType:"image/jpeg",name1:form.name||selectedPerson?.name||"자녀",name2:selectedPerson2?.name||"보호자",relLabel:preQ.rel||"보호자",questions:preQ}
+      :{imageData1:imgSrc,imageData2:imgSrc2,mediaType:"image/jpeg",name1:form.name||selectedPerson?.name||"나",name2:selectedPerson2?.name||"상대",mode:COMPAT5_MODE_MAP[svc.id],questions:preQ};
+    fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(bodyObj)}).then(r=>r.json()).then(j=>{
       if(cancelled)return;
       if(j.result)setCompatResult(j.result);
       else setCompatErr(j.error||"분석에 실패했어요");
     }).catch(()=>{if(!cancelled)setCompatErr("네트워크 오류가 발생했어요");});
     return()=>{cancelled=true;};
   },[step,svc.id,imgSrc,imgSrc2,compatResult,compatErr]);
-  // 궁합 5종 — 결과 도착 시 확정(결제 완료 상태이므로 실패해도 재시도만, 재결제 X)
+  // 궁합 5종+부모자식궁합 — 결과 도착 시 확정(결제 완료 상태이므로 실패해도 재시도만, 재결제 X)
   useEffect(()=>{
     if(step!=="loading")return;
-    if(!COMPAT5_MODE_MAP[svc.id])return;
+    if(!COMPAT_MODE_MAP[svc.id])return;
     if(compatErr){
       alert(`⚠️ AI 분석 일시 오류\n\n${compatErr}\n\n결제는 이미 처리됐으니 같은 사진으로 다시 분석해주세요.\n반복되면 카카오 채널로 문의 부탁드립니다.`);
       setCompatErr(null);
@@ -5802,9 +5803,9 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
     }
   },[step,compatResult,compatErr,svc.id]);
   function onLoadingDone(){
-    // v(2026-07-08): 궁합 5종(gwansang/bff/fan/biz/enemy)은 실제 API 응답 대기 전용 useEffect가
+    // v(2026-07-08): 궁합 5종+부모자식궁합은 실제 API 응답 대기 전용 useEffect가
     // step/result 전환·addHistory를 전담 — 여기서는 완전히 스킵 (FunLoader onDone도 no-op 처리됨)
-    if(COMPAT5_MODE_MAP[svc.id])return;
+    if(COMPAT_MODE_MAP[svc.id])return;
     setStep("result");
     // v300: celeb_compat 카운트 증가 (실제 완료 시점에 — history 저장과 동기화)
     if(svc.id==="celeb_compat"){
@@ -6974,10 +6975,10 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
           </>;
         })()}
 
-        {/* 재미 로딩 화면 — 궁합 5종은 실제 API 응답 대기(useEffect가 전환 전담), duration은 시각적 페이싱용 */}
+        {/* 재미 로딩 화면 — 궁합 5종+부모자식궁합은 실제 API 응답 대기(useEffect가 전환 전담), duration은 시각적 페이싱용 */}
         {step==="loading"&&<>
           <div className="mt">{svc.icon} {svc.name}</div>
-          <FunLoader duration={COMPAT5_MODE_MAP[svc.id]?15000:5000} onDone={COMPAT5_MODE_MAP[svc.id]?(()=>{}):onLoadingDone} type={isPhoto?"face":"saju"}/>
+          <FunLoader duration={COMPAT_MODE_MAP[svc.id]?15000:5000} onDone={COMPAT_MODE_MAP[svc.id]?(()=>{}):onLoadingDone} type={isPhoto?"face":"saju"}/>
         </>}
 
         {step==="pay"&&<>
@@ -7110,12 +7111,13 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
           {/* 💑 관상궁합 7종 — 5축 + 특화 카드는 ResultTabsBlock 내부에 통합 (별도 박스 제거됨) */}
 
           {/* 🌈 7탭 깊은 본문 + 인증서 (관상궁합 7종 풀프로세스 자료 통합) */}
-          {/* v(2026-07-08): 궁합 5종(gwansang/bff/fan/biz/enemy) — 실제 API 결과(compatResult) 있으면 이걸로 렌더, seed 가짜 로직 완전 우회 */}
-          {COMPAT5_MODE_MAP[svc.id]&&compatResult&&(()=>{
+          {/* v(2026-07-08): 궁합 5종+부모자식궁합 — 실제 API 결과(compatResult) 있으면 이걸로 렌더, seed 가짜 로직 완전 우회 */}
+          {COMPAT_MODE_MAP[svc.id]&&compatResult&&(()=>{
             const r=compatResult;
-            const p1=form.name||selectedPerson?.name||"나";
-            const p2=selectedPerson2?.name||"상대";
-            const accentMap:Record<string,string>={gwansang_compat:"#ef4444",bff_compat:"#22c55e",fan_compat:"#a855f7",biz_gwansang:"#0ea5e9",enemy_compat:"#7c3aed"};
+            const isFamilyR=svc.id==="parent_child_compat";
+            const p1=form.name||selectedPerson?.name||(isFamilyR?"자녀":"나");
+            const p2=selectedPerson2?.name||(isFamilyR?"보호자":"상대");
+            const accentMap:Record<string,string>={gwansang_compat:"#ef4444",bff_compat:"#22c55e",fan_compat:"#a855f7",biz_gwansang:"#0ea5e9",enemy_compat:"#7c3aed",parent_child_compat:"#D4AF37"};
             const accent=accentMap[svc.id]||"#D4AF37";
             const stats=[r.stats?.stat1,r.stats?.stat2,r.stats?.stat3].filter(Boolean);
             const sectionOrder:[string,string][]=[["main","핵심 궁합"],["strength","최고의 시너지"],["risk","주의할 점"],["advice","천기의 조언"]];
@@ -7163,7 +7165,7 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
             </div>;
           })()}
 
-          {["gwansang_compat","parent_child_compat","bff_compat","fan_compat","biz_gwansang","enemy_compat","pet_owner_compat"].includes(svc.id)&&!(COMPAT5_MODE_MAP[svc.id]&&compatResult)&&(()=>{
+          {["gwansang_compat","parent_child_compat","bff_compat","fan_compat","biz_gwansang","enemy_compat","pet_owner_compat"].includes(svc.id)&&!(COMPAT_MODE_MAP[svc.id]&&compatResult)&&(()=>{
             const p1=selectedPerson?.name||"본인";
             const p2=selectedPerson2?.name||"상대";
             const seed=(p1+p2).split("").reduce((s:number,c:string)=>s+c.charCodeAt(0),0);
