@@ -5411,6 +5411,9 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
   const fileRef2=useRef<any>(null);const[imgSrc2,setImgSrc2]=useState<any>(preloadResult?._imgSrc2||null);
   const fileRef3=useRef<any>(null);const[imgSrc3,setImgSrc3]=useState<any>(preloadResult?._imgSrc3||null);
   const[realAnalysis,setRealAnalysis]=useState<any>(preloadResult||null);
+  // v(2026-07-08): 궁합 5종(gwansang/bff/fan/biz/enemy) 실제 API 결과 — seed 공식 대체
+  const[compatResult,setCompatResult]=useState<any>(preloadResult?._apiResult||null);
+  const[compatErr,setCompatErr]=useState<string|null>(null);
   const[validating,setValidating]=useState(false);
   // 📝 이름 풀이 전용: 사주에 맞는 한자 picker (성+이름 2자 = 총 3자 한자 선택)
   // v665: 기록소 재진입 시 한자 picker 선택 복원 (#17 한자 picker 선택 state 풀림 fix)
@@ -5762,7 +5765,46 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
         .then(r=>r.json()).then(j=>{if(j.result)setRealAnalysis(j.result);}).catch(()=>{});
     }
   },[step,svc.id,imgSrc]);
+  // v(2026-07-08): 궁합 5종 — seed 공식 대신 실제 /api/gwansang-compat 호출
+  const COMPAT5_MODE_MAP:Record<string,string>={gwansang_compat:"couple",bff_compat:"bff",fan_compat:"fan",biz_gwansang:"business",enemy_compat:"enemy"};
+  useEffect(()=>{
+    if(step!=="loading")return;
+    const cmode=COMPAT5_MODE_MAP[svc.id];
+    if(!cmode)return;
+    if(!imgSrc||!imgSrc2)return;
+    if(compatResult||compatErr)return; // 이미 시도함(성공/실패 불문 재요청 방지)
+    let cancelled=false;
+    fetch("/api/gwansang-compat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+      imageData1:imgSrc,imageData2:imgSrc2,mediaType:"image/jpeg",
+      name1:form.name||selectedPerson?.name||"나",name2:selectedPerson2?.name||"상대",
+      mode:cmode,questions:preQ,
+    })}).then(r=>r.json()).then(j=>{
+      if(cancelled)return;
+      if(j.result)setCompatResult(j.result);
+      else setCompatErr(j.error||"분석에 실패했어요");
+    }).catch(()=>{if(!cancelled)setCompatErr("네트워크 오류가 발생했어요");});
+    return()=>{cancelled=true;};
+  },[step,svc.id,imgSrc,imgSrc2,compatResult,compatErr]);
+  // 궁합 5종 — 결과 도착 시 확정(결제 완료 상태이므로 실패해도 재시도만, 재결제 X)
+  useEffect(()=>{
+    if(step!=="loading")return;
+    if(!COMPAT5_MODE_MAP[svc.id])return;
+    if(compatErr){
+      alert(`⚠️ AI 분석 일시 오류\n\n${compatErr}\n\n결제는 이미 처리됐으니 같은 사진으로 다시 분석해주세요.\n반복되면 카카오 채널로 문의 부탁드립니다.`);
+      setCompatErr(null);
+      setStep("input");
+      return;
+    }
+    if(compatResult){
+      setStep("result");
+      const rt={total:compatResult.score,grade:compatResult.grade,chemistry_name:compatResult.chemistry_name,p1:form.name||selectedPerson?.name||"나",p2:selectedPerson2?.name||"상대",svcId:svc.id,_birth:selectedPerson?.birth,_imgSrc:imgSrc||null,_imgSrc2:imgSrc2||null,_preQ:preQ,_apiResult:compatResult,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})};
+      addHistory({icon:svc.icon,name:svc.name,svcId:svc.id,person:form.name||selectedPerson?.name||"나",person2:selectedPerson2?.name||"",person3:selectedPerson3?.name||"",date:new Date().toLocaleDateString("ko-KR"),ctx,emotion:emotionAnswers,preQuestions:preQ,resultType:rt});
+    }
+  },[step,compatResult,compatErr,svc.id]);
   function onLoadingDone(){
+    // v(2026-07-08): 궁합 5종(gwansang/bff/fan/biz/enemy)은 실제 API 응답 대기 전용 useEffect가
+    // step/result 전환·addHistory를 전담 — 여기서는 완전히 스킵 (FunLoader onDone도 no-op 처리됨)
+    if(COMPAT5_MODE_MAP[svc.id])return;
     setStep("result");
     // v300: celeb_compat 카운트 증가 (실제 완료 시점에 — history 저장과 동기화)
     if(svc.id==="celeb_compat"){
@@ -6932,10 +6974,10 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
           </>;
         })()}
 
-        {/* 재미 로딩 화면 */}
+        {/* 재미 로딩 화면 — 궁합 5종은 실제 API 응답 대기(useEffect가 전환 전담), duration은 시각적 페이싱용 */}
         {step==="loading"&&<>
           <div className="mt">{svc.icon} {svc.name}</div>
-          <FunLoader duration={5000} onDone={onLoadingDone} type={isPhoto?"face":"saju"}/>
+          <FunLoader duration={COMPAT5_MODE_MAP[svc.id]?15000:5000} onDone={COMPAT5_MODE_MAP[svc.id]?(()=>{}):onLoadingDone} type={isPhoto?"face":"saju"}/>
         </>}
 
         {step==="pay"&&<>
@@ -7068,7 +7110,60 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
           {/* 💑 관상궁합 7종 — 5축 + 특화 카드는 ResultTabsBlock 내부에 통합 (별도 박스 제거됨) */}
 
           {/* 🌈 7탭 깊은 본문 + 인증서 (관상궁합 7종 풀프로세스 자료 통합) */}
-          {["gwansang_compat","parent_child_compat","bff_compat","fan_compat","biz_gwansang","enemy_compat","pet_owner_compat"].includes(svc.id)&&(()=>{
+          {/* v(2026-07-08): 궁합 5종(gwansang/bff/fan/biz/enemy) — 실제 API 결과(compatResult) 있으면 이걸로 렌더, seed 가짜 로직 완전 우회 */}
+          {COMPAT5_MODE_MAP[svc.id]&&compatResult&&(()=>{
+            const r=compatResult;
+            const p1=form.name||selectedPerson?.name||"나";
+            const p2=selectedPerson2?.name||"상대";
+            const accentMap:Record<string,string>={gwansang_compat:"#ef4444",bff_compat:"#22c55e",fan_compat:"#a855f7",biz_gwansang:"#0ea5e9",enemy_compat:"#7c3aed"};
+            const accent=accentMap[svc.id]||"#D4AF37";
+            const stats=[r.stats?.stat1,r.stats?.stat2,r.stats?.stat3].filter(Boolean);
+            const sectionOrder:[string,string][]=[["main","핵심 궁합"],["strength","최고의 시너지"],["risk","주의할 점"],["advice","천기의 조언"]];
+            return <div style={{background:"#ffffff",borderRadius:20,overflow:"hidden",border:`1px solid ${accent}4d`,boxShadow:"0 10px 30px rgba(0,0,0,0.06)",color:"#333",marginBottom:12}}>
+              <div style={{padding:"16px 16px 8px",textAlign:"center"}}>
+                <BrandLine>AI 관상 궁합 분석</BrandLine>
+                <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang',serif",marginTop:4}}>{r.chemistry_name||svc.name}</div>
+                <div style={{display:"inline-flex",alignItems:"center",gap:8,marginTop:10,padding:"6px 16px",borderRadius:20,background:`${accent}12`,border:`1px solid ${accent}40`}}>
+                  <span style={{fontSize:20,fontWeight:900,color:accent}}>{r.score}점</span>
+                  <span style={{fontSize:12,fontWeight:700,color:accent}}>{r.grade}등급</span>
+                </div>
+              </div>
+              {stats.length>0&&<div style={{display:"flex",gap:8,padding:"14px 16px 4px"}}>
+                {stats.map((s:any,i:number)=>(
+                  <div key={i} style={{flex:1,textAlign:"center",background:"#f8f9fa",borderRadius:12,padding:"10px 6px"}}>
+                    <div style={{fontSize:16,marginBottom:2}}>{s.icon}</div>
+                    <div style={{fontSize:9,color:"#888",marginBottom:4}}>{s.label}</div>
+                    <div style={{fontSize:13,fontWeight:800,color:accent}}>{s.value}</div>
+                  </div>
+                ))}
+              </div>}
+              <div style={{padding:"12px 16px"}}>
+                <div style={{fontSize:12,fontWeight:800,color:"#333",marginBottom:6}}>👤 {p1}님 — {r.person_a?.type_name||""}</div>
+                <div style={{fontSize:11,color:"#555",lineHeight:1.85,background:"#f8f9fa",padding:"10px 14px",borderRadius:12,marginBottom:8}}>{r.person_a?.analysis||""}</div>
+                <div style={{fontSize:12,fontWeight:800,color:"#333",marginBottom:6}}>👤 {p2}님 — {r.person_b?.type_name||""}</div>
+                <div style={{fontSize:11,color:"#555",lineHeight:1.85,background:"#f8f9fa",padding:"10px 14px",borderRadius:12}}>{r.person_b?.analysis||""}</div>
+              </div>
+              {sectionOrder.map(([key,fallbackTitle])=>{
+                const sec=r.sections?.[key];
+                if(!sec)return null;
+                return <div key={key} style={{padding:"12px 16px"}}>
+                  <div style={{fontSize:12,fontWeight:800,color:"#333",marginBottom:6}}>✦ {sec.title||fallbackTitle}</div>
+                  <div style={{fontSize:11,color:"#555",lineHeight:1.85,background:"#f8f9fa",padding:"10px 14px",borderRadius:12}}>{sec.body||""}</div>
+                </div>;
+              })}
+              {r.one_liner&&<div style={{margin:"14px 16px",borderRadius:16,padding:1.5,backgroundImage:"linear-gradient(135deg,#ffb8b8,#ffd9a8,#b8e0c8,#bcd6f0,#cdc5e8)"}}>
+                <div style={{background:"#fafbfd",borderRadius:14.5,padding:"16px 18px",textAlign:"center"}}>
+                  <div style={{fontSize:12,color:"#1A3C32",fontWeight:700,lineHeight:1.75,wordBreak:"keep-all" as any}}>"{r.one_liner}"</div>
+                </div>
+              </div>}
+              <div style={{display:"flex",justifyContent:"space-between",padding:"10px 16px 12px",marginTop:8,fontSize:9,color:"#aaa",fontWeight:600,letterSpacing:0.3,borderTop:"1px solid #f0f0f0"}}>
+                <span>{`#${svc.name.replace(/\s/g,"")} #${p1} #${p2} #${r.grade}등급`}</span>
+                <span style={{fontWeight:600}}>🌐 천기.kr</span>
+              </div>
+            </div>;
+          })()}
+
+          {["gwansang_compat","parent_child_compat","bff_compat","fan_compat","biz_gwansang","enemy_compat","pet_owner_compat"].includes(svc.id)&&!(COMPAT5_MODE_MAP[svc.id]&&compatResult)&&(()=>{
             const p1=selectedPerson?.name||"본인";
             const p2=selectedPerson2?.name||"상대";
             const seed=(p1+p2).split("").reduce((s:number,c:string)=>s+c.charCodeAt(0),0);

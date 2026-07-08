@@ -76,6 +76,32 @@ const CHAR1_PROMPT = `두 사람의 얼굴 특징(코·눈·입·이마·턱)만
 ⚠️ 이름·관계·모드는 이 단계에서 완전 무시. 사진만 본다.
 JSON만: {"type_a": "관상유형명", "type_b": "관상유형명"}`;
 
+// v(2026-07-08): 사전질문 답변 → Call-2 프롬프트 주입 (5종 궁합: rel/focus/pain/type)
+function buildPreQRule(questions: Record<string, unknown>, mode: string): string {
+  const q = questions || {};
+  const rel = typeof q.rel === "string" ? q.rel : "";
+  const focus = Array.isArray(q.focus) ? (q.focus as string[]).filter((s) => typeof s === "string") : [];
+  const pain = typeof q.pain === "string" ? q.pain : "";
+  const type = typeof q.type === "string" ? q.type : "";
+  if (!rel && focus.length === 0 && !pain && !type) return "";
+
+  const lines: string[] = [];
+  if (rel) lines.push(`- 관계: "${rel}"`);
+  if (type) lines.push(`- 최애 종류: "${type}"`);
+  if (focus.length > 0) lines.push(`- 가장 궁금한 것: ${focus.map((f) => `"${f}"`).join(", ")}`);
+  if (pain) lines.push(`- 힘든 점: "${pain}"`);
+
+  let extra = "";
+  if (mode === "enemy" && pain) {
+    extra = `\n⚠️ 특히 "힘든 점"(${pain})은 sections.main 또는 sections.risk 본문에서 명시적으로 다뤄라 — 사용자가 말한 구체적 어려움을 콕 짚어 언급할 것 (일반론으로 얼버무리지 말 것).`;
+  }
+  if (focus.length > 0) {
+    extra += `\n⚠️ "가장 궁금한 것"에 나온 항목들을 sections 본문 전반에 우선적으로 반영 — 사용자가 고른 항목과 무관한 일반론 위주로 쓰지 말 것.`;
+  }
+
+  return `\n[사용자 사전질문 답변 — 반드시 반영]\n${lines.join("\n")}${extra}\n`;
+}
+
 async function callGemini(body: string): Promise<Response> {
   const MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-flash-lite"];
   let res: Response | null = null;
@@ -106,7 +132,7 @@ export const maxDuration = 60;
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { imageData1, imageData2, mediaType = "image/jpeg", name1 = "A", name2 = "B", mode = "couple" } = body;
+    const { imageData1, imageData2, mediaType = "image/jpeg", name1 = "A", name2 = "B", mode = "couple", questions = {} } = body;
     if (!imageData1 || !imageData2) return NextResponse.json({ error: "두 사람의 사진이 필요합니다." }, { status: 400 });
 
     const b64_1 = imageData1.includes(",") ? imageData1.split(",")[1] : imageData1;
@@ -141,9 +167,10 @@ export async function POST(request: NextRequest) {
 
     // === CALL 2: 전체 궁합 분석 (type_name 고정, temperature 0.7) ===
     const fixedRule = (typeA && typeB) ? `⚠️ person_a.type_name은 반드시 "${typeA}", person_b.type_name은 반드시 "${typeB}". 절대 변경 불가.\n\n` : "";
-    console.log(`[gwansang-compat] Call-2 fixedRule injected=${!!(typeA && typeB)}`);
+    const preQRule = buildPreQRule(questions, mode);
+    console.log(`[gwansang-compat] Call-2 fixedRule injected=${!!(typeA && typeB)} preQ_ok=${!!preQRule}`);
     const reqBody = JSON.stringify({
-      systemInstruction: { parts: [{ text: fixedRule + SYSTEM_PROMPT }] },
+      systemInstruction: { parts: [{ text: fixedRule + preQRule + SYSTEM_PROMPT }] },
       contents: [{ parts: [
         { inlineData: { mimeType: mType, data: b64_1 } },
         { inlineData: { mimeType: mType, data: b64_2 } },
