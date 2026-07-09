@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import PAST_LIFE_DB from "../../public/past_life_types.json";
 import { enrichSajuText } from "@/lib/saju-gloss";
 import { ResultCard, formatPersonInfoLine, formatTestDateLine, PersonInfo } from "./ResultCard";
+import { commitPaymentDeduction } from "@/lib/payment-helpers";
 
 // ─── 공용 mini 컴포넌트 ────────────────────────────────────────
 function CloseBtn({onClose}:{onClose:()=>void}){
@@ -209,6 +210,7 @@ export function MonthlyModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedI
   const[selMonth,setSelMonth]=useState(preloadResult?.selMonth||new Date().getMonth()+1);
   const[openMonths,setOpenMonths]=useState<Set<number>>(new Set());
   const[showPay,setShowPay]=useState(false);
+  const[pendingDeduction,setPendingDeduction]=useState<any>(null); // v(2026-07-09)
   const[extraPay,setExtraPay]=useState<number|null>(null);
   const[dbData,setDbData]=useState<{gwe_number:number,months:{month:number,content:string}[]}|null>(preloadResult?.dbData||null);
   // DB 토정비결 fetch (loading 진입 시) — 월별운세 통합 데이터로 활용
@@ -232,6 +234,7 @@ export function MonthlyModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedI
   }
   function onLoaded(){
     setStep("result");
+    commitPaymentDeduction(pendingDeduction); setPendingDeduction(null); // v(2026-07-09): 결과 확정 시점 차감
     addHistory({icon:"🌙",name:"월별 운세",svcId:"saju_monthly",person:nm,result:`${selMonth}월 ${cur.grade}`,date:new Date().toLocaleDateString("ko-KR"),preQuestions:{focus:ans1,area:ans2},resultType:{_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})}});
   }
   function buyExtra(m:number){
@@ -283,7 +286,7 @@ export function MonthlyModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedI
           {ans1&&<div style={{fontSize:11,color:"var(--white)",marginBottom:3}}>📅 {ans1}</div>}
           {ans2&&<div style={{fontSize:11,color:"var(--white)"}}>🎯 {ans2}</div>}
         </div>
-        {PayStepComp?<PayStepComp price="980원" onPay={()=>setShowPay(true)} onBack={()=>setStep("q2")} loading={false} svcId="saju_monthly"/>:<>
+        {PayStepComp?<PayStepComp price="980원" onPay={(_m,intent)=>{if(intent)setPendingDeduction(intent);setShowPay(true);}} onBack={()=>setStep("q2")} loading={false} svcId="saju_monthly" deferred/>:<>
           <button className="btn btn-p" onClick={()=>setShowPay(true)}>결제하고 결과보기 →</button>
           <button className="btn btn-g" onClick={()=>setStep("q2")}>이전</button>
         </>}
@@ -439,6 +442,7 @@ export function NewYearModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedI
   const[ans2,setAns2]=useState<string>(preloadResult?.ans2||"");
   const[openMonths,setOpenMonths]=useState<Set<number>>(new Set());
   const[showPay,setShowPay]=useState(false);
+  const[pendingDeduction,setPendingDeduction]=useState<any>(null); // v(2026-07-09)
   const[dbData,setDbData]=useState<{gwe_number:number,months:{month:number,content:string}[]}|null>(preloadResult?.dbData||null);
   // DB 토정비결 fetch (신년 12개월 통합 데이터로 활용)
   useEffect(()=>{
@@ -456,6 +460,7 @@ export function NewYearModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedI
   function goResult(){setStep("loading");}
   function onLoaded(){
     setStep("result");
+    commitPaymentDeduction(pendingDeduction); setPendingDeduction(null); // v(2026-07-09): 결과 확정 시점 차감
     addHistory({icon:"🎋",name:"신년 운세",svcId:"newyear",person:nm,result:`${yr}년 신년 운세${dbData?` · 토정 #${dbData.gwe_number}괘`:""}`,date:new Date().toLocaleDateString("ko-KR"),preQuestions:{focus:ans1,need:ans2},resultType:{_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})}});
   }
 
@@ -503,7 +508,7 @@ export function NewYearModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedI
           {ans1&&<div style={{fontSize:11,color:"var(--white)",marginBottom:3}}>🎯 집중: {ans1}</div>}
           {ans2&&<div style={{fontSize:11,color:"var(--white)"}}>🙏 필요: {ans2}</div>}
         </div>
-        {PayStepComp?<PayStepComp price="1,980원" onPay={()=>setShowPay(true)} onBack={()=>setStep("q2")} loading={false} svcId="newyear"/>:<>
+        {PayStepComp?<PayStepComp price="1,980원" onPay={(_m,intent)=>{if(intent)setPendingDeduction(intent);setShowPay(true);}} onBack={()=>setStep("q2")} loading={false} svcId="newyear" deferred/>:<>
           <button className="btn btn-p" onClick={()=>setShowPay(true)}>결제하고 결과보기 →</button>
           <button className="btn btn-g" onClick={()=>setStep("q2")}>이전</button>
         </>}
@@ -666,12 +671,14 @@ export function TojeongModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedI
   const[ans2,setAns2]=useState<string>(preloadResult?.ans2||"");
   const[openMonths,setOpenMonths]=useState<Set<number>>(new Set());
   const[showPay,setShowPay]=useState(false);
+  const[pendingDeduction,setPendingDeduction]=useState<any>(null); // v(2026-07-09)
   const[dbData,setDbData]=useState<{gwe_number:number,months:{month:number,content:string}[]}|null>(preloadResult?.dbData||null);
   const[dbErr,setDbErr]=useState<string|null>(null);
 
   function goResult(){setStep("loading");}
   function onLoaded(){
     setStep("result");
+    commitPaymentDeduction(pendingDeduction); setPendingDeduction(null); // v(2026-07-09): 결과 확정 시점 차감
     addHistory({icon:"📜",name:"토정비결",svcId:"tojeong",person:nm,result:`${yr}년 ${dbData?.gwe_number?`#${dbData.gwe_number}괘`:GWAE_DATA.name}`,date:new Date().toLocaleDateString("ko-KR"),preQuestions:{focus:ans1,age:ans2},resultType:{_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})}});
   }
   // DB 토정비결 데이터 fetch (loading → result 전환 시)
@@ -732,7 +739,7 @@ export function TojeongModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedI
           <div style={{fontSize:10,color:"var(--gold)",letterSpacing:1,marginBottom:6}}>입력 내용</div>
           {ans2&&<div style={{fontSize:11,color:"var(--white)"}}>👤 {ans2}</div>}
         </div>
-        {PayStepComp?<PayStepComp price="1,980원" onPay={()=>setShowPay(true)} onBack={()=>setStep("q2")} loading={false} svcId="tojeong"/>:<>
+        {PayStepComp?<PayStepComp price="1,980원" onPay={(_m,intent)=>{if(intent)setPendingDeduction(intent);setShowPay(true);}} onBack={()=>setStep("q2")} loading={false} svcId="tojeong" deferred/>:<>
           <button className="btn btn-p" onClick={()=>setShowPay(true)}>결제하고 결과보기 →</button>
           <button className="btn btn-g" onClick={()=>setStep("q2")}>이전</button>
         </>}
@@ -950,6 +957,7 @@ export function PastLifeModal({onClose,cart,setCart,onGoShop,addHistory,isLogged
   const[ans1,setAns1]=useState<string>(preloadResult?.ans1||"");
   const[ans2,setAns2]=useState<string>(preloadResult?.ans2||"");
   const[showPay,setShowPay]=useState(false);
+  const[pendingDeduction,setPendingDeduction]=useState<any>(null); // v(2026-07-09)
   const[showAllTypes,setShowAllTypes]=useState(false);
   // v611: 4탭 인덱스 (0:인연+닮은영혼 / 1:카르마 / 2:이번생 / 3:영혼결+천기한마디)
   const[pastTab,setPastTab]=useState(0);
@@ -966,6 +974,7 @@ export function PastLifeModal({onClose,cart,setCart,onGoShop,addHistory,isLogged
   function goResult(){setStep("loading");}
   function onLoaded(){
     setStep("result");
+    commitPaymentDeduction(pendingDeduction); setPendingDeduction(null); // v(2026-07-09): 결과 확정 시점 차감
     const typeIdx=ALL_TYPES.indexOf(pl)+1;
     addHistory({icon:"⏳",name:"전생 운세",svcId:"past_life",person:nm,result:`${plCompat.name}`,date:new Date().toLocaleDateString("ko-KR"),resultType:{character_type:typeIdx,name:pl.name,ohaeng:pl.ohaeng,emoji:pl.emoji,ans1,ans2,_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})},preQuestions:{curious:ans1,drawn:ans2}});
   }
@@ -1023,7 +1032,7 @@ export function PastLifeModal({onClose,cart,setCart,onGoShop,addHistory,isLogged
         <div className="mt">⏳ 전생 운세</div>
         <div className="ms">1회 분석 980원</div>
         {helpers?.PayStepComp
-          ?<helpers.PayStepComp price="980원" onPay={()=>setShowPay(true)} onBack={()=>setStep("q2")} loading={false} svcId="past_life"/>
+          ?<helpers.PayStepComp price="980원" onPay={(_m,intent)=>{if(intent)setPendingDeduction(intent);setShowPay(true);}} onBack={()=>setStep("q2")} loading={false} svcId="past_life" deferred/>
           :<>
             <button className="btn btn-p" onClick={()=>setShowPay(true)}>980원 결제하고 결과 보기 →</button>
             <button className="btn btn-g" onClick={()=>setStep("q2")}>이전</button>
@@ -1520,11 +1529,13 @@ export function DaeunRichModal({onClose,cart,setCart,onGoShop,addHistory,isLogge
   const[ans1,setAns1]=useState<string>(preloadResult?.ans1||"");
   const[ans2,setAns2]=useState<string>(preloadResult?.ans2||"");
   const[showPay,setShowPay]=useState(false);
+  const[pendingDeduction,setPendingDeduction]=useState<any>(null); // v(2026-07-09)
   const[selectedPeriod,setSelectedPeriod]=useState<any>(null);
 
   function goResult(){setStep("loading");}
   function onLoaded(){
     setStep("result");
+    commitPaymentDeduction(pendingDeduction); setPendingDeduction(null); // v(2026-07-09): 결과 확정 시점 차감
     addHistory({icon:"🔄",name:"대운 해설",svcId:"daeun",person:nm,result:`${curDaeunStart}~${curDaeunEnd}세 대운`,date:new Date().toLocaleDateString("ko-KR"),preQuestions:{focus:ans1,feel:ans2},resultType:{_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})}});
   }
 
@@ -1578,7 +1589,7 @@ export function DaeunRichModal({onClose,cart,setCart,onGoShop,addHistory,isLogge
           {ans1&&<div style={{fontSize:11,color:"var(--white)",marginBottom:3}}>🎯 {ans1}</div>}
           {ans2&&<div style={{fontSize:11,color:"var(--white)"}}>💭 {ans2}</div>}
         </div>
-        {PayStepComp?<PayStepComp price="980원" onPay={()=>setShowPay(true)} onBack={()=>setStep("q2")} loading={false} svcId="daeun"/>:<>
+        {PayStepComp?<PayStepComp price="980원" onPay={(_m,intent)=>{if(intent)setPendingDeduction(intent);setShowPay(true);}} onBack={()=>setStep("q2")} loading={false} svcId="daeun" deferred/>:<>
           <button className="btn btn-p" onClick={()=>setShowPay(true)}>결제하고 결과보기 →</button>
           <button className="btn btn-g" onClick={()=>setStep("q2")}>이전</button>
         </>}
@@ -1713,6 +1724,7 @@ export function YearlyRichModal({onClose,cart,setCart,onGoShop,addHistory,isLogg
   const[ans1,setAns1]=useState<string>(preloadResult?.ans1||"");
   const[ans2,setAns2]=useState<string>(preloadResult?.ans2||"");
   const[showPay,setShowPay]=useState(false);
+  const[pendingDeduction,setPendingDeduction]=useState<any>(null); // v(2026-07-09)
   const[targetYear,setTargetYear]=useState(preloadResult?.targetYear||curYear);
   const[extraPaid,setExtraPaid]=useState<number[]>(preloadResult?.extraPaid||[]);
   const[extraPay,setExtraPay]=useState<number|null>(null);
@@ -1720,6 +1732,7 @@ export function YearlyRichModal({onClose,cart,setCart,onGoShop,addHistory,isLogg
   function goResult(){setStep("loading");}
   function onLoaded(){
     setStep("result");
+    commitPaymentDeduction(pendingDeduction); setPendingDeduction(null); // v(2026-07-09): 결과 확정 시점 차감
     addHistory({icon:"🌅",name:"연도별 운세",svcId:"yearly_unse",person:nm,result:`${targetYear}년 운세`,date:new Date().toLocaleDateString("ko-KR"),preQuestions:{year:ans1,area:ans2},resultType:{_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})}});
   }
   function buyExtra(y:number){setExtraPay(y);setShowPay(true);}
@@ -1785,7 +1798,7 @@ export function YearlyRichModal({onClose,cart,setCart,onGoShop,addHistory,isLogg
           <div style={{fontSize:11,color:"var(--white)",marginBottom:3}}>📅 {targetYear}년</div>
           {ans2&&<div style={{fontSize:11,color:"var(--white)"}}>🎯 {ans2}</div>}
         </div>
-        {PayStepComp?<PayStepComp price="980원" onPay={()=>setShowPay(true)} onBack={()=>setStep("q2")} loading={false} svcId="yearly_unse"/>:<>
+        {PayStepComp?<PayStepComp price="980원" onPay={(_m,intent)=>{if(intent)setPendingDeduction(intent);setShowPay(true);}} onBack={()=>setStep("q2")} loading={false} svcId="yearly_unse" deferred/>:<>
           <button className="btn btn-p" onClick={()=>setShowPay(true)}>결제하고 결과보기 →</button>
           <button className="btn btn-g" onClick={()=>setStep("q2")}>이전</button>
         </>}
