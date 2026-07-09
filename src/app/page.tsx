@@ -11041,6 +11041,12 @@ function FaceReadingModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,o
                 <div>{formatPersonInfoLine({name:nm,birth:selectedPerson?.birth,time:selectedPerson?.time,calendar:selectedPerson?.calendar,gender:selectedPerson?.gender})}</div>
                 <div style={{color:"#aaa"}}>{formatTestDateLine(preloadResult?._testDate)}</div>
               </div>
+              {/* v(2026-07-09): 사전질문 focus 반영 배너 — "전체 다 알려줘!" 선택 시엔 특정 초점이 없으니 생략 */}
+              {(()=>{
+                const _fq=Array.isArray(questions?.focus)?questions.focus.filter((f:string)=>f&&f!=="전체 다 알려줘!"):[];
+                if(_fq.length===0)return null;
+                return <div style={{marginTop:10,fontSize:11,color:"#B8942E",fontWeight:700,background:"#fffbe9",borderRadius:8,padding:"8px 11px",lineHeight:1.6,border:"1px solid #fde68a",textAlign:"center",wordBreak:"keep-all" as any}}>🎯 <strong>{_fq.join(" · ")}</strong> 영역에 집중해서 분석했어요.</div>;
+              })()}
             </div>
 
             {/* 스캔 비주얼 (업로드한 사진) — 원본 비율 유지 (사용자 요청) */}
@@ -19421,7 +19427,9 @@ function SajuModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onOp
 
   // ━━━ RESULT ━━━
   if(step==="result"&&sajuData){
-    const q1Arr=preQ.focus;const q1=Array.isArray(q1Arr)?q1Arr[0]:(q1Arr||"");
+    const q1Arr=preQ.focus;
+    // v(2026-07-09): 다중선택인데 첫 항목만 보여주던 버그 fix — 선택한 항목 전부 표시("전체 다 궁금해요!" 제외)
+    const q1=Array.isArray(q1Arr)?q1Arr.filter((f:string)=>f&&f!=="전체 다 궁금해요!").join(" · "):(q1Arr||"");
     const q2=preQ.stage||"";const q3=preQ.wish||"";
     return(
       <div className="ov"><div className="md"><div className="hd"/>
