@@ -18375,6 +18375,8 @@ function TarotSpreadModal({svcId,onClose,cart,setCart,onGoShop,isLoggedIn,onLogi
   // v287: 흐름 재배치 — 인물 선택 후 → spread(카드 먼저) → questions → pay
   const[step,setStep]=useState<"info"|"questions"|"spread"|"pay"|"loading"|"result">(savedResult?"result":(selectedPerson?"spread":"info"));
   const[payLoading,setPayLoading]=useState(false);
+  // v(2026-07-09): 캐시/쿠폰/이용권 차감을 결과 확정 후로 지연
+  const[pendingDeduction,setPendingDeduction]=useState<any>(null);
   const[preQ,setPreQ]=useState<any>(savedResult?.preQ||{});
   // v647: 결제창 이전 → 사전질문 마지막 페이지 + 답 유지
   const[preQStartIdx,setPreQStartIdx]=useState(0);
@@ -18418,6 +18420,9 @@ function TarotSpreadModal({svcId,onClose,cart,setCart,onGoShop,isLoggedIn,onLogi
         setCards(drawn);
         setTimeout(()=>{
           setStep("result");
+          // v(2026-07-09): 결정론적 콘텐츠라 항상 성공이지만, 원칙 통일을 위해 완료 확인 시점에서 차감 확정
+          commitPaymentDeduction(pendingDeduction);
+          setPendingDeduction(null);
           try{localStorage.setItem(todayKey,JSON.stringify({done:true,preQ,selectedCards,cards:drawn}));}catch{}
           const goodC=drawn.filter(x=>x.isGood).length;
           // v648: 결과 화면이 cards[i].card.* 접근하므로 card 객체 전체 보존. preQ도 함께 저장 (savedResult.preQ 복원용)
@@ -18431,7 +18436,7 @@ function TarotSpreadModal({svcId,onClose,cart,setCart,onGoShop,isLoggedIn,onLogi
   const goodCount=cards.filter(x=>x.isGood).length;
   const isGood=goodCount>=Math.ceil(needed/2);
 
-  function pay(){setPayLoading(true);setTimeout(()=>{setPayLoading(false);setShowPayDone(true);},1600);}
+  function pay(_method?:string,deductionIntent?:any){if(deductionIntent)setPendingDeduction(deductionIntent);setPayLoading(true);setTimeout(()=>{setPayLoading(false);setShowPayDone(true);},1600);}
   function onPayDone(){setShowPayDone(false);setStep("loading");}
 
   // ━━━ INFO ━━━
@@ -18582,7 +18587,7 @@ function TarotSpreadModal({svcId,onClose,cart,setCart,onGoShop,isLoggedIn,onLogi
           </div>
         </div>
         {/* v647: 결제창 이전 → 사전질문 마지막 페이지로 */}
-        <PayStepComp price="980원" onPay={pay} onBack={()=>{const totalQs=(PRE_Q_CONFIG[svcId]||[]).length;setPreQStartIdx(Math.max(0,totalQs-1));setStep("questions");}} loading={payLoading} svcId={svcId}/>
+        <PayStepComp price="980원" onPay={pay} onBack={()=>{const totalQs=(PRE_Q_CONFIG[svcId]||[]).length;setPreQStartIdx(Math.max(0,totalQs-1));setStep("questions");}} loading={payLoading} svcId={svcId} deferred/>
         {showPayDone&&<PayDonePopup svc={{id:svcId,name:cfg.name}} ctx={{}} cart={cart} setCart={setCart} onClose={onPayDone} onGoShop={()=>{setShowPayDone(false);onClose();onGoShop();}}/>}
       </div></div>
     );
