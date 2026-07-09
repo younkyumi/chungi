@@ -13004,29 +13004,35 @@ function NumerologyModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,on
                     <div style={{fontSize:9,color:theme.hint,textAlign:"center",lineHeight:1.6}}>이름 클릭 시 네이버 검색</div>
                   </div>;
                 })()}
-                {/* 분기별 기운 탭 — months_h1 + h2 */}
-                {cur.isMonths&&<>
-                  {r.months_h1&&<div style={{marginBottom:12,background:"rgba(255,255,255,0.04)",padding:"14px 16px",borderRadius:12,borderLeft:`3px solid ${theme.accent2}`}}>
-                    <div style={{color:theme.accent2,fontSize:11.5,fontWeight:800,marginBottom:8}}>🌠 2026 중반기 (5~8월)</div>
-                    {r.months_h1.map((m:any)=><div key={m.m} style={{background:"rgba(255,255,255,0.03)",border:`1px solid ${theme.soft}`,borderRadius:10,padding:"10px 12px",marginBottom:12}}>
-                      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:3,gap:6,flexWrap:"wrap"}}>
-                        <span style={{fontSize:11,color:theme.accent2,fontWeight:800}}>{m.m}</span>
-                        <span style={{fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:10,background:theme.soft,color:theme.accent}}>주파수 {m.rate}% · {m.label}</span>
-                      </div>
-                      <div style={{fontSize:11,color:theme.text,lineHeight:1.6}}>{m.guide}</div>
-                    </div>)}
-                  </div>}
-                  {r.months_h2&&<div style={{background:"rgba(255,255,255,0.04)",padding:"14px 16px",borderRadius:12,borderLeft:`3px solid ${theme.accent}`}}>
-                    <div style={{color:theme.accent2,fontSize:11.5,fontWeight:800,marginBottom:8}}>🌠 2026 하반기 (9~12월)</div>
-                    {r.months_h2.map((m:any)=><div key={m.m} style={{background:"rgba(255,255,255,0.03)",border:`1px solid ${theme.soft}`,borderRadius:10,padding:"10px 12px",marginBottom:12}}>
-                      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:3,gap:6,flexWrap:"wrap"}}>
-                        <span style={{fontSize:11,color:theme.accent2,fontWeight:800}}>{m.m}</span>
-                        <span style={{fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:10,background:theme.soft,color:theme.accent}}>주파수 {m.rate}% · {m.label}</span>
-                      </div>
-                      <div style={{fontSize:11,color:theme.text,lineHeight:1.6}}>{m.guide}</div>
-                    </div>)}
-                  </div>}
-                </>}
+                {/* 분기별 기운 탭 — months_h1 + h2. v(2026-07-09): 지난 달 자동 숨김 (오늘 날짜 기준) */}
+                {cur.isMonths&&(()=>{
+                  const _curM=new Date().getMonth()+1;
+                  const _futureH1=Array.isArray(r.months_h1)?r.months_h1.filter((m:any)=>parseInt(m.m)>=_curM):[];
+                  const _futureH2=Array.isArray(r.months_h2)?r.months_h2.filter((m:any)=>parseInt(m.m)>=_curM):[];
+                  return<>
+                    {_futureH1.length>0&&<div style={{marginBottom:12,background:"rgba(255,255,255,0.04)",padding:"14px 16px",borderRadius:12,borderLeft:`3px solid ${theme.accent2}`}}>
+                      <div style={{color:theme.accent2,fontSize:11.5,fontWeight:800,marginBottom:8}}>🌠 2026 중반기 (5~8월)</div>
+                      {_futureH1.map((m:any)=><div key={m.m} style={{background:"rgba(255,255,255,0.03)",border:`1px solid ${theme.soft}`,borderRadius:10,padding:"10px 12px",marginBottom:12}}>
+                        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:3,gap:6,flexWrap:"wrap"}}>
+                          <span style={{fontSize:11,color:theme.accent2,fontWeight:800}}>{m.m}</span>
+                          <span style={{fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:10,background:theme.soft,color:theme.accent}}>주파수 {m.rate}% · {m.label}</span>
+                        </div>
+                        <div style={{fontSize:11,color:theme.text,lineHeight:1.6}}>{m.guide}</div>
+                      </div>)}
+                    </div>}
+                    {_futureH2.length>0&&<div style={{background:"rgba(255,255,255,0.04)",padding:"14px 16px",borderRadius:12,borderLeft:`3px solid ${theme.accent}`}}>
+                      <div style={{color:theme.accent2,fontSize:11.5,fontWeight:800,marginBottom:8}}>🌠 2026 하반기 (9~12월)</div>
+                      {_futureH2.map((m:any)=><div key={m.m} style={{background:"rgba(255,255,255,0.03)",border:`1px solid ${theme.soft}`,borderRadius:10,padding:"10px 12px",marginBottom:12}}>
+                        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:3,gap:6,flexWrap:"wrap"}}>
+                          <span style={{fontSize:11,color:theme.accent2,fontWeight:800}}>{m.m}</span>
+                          <span style={{fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:10,background:theme.soft,color:theme.accent}}>주파수 {m.rate}% · {m.label}</span>
+                        </div>
+                        <div style={{fontSize:11,color:theme.text,lineHeight:1.6}}>{m.guide}</div>
+                      </div>)}
+                    </div>}
+                    {_futureH1.length===0&&_futureH2.length===0&&<div style={{textAlign:"center",padding:"20px 12px",color:theme.hint,fontSize:11}}>올해 남은 달의 기운을 모두 확인하셨어요 ✨</div>}
+                  </>;
+                })()}
                 {/* v554: 주파수 깨우기 탭 — 재구성: 루틴 → 6박스 그리드 → 천기의 한마디 (사용자 요청) */}
                 {cur.isRoutine&&<>
                   {/* 1. 매일의 주파수 동기화 루틴 */}
