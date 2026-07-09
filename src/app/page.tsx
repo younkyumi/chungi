@@ -14755,6 +14755,8 @@ function LoveCompatModal({svc,onClose,isLoggedIn,cart,setCart,onGoShop,addHistor
   const hasBothPersons=!!sp1.name&&!!sp2.name;
   const[result,setResult]=useState<any>(preloadResult||null);
   const[showPayDone,setShowPayDone]=useState(false);
+  // v(2026-07-09): 캐시/쿠폰/이용권 차감을 분석 완료(analyze() 호출) 확인 후로 지연
+  const[pendingDeduction,setPendingDeduction]=useState<any>(null);
   const[mode,setMode]=useState<"couple"|"bff">(preloadResult?.mode||"couple");
   const[preFocus,setPreFocus]=useState<string|null>(null);
   const[loadPct,setLoadPct]=useState(0);
@@ -14774,10 +14776,13 @@ function LoveCompatModal({svc,onClose,isLoggedIn,cart,setCart,onGoShop,addHistor
     const testDate=new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
     setResult({score,scores,msg:finalMsg,mode,focus:preFocus,me,partner,_testDate:testDate});
     setStep("result");
+    // v(2026-07-09): 결정론적 콘텐츠라 항상 성공이지만, 원칙 통일을 위해 완료 확인 시점에서 차감 확정
+    commitPaymentDeduction(pendingDeduction);
+    setPendingDeduction(null);
     addHistory({icon:mode==="couple"?"💌":"👫",name:"연애운·궁합",svcId:"love",person:me.name,person2:partner.name,result:`${me.name}${mode==="couple"?"♥":"&"}${partner.name} ${score}점`,date:new Date().toLocaleDateString("ko-KR"),resultType:{score,scores,msg:finalMsg,mode,focus:preFocus,me,partner,_testDate:testDate},ctx:{focus:preFocus,mode}});
   }
 
-  function onPay(){setLoading(true);setTimeout(()=>{setLoading(false);setShowPayDone(true);},1800);}
+  function onPay(_method?:string,deductionIntent?:any){if(deductionIntent)setPendingDeduction(deductionIntent);setLoading(true);setTimeout(()=>{setLoading(false);setShowPayDone(true);},1800);}
 
   // v270: 분석중(loading) 게이지 진행 → 끝나면 analyze 호출
   useEffect(()=>{
@@ -14984,7 +14989,7 @@ function LoveCompatModal({svc,onClose,isLoggedIn,cart,setCart,onGoShop,addHistor
 
         {/* v270: 결제 화면 */}
         {step==="pay"&&<>
-          <PayStepComp price={svc?.price||"1,980원"} onPay={onPay} onBack={()=>setStep("preQ")} loading={loading} svcId="love"/>
+          <PayStepComp price={svc?.price||"1,980원"} onPay={onPay} onBack={()=>setStep("preQ")} loading={loading} svcId="love" deferred/>
         </>}
 
         {/* v270: 분석중 화면 */}
