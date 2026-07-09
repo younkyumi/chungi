@@ -2704,6 +2704,8 @@ function PawdongModal({onClose, cart, setCart, onGoShop, addHistory, isLoggedIn,
   const[loadPct,setLoadPct]=useState(0);
   const[loadMsgIdx,setLoadMsgIdx]=useState(0);
   const[showPayDone,setShowPayDone]=useState(false); // v272: 결제완료 팝업
+  // v(2026-07-09): 캐시/쿠폰/이용권 차감을 분석 완료(analyze() 호출) 확인 후로 지연
+  const[pendingDeduction,setPendingDeduction]=useState<any>(null);
   const[form,setForm]=useState({
     name:preloadResult?.name||selectedPerson?.name||"",
     year:_spBirth[0]||"",month:_spBirth[1]||"",day:_spBirth[2]||"",
@@ -2730,6 +2732,9 @@ function PawdongModal({onClose, cart, setCart, onGoShop, addHistory, isLoggedIn,
   const OHAENG_COLOR={"목(木)":"var(--jade)","화(火)":"var(--coral)","토(土)":"#C8834A","금(金)":"var(--gold)","수(水)":"var(--violet)"};
 
   function analyze(){
+    // v(2026-07-09): 결정론적 콘텐츠라 항상 성공이지만, 원칙 통일을 위해 완료 확인 시점에서 차감 확정
+    commitPaymentDeduction(pendingDeduction);
+    setPendingDeduction(null);
     // v267: setTimeout 제거 — loading screen이 시간 통제 (3.5초 게이지)
     // 사주 분석 → 일간 오행 + 부족 오행 도출
     const birth=`${form.year}-${String(form.month).padStart(2,"0")}-${String(form.day).padStart(2,"0")}`;
@@ -3009,7 +3014,7 @@ function PawdongModal({onClose, cart, setCart, onGoShop, addHistory, isLoggedIn,
         {step==="pay"&&<>
           <div className="mt">🌊 파동 성명학</div>
           <div className="ms">이름에 숨겨진 파동 에너지 분석 · 4,800원</div>
-          <PayStepComp price="4,800원" onPay={()=>{setLoading(true);setTimeout(()=>{setLoading(false);setShowPayDone(true);},1600);}} onBack={()=>setStep("preQ")} loading={loading} svcId="pawdong"/>
+          <PayStepComp price="4,800원" onPay={(_m?:string,deductionIntent?:any)=>{if(deductionIntent)setPendingDeduction(deductionIntent);setLoading(true);setTimeout(()=>{setLoading(false);setShowPayDone(true);},1600);}} onBack={()=>setStep("preQ")} loading={loading} svcId="pawdong" deferred/>
           {showPayDone&&<PayDonePopup svc={{id:"pawdong",name:"파동 성명학"}} ctx={{}} cart={cart} setCart={setCart} onClose={()=>{setShowPayDone(false);setStep("loading");}} onGoShop={onGoShop}/>}
         </>}
 
@@ -4372,6 +4377,8 @@ function DoljabiSimModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,on
   const[step,setStep]=useState<"intro"|"questions"|"pay"|"loading"|"result">(preloadResult?"result":(_spHasBirth?"questions":"intro"));
   const[payLoading,setPayLoading]=useState(false);
   const[showPayDone,setShowPayDone]=useState(false);
+  // v(2026-07-09): 캐시/쿠폰/이용권 차감을 분석 완료(애니메이션 시퀀스 끝, 결과 확정) 확인 후로 지연
+  const[pendingDeduction,setPendingDeduction]=useState<any>(null);
   const[momWish,setMomWish]=useState(preloadResult?.momWish||"");
   const[dadWish,setDadWish]=useState(preloadResult?.dadWish||"");
   const[result,setResult]=useState<any>(preloadResult||null);
@@ -4411,6 +4418,9 @@ function DoljabiSimModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,on
       },10800),
       setTimeout(()=>{
         setStep("result");
+        // v(2026-07-09): 결정론적 콘텐츠라 항상 성공이지만, 원칙 통일을 위해 완료 확인 시점에서 차감 확정
+        commitPaymentDeduction(pendingDeduction);
+        setPendingDeduction(null);
         addHistory?.({icon:"🎲",name:"돌잡이 시뮬레이션",svcId:"doljabi_sim",person:personName,date:new Date().toLocaleDateString("ko-KR"),result:`${res.emoji} ${res.name}`,resultType:{...res,_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})},ctx:{ohaeng:ilOh,momWish,dadWish}});
       },13200),
     ];
@@ -4431,7 +4441,7 @@ function DoljabiSimModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,on
     return()=>{if(handIvRef.current)clearInterval(handIvRef.current);};
   },[phase]);
 
-  function pay(){setPayLoading(true);setTimeout(()=>{setPayLoading(false);setShowPayDone(true);},1600);}
+  function pay(_method?:string,deductionIntent?:any){if(deductionIntent)setPendingDeduction(deductionIntent);setPayLoading(true);setTimeout(()=>{setPayLoading(false);setShowPayDone(true);},1600);}
   function onPayDone(){setShowPayDone(false);setStep("loading");}
 
   // INTRO
@@ -4537,7 +4547,7 @@ function DoljabiSimModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,on
       <div style={{position:"sticky",top:0,display:"flex",justifyContent:"flex-end",marginBottom:-20,zIndex:5}}><button onClick={onClose} style={{width:28,height:28,borderRadius:"50%",background:"rgba(255,255,255,0.08)",border:"none",color:"var(--mist)",fontSize:14,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button></div>
       <div className="mt">🎲 돌잡이 시뮬레이션</div>
       <div className="ms">{personName} · 사주 기반 돌상 분석 · 1,980원</div>
-      <PayStepComp price="1,980원" onPay={pay} onBack={()=>setStep("questions")} loading={payLoading} svcId="doljabi_sim"/>
+      <PayStepComp price="1,980원" onPay={pay} onBack={()=>setStep("questions")} loading={payLoading} svcId="doljabi_sim" deferred/>
       {showPayDone&&<PayDonePopup svc={{id:"doljabi_sim",name:"돌잡이 시뮬레이션"}} ctx={{}} cart={cart} setCart={setCart} onClose={onPayDone} onGoShop={()=>{setShowPayDone(false);onClose();onGoShop();}}/>}
     </div></div>
   );}
