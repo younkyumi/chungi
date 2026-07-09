@@ -19978,6 +19978,8 @@ function DreamModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
   const[mode,setMode]=useState<"dream"|"taemong">(preloadResult?.mode||(dreamPendingMode as any)||"dream");
   const[tmTab,setTmTab]=useState(0); // v(2026-07-08): 태몽 결과 탭 (0:타고난기질 1:미래흐름 2:육아처방전 3:아이에게)
   const[showPayDone,setShowPayDone]=useState(false);
+  // v(2026-07-09): 캐시/쿠폰/이용권 차감을 AI 분석 성공 확인 후로 지연
+  const[pendingDeduction,setPendingDeduction]=useState<any>(null);
   const[result,setResult]=useState<any>(preloadResult||null);
   const[loadPct,setLoadPct]=useState(0);
   const[loadMsgIdx,setLoadMsgIdx]=useState(0);
@@ -20029,6 +20031,9 @@ function DreamModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
             return;
           }
           setResult(r);setStep("result");
+          // v(2026-07-09): AI 분석 성공 확인된 지금 시점에만 캐시/쿠폰/이용권 차감 확정
+          commitPaymentDeduction(pendingDeduction);
+          setPendingDeduction(null);
           if(isTm){
             addHistory?.({icon:"🤰",name:"태몽 해몽",svcId:"taemong",person:"나",date:new Date().toLocaleDateString("ko-KR"),result:`${r.emoji||"✨"} ${r.title} (${r.gender})`,resultType:{mode:"taemong",dream:dream.slice(0,200),title:r.title,gender:r.gender,trait:r.trait},ctx:{}});
           }else{
@@ -20041,7 +20046,7 @@ function DreamModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
     return()=>clearInterval(iv);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[step]);
-  function payTaemong(){setLoading(true);setTimeout(()=>{setLoading(false);setShowPayDone(true);},1600);}
+  function payTaemong(_method?:string,deductionIntent?:any){if(deductionIntent)setPendingDeduction(deductionIntent);setLoading(true);setTimeout(()=>{setLoading(false);setShowPayDone(true);},1600);}
   function onPayDone(){setShowPayDone(false);setStep("loading");}
   return(
     <>
@@ -20151,7 +20156,7 @@ function DreamModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
             <div style={{fontSize:9,color:"var(--coral)",letterSpacing:2,fontWeight:700,marginBottom:6}}>✦ 입력하신 {mode==="taemong"?"태몽":"꿈"}</div>
             <div style={{fontSize:12,color:"var(--mist)",lineHeight:1.6}}>"{dream}"</div>
           </div>
-          <PayStepComp price={mode==="taemong"?"980원":"380원"} onPay={payTaemong} onBack={()=>setStep("input")} loading={loading} svcId={mode==="taemong"?"taemong":"dream"}/>
+          <PayStepComp price={mode==="taemong"?"980원":"380원"} onPay={payTaemong} onBack={()=>setStep("input")} loading={loading} svcId={mode==="taemong"?"taemong":"dream"} deferred/>
         </>}
 
         {/* v286: 분석중 (꿈/태몽 분기) */}
