@@ -14396,6 +14396,8 @@ function GwansangZalModal({onClose,savedPersons,setSavedPersons,cart,setCart,onG
   });
   const[step,setStep]=useState("intro");const[imgSrc,setImgSrc]=useState<any>(null);const[personName,setPersonName]=useState("");const[loading,setLoading]=useState(false);const[showPayDone,setShowPayDone]=useState(false);
   const[consent,setConsent]=useState(false);
+  // v(2026-07-09): 캐시/쿠폰/이용권 차감을 분석 성공(유효 사진, type_id<21) 확인 후로 지연
+  const[pendingDeduction,setPendingDeduction]=useState<any>(null);
   const[resultType,setResultType]=useState<any>(null);
   // 이전 분석 결과 보관 — "새로운 분석" 도중 결과로 되돌아갈 수 있게
   const[prevResultType,setPrevResultType]=useState<any>(null);
@@ -14457,12 +14459,14 @@ function GwansangZalModal({onClose,savedPersons,setSavedPersons,cart,setCart,onG
           ...(data.result.fortune_msg?{fortune_msg:data.result.fortune_msg}:{}),
         };
 
-        // v295: 결제는 이미 분석 전에 처리됨. 여기선 무조건 결과 공개 + 카운트 증가.
-        // 21~26번 에러카드는 카운트 증가 안 함 (사진 부적합 안내)
+        // v(2026-07-09): 캐시/쿠폰/이용권 차감을 분석 성공(유효 사진) 확인 후로 지연 —
+        // 21~26번 에러카드(사진 부적합)는 카운트 증가도 차감도 안 함 (다른 사진관상 콘텐츠와 동일 원칙)
         setResultType(finalType);
         setStep("result");
         if(data.result.type_id<21){
           try{localStorage.setItem(gwansangKey,String(gwansangCount+1));setGwansangCount(prev=>prev+1);}catch{}
+          commitPaymentDeduction(pendingDeduction);
+          setPendingDeduction(null);
         }
         if(personName.trim()&&!savedPersons.find((p:any)=>p.name===personName)){setSavedPersons((prev:any)=>[...prev,{name:personName,emoji:"👤",date:new Date().toLocaleDateString("ko-KR"),relation:"기타",relationCustom:"관상짤"}]);}
         addHistory({icon:"🪞",name:"관상짤",svcId:"gwansang_zal",person:personName||"익명",date:new Date().toLocaleDateString("ko-KR"),result:`${finalType.title_ko} (${finalType.title_en})`,resultType:{...finalType,_imgSrc:imgBase64||imgSrc},ctx:{ohaeng:"화"}});
@@ -14488,7 +14492,7 @@ function GwansangZalModal({onClose,savedPersons,setSavedPersons,cart,setCart,onG
     }
   }
   // TODO: 실제 PortOne 결제 연동 필요 — 현재는 mock (setTimeout)
-  function pay(){setLoading(true);setTimeout(()=>{setLoading(false);setShowPayDone(true);},1600);}
+  function pay(_method?:string,deductionIntent?:any){if(deductionIntent)setPendingDeduction(deductionIntent);setLoading(true);setTimeout(()=>{setLoading(false);setShowPayDone(true);},1600);}
   function saveResult(){if(personName.trim())setSavedPersons(prev=>[...prev,{name:personName,date:new Date().toLocaleDateString("ko-KR"),icon:"👤"}]);onClose();}
 
   return(
@@ -14629,7 +14633,7 @@ function GwansangZalModal({onClose,savedPersons,setSavedPersons,cart,setCart,onG
           <button className="btn btn-g" onClick={()=>setStep("upload")}>뒤로</button>
         </>}
 
-        {step==="pay"&&<><div className="mt">📸 관상짤 — 새 인물 분석</div><div className="ms">인물 1명당 380원 · 저장 후 재분석 무료</div><PayStepComp price="380원" onPay={pay} onBack={()=>setStep("upload")} loading={loading} svcId="gwansang_zal"/></>}
+        {step==="pay"&&<><div className="mt">📸 관상짤 — 새 인물 분석</div><div className="ms">인물 1명당 380원 · 저장 후 재분석 무료</div><PayStepComp price="380원" onPay={pay} onBack={()=>setStep("upload")} loading={loading} svcId="gwansang_zal" deferred/></>}
 
         {step==="result"&&resultType&&resultType.id>=21&&(()=>{
           // 에러카드 (id 21~26) — 미리보기 zal.html과 동일 풀카드 디자인
