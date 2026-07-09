@@ -15405,6 +15405,11 @@ function JoseonPortraitModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedI
   const[imgBase64,setImgBase64]=useState<string|null>(preloadResult?._imgSrc||null);
   const[loading,setLoading]=useState(false);const[validating,setValidating]=useState(false);const[showPayDone,setShowPayDone]=useState(false);
   const[consent,setConsent]=useState(false);
+  // v(2026-07-09): 기존에 setPaidRetryCredit(true) 호출은 있는데 state 선언이 아예 없어서
+  // catch 블록에서 ReferenceError로 죽던 버그 fix (tsc: Cannot find name 'setPaidRetryCredit')
+  const[paidRetryCredit,setPaidRetryCredit]=useState(false);
+  // v(2026-07-09): 캐시/쿠폰/이용권 차감을 분석 성공(진짜 60종 매칭, 에러카드 제외) 확인 후로 지연
+  const[pendingDeduction,setPendingDeduction]=useState<any>(null);
   const[resultType,setResultType]=useState<any>(preloadResult||null);
   const[swappedImage,setSwappedImage]=useState<string|null>(preloadResult?._swappedImage||null);
   // v682: 기록소 회귀 fix — Replicate URL은 1시간 만료라 기록소에서 swappedImage 깨짐.
@@ -15452,6 +15457,9 @@ function JoseonPortraitModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedI
       }
       if(!isErr){
         try{localStorage.setItem(joseonKey,String(joseonCount+1));setJoseonCount(prev=>prev+1);}catch{}
+        // v(2026-07-09): 분석 성공(진짜 페르소나 매칭) 확인된 지금 시점에만 캐시/쿠폰/이용권 차감 확정
+        commitPaymentDeduction(pendingDeduction);
+        setPendingDeduction(null);
         // v664: 결과 카드 = 기록소 카드 동기화 — icon/class/desc/swappedImage/imgSrc 모두 보존 (person은 사용자 이름)
         addHistory({icon:"👑",name:"조선 초상화",svcId:"joseon_portrait",person:personName||"나",date:new Date().toLocaleDateString("ko-KR"),result:`${rt.icon} ${rt.persona} (${rt.class})`,resultType:{character_type:typeof typeId==="number"?typeId:rt.id,id:rt.id,persona:rt.persona,icon:rt.icon,class:rt.class,desc:rt.desc,filename:rt.filename,gender:rt.gender,ohaeng:rt.ohaeng,_swappedImage:data.result?.swapped_image||null,_imgSrc:imgBase64||imgSrc||null,_testDate:new Date().toLocaleDateString("ko-KR")},ctx:{ohaeng:rt.ohaeng||"火"}});
       }
@@ -15464,7 +15472,7 @@ function JoseonPortraitModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedI
       setStep("upload");
     }
   }
-  function pay(){setLoading(true);setTimeout(()=>{setLoading(false);setShowPayDone(true);},1600);}
+  function pay(_method?:string,deductionIntent?:any){if(deductionIntent)setPendingDeduction(deductionIntent);setLoading(true);setTimeout(()=>{setLoading(false);setShowPayDone(true);},1600);}
 
   return(
     <>
@@ -15600,7 +15608,7 @@ function JoseonPortraitModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedI
           <button className="btn btn-g" onClick={()=>setStep("upload")}>뒤로</button>
         </>}
 
-        {step==="pay"&&<><div className="mt">👑 조선 초상화 분석</div><div className="ms">60종 조선 페르소나 매칭 + 얼굴 합성 · 1,980원</div><PayStepComp price="1,980원" onPay={()=>{pay();}} onBack={()=>setStep("upload")} loading={loading} svcId="joseon_portrait"/></>}
+        {step==="pay"&&<><div className="mt">👑 조선 초상화 분석</div><div className="ms">60종 조선 페르소나 매칭 + 얼굴 합성 · 1,980원</div><PayStepComp price="1,980원" onPay={pay} onBack={()=>setStep("upload")} loading={loading} svcId="joseon_portrait" deferred/></>}
 
         {step==="loading"&&(<>
           <div className="mt" style={{textAlign:"center"}}>🖌️ AI 화공이 그리는 중...</div>
