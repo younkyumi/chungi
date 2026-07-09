@@ -12664,6 +12664,8 @@ function NumerologyModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,on
   const[step,setStep]=useState<"intro"|"loading"|"result"|"pay"|"preQ">(preloadResult?"result":(selectedPerson&&_spHasBirth&&!forceIntro?"preQ":"intro"));
   const[loading,setLoading]=useState(false);
   const[showPayDone,setShowPayDone]=useState(false);
+  // v(2026-07-09): 캐시/쿠폰/이용권 차감을 분석 성공 확인 후로 지연
+  const[pendingDeduction,setPendingDeduction]=useState<any>(null);
   const[result,setResult]=useState<any>(preloadResult||null);
   const[showCollection,setShowCollection]=useState(false);
   const[numTab,setNumTab]=useState(0); // v256: 페이지 2 sub-tab (영혼의 정체/빛과 그림자/시간의 강/재물·인연/영혼의 식탁/분기별 기운/주파수 루틴)
@@ -12699,13 +12701,16 @@ function NumerologyModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,on
       }
       setResult(data.result);
       setStep("result");
+      // v(2026-07-09): 분석 성공 확인된 지금 시점에만 캐시/쿠폰/이용권 차감 확정
+      commitPaymentDeduction(pendingDeduction);
+      setPendingDeduction(null);
       addHistory({icon:"🔢",name:"수비학",svcId:"numerology",person:sp.name,date:new Date().toLocaleDateString("ko-KR"),result:`소울넘버 ${data.result?.soul_number}번`,resultType:{...data.result,character_type:data.result?.soul_number,_birth:sp.birth,_time:sp.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})},ctx:{}});
       try{localStorage.setItem(cntKey,String(cnt+1));setCnt(c=>c+1);}catch{}
     }catch(e:any){
       alert("분석 중 오류가 발생했어요. 결제는 처리되지 않았습니다. 다시 시도해주세요.\n\n"+(e?.message||""));setStep("intro");
     }
   }
-  function pay(){setLoading(true);setTimeout(()=>{setLoading(false);setShowPayDone(true);},1800);}
+  function pay(_method?:string,deductionIntent?:any){if(deductionIntent)setPendingDeduction(deductionIntent);setLoading(true);setTimeout(()=>{setLoading(false);setShowPayDone(true);},1800);}
 
   const r=result;
   return(
@@ -12825,7 +12830,7 @@ function NumerologyModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,on
           </div>
         </>;
       })()}
-      {step==="pay"&&<><div className="mt">🔢 수비학 · 소울넘버</div><div className="ms">생년월일로 풀어내는 영혼의 숫자 · 980원</div><PayStepComp price="980원" onPay={pay} onBack={()=>setStep("preQ")} loading={loading} svcId="numerology"/></>}
+      {step==="pay"&&<><div className="mt">🔢 수비학 · 소울넘버</div><div className="ms">생년월일로 풀어내는 영혼의 숫자 · 980원</div><PayStepComp price="980원" onPay={pay} onBack={()=>setStep("preQ")} loading={loading} svcId="numerology" deferred/></>}
       {step==="loading"&&<FunLoader duration={15000} onDone={()=>{}} type="saju"/>}
       {step==="result"&&r&&(()=>{
         // v314: 소울넘버 표준 컬러 — AI가 다른 색 줘도 강제 통일 (예: 8=빨강, 5=파랑)
