@@ -5861,6 +5861,10 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
     // v(2026-07-09): 손금·발금·얼굴점·눈점도 동일하게 전용 useEffect가 전담 (성공/실패 구분 + 결제 확정 시점 fix)
     if(PALM_MOLE_LIKE.includes(svc.id))return;
     setStep("result");
+    // v(2026-07-09): 나머지 SvcModal 경유 콘텐츠(celeb_compat/lucky_number/lucky_wallpaper/namereading/baby_naming 등)는
+    // 전부 결정론적(FunLoader 타이머 완료 = 항상 성공)이라 여기서 일괄 차감 확정
+    commitPaymentDeduction(pendingDeduction);
+    setPendingDeduction(null);
     // v300: celeb_compat 카운트 증가 (실제 완료 시점에 — history 저장과 동기화)
     if(svc.id==="celeb_compat"){
       try{
@@ -7056,7 +7060,7 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
             if(_SKIP_INPUT_TO_PREQS.includes(svc.id)){_goLastPreq(svc.id);return setStep("preqs");}
             if(_PREQ_FIRST.includes(svc.id)){_goLastPreq(svc.id);return setStep("preqs");}
             setStep("input");
-          }} loading={loading} svcId={svc.id} deferred={!!COMPAT_MODE_MAP[svc.id]||PALM_MOLE_LIKE.includes(svc.id)}/>
+          }} loading={loading} svcId={svc.id} deferred/>
         </>}
 
         {step==="result"&&<>
