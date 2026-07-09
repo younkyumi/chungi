@@ -4,6 +4,7 @@ import { useState, useRef, useCallback, useEffect, useLayoutEffect, useMemo } fr
 import Footer from "@/components/Footer";
 import SajuGlossaryFAB from "@/components/SajuGlossaryFAB";
 import { signInWithKakao, signInWithGoogle, signOut, onAuthStateChange } from "@/lib/auth";
+import { commitPaymentDeduction } from "@/lib/payment-helpers";
 import { computeSaju, legacyPillars } from "@/lib/saju";
 import GOODS_DB from "@/data/goods.json";
 import GWANSANG_TYPES from "@/data/gwansang-types.json";
@@ -1728,7 +1729,10 @@ function CouponCodeInput({onAdded}:{onAdded:(c:any)=>void}){
   </div>;
 }
 
-function PayStepComp({price,onPay,onBack,loading,svcId}:any){
+function PayStepComp({price,onPay,onBack,loading,svcId,deferred}:any){
+  // v(2026-07-09): deferred=true면 여기서 즉시 차감하지 않고 onPay(method, intent)로 의도만 전달.
+  // 실제 차감은 호출부가 AI 분석 성공을 확인한 시점에 commitPaymentDeduction(intent)로 확정.
+  // deferred가 없으면(기본값) 기존 즉시차감 동작 그대로 — 아직 안 옮긴 나머지 콘텐츠 회귀 방지.
   const[m,setM]=useState("kakao");
   const[selectedCoupon,setSelectedCoupon]=useState<any>(null);
   const[useCash,setUseCash]=useState(false);
@@ -1882,6 +1886,11 @@ function PayStepComp({price,onPay,onBack,loading,svcId}:any){
       )}
 
       {loading?<Dots/>:<button className="btn btn-p" style={useTicket?{background:"linear-gradient(135deg,var(--jade),#2a9d6a)"}:{}} onClick={async()=>{
+        if(deferred){
+          // 즉시 차감 금지 — 의도만 전달, 실제 차감은 호출부의 분석 성공 확인 시점(commitPaymentDeduction)
+          onPay(useTicket?"ticket":m,{useTicket,svcId,selectedCoupon,couponDiscount,cashDiscount});
+          return;
+        }
         // 이용권 사용 시 1장 차감 → 로딩 없이 바로 결과
         if(useTicket&&availableTickets.length>0&&svcId){
           try{const tk=JSON.parse(localStorage.getItem("chungi_my_tickets")||"[]");
@@ -5407,6 +5416,8 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
   const[form,setForm]=useState({name:sp.name||preloadResult?._name||"",year:stripZero(spBirth[0]||""),month:stripZero(spBirth[1]||""),day:stripZero(spBirth[2]||""),hour:stripZero(spTime[0]||""),minute:stripZero(spTime[1]||""),calendar:sp.calendar||"양력",gender:sp.gender||""});
   const[ctx,setCtx]=useState(preloadResult?._ctx||{ohaeng:"화", number:7}); // 분석 결과 컨텍스트 (preload 우선)
   const[showPayDone,setShowPayDone]=useState(false);
+  // v(2026-07-09): 결제/캐시 차감 시점 안전망 — 궁합 7종은 결제 즉시 차감 대신 여기 보관, AI 분석 성공 확인 후 commitPaymentDeduction으로 확정
+  const[pendingDeduction,setPendingDeduction]=useState<any>(null);
   const fileRef=useRef<any>(null);const[imgSrc,setImgSrc]=useState<any>(preloadResult?._imgSrc||null);
   const fileRef2=useRef<any>(null);const[imgSrc2,setImgSrc2]=useState<any>(preloadResult?._imgSrc2||null);
   const fileRef3=useRef<any>(null);const[imgSrc3,setImgSrc3]=useState<any>(preloadResult?._imgSrc3||null);
@@ -5802,6 +5813,9 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
     }
     if(compatResult){
       setStep("result");
+      // v(2026-07-09): AI 분석 성공이 확인된 지금 시점에만 캐시/쿠폰/이용권 차감 확정 (실패 시엔 여기 도달 안 하니 자동으로 안 나감)
+      commitPaymentDeduction(pendingDeduction);
+      setPendingDeduction(null);
       const rt={total:compatResult.score,grade:compatResult.grade,chemistry_name:compatResult.chemistry_name,p1:form.name||selectedPerson?.name||"나",p2:selectedPerson2?.name||"상대",svcId:svc.id,_birth:selectedPerson?.birth,_imgSrc:imgSrc||null,_imgSrc2:imgSrc2||null,_preQ:preQ,_apiResult:compatResult,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})};
       addHistory({icon:svc.icon,name:svc.name,svcId:svc.id,person:form.name||selectedPerson?.name||"나",person2:selectedPerson2?.name||"",person3:selectedPerson3?.name||"",date:new Date().toLocaleDateString("ko-KR"),ctx,emotion:emotionAnswers,preQuestions:preQ,resultType:rt});
     }
@@ -5853,7 +5867,8 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
   // 실제 연동 시: import { requestPayment } from "@/lib/payment" 후
   // const res = await requestPayment({ orderName: svc.name, totalAmount: price, orderId: `order_${Date.now()}` });
   // 성공 시 /api/payment/verify 로 검증 후 setShowPayDone(true)
-  function onPay(){
+  function onPay(_method?:string,deductionIntent?:any){
+    if(deductionIntent)setPendingDeduction(deductionIntent); // 아직 차감 안 함 — 분석 성공 확인 후 확정
     setLoading(true);
     setTimeout(()=>{
       setLoading(false);
@@ -7007,7 +7022,7 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
             if(_SKIP_INPUT_TO_PREQS.includes(svc.id)){_goLastPreq(svc.id);return setStep("preqs");}
             if(_PREQ_FIRST.includes(svc.id)){_goLastPreq(svc.id);return setStep("preqs");}
             setStep("input");
-          }} loading={loading} svcId={svc.id}/>
+          }} loading={loading} svcId={svc.id} deferred={!!COMPAT_MODE_MAP[svc.id]}/>
         </>}
 
         {step==="result"&&<>
