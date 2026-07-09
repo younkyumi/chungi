@@ -13151,6 +13151,11 @@ function BabyFaceModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLo
   const[consent,setConsent]=useState(false);
   const[loading,setLoading]=useState(false);
   const[showPayDone,setShowPayDone]=useState(false);
+  // v(2026-07-09): 기존에 setPaidRetryCredit(true) 호출은 있는데 state 선언이 아예 없어서
+  // catch 블록에서 ReferenceError로 죽던 버그 fix (tsc: Cannot find name 'setPaidRetryCredit')
+  const[paidRetryCredit,setPaidRetryCredit]=useState(false);
+  // v(2026-07-09): 캐시/쿠폰/이용권 차감을 분석 성공 확인 후로 지연
+  const[pendingDeduction,setPendingDeduction]=useState<any>(null);
   const[result,setResult]=useState<any>(preloadResult||null);
   const[tabIdx,setTabIdx]=useState(0);
   const[unlockedVariants,setUnlockedVariants]=useState<string[]>([]);
@@ -13220,6 +13225,9 @@ function BabyFaceModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLo
       setResult(data.result);
       setTabIdx(0);
       setStep("result");
+      // v(2026-07-09): 분석 성공 확인된 지금 시점에만 캐시/쿠폰/이용권 차감 확정
+      commitPaymentDeduction(pendingDeduction);
+      setPendingDeduction(null);
       try{localStorage.setItem(faceKey,String(faceCount+1));setFaceCount(prev=>prev+1);}catch{}
       // 비동기로 face-mix 합성 시도 (실패 시 alpha-blend 폴백 — 결과 화면 표시 안 막음)
       fetch("/api/baby-face-swap",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({imageData1:imgBase64_1,imageData2:imgBase64_2,ratio:50})})
@@ -13247,7 +13255,7 @@ function BabyFaceModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLo
     }
   }
 
-  function pay(){setLoading(true);setTimeout(()=>{setLoading(false);setShowPayDone(true);},1600);}
+  function pay(_method?:string,deductionIntent?:any){if(deductionIntent)setPendingDeduction(deductionIntent);setLoading(true);setTimeout(()=>{setLoading(false);setShowPayDone(true);},1600);}
 
   const nm=result?._friendlyName||babyName;
   const fullName=result?._fullName||babyName;
@@ -13405,7 +13413,7 @@ function BabyFaceModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLo
         </>}
 
         {step==="preqs"&&<PreQuestionFlow embedded svcId="baby_face" iconTitle="🤰 2세 얼굴 & 운명 예측" subtitle="더 정확한 분석을 위해" initialQStep={preQStartIdx} initialAnswers={preQA} onComplete={(ans)=>{setPreQStartIdx(0);onPreqsDone(ans);}} onClose={()=>{setPreQStartIdx(0);setStep("upload");}}/>}
-        {step==="pay"&&<><div className="mt">🤰 2세 얼굴 & 운명 예측</div><div className="ms">엄마 × 아빠 사진 합성 + 9탭 운명 분석 · 4,800원</div><PayStepComp price="4,800원" onPay={pay} onBack={()=>{const totalQs=(PRE_Q_CONFIG["baby_face"]||[]).length;setPreQStartIdx(Math.max(0,totalQs-1));setStep("preqs");}} loading={loading} svcId="baby_face"/></>}
+        {step==="pay"&&<><div className="mt">🤰 2세 얼굴 & 운명 예측</div><div className="ms">엄마 × 아빠 사진 합성 + 9탭 운명 분석 · 4,800원</div><PayStepComp price="4,800원" onPay={pay} onBack={()=>{const totalQs=(PRE_Q_CONFIG["baby_face"]||[]).length;setPreQStartIdx(Math.max(0,totalQs-1));setStep("preqs");}} loading={loading} svcId="baby_face" deferred/></>}
 
         {step==="result"&&result&&(()=>{
           if(result._isError){
