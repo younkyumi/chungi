@@ -1,5 +1,6 @@
 ﻿"use client";
 import { useState, useEffect, useRef } from "react";
+import { commitPaymentDeduction } from "@/lib/payment-helpers";
 
 // ━━━ 사주 계산 ━━━
 const CHEONGAN=["갑","을","병","정","무","기","경","신","임","계"];
@@ -400,6 +401,8 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
   const[cnt,setCnt]=useState(()=>{try{return parseInt(localStorage.getItem(cntKey)||'0');}catch{return 0;}});
   const[loading,setLoading]=useState(false);
   const[showPayDone,setShowPayDone]=useState(false);
+  // v(2026-07-09): 캐시/쿠폰/이용권 차감을 결과 확정 후로 지연
+  const[pendingDeduction,setPendingDeduction]=useState(null);
   // preloadResult 있으면 result로 바로 (기록소 재열람)
   // v282: 뇌과학과 흐름 통일 — 인물 있으면 test → preQ → pay (매몰비용 극대화)
   const[screen,setScreen]=useState(preloadResult?"result":(forceIntro?"intro":(selectedPerson&&sajuInfo?"test":"intro")));
@@ -452,7 +455,7 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
     if(!sajuInfo){setScreen("needBirth");return;}
     setScreen("test"); // v282: 뇌과학과 통일 — test → preQ → pay
   }
-  function pay(){setLoading(true);setTimeout(()=>{setLoading(false);setShowPayDone(true);},1600);}
+  function pay(_method,deductionIntent){if(deductionIntent)setPendingDeduction(deductionIntent);setLoading(true);setTimeout(()=>{setLoading(false);setShowPayDone(true);},1600);}
   function onPayDone(){setShowPayDone(false);setScreen("loading");} // v262: 결제 후 분석중 → result
 
   // v262: 분석중(loading) 화면 — 게이지 + 메시지 회전, 끝나면 history 1회 호출 + result 진입 (v264: 3.5초로 통일)
@@ -482,6 +485,9 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
             try{localStorage.setItem(cntKey,String(cnt+1));setCnt(c=>c+1);}catch{}
           }
           setScreen("result");
+          // v(2026-07-09): 결정론적 콘텐츠라 항상 성공이지만, 원칙 통일을 위해 완료 확인 시점에서 차감 확정
+          commitPaymentDeduction(pendingDeduction);
+          setPendingDeduction(null);
         },300);
       }
     },80);
@@ -588,7 +594,7 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
       </div>
       {/* 결제 수단 선택 — 다른 모달과 동일한 PayStepComp (카카오페이/토스/네이버페이/카드/핸드폰 + 캐시·쿠폰·이용권) */}
       {helpers?.PayStepComp
-        ?<helpers.PayStepComp price="980원" onPay={pay} onBack={()=>setScreen("preQ")} loading={loading} svcId="gijildo"/>
+        ?<helpers.PayStepComp price="980원" onPay={pay} onBack={()=>setScreen("preQ")} loading={loading} svcId="gijildo" deferred/>
         :<>{loading?<div style={{display:"flex",gap:5,justifyContent:"center",padding:16}}><div className="dot"/><div className="dot"/><div className="dot"/></div>:
           <button className="btn" onClick={pay} style={{background:"linear-gradient(135deg,#054D95,#032A60)",color:"#fff",boxShadow:"0 4px 16px rgba(5,77,149,0.3)"}}>980원 결제하고 시작하기 →</button>}
         <button className="btn btn-g" onClick={onClose}>닫기</button></>}

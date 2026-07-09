@@ -1,5 +1,6 @@
 ﻿"use client";
 import { useState, useEffect, useRef } from "react";
+import { commitPaymentDeduction } from "@/lib/payment-helpers";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // 40개 특성 데이터
@@ -714,6 +715,8 @@ export default function 뇌특성검사({onClose,addHistory,selectedPerson,isLog
   const [indexModal, setIndexModal] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showPayDone, setShowPayDone] = useState(false);
+  // v(2026-07-09): 캐시/쿠폰/이용권 차감을 결과 확정 후로 지연
+  const [pendingDeduction, setPendingDeduction] = useState(null);
   const [preFocus, setPreFocus] = useState(null); // v262: 사전질문 focus 1개
   const [loadPct, setLoadPct] = useState(0);
   const [loadMsgIdx, setLoadMsgIdx] = useState(0);
@@ -728,7 +731,7 @@ export default function 뇌특성검사({onClose,addHistory,selectedPerson,isLog
     if(!selectedPerson&&onRequestPerson){onRequestPerson({id:"psych",icon:"🧠",name:"뇌과학 분석",desc:"",price:"4,800원"});if(typeof onClose==="function")onClose();return;}
     setScreen("test"); // v281: 테스트 먼저, 그 다음 사전질문
   }
-  function pay(){setLoading(true);setTimeout(()=>{setLoading(false);setShowPayDone(true);},1600);}
+  function pay(_method,deductionIntent){if(deductionIntent)setPendingDeduction(deductionIntent);setLoading(true);setTimeout(()=>{setLoading(false);setShowPayDone(true);},1600);}
   function onPayDone(){setShowPayDone(false);setScreen("loading");} // 결제 후 분석중 → result
 
   function handleAnswer(val) {
@@ -766,6 +769,9 @@ export default function 뇌특성검사({onClose,addHistory,selectedPerson,isLog
             }catch{}
           }
           setScreen("result");
+          // v(2026-07-09): 결정론적 콘텐츠라 항상 성공이지만, 원칙 통일을 위해 완료 확인 시점에서 차감 확정
+          commitPaymentDeduction(pendingDeduction);
+          setPendingDeduction(null);
         },300);
       }
     },80);
@@ -864,7 +870,7 @@ export default function 뇌특성검사({onClose,addHistory,selectedPerson,isLog
       </div>
       {/* 결제 수단 선택 — 다른 모달과 동일한 PayStepComp */}
       {helpers?.PayStepComp
-        ?<helpers.PayStepComp price="4,800원" onPay={pay} onBack={()=>setScreen("preQ")} loading={loading} svcId="psych"/>
+        ?<helpers.PayStepComp price="4,800원" onPay={pay} onBack={()=>setScreen("preQ")} loading={loading} svcId="psych" deferred/>
         :<>{loading?<div style={{display:"flex",gap:5,justifyContent:"center",padding:16}}><div className="dot"/><div className="dot"/><div className="dot"/></div>:
           <button className="btn" onClick={pay} style={{background:"#D4AF37",color:"#1A3C32",boxShadow:"0 4px 16px rgba(212,175,55,0.3)"}}>4,800원 결제하고 시작하기 →</button>}
         <button className="btn btn-g" onClick={()=>{if(typeof onClose==="function")onClose();}}>닫기</button></>}
