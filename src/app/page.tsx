@@ -17175,6 +17175,8 @@ function MoleModal({onClose,addHistory,cart,setCart,onGoShop,isLoggedIn,onOpenSe
   const[selected,setSelected]=useState(preloadResult?.selected||[]);
   const[loading,setLoading]=useState(false);
   const[imgSrc,setImgSrc]=useState<any>(preloadResult?._imgSrc||null);
+  // v(2026-07-09): 캐시/쿠폰/이용권 차감을 분석 완료(analyze() 호출) 확인 후로 지연
+  const[pendingDeduction,setPendingDeduction]=useState<any>(null);
   const fileRef=useRef<any>(null);
 
   // 눈 주변 점 16영역 — 정통 관상학(전택궁·어미·와잠·눈썹속·눈동자위) + 도파민 별명 + 셀럽 매칭
@@ -17291,12 +17293,16 @@ function MoleModal({onClose,addHistory,cart,setCart,onGoShop,isLoggedIn,onOpenSe
   // v639: FunLoader onDone에서 호출 — setStep("result") + history 저장만 담당 (다른 모달과 동일 패턴)
   function analyze(){
     setStep("result");
+    // v(2026-07-09): 결정론적 콘텐츠라 항상 성공이지만, 원칙 통일을 위해 여기(완료 확인 시점)에서 차감 확정
+    commitPaymentDeduction(pendingDeduction);
+    setPendingDeduction(null);
     addHistory({icon:isEye?"👁️":"⚫",name:isEye?"눈 점":"얼굴 점",svcId,person:selectedPerson?.name||"나",date:new Date().toLocaleDateString("ko-KR"),ctx:{ohaeng:"화"}});
   }
 
   // TODO: 실제 PortOne 결제 연동 필요 — 현재는 mock (setTimeout)
   // v639: 결제 완료 → loading step (분석중 팝업) → result
-  function payAndAnalyze(){
+  function payAndAnalyze(_method?:string,deductionIntent?:any){
+    if(deductionIntent)setPendingDeduction(deductionIntent);
     setLoading(true);
     setTimeout(()=>{
       setLoading(false);
@@ -17521,7 +17527,7 @@ function MoleModal({onClose,addHistory,cart,setCart,onGoShop,isLoggedIn,onOpenSe
         {step==="pay"&&<>
           <div className="mt">{isEye?"👁️ 눈 점 풀이":"⚫ 얼굴 점 풀이"}</div>
           <div className="ms">점 위치로 읽는 운명 · 1,980원</div>
-          <PayStepComp price="1,980원" onPay={()=>payAndAnalyze()} onBack={()=>setStep(imgSrc?"photo":"diagram")} loading={loading} svcId={svcId}/>
+          <PayStepComp price="1,980원" onPay={payAndAnalyze} onBack={()=>setStep(imgSrc?"photo":"diagram")} loading={loading} svcId={svcId} deferred/>
         </>}
 
         {/* v639: 분석중 화면 — FunLoader 5초 게이지 → analyze (result) */}
