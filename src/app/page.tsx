@@ -5767,7 +5767,7 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
   },[step,svc.id,imgSrc]);
   // v(2026-07-08): 궁합 5종 + 부모자식궁합 — seed 공식 대신 실제 API 호출
   const COMPAT5_MODE_MAP:Record<string,string>={gwansang_compat:"couple",bff_compat:"bff",fan_compat:"fan",biz_gwansang:"business",enemy_compat:"enemy"};
-  const COMPAT_MODE_MAP:Record<string,string>={...COMPAT5_MODE_MAP,parent_child_compat:"family"};
+  const COMPAT_MODE_MAP:Record<string,string>={...COMPAT5_MODE_MAP,parent_child_compat:"family",pet_owner_compat:"pet"};
   useEffect(()=>{
     if(step!=="loading")return;
     if(!COMPAT_MODE_MAP[svc.id])return;
@@ -5775,9 +5775,13 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
     if(compatResult||compatErr)return; // 이미 시도함(성공/실패 불문 재요청 방지)
     let cancelled=false;
     const isFamily=svc.id==="parent_child_compat";
-    const url=isFamily?"/api/parent-child-compat":"/api/gwansang-compat";
+    const isPetOwner=svc.id==="pet_owner_compat";
+    const url=isFamily?"/api/parent-child-compat":isPetOwner?"/api/pet-owner-compat":"/api/gwansang-compat";
+    const petSpecies=(preQ.type||preQ.pet||"").includes("고양이")?"cat":"dog";
     const bodyObj:any=isFamily
       ?{imageData1:imgSrc,imageData2:imgSrc2,mediaType:"image/jpeg",name1:form.name||selectedPerson?.name||"자녀",name2:selectedPerson2?.name||"보호자",relLabel:preQ.rel||"보호자",questions:preQ}
+      :isPetOwner
+      ?{imageData1:imgSrc,imageData2:imgSrc2,mediaType:"image/jpeg",name1:form.name||selectedPerson?.name||"나",name2:selectedPerson2?.name||"반려동물",species:petSpecies,questions:preQ}
       :{imageData1:imgSrc,imageData2:imgSrc2,mediaType:"image/jpeg",name1:form.name||selectedPerson?.name||"나",name2:selectedPerson2?.name||"상대",mode:COMPAT5_MODE_MAP[svc.id],questions:preQ};
     fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(bodyObj)}).then(r=>r.json()).then(j=>{
       if(cancelled)return;
@@ -7115,9 +7119,10 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
           {COMPAT_MODE_MAP[svc.id]&&compatResult&&(()=>{
             const r=compatResult;
             const isFamilyR=svc.id==="parent_child_compat";
+            const isPetOwnerR=svc.id==="pet_owner_compat";
             const p1=form.name||selectedPerson?.name||(isFamilyR?"자녀":"나");
-            const p2=selectedPerson2?.name||(isFamilyR?"보호자":"상대");
-            const accentMap:Record<string,string>={gwansang_compat:"#ef4444",bff_compat:"#22c55e",fan_compat:"#a855f7",biz_gwansang:"#0ea5e9",enemy_compat:"#7c3aed",parent_child_compat:"#D4AF37"};
+            const p2=selectedPerson2?.name||(isFamilyR?"보호자":isPetOwnerR?"반려동물":"상대");
+            const accentMap:Record<string,string>={gwansang_compat:"#ef4444",bff_compat:"#22c55e",fan_compat:"#a855f7",biz_gwansang:"#0ea5e9",enemy_compat:"#7c3aed",parent_child_compat:"#D4AF37",pet_owner_compat:"#f97316"};
             const accent=accentMap[svc.id]||"#D4AF37";
             const stats=[r.stats?.stat1,r.stats?.stat2,r.stats?.stat3].filter(Boolean);
             const sectionOrder:[string,string][]=[["main","핵심 궁합"],["strength","최고의 시너지"],["risk","주의할 점"],["advice","천기의 조언"]];
