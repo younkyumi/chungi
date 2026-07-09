@@ -19083,6 +19083,8 @@ function SajuModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onOp
   const[loadMsgIdx,setLoadMsgIdx]=useState(0);
   const[payLoading,setPayLoading]=useState(false);
   const[showPayDone,setShowPayDone]=useState(false);
+  // v(2026-07-09): 캐시/쿠폰/이용권 차감을 결과 확정 후로 지연
+  const[pendingDeduction,setPendingDeduction]=useState<any>(null);
   const[openSinsal,setOpenSinsal]=useState<string|null>(null);
   const[bonusTab,setBonusTab]=useState<string>("spot"); // 사주아이 보너스 탭 (spot/guiin/style/recover/signal/quote)
   const[sajuTab,setSajuTab]=useState<number>(1); // v691: 신살 TAB 0 → PAGE 3 카드로 분리, 기본 탭은 성격(1)
@@ -19190,6 +19192,9 @@ function SajuModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onOp
         clearInterval(iv);
         setTimeout(()=>{
           setStep("result");
+          // v(2026-07-09): 결정론적 콘텐츠라 항상 성공이지만, 원칙 통일을 위해 완료 확인 시점에서 차감 확정
+          commitPaymentDeduction(pendingDeduction);
+          setPendingDeduction(null);
           try{localStorage.setItem(todayKey,JSON.stringify({done:true,preQ}));}catch{}
           addHistory?.({icon:"☯️",name:"사주 풀이",svcId:"saju",person:personName,date:new Date().toLocaleDateString("ko-KR"),result:`${profile.personality.title.split("—")[1]?.trim()||"사주 분석 완료"} (${ilOh})`,resultType:{
             ilgan:ilOh,
@@ -19215,7 +19220,7 @@ function SajuModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onOp
     return()=>clearInterval(iv);
   },[step]);
 
-  function pay(){setPayLoading(true);setTimeout(()=>{setPayLoading(false);setShowPayDone(true);},1600);}
+  function pay(_method?:string,deductionIntent?:any){if(deductionIntent)setPendingDeduction(deductionIntent);setPayLoading(true);setTimeout(()=>{setPayLoading(false);setShowPayDone(true);},1600);}
   function onPayDone(){setShowPayDone(false);setStep("loading");}
 
   // ━━━ INFO ━━━ 화이트카드 통일
@@ -19371,7 +19376,7 @@ function SajuModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onOp
           const totalQs=(PRE_Q_CONFIG["saju"]||[]).length;
           setPreQStartIdx(Math.max(0,totalQs-1));
           setStep("questions");
-        }} loading={payLoading} svcId="saju"/>
+        }} loading={payLoading} svcId="saju" deferred/>
         {showPayDone&&<PayDonePopup svc={{id:"saju",name:"사주 풀이"}} ctx={{}} cart={cart} setCart={setCart} onClose={onPayDone} onGoShop={()=>{setShowPayDone(false);onClose();onGoShop();}}/>}
       </div></div>
     );
