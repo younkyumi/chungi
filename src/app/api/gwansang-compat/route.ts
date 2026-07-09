@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { lockedScore, gradeSABC, fillNameTokens, validateCompatResult } from "@/lib/compat-helpers";
 
 function getGeminiUrl(model = "gemini-2.5-flash") {
   const key = process.env.GEMINI_API_KEY;
@@ -8,7 +9,7 @@ function getGeminiUrl(model = "gemini-2.5-flash") {
 
 const SYSTEM_PROMPT = `[ROLE]
 너는 관상 궁합 전문가 '천기'. 두 사람의 얼굴을 분석하여 궁합을 판독해.
-{nm1}님, {nm2}님 호칭 사용.
+⚠️ 모든 텍스트 필드는 실제 이름을 그대로 써서 작성해라. {nm1}/{nm2} 같은 중괄호 템플릿 변수·placeholder는 절대 출력 금지 — 반드시 실제 이름 문자열 그 자체를 써라.
 ⚠️ 모든 분석은 재미용. 한 사람을 비방하지 말고 두 사람의 '관계'에 초점을 맞춰라.
 ⚠️ type_name 결정 불변 원칙 (CRITICAL): person_a.type_name, person_b.type_name은 오직 각자의 얼굴 특징으로만 결정. 모드(couple/bff/business 등)와 완전 무관. 같은 사진이면 모드가 달라져도 동일한 type_name이 나와야 한다.
 
@@ -165,18 +166,24 @@ export async function POST(request: NextRequest) {
     } catch {}
     console.log(`[gwansang-compat] Call-1 type_a="${typeA ?? "FAILED"}" type_b="${typeB ?? "FAILED"}"`);
 
-    // === CALL 2: 전체 궁합 분석 (type_name 고정, temperature 0.7) ===
-    const fixedRule = (typeA && typeB) ? `⚠️ person_a.type_name은 반드시 "${typeA}", person_b.type_name은 반드시 "${typeB}". 절대 변경 불가.\n\n` : "";
+    // === CALL 2: 전체 궁합 분석 (type_name + score/grade 고정, temperature 0.7) ===
+    // v(2026-07-09): 라이브 테스트에서 발견된 점수 흔들림(같은 사진 88/91/72) 버그 수정 —
+    // Call-1에서 확정된 type_a/type_b(+mode)로 score/grade를 결정적 해시로 고정. Call-2 자유생성 흔들림 원인 제거.
+    const lockedSc = (typeA && typeB) ? lockedScore([typeA, typeB, mode]) : null;
+    const lockedGr = lockedSc !== null ? gradeSABC(lockedSc) : null;
+    const fixedRule = (typeA && typeB)
+      ? `⚠️ person_a.type_name은 반드시 "${typeA}", person_b.type_name은 반드시 "${typeB}". 절대 변경 불가.\n⚠️ score는 반드시 ${lockedSc}, grade는 반드시 "${lockedGr}". 절대 변경 불가 (다른 필드는 이 값에 맞춰 자연스럽게 서술).\n\n`
+      : "";
     const preQRule = buildPreQRule(questions, mode);
-    console.log(`[gwansang-compat] Call-2 fixedRule injected=${!!(typeA && typeB)} preQ_ok=${!!preQRule}`);
+    console.log(`[gwansang-compat] Call-2 fixedRule injected=${!!(typeA && typeB)} lockedScore=${lockedSc} preQ_ok=${!!preQRule}`);
     const reqBody = JSON.stringify({
       systemInstruction: { parts: [{ text: fixedRule + preQRule + SYSTEM_PROMPT }] },
       contents: [{ parts: [
         { inlineData: { mimeType: mType, data: b64_1 } },
         { inlineData: { mimeType: mType, data: b64_2 } },
-        { text: "첫 번째 사진은 " + name1 + ", 두 번째 사진은 " + name2 + "입니다. 모드: " + mode + " (" + modeLabel + "). {nm1}=\"" + name1 + "\", {nm2}=\"" + name2 + "\"으로 치환. JSON만 출력." }
+        { text: `첫 번째 사진(person_a)은 "${name1}", 두 번째 사진(person_b)은 "${name2}"입니다. 모드: ${mode} (${modeLabel}). 모든 텍스트 필드에서 반드시 이 실제 이름("${name1}", "${name2}")을 그대로 사용해서 작성해라 — {nm1}/{nm2} 같은 템플릿 변수는 절대 쓰지 말 것. JSON만 출력.` }
       ]}],
-      generationConfig: { temperature: 0.7, maxOutputTokens: 4096, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 512 } },
+      generationConfig: { temperature: 0.7, maxOutputTokens: 8192, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 512 } },
     });
     const geminiRes = await callGemini(reqBody);
 
@@ -189,10 +196,22 @@ export async function POST(request: NextRequest) {
     if (!rawText) return NextResponse.json({ error: "AI 응답 없음" }, { status: 500 });
 
     const { parseGeminiJson } = await import("@/lib/gemini-parse");
-    const parsed = parseGeminiJson(rawText);
+    let parsed = parseGeminiJson(rawText);
     if (!parsed) return NextResponse.json({ error: "AI 응답 파싱 실패", debug: rawText.substring(0, 300) }, { status: 500 });
 
     if (parsed.error === "face_not_found") return NextResponse.json({ error: "얼굴이 인식되지 않았어요. 두 사람의 정면 사진을 다시 올려주세요!" }, { status: 400 });
+
+    // 점수/등급 하드 고정 (Call-2가 지시 무시해도 강제 override)
+    if (lockedSc !== null) { parsed.score = lockedSc; parsed.grade = lockedGr; }
+    // {nm1}/{nm2} 템플릿 변수 잔존 시 실제 이름으로 강제 치환 (안전망)
+    parsed = fillNameTokens(parsed, { "{nm1}": name1, "{nm2}": name2 });
+
+    // 반쪽짜리 응답(문법은 JSON이지만 핵심 필드 누락) 방지 — 빈 값 그대로 노출되던 버그 fix
+    const validationErr = validateCompatResult(parsed);
+    if (validationErr) {
+      console.log(`[gwansang-compat] validation failed: ${validationErr}`);
+      return NextResponse.json({ error: "분석 응답이 불완전해요. 다시 시도해주세요." }, { status: 500 });
+    }
 
     return NextResponse.json({ result: parsed });
   } catch (error: unknown) {

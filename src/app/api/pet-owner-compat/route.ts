@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { lockedScore, gradeSABC, fillNameTokens, validateCompatResult } from "@/lib/compat-helpers";
 
 function getGeminiUrl(model = "gemini-2.5-flash") {
   const key = process.env.GEMINI_API_KEY;
@@ -13,7 +14,7 @@ function getSystemPrompt(species: "dog" | "cat") {
   const callsign = species === "dog" ? "강아지" : "고양이";
   return `[ROLE]
 너는 반려동물 인연 전문가 '천기'. 집사(사람)와 ${callsign}의 사진을 보고 '천연(天緣) 궁합'을 판독해.
-{nm1}=집사, {nm2}=${callsign}
+⚠️ 모든 텍스트 필드는 실제 이름을 그대로 써서 작성해라. {nm1}/{nm2} 같은 중괄호 템플릿 변수·placeholder는 절대 출력 금지 — 반드시 실제 이름 문자열 그 자체를 써라.
 ⚠️ 무조건 따뜻하고 긍정적으로! 두 존재의 교감·인연에 초점. 절대 비방 X.
 ⚠️ type_name 결정 불변 원칙 (CRITICAL): person_a.type_name(집사), person_b.type_name(${callsign})은 오직 각자의 얼굴 특징으로만 결정. 이름·기간 정보와 완전 무관. 같은 사진이면 어떤 조건에서도 동일한 type_name이 나와야 한다.
 
@@ -157,18 +158,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: `${callsign} 사진을 다시 확인해주세요. 다른 동물이거나, 여러 마리이거나, 얼굴이 가려진 것 같아요!` }, { status: 400 });
     }
 
-    // === CALL 2: 전체 궁합 분석 (type_name 고정, temperature 0.7) ===
-    const fixedRule = (typeA && typeB) ? `⚠️ person_a.type_name은 반드시 "${typeA}", person_b.type_name은 반드시 "${typeB}". 절대 변경 불가.\n\n` : "";
+    // === CALL 2: 전체 궁합 분석 (type_name + score/grade 고정, temperature 0.7) ===
+    // v(2026-07-09): gwansang-compat 라이브 테스트에서 발견된 버그(점수 흔들림/{nm1}{nm2} 미치환/반쪽짜리 응답) 동일 구조라 선제 수정
+    const lockedSc = (typeA && typeB) ? lockedScore([typeA, typeB, resolvedSpecies], 60, 96) : null;
+    const lockedGr = lockedSc !== null ? gradeSABC(lockedSc) : null;
+    const fixedRule = (typeA && typeB)
+      ? `⚠️ person_a.type_name은 반드시 "${typeA}", person_b.type_name은 반드시 "${typeB}". 절대 변경 불가.\n⚠️ score는 반드시 ${lockedSc}, grade는 반드시 "${lockedGr}". 절대 변경 불가 (다른 필드는 이 값에 맞춰 자연스럽게 서술).\n\n`
+      : "";
     const preQRule = buildPreQRule(questions);
-    console.log(`[pet-owner-compat] Call-2 fixedRule injected=${!!(typeA && typeB)} preQ_ok=${!!preQRule}`);
+    console.log(`[pet-owner-compat] Call-2 fixedRule injected=${!!(typeA && typeB)} lockedScore=${lockedSc} preQ_ok=${!!preQRule}`);
     const reqBody = JSON.stringify({
       systemInstruction: { parts: [{ text: fixedRule + preQRule + getSystemPrompt(resolvedSpecies) }] },
       contents: [{ parts: [
         { inlineData: { mimeType: mType, data: b64_1 } },
         { inlineData: { mimeType: mType, data: b64_2 } },
-        { text: `첫 번째 사진은 집사(${name1}), 두 번째 사진은 ${callsign}(${name2})입니다. {nm1}="${name1}", {nm2}="${name2}"으로 치환. JSON만 출력.` }
+        { text: `첫 번째 사진은 집사("${name1}"), 두 번째 사진은 ${callsign}("${name2}")입니다. 모든 텍스트 필드에서 반드시 이 실제 이름("${name1}", "${name2}")을 그대로 사용해서 작성해라 — {nm1}/{nm2} 같은 템플릿 변수는 절대 쓰지 말 것. JSON만 출력.` }
       ]}],
-      generationConfig: { temperature: 0.7, maxOutputTokens: 4096, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 512 } },
+      generationConfig: { temperature: 0.7, maxOutputTokens: 8192, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 512 } },
     });
     const geminiRes = await callGemini(reqBody);
 
@@ -181,11 +187,20 @@ export async function POST(request: NextRequest) {
     if (!rawText) return NextResponse.json({ error: "AI 응답 없음" }, { status: 500 });
 
     const { parseGeminiJson } = await import("@/lib/gemini-parse");
-    const parsed = parseGeminiJson(rawText);
+    let parsed = parseGeminiJson(rawText);
     if (!parsed) return NextResponse.json({ error: "AI 응답 파싱 실패", debug: rawText.substring(0, 300) }, { status: 500 });
 
     if (parsed.error === "person_not_found") return NextResponse.json({ error: "집사님의 얼굴이 잘 보이지 않아요. 정면 사진으로 다시 올려주세요!" }, { status: 400 });
     if (parsed.error === "pet_not_found") return NextResponse.json({ error: `${callsign} 사진을 다시 확인해주세요. 다른 동물이거나, 여러 마리이거나, 얼굴이 가려진 것 같아요!` }, { status: 400 });
+
+    if (lockedSc !== null) { parsed.score = lockedSc; parsed.grade = lockedGr; }
+    parsed = fillNameTokens(parsed, { "{nm1}": name1, "{nm2}": name2 });
+
+    const validationErr = validateCompatResult(parsed);
+    if (validationErr) {
+      console.log(`[pet-owner-compat] validation failed: ${validationErr}`);
+      return NextResponse.json({ error: "분석 응답이 불완전해요. 다시 시도해주세요." }, { status: 500 });
+    }
 
     return NextResponse.json({ result: parsed });
   } catch (error: unknown) {
