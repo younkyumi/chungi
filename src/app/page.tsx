@@ -10726,6 +10726,8 @@ function FaceReadingModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,o
   const[showCollection,setShowCollection]=useState(false); // 📚 20종 도감 (관상짤과 공유)
   // 결제 후 사진 에러 시 재결제 방지 — 결제 1회 = 정상 결과 1회 보장
   const[paidRetryCredit,setPaidRetryCredit]=useState(false);
+  // v(2026-07-09): 캐시/쿠폰/이용권 차감을 분석 성공 확인 후로 지연
+  const[pendingDeduction,setPendingDeduction]=useState<any>(null);
   const personName=selectedPerson?.name||"익명";
 
   function doAnalyze(qsOverride?:any){
@@ -10778,6 +10780,9 @@ function FaceReadingModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,o
       setResult(data.result);
       setResultIdx(0);
       setStep("result");
+      // v(2026-07-09): 분석 성공 확인된 지금 시점에만 캐시/쿠폰/이용권 차감 확정
+      commitPaymentDeduction(pendingDeduction);
+      setPendingDeduction(null);
       try{localStorage.setItem(faceKey,String(faceCount+1));setFaceCount(prev=>prev+1);}catch{}
       {
         const ct=data.result?.character_type;
@@ -10795,7 +10800,7 @@ function FaceReadingModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,o
     }
   }
 
-  function pay(){setLoading(true);setTimeout(()=>{setLoading(false);setPaidRetryCredit(true);setShowPayDone(true);},1600);}
+  function pay(_method?:string,deductionIntent?:any){if(deductionIntent)setPendingDeduction(deductionIntent);setLoading(true);setTimeout(()=>{setLoading(false);setPaidRetryCredit(true);setShowPayDone(true);},1600);}
 
   return(
     <>
@@ -10944,7 +10949,7 @@ function FaceReadingModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,o
           <button className="btn btn-g" onClick={()=>setStep("upload")}>뒤로</button>
         </>}
 
-        {step==="pay"&&<><div className="mt">🪞 내 관상보기</div><div className="ms">{personName}님 · 7부위 정밀 분석 · 980원</div><PayStepComp price="980원" onPay={pay} onBack={()=>{const totalQs=(PRE_Q_CONFIG["gwansang_full"]||[]).length;setPreQStartIdx(Math.max(0,totalQs-1));setStep("questions");}} loading={loading} svcId="gwansang_full"/></>}
+        {step==="pay"&&<><div className="mt">🪞 내 관상보기</div><div className="ms">{personName}님 · 7부위 정밀 분석 · 980원</div><PayStepComp price="980원" onPay={pay} onBack={()=>{const totalQs=(PRE_Q_CONFIG["gwansang_full"]||[]).length;setPreQStartIdx(Math.max(0,totalQs-1));setStep("questions");}} loading={loading} svcId="gwansang_full" deferred/></>}
 
         {step==="result"&&result&&(()=>{
           // 에러카드 처리
@@ -11309,6 +11314,8 @@ function BabyGwansangModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,
   const[validating,setValidating]=useState(false);
   const[showPayDone,setShowPayDone]=useState(false);
   const[paidRetryCredit,setPaidRetryCredit]=useState(false);
+  // v(2026-07-09): 캐시/쿠폰/이용권 차감을 분석 성공 확인 후로 지연
+  const[pendingDeduction,setPendingDeduction]=useState<any>(null);
   const[result,setResult]=useState<any>(preloadResult||null);
   // 이전 분석 결과 보관 — "다른 아기 분석" 도중 결과로 되돌아갈 수 있게
   const[prevResult,setPrevResult]=useState<any>(null);
@@ -11364,6 +11371,9 @@ function BabyGwansangModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,
       setResult(data.result);
       setTabIdx(0);
       setStep("result");
+      // v(2026-07-09): 분석 성공 확인된 지금 시점에만 캐시/쿠폰/이용권 차감 확정
+      commitPaymentDeduction(pendingDeduction);
+      setPendingDeduction(null);
       try{localStorage.setItem(babyKey,String(babyCount+1));setBabyCount(prev=>prev+1);}catch{}
       {
         const charName=data.result?.character_name?`${data.result.character_name}`:`종합 ${data.result?.total_score||"?"}점`;
@@ -11379,7 +11389,7 @@ function BabyGwansangModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,
     }
   }
 
-  function pay(){setLoading(true);setTimeout(()=>{setLoading(false);setShowPayDone(true);},1600);}
+  function pay(_method?:string,deductionIntent?:any){if(deductionIntent)setPendingDeduction(deductionIntent);setLoading(true);setTimeout(()=>{setLoading(false);setShowPayDone(true);},1600);}
 
   const nm=result?._friendlyName||personName;
 
@@ -11509,7 +11519,7 @@ function BabyGwansangModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,
         </>}
 
         {step==="preqs"&&<PreQuestionFlow embedded svcId="baby_gwansang" iconTitle="🍼 우리 아기 관상" subtitle="더 정확한 분석을 위해" initialQStep={preQStartIdx} initialAnswers={preQA} onComplete={(ans)=>{setPreQStartIdx(0);onPreqsDone(ans);}} onClose={()=>{setPreQStartIdx(0);setStep("upload");}}/>}
-        {step==="pay"&&<><div className="mt">🍼 우리 아기 관상</div><div className="ms">{personName} · 10가지 운명 정밀 분석 · 980원</div><PayStepComp price="980원" onPay={pay} onBack={()=>{const totalQs=(PRE_Q_CONFIG["baby_gwansang"]||[]).length;setPreQStartIdx(Math.max(0,totalQs-1));setStep("preqs");}} loading={loading} svcId="baby_gwansang"/></>}
+        {step==="pay"&&<><div className="mt">🍼 우리 아기 관상</div><div className="ms">{personName} · 10가지 운명 정밀 분석 · 980원</div><PayStepComp price="980원" onPay={pay} onBack={()=>{const totalQs=(PRE_Q_CONFIG["baby_gwansang"]||[]).length;setPreQStartIdx(Math.max(0,totalQs-1));setStep("preqs");}} loading={loading} svcId="baby_gwansang" deferred/></>}
 
         {step==="result"&&result&&(()=>{
           // 에러카드 처리
