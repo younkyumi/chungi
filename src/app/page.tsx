@@ -5422,6 +5422,7 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
   const fileRef2=useRef<any>(null);const[imgSrc2,setImgSrc2]=useState<any>(preloadResult?._imgSrc2||null);
   const fileRef3=useRef<any>(null);const[imgSrc3,setImgSrc3]=useState<any>(preloadResult?._imgSrc3||null);
   const[realAnalysis,setRealAnalysis]=useState<any>(preloadResult||null);
+  const[realAnalysisErr,setRealAnalysisErr]=useState<string|null>(null); // v(2026-07-09): 손금·발금·얼굴점·눈점 — 실패 감지(기존엔 .catch(()=>{})로 무음 실패)
   // v(2026-07-08): 궁합 5종(gwansang/bff/fan/biz/enemy) 실제 API 결과 — seed 공식 대체
   const[compatResult,setCompatResult]=useState<any>(preloadResult?._apiResult||null);
   const[compatErr,setCompatErr]=useState<string|null>(null);
@@ -5759,9 +5760,12 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
     setStep("loading");
   }
   function onEmotionDone(answers:any){setEmotionAnswers(answers);setStep("loading");}
+  // v(2026-07-09): 결제/캐시 차감 지연 + 실패 감지를 위해 컴포넌트 전체에서 공유하는 상수로 승격
+  const PALM_MOLE_LIKE=["palmistry","footreading","mole","eye_mole"];
   // 손금/발금/얼굴점/눈점 — 사진 진입 시 API 분석 백그라운드 호출
   useEffect(()=>{
     if(step!=="loading"||!imgSrc)return;
+    if(realAnalysis||realAnalysisErr)return; // 이미 시도함(성공/실패 불문 재요청 방지) — 궁합 7종과 동일 패턴
     const PALM_LIKE=["palmistry","footreading"];
     const MOLE_LIKE=["mole","eye_mole"];
     if(PALM_LIKE.includes(svc.id)){
@@ -5769,13 +5773,33 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
         ?((preQ.foot||"").includes("오른발")?"foot_right":"foot_left")
         :((preQ.hand||"").includes("오른손")?"palm_right":"palm_left");
       fetch("/api/palm-reading",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({imageData:imgSrc,type:t,mediaType:"image/jpeg"})})
-        .then(r=>r.json()).then(j=>{if(j.result)setRealAnalysis(j.result);}).catch(()=>{});
+        .then(r=>r.json()).then(j=>{if(j.result)setRealAnalysis(j.result);else setRealAnalysisErr(j.error||"분석에 실패했어요");}).catch(()=>setRealAnalysisErr("네트워크 오류가 발생했어요"));
     }else if(MOLE_LIKE.includes(svc.id)){
       const t=svc.id==="eye_mole"?"eye":"face";
       fetch("/api/mole-reading",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({imageData:imgSrc,type:t,mediaType:"image/jpeg"})})
-        .then(r=>r.json()).then(j=>{if(j.result)setRealAnalysis(j.result);}).catch(()=>{});
+        .then(r=>r.json()).then(j=>{if(j.result)setRealAnalysis(j.result);else setRealAnalysisErr(j.error||"분석에 실패했어요");}).catch(()=>setRealAnalysisErr("네트워크 오류가 발생했어요"));
     }
-  },[step,svc.id,imgSrc]);
+  },[step,svc.id,imgSrc,realAnalysis,realAnalysisErr]);
+  // v(2026-07-09): 손금·발금·얼굴점·눈점 — 실패 시 알림+재시도 유도, 성공 시에만 결제 확정(commitPaymentDeduction)
+  // 기존엔 FunLoader 5초 타이머가 API 응답과 무관하게 무조건 "result"로 넘어가던 것 fix (궁합 7종과 동일 구조로 통일)
+  useEffect(()=>{
+    if(step!=="loading")return;
+    if(!PALM_MOLE_LIKE.includes(svc.id))return;
+    if(realAnalysisErr){
+      alert(`⚠️ AI 분석 일시 오류\n\n${realAnalysisErr}\n\n결제가 확정되지 않았으니 안심하고 다시 시도해주세요.\n반복되면 카카오 채널로 문의 부탁드립니다.`);
+      setRealAnalysisErr(null);
+      setStep("input");
+      return;
+    }
+    if(realAnalysis){
+      setStep("result");
+      commitPaymentDeduction(pendingDeduction);
+      setPendingDeduction(null);
+      const _td=new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
+      const rt={svcId:svc.id,...(realAnalysis||{}),_imgSrc:imgSrc||null,_preQ:preQ,_birth:selectedPerson?.birth,_testDate:_td};
+      addHistory({icon:svc.icon,name:svc.name,svcId:svc.id,person:form.name||selectedPerson?.name||"나",person2:selectedPerson2?.name||"",person3:selectedPerson3?.name||"",date:new Date().toLocaleDateString("ko-KR"),ctx,emotion:emotionAnswers,preQuestions:preQ,resultType:rt});
+    }
+  },[step,realAnalysis,realAnalysisErr,svc.id]);
   // v(2026-07-08): 궁합 5종 + 부모자식궁합 — seed 공식 대신 실제 API 호출
   const COMPAT5_MODE_MAP:Record<string,string>={gwansang_compat:"couple",bff_compat:"bff",fan_compat:"fan",biz_gwansang:"business",enemy_compat:"enemy"};
   const COMPAT_MODE_MAP:Record<string,string>={...COMPAT5_MODE_MAP,parent_child_compat:"family",pet_owner_compat:"pet"};
@@ -5824,6 +5848,8 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
     // v(2026-07-08): 궁합 5종+부모자식궁합은 실제 API 응답 대기 전용 useEffect가
     // step/result 전환·addHistory를 전담 — 여기서는 완전히 스킵 (FunLoader onDone도 no-op 처리됨)
     if(COMPAT_MODE_MAP[svc.id])return;
+    // v(2026-07-09): 손금·발금·얼굴점·눈점도 동일하게 전용 useEffect가 전담 (성공/실패 구분 + 결제 확정 시점 fix)
+    if(PALM_MOLE_LIKE.includes(svc.id))return;
     setStep("result");
     // v300: celeb_compat 카운트 증가 (실제 완료 시점에 — history 저장과 동기화)
     if(svc.id==="celeb_compat"){
@@ -5847,11 +5873,9 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
     if(svc.id==="celeb_compat"){
       rt={svcId:"celeb_compat",_birth:selectedPerson?.birth,_imgSrc:imgSrc||null,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})};
     }
-    // v665: 결과↔기록소 동기화 — 사진 분석/이름풀이/행운번호·배경화면도 resultType 저장
+    // v665: 결과↔기록소 동기화 — 이름풀이/행운번호·배경화면도 resultType 저장
+    // (손금·발금·얼굴점·눈점은 v(2026-07-09)부터 전용 useEffect가 전담 — 위 PALM_MOLE_LIKE 스킵 참고)
     const _td=new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
-    if(["palmistry","footreading","mole","eye_mole"].includes(svc.id)){
-      rt={svcId:svc.id,...(realAnalysis||{}),_imgSrc:imgSrc||null,_preQ:preQ,_birth:selectedPerson?.birth,_testDate:_td};
-    }
     if(svc.id==="namereading"||svc.id==="name_reading"){
       rt={svcId:svc.id,nrHanjaSurname,nrHanja1,nrHanja2,nrSajuMeta,_birth:selectedPerson?.birth,_preQ:preQ,_testDate:_td};
     }
@@ -6997,7 +7021,7 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
         {/* 재미 로딩 화면 — 궁합 5종+부모자식궁합은 실제 API 응답 대기(useEffect가 전환 전담), duration은 시각적 페이싱용 */}
         {step==="loading"&&<>
           <div className="mt">{svc.icon} {svc.name}</div>
-          <FunLoader duration={COMPAT_MODE_MAP[svc.id]?15000:5000} onDone={COMPAT_MODE_MAP[svc.id]?(()=>{}):onLoadingDone} type={isPhoto?"face":"saju"}/>
+          <FunLoader duration={COMPAT_MODE_MAP[svc.id]?15000:PALM_MOLE_LIKE.includes(svc.id)?12000:5000} onDone={(COMPAT_MODE_MAP[svc.id]||PALM_MOLE_LIKE.includes(svc.id))?(()=>{}):onLoadingDone} type={isPhoto?"face":"saju"}/>
         </>}
 
         {step==="pay"&&<>
@@ -7022,7 +7046,7 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
             if(_SKIP_INPUT_TO_PREQS.includes(svc.id)){_goLastPreq(svc.id);return setStep("preqs");}
             if(_PREQ_FIRST.includes(svc.id)){_goLastPreq(svc.id);return setStep("preqs");}
             setStep("input");
-          }} loading={loading} svcId={svc.id} deferred={!!COMPAT_MODE_MAP[svc.id]}/>
+          }} loading={loading} svcId={svc.id} deferred={!!COMPAT_MODE_MAP[svc.id]||PALM_MOLE_LIKE.includes(svc.id)}/>
         </>}
 
         {step==="result"&&<>
