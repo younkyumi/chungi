@@ -20650,6 +20650,8 @@ function TaegilModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLogi
   const[loading,setLoading]=useState(false);
   const[result,setResult]=useState<any>(preloadResult||null);
   const[showPayDone,setShowPayDone]=useState(false);
+  // v(2026-07-09): 캐시/쿠폰/이용권 차감을 결과 확정 후로 지연
+  const[pendingDeduction,setPendingDeduction]=useState<any>(null);
   const[detailUnlocked,setDetailUnlocked]=useState(!!preloadResult?.detail);
   // v271: 흐름 재배치 — 사전질문 + 분석중 + (유료 결제) 추가
   // v665: 기록소 재진입 시 focus 복원
@@ -20715,6 +20717,9 @@ function TaegilModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLogi
     }
     setResult(baseRes);
     setStep("result");
+    // v(2026-07-09): 결정론적 콘텐츠라 항상 성공이지만, 원칙 통일을 위해 완료 확인 시점에서 차감 확정
+    commitPaymentDeduction(pendingDeduction);
+    setPendingDeduction(null);
     addHistory({icon:"📅",name:freeOnly?"좋은 날 확인하기":"좋은 날 찾기",svcId:freeOnly?"taegil_free":"taegil",person:selectedPerson?.name||"나",result:`${p} · 최적일: ${scores[0].date}`,date:new Date().toLocaleDateString("ko-KR"),ctx:{focus:preFocus},resultType:{purpose:p,scores,best:scores[0],detail:baseRes.detail||null,recommended:baseRes.recommended||null,focus:preFocus,_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})}});
   }
 
@@ -20958,7 +20963,7 @@ function TaegilModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLogi
         {step==="pay"&&!freeOnly&&<>
           <div className="mt">📅 좋은 날 찾기</div>
           <div className="ms">사주 기반 길일 분석 · 980원</div>
-          <PayStepComp price="980원" onPay={()=>{setLoading(true);setTimeout(()=>{setLoading(false);setShowPayDone(true);},1800);}} onBack={()=>setStep("preQ")} loading={loading} svcId="taegil"/>
+          <PayStepComp price="980원" onPay={(_m?:string,deductionIntent?:any)=>{if(deductionIntent)setPendingDeduction(deductionIntent);setLoading(true);setTimeout(()=>{setLoading(false);setShowPayDone(true);},1800);}} onBack={()=>setStep("preQ")} loading={loading} svcId="taegil" deferred/>
           {showPayDone&&<PayDonePopup svc={{id:"taegil",name:"좋은 날 찾기"}} ctx={{}} cart={cart} setCart={setCart} onClose={()=>{setShowPayDone(false);setStep("loading");}} onGoShop={onGoShop}/>}
         </>}
 
