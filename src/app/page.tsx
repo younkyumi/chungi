@@ -11968,6 +11968,8 @@ function PetGwansangModal({species,onClose,cart,setCart,onGoShop,addHistory,isLo
   const[showPayDone,setShowPayDone]=useState(false);
   // 결제 후 사진 에러 시 재결제 방지 — 결제 1회 = 정상 결과 1회 보장
   const[paidRetryCredit,setPaidRetryCredit]=useState(false);
+  // v(2026-07-09): 캐시/쿠폰/이용권 차감을 분석 성공 확인 후로 지연 — pay() 시점엔 보관만
+  const[pendingDeduction,setPendingDeduction]=useState<any>(null);
   const[result,setResult]=useState<any>(preloadResult||null);
   // 이전 분석 결과 보관 — "다른 댕댕/냥 분석" 도중 결과로 되돌아갈 수 있게
   const[prevResult,setPrevResult]=useState<any>(null);
@@ -12058,6 +12060,9 @@ function PetGwansangModal({species,onClose,cart,setCart,onGoShop,addHistory,isLo
       const enrichedResult={...data.result,character_type:charType};
       setResult(enrichedResult);
       setStep("result");
+      // v(2026-07-09): 분석 성공 확인된 지금 시점에만 캐시/쿠폰/이용권 차감 확정
+      commitPaymentDeduction(pendingDeduction);
+      setPendingDeduction(null);
       const charName=data.result?.breed_name||`${svcName} 결과`;
       // _imgSrc는 30KB 슬림 가드 통과를 위해 base64 작은 것만 (큰 사진은 기록소에서 캐릭터 카드로 대체)
       addHistory({icon:petEmoji,name:svcName,svcId,person:personName,date:new Date().toLocaleDateString("ko-KR"),result:`${petEmoji} ${charName}`,resultType:{...enrichedResult,_imgSrc:imgBase64||imgSrc},preQuestions:preQA});
@@ -12065,7 +12070,7 @@ function PetGwansangModal({species,onClose,cart,setCart,onGoShop,addHistory,isLo
     }catch(e:any){setPaidRetryCredit(true);alert("분석 중 오류가 발생했어요. 결제는 처리되지 않았습니다. 다시 시도해주세요.\n\n"+(e?.message||""));setStep("upload");}
   }
 
-  function pay(){setLoading(true);setTimeout(()=>{setLoading(false);setPaidRetryCredit(true);setShowPayDone(true);},1800);}
+  function pay(_method?:string,deductionIntent?:any){if(deductionIntent)setPendingDeduction(deductionIntent);setLoading(true);setTimeout(()=>{setLoading(false);setPaidRetryCredit(true);setShowPayDone(true);},1800);}
 
   const r=result;
   return(<><div className="ov"><div className="md">
@@ -12156,7 +12161,7 @@ function PetGwansangModal({species,onClose,cart,setCart,onGoShop,addHistory,isLo
     </>}
 
     {step==="preqs"&&<PreQuestionFlow embedded svcId={svcId} iconTitle={`${petEmoji} ${svcName}`} subtitle="더 정확한 분석을 위해" initialQStep={preQStartIdx} initialAnswers={preQA} onComplete={(ans)=>{setPreQStartIdx(0);onPreqsDone(ans);}} onClose={()=>{setPreQStartIdx(0);setStep("upload");}}/>}
-    {step==="pay"&&<><div className="mt">{petEmoji} {svcName}</div><div className="ms">우리 {personName} · 6탭 정밀 관상 분석 · 980원</div><PayStepComp price="980원" onPay={pay} onBack={()=>{const totalQs=(PRE_Q_CONFIG[svcId]||[]).length;setPreQStartIdx(Math.max(0,totalQs-1));setStep("preqs");}} loading={loading} svcId={svcId}/></>}
+    {step==="pay"&&<><div className="mt">{petEmoji} {svcName}</div><div className="ms">우리 {personName} · 6탭 정밀 관상 분석 · 980원</div><PayStepComp price="980원" onPay={pay} onBack={()=>{const totalQs=(PRE_Q_CONFIG[svcId]||[]).length;setPreQStartIdx(Math.max(0,totalQs-1));setStep("preqs");}} loading={loading} svcId={svcId} deferred/></>}
     {step==="loading"&&<FunLoader duration={20000} onDone={()=>{}} type="face"/>}
     {step==="needLogin"&&<>
       <div style={{textAlign:"center",padding:"20px 0"}}>
