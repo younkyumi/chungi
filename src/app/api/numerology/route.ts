@@ -16,6 +16,53 @@ function calcSoulNumber(year: number, month: number, day: number): number {
   return total;
 }
 
+// v(2026-07-09): 행운 숫자 — 서양 수비학 표준 공식(소울넘버 + 9씩 증가, 예: 8→8,17,26,35).
+// AI가 이 패턴을 학습해 우연히 재현했을 뿐 코드 고정이 아니었음 → 순수 계산으로 서버에서 확정(계층2: 점수/등급).
+function calcLuckyNumbers(soulNumber: number): number[] {
+  return [0, 1, 2, 3].map((i) => soulNumber + i * 9);
+}
+
+// v(2026-07-09): 계층3(실용정보) 고정 테이블 — AI 자유생성이라 매번 흔들리던 필드들 확정.
+// 방향은 후천팔괘(주방향=테마와 맞는 괘, 보조방향=정반대 괘 — 의도적 균형) 근거.
+// 탄생목은 SOUL_STONES/PLANETS와 동일한 "정체성(계층1)" 성격 — 이름만 고정, 의미 서술은 AI가 이 이름 기반으로 작성.
+// 동기화 "시간"은 정통 수비학에 실존하는 개념이 아니라 이 앱의 창작 리추얼 요소라 정밀 시각 대신
+// 시간대·분위기 표현으로 설계(2026-07-10 사용자 결정) — "근거 없는 정밀함"을 피하고 창작 콘텐츠임을 그대로 인정.
+const LUCKY_DIRECTIONS: Record<number, string> = {
+  1: "남쪽(리·광명) · 북쪽(감·지혜)",
+  2: "서남쪽(곤·포용) · 동북쪽(간·고요)",
+  3: "서쪽(태·표현) · 동쪽(진·시작)",
+  4: "동북쪽(간·기반) · 서남쪽(곤·수용)",
+  5: "동남쪽(손·소통) · 서북쪽(건·확장)",
+  6: "북쪽(감·치유) · 남쪽(리·온기)",
+  7: "동북쪽(간·고독) · 서남쪽(곤·포용)",
+  8: "서북쪽(건·리더십) · 동남쪽(손·번영)",
+  9: "서남쪽(곤·포용) · 동북쪽(간·견고)",
+  11: "남쪽(리·깨달음) · 북쪽(감·직관)",
+  22: "동북쪽(간·구축) · 서남쪽(곤·확장)",
+  33: "동남쪽(손·나눔) · 서북쪽(건·헌신)",
+};
+
+const LUCKY_TIME_MOODS: Record<number, string> = {
+  1: "이른 아침, 태양이 떠오르는 순간",
+  2: "달빛이 스며드는 고요한 밤",
+  3: "영감이 샘솟는 오후의 햇살 아래",
+  4: "만물이 깨어나는 새벽의 정적",
+  5: "바람이 선선한 이른 저녁",
+  6: "노을이 물드는 다정한 저녁",
+  7: "모두가 잠든 깊은 밤",
+  8: "하루를 지배하는 정오의 태양",
+  9: "모든 걸 감싸는 황혼 무렵",
+  11: "잠에서 막 깨어난 몽롱한 새벽",
+  22: "하루를 설계하는 아침의 첫 순간",
+  33: "혼자만의 고요한 명상 시간",
+};
+
+const SOUL_TREES: Record<number, string> = {
+  1: "소나무", 2: "버드나무", 3: "벚나무", 4: "은행나무", 5: "자작나무",
+  6: "매화나무", 7: "전나무", 8: "느티나무", 9: "참나무",
+  11: "배롱나무", 22: "대나무", 33: "목련나무",
+};
+
 const SOUL_NAMES: Record<number, string> = {
   1: "세상을 개척하는 불꽃같은 도사",
   2: "조화를 엮어내는 달빛의 현자",
@@ -73,7 +120,7 @@ const SYSTEM_PROMPT = `[ROLE]
   "repel_label": "상극의 파동 한 줄 설명 (예: '경쟁 관계 경계')",
   "soulmate_freq": "소울메이트를 끌어당기는 주파수 (3~4줄. 어떤 파트너가 와야 하는지, 끌어당기는 태도)",
   "tarot": "영혼의 타로 & 천재성 (3~4줄. 수호 타로 카드 + {nm}님 숨은 천재성)",
-  "tree": "탄생목 (나무명 + 3~4줄 의미. 예: '사과나무')",
+  "tree": "[가이드] 탄생목은 반드시 아래 '지정된 탄생목' 이름으로 시작해서 3~4줄로 의미를 서술할 것. 다른 나무 이름 절대 사용 금지.",
   "health": "건강과 활력 에너지 (3~4줄. 오행 관점 + 주의 장기)",
   "food": "영혼의 열기를 식히는 음식 (3~4줄. 추천/주의 음식)",
   "space": "행운의 공간 가이드 (3~4줄. 방위·실내 배치 팁)",
@@ -93,8 +140,8 @@ const SYSTEM_PROMPT = `[ROLE]
   "routine": "주파수 깨우는 루틴 (3~4줄. 아침 의식·소지품·운동)",
   "lucky_numbers": "행운 숫자 4개 배열 (예: [1,10,19,28])",
   "lucky_color_hex": "절대 행운 컬러 (#HEX 코드 + 한글명. 예: '#FF0000 (딥 루비 레드)')",
-  "lucky_direction": "수호 방향 (예: '남쪽 (확장), 북쪽 (휴식)')",
-  "lucky_time": "주파수 동기화 시간 (예: '매일 아침 7시 10분, 밤 11시 1분')",
+  "lucky_direction": "[가이드 — 이 필드는 서버가 고정값으로 덮어씀. 아무거나 출력해도 됨]",
+  "lucky_time": "[가이드 — 이 필드는 서버가 고정값으로 덮어씀. 아무거나 출력해도 됨]",
   "closing": "[가이드 — 절대 출력 금지. 본문 텍스트만 출력] {nm}님께 전하는 따뜻한 마무리 한마디. 1~2줄 (50~80자). 이름 한 번 부르며 소울넘버 N의 핵심을 한 줄로 짚고, 격려·응원으로 마무리. [중요: '🔮 천기의 한마디 —' 같은 라벨 텍스트는 절대 본문에 포함하지 말 것. 순수 메시지 본문만]"
 }`;
 
@@ -113,9 +160,10 @@ export async function POST(request: NextRequest) {
     const soulName = SOUL_NAMES[soulNumber] || "우주의 신비";
     const soulStone = SOUL_STONES[soulNumber] || "크리스탈";
     const soulPlanet = SOUL_PLANETS[soulNumber] || "태양";
+    const soulTree = SOUL_TREES[soulNumber] || "느티나무";
 
     const focusLine = focus && focus !== "skip" ? ` 사용자가 특히 "${focus}"에 가장 관심이 있어요. 해당 영역(wealth_flow/wealth_guide, soulmate_freq, mission 등 관련 필드)을 더 풍부하고 구체적으로 작성하고, 결과 전반에서도 이 관심사를 의식적으로 강조해줘.` : "";
-    const userText = `이름: ${personName}님. 생년월일: ${year}년 ${month}월 ${day}일. 소울넘버: ${soulNumber}번 (${soulName}). 행운석: ${soulStone}, 수호성: ${soulPlanet}.${focusLine} 위 정보를 바탕으로 {nm}="${personName}"으로 치환하여 모든 섹션 생성. 수비학 전통에 입각해 ${soulNumber}번의 본질을 깊이 있게 풀어줘.`;
+    const userText = `이름: ${personName}님. 생년월일: ${year}년 ${month}월 ${day}일. 소울넘버: ${soulNumber}번 (${soulName}). 행운석: ${soulStone}, 수호성: ${soulPlanet}. 지정된 탄생목: "${soulTree}" (tree 필드는 반드시 이 이름으로 시작할 것, 다른 나무 절대 금지).${focusLine} 위 정보를 바탕으로 {nm}="${personName}"으로 치환하여 모든 섹션 생성. 수비학 전통에 입각해 ${soulNumber}번의 본질을 깊이 있게 풀어줘.`;
 
     const reqBody = JSON.stringify({
       systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
@@ -165,6 +213,16 @@ export async function POST(request: NextRequest) {
     parsed.soul_name = soulName;
     parsed.soul_stone = soulStone;
     parsed.soul_planet = soulPlanet;
+    // v(2026-07-09): 계층2(점수) — AI 자유생성 대신 소울넘버 기반 결정론적 계산으로 강제 확정
+    parsed.lucky_numbers = calcLuckyNumbers(soulNumber);
+    // v(2026-07-10): 계층3(실용정보) — 후천팔괘 기반 고정 방향 + 시간대·분위기 표현으로 강제 확정
+    parsed.lucky_direction = LUCKY_DIRECTIONS[soulNumber] || parsed.lucky_direction;
+    parsed.lucky_time = LUCKY_TIME_MOODS[soulNumber] || parsed.lucky_time;
+    // tree(탄생목) 안전망 — 프롬프트로 지정된 이름을 안 지켰을 경우 강제로 이름 교체
+    if (typeof parsed.tree === "string" && !parsed.tree.startsWith(soulTree)) {
+      const rest = parsed.tree.replace(/^\S+\s*/, "");
+      parsed.tree = `${soulTree} — ${rest}`;
+    }
 
     // v770: Gemini 한국어 오타 교정 (확실한 것만 — 재귀로 전 텍스트 필드 적용)
     const _TYPO: Record<string, string> = { "베풘": "베푼" };
