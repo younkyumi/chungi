@@ -8274,7 +8274,7 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
                   </div>
                 </div>
                 <div style={{position:"absolute",bottom:16,textAlign:"center",left:0,right:0}}>
-                  <div style={{fontSize:9,color:"rgba(255,255,255,0.3)",letterSpacing:2}}>AI GENERATED · 천기.kr</div>
+                  <div style={{fontSize:9,color:"rgba(255,255,255,0.3)",letterSpacing:2}}>천기 오행 디자인 · 천기.kr</div>
                 </div>
               </div>
               <div style={{background:"#f0fdf4",border:"1px solid #bbf7d0",borderRadius:12,padding:"13px",marginBottom:12}}>
@@ -14780,15 +14780,43 @@ function LoveCompatModal({svc,onClose,isLoggedIn,cart,setCart,onGoShop,addHistor
 
   function analyze(){
     // v270: setTimeout 제거 — loading screen이 시간 통제
-    const score=50+Math.floor(Math.random()*50);
-    const coupleScores={성격:60+Math.floor(Math.random()*40),대화:55+Math.floor(Math.random()*45),감정:50+Math.floor(Math.random()*50),가치관:55+Math.floor(Math.random()*45),연애:60+Math.floor(Math.random()*40)};
-    const bffScores={성격:60+Math.floor(Math.random()*40),소통:55+Math.floor(Math.random()*45),공감:50+Math.floor(Math.random()*50),취향:55+Math.floor(Math.random()*45),시너지:60+Math.floor(Math.random()*40)};
+    // v(2026-07-13): score/scores를 사주 기반 결정론적 계산으로 교체.
+    // 이전엔 순수 Math.random()이라 같은 두 사람을 재분석해도 점수가 매번 달라지고,
+    // 아래 PAGE2의 합충(合冲) 판정("합 2곳이면 좋은 궁합" 등)과 모순되는 결과가 나왔음(예: 합충은 나쁜데 점수는 95점).
+    // PAGE2와 동일한 합충 로직(SAMHAB/YUKHAP/SANGCHUNG)을 재사용해 두 값이 항상 같은 방향을 가리키도록 함.
+    // 세부 편차(±)는 이름·생년월일 시드 기반 _seededRng로만 부여 — 여전히 결정론적(같은 입력=같은 결과).
+    const meSaju=(me.year&&me.month&&me.day)?_getSaju(+me.year,+me.month,+me.day,me.hour?+me.hour:null):null;
+    const ptSaju=(partner.year&&partner.month&&partner.day)?_getSaju(+partner.year,+partner.month,+partner.day,partner.hour?+partner.hour:null):null;
+    const seed=[me.name,partner.name,me.year,me.month,me.day,partner.year,partner.month,partner.day].join("|").split("").reduce((s,c)=>s+c.charCodeAt(0),0)||1;
+    const rng=_seededRng(seed);
+    let base=62;
+    if(meSaju&&ptSaju){
+      const SANGSAENG_C:any={"목":"화","화":"토","토":"금","금":"수","수":"목"};
+      const SAMHAB_C:any={[0]:[4,8],[1]:[5,9],[2]:[6,10],[3]:[7,11],[4]:[0,8],[5]:[1,9],[6]:[2,10],[7]:[3,11],[8]:[0,4],[9]:[1,5],[10]:[2,6],[11]:[3,7]};
+      const YUKHAP_C:any={0:1,1:0,2:11,3:10,4:9,5:8,6:7,7:6,8:5,9:4,10:3,11:2};
+      const SANGCHUNG_C:any={0:6,1:7,2:8,3:9,4:10,5:11,6:0,7:1,8:2,9:3,10:4,11:5};
+      const meIlganOh=_CG_OHANG[meSaju.ilgan],ptIlganOh=_CG_OHANG[ptSaju.ilgan];
+      if(meIlganOh===ptIlganOh)base+=6;
+      else if(SANGSAENG_C[meIlganOh]===ptIlganOh||SANGSAENG_C[ptIlganOh]===meIlganOh)base+=16;
+      else base+=9; // 상극 — 긴장감은 있지만 끌림도 강한 궁합이라 큰 감점은 X (PAGE2 안내 문구와 동일 톤)
+      const pillars=[{me:meSaju.year.jj,pt:ptSaju.year.jj},{me:meSaju.month.jj,pt:ptSaju.month.jj},{me:meSaju.day.jj,pt:ptSaju.day.jj}];
+      if(meSaju.hour&&ptSaju.hour)pillars.push({me:meSaju.hour.jj,pt:ptSaju.hour.jj});
+      pillars.forEach(p=>{
+        if((SAMHAB_C[p.me]||[]).includes(p.pt))base+=7;
+        else if(YUKHAP_C[p.me]===p.pt)base+=5;
+        else if(SANGCHUNG_C[p.me]===p.pt)base-=4;
+      });
+    }
+    const score=Math.min(99,Math.max(50,Math.round(base+rng()*6-3)));
+    const statVar=()=>Math.floor(rng()*16)-6; // 세부 항목 -6~+9 편차 (총점 중심으로 자연스럽게 갈림)
+    const coupleScores={성격:Math.min(99,Math.max(40,score+statVar())),대화:Math.min(99,Math.max(40,score+statVar())),감정:Math.min(99,Math.max(40,score+statVar())),가치관:Math.min(99,Math.max(40,score+statVar())),연애:Math.min(99,Math.max(40,score+statVar()))};
+    const bffScores={성격:Math.min(99,Math.max(40,score+statVar())),소통:Math.min(99,Math.max(40,score+statVar())),공감:Math.min(99,Math.max(40,score+statVar())),취향:Math.min(99,Math.max(40,score+statVar())),시너지:Math.min(99,Math.max(40,score+statVar()))};
     const scores=mode==="couple"?coupleScores:bffScores;
     const coupleMsgs=["두 분은 서로를 보완하는 환상의 궁합!","함께할수록 빛나는 인연이에요.","서로의 부족한 부분을 채워주는 관계예요.","소통만 잘 되면 최고의 파트너가 될 수 있어요!"];
     const bffMsgs=["찐친 감정! 서로 통하는 부분이 많아요!","같이 있으면 시너지가 폭발하는 조합!","서로의 장점을 끌어올리는 베프 궁합!","웃음이 끊이지 않는 환상의 콤비!"];
     const msgs=mode==="couple"?coupleMsgs:bffMsgs;
     // v667: msg/testDate 단일값 — setResult와 addHistory가 같은 값 쓰도록 (이전엔 두 번 random + new Date()로 결과↔기록소 미세 차이)
-    const finalMsg=msgs[Math.floor(Math.random()*msgs.length)];
+    const finalMsg=msgs[Math.floor(rng()*msgs.length)];
     const testDate=new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
     setResult({score,scores,msg:finalMsg,mode,focus:preFocus,me,partner,_testDate:testDate});
     setStep("result");
@@ -20656,6 +20684,47 @@ function DreamModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
   );
 }
 
+// ─── 좋은 날 찾기 헬퍼 ────────────────────────────────────
+// v(2026-07-14): 이전엔 날짜와 무관하게 score가 순수 Math.random()이었고, detail.reason도 어떤 날짜를 골라도
+// "천간 甲木·지지 寅木" 문구가 고정으로 나가던 버그(가짜 정밀함) — 날짜별 실제 일진(60갑자)을 계산해
+// 사용자의 오행과 비교하는 결정론적 로직으로 교체. 유료(좋은날찾기)의 "추천일 4개"도 진짜 달력을 스캔해서 찾음.
+const _TAEGIL_SIJIN=[
+  {jj:0,label:"자시(子時)",range:"밤 11시~새벽 1시"},{jj:1,label:"축시(丑時)",range:"새벽 1~3시"},
+  {jj:2,label:"인시(寅時)",range:"새벽 3~5시"},{jj:3,label:"묘시(卯時)",range:"오전 5~7시"},
+  {jj:4,label:"진시(辰時)",range:"오전 7~9시"},{jj:5,label:"사시(巳時)",range:"오전 9~11시"},
+  {jj:6,label:"오시(午時)",range:"오전 11시~오후 1시"},{jj:7,label:"미시(未時)",range:"오후 1~3시"},
+  {jj:8,label:"신시(申時)",range:"오후 3~5시"},{jj:9,label:"유시(酉時)",range:"오후 5~7시"},
+  {jj:10,label:"술시(戌時)",range:"오후 7~9시"},{jj:11,label:"해시(亥時)",range:"오후 9~11시"},
+];
+const _TAEGIL_SANGSAENG:any={"목":"화","화":"토","토":"금","금":"수","수":"목"}; // A가 B를 낳음(생)
+const _TAEGIL_CONQUERS:any={"목":"토","화":"금","토":"수","금":"목","수":"화"}; // A가 B를 극함
+function _taegilDayGanzhi(dateStr:string){
+  const[y,m,d]=dateStr.split("-").map(Number);
+  const s=_getSaju(y,m,d);
+  return{cg:s.day.cg,jj:s.day.jj,ohang:_CG_OHANG[s.day.cg],hanja:`${_CG_HANJA[s.day.cg]}${_JJ_HANJA[s.day.jj]}`,kr:`${_CHEONGAN_KR[s.day.cg]}${_JJ_KR[s.day.jj]}`};
+}
+function _taegilScoreDate(dateStr:string,personOh:string){
+  const day=_taegilDayGanzhi(dateStr);
+  let base=55,rel="무관 — 특별히 강하게 끌리거나 부딪히는 기운은 없는 평이한 날";
+  if(day.ohang===personOh){base=70;rel="비화(比和) — 나와 같은 기운이라 편안하고 안정적인 흐름의 날";}
+  else if(_TAEGIL_SANGSAENG[personOh]===day.ohang){base=82;rel="내 기운이 이 날의 기운을 북돋는 상생(相生) — 내가 주도해서 밀어붙이기 좋은 날";}
+  else if(_TAEGIL_SANGSAENG[day.ohang]===personOh){base=88;rel="이 날의 기운이 나를 돕는 상생(相生) — 귀인과 도움을 만나기 좋은 날";}
+  else if(_TAEGIL_CONQUERS[personOh]===day.ohang){base=64;rel="내가 이 날의 기운을 제압하는 상극(相剋) — 추진력은 있지만 무리하지 않는 게 좋은 날";}
+  else{base=45;rel="이 날의 기운이 나를 제압하는 상극(相剋) — 신중하게 움직여야 하는 날";}
+  const seed=(dateStr+personOh).split("").reduce((s:number,c:string)=>s+c.charCodeAt(0),0)||1;
+  const rng=_seededRng(seed);
+  const score=Math.min(99,Math.max(25,Math.round(base+rng()*8-4)));
+  const grade=score>=85?"◎":score>=70?"○":score>=55?"△":"✕";
+  return{...day,score,grade,rel};
+}
+function _taegilBestSijin(personOh:string){
+  return _TAEGIL_SIJIN.find(t=>_JJ_OHANG[t.jj]===personOh)||_TAEGIL_SIJIN[5];
+}
+function _taegilAvoidSijin(personOh:string){
+  const bad=Object.keys(_TAEGIL_CONQUERS).find(k=>_TAEGIL_CONQUERS[k]===personOh); // bad가 personOh를 극함
+  return _TAEGIL_SIJIN.find(t=>_JJ_OHANG[t.jj]===bad)||_TAEGIL_SIJIN[8];
+}
+
 // ─── 좋은 날 찾기 (택일) 모달 ────────────────────────────────────
 function TaegilModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLoginRequest,selectedPerson=null,freeOnly=false,onUpgrade=null,onOpenService,forceIntro,preloadResult,onRequestPerson}:any){
   const PURPOSES=["결혼","이사","개업","시험","출산","재회/연락","수술","여행","계약","면접","상견례","기타"];
@@ -20708,28 +20777,38 @@ function TaegilModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLogi
         localStorage.setItem(ck,String(cnt+1));
       }catch{}
     }
-    // v271: setTimeout 제거 — loading screen이 시간 통제
-    const scores=selectedDates.map(d=>({date:d,score:30+Math.floor(Math.random()*70),grade:["○","○","△","△","✕"][Math.floor(Math.random()*5)]}));
+    // v(2026-07-14): 날짜별 실제 일진(60갑자) + 사용자 오행 관계 기반 결정론적 점수로 교체 (이전엔 순수 랜덤).
+    const personOh=_getDominantOhang(selectedPerson?.birth);
+    const scores=selectedDates.map(d=>{
+      const info=_taegilScoreDate(d,personOh);
+      return{date:d,score:info.score,grade:info.grade};
+    });
     scores.sort((a,b)=>b.score-a.score);
-    scores[0].grade="◎";if(scores.length>1)scores[1].grade="○";
     const p=purpose==="기타"?customPurpose:purpose;
     const baseRes:any={purpose:p,scores,best:scores[0],detail:null,focus:preFocus};
     // 유료(좋은날찾기)는 이미 결제 완료 → AI 추천 + 상세 해설 자동 언락
     if(!freeOnly){
-      const baseMonth=calMonth;const baseYear=calYear;
+      // v(2026-07-14): 추천일 4개도 실제 달력을 스캔해서 찾도록 변경 (이전엔 랜덤 생성한 가짜 날짜)
       const recs:any[]=[];
-      for(let i=0;i<4;i++){
-        const d=7+Math.floor(Math.random()*21);const m=baseMonth+Math.floor(Math.random()*2);
-        const ds=`${baseYear}-${String((m%12)+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-        if(!selectedDates.includes(ds))recs.push({date:ds,score:78+Math.floor(Math.random()*22)});
+      const today=new Date();
+      for(let i=1;i<=45;i++){
+        const dt=new Date(today);dt.setDate(dt.getDate()+i);
+        const ds=`${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}-${String(dt.getDate()).padStart(2,"0")}`;
+        if(selectedDates.includes(ds))continue;
+        const info=_taegilScoreDate(ds,personOh);
+        recs.push({date:ds,score:info.score});
       }
       recs.sort((a,b)=>b.score-a.score);
-      baseRes.recommended=recs;
+      baseRes.recommended=recs.slice(0,4);
+      const bestInfo=_taegilScoreDate(scores[0].date,personOh);
+      const bestSijin=_taegilBestSijin(personOh);
+      const avoidSijin=_taegilAvoidSijin(personOh);
+      const ohInfo=_OHANG_COLORS[personOh];
       baseRes.detail={
-        reason:`이 날은 천간 甲木이 생기를 발하고, 지지 寅木이 활동력을 높이는 길일입니다. 특히 ${p}에 최적인 이유는 오행의 기운이 상생 관계를 이루어 만사형통의 흐름을 만들기 때문입니다.`,
-        time:"오전 9시~11시 (사시巳時) — 화(火)의 기운이 강해 추진력이 극대화되는 시간",
-        avoid:"오후 3시~5시는 금(金)의 기운이 충돌하여 변수가 생길 수 있으니 피하세요.",
-        tip:`이 날 빨간색 또는 노란색 계열의 옷을 입으면 ${p}의 기운이 더욱 강해집니다.`,
+        reason:`이 날의 일진(日辰)은 ${bestInfo.hanja}(${bestInfo.kr})일 — ${bestInfo.rel}. ${p}에 이 흐름이 잘 맞는 이유는, 이 날의 기운(${bestInfo.ohang})과 ${selectedPerson?.name||"당신"}님 사주의 본기(${personOh})가 서로 영향을 주고받기 때문이에요.`,
+        time:`${bestSijin.range} (${bestSijin.label}) — ${personOh}(${personOh})의 기운이 강해지는 시간`,
+        avoid:`${avoidSijin.range} (${avoidSijin.label})은 ${personOh} 기운을 누르는 시간대라 중요한 결정은 피하는 게 좋아요.`,
+        tip:`이 날 ${ohInfo?.name||"본기"} 계열(${ohInfo?.personalItems||"본기에 맞는 소품"})을 활용하면 ${p}의 기운이 더욱 살아나요.`,
       };
       setDetailUnlocked(true);
     }
