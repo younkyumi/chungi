@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { lockedScore, gradeSAB, fillNameTokens, validateCompatResult } from "@/lib/compat-helpers";
+import { lockedScore, gradeSAB, fillNameTokens, validateCompatResult, GWANSANG_20, BABY_GWANSANG_20, pickFromList } from "@/lib/compat-helpers";
 
 function getGeminiUrl(model = "gemini-2.5-flash") {
   const key = process.env.GEMINI_API_KEY;
@@ -56,10 +56,17 @@ const SYSTEM_PROMPT = `[ROLE]
 `;
 
 // ── Call-1 전용 prompt: type_name 확정만 (이름·관계 컨텍스트 없음) ──
-const CHAR1_PROMPT = `두 사람(자녀·보호자)의 얼굴 특징(코·눈·입·이마·턱)만 보고 각각의 관상 유형명을 결정해.
-얼굴에서 가장 두드러진 특징 1개로 창의적이고 특색 있는 관상 유형명(8~15자) 결정.
+// v(2026-07-14): 자유 작명 → 닫힌 20종 후보 중 선택으로 전환 (같은 사진이 매번 다른 이름을 받던 흔들림 버그 fix)
+// 자녀는 우리아기관상 20종, 보호자는 관상짤(성인) 20종 재사용 — 기존 프롬프트 예시("빛을 향해 자라는 꼬마 태양")가
+// 이미 우리아기관상 1번("세상을 밝히는 꼬마 태양")과 사실상 같은 문구라 원래 설계 의도에 맞춤.
+const CHAR1_PROMPT = `두 사람(자녀·보호자)의 얼굴 특징(코·눈·입·이마·턱)만 보고, 각각 아래 20종 관상 유형 중 가장 가까운 것을 하나씩 고르시오.
+⚠️ 반드시 아래 목록에 있는 이름을 토씨 하나 틀리지 않고 그대로 출력할 것. 새로운 이름 창작 절대 금지.
+[자녀용 20종 목록 — type_a는 반드시 이 중에서 선택]
+${BABY_GWANSANG_20.map((n, i) => `${i + 1}. ${n}`).join("\n")}
+[보호자용 20종 목록 — type_b는 반드시 이 중에서 선택]
+${GWANSANG_20.map((n, i) => `${i + 1}. ${n}`).join("\n")}
 ⚠️ 이름·관계는 이 단계에서 완전 무시. 사진만 본다.
-JSON만: {"type_a": "자녀 관상유형명", "type_b": "보호자 관상유형명"}`;
+JSON만: {"type_a": "자녀용 목록에 있는 이름 그대로", "type_b": "보호자용 목록에 있는 이름 그대로"}`;
 
 async function callGemini(body: string): Promise<Response> {
   const MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-flash-lite"];
@@ -133,6 +140,9 @@ export async function POST(request: NextRequest) {
         if (c1j?.type_b && typeof c1j.type_b === "string") typeB = c1j.type_b;
       }
     } catch {}
+    // v(2026-07-14): 20종 목록 밖 이름이거나 Call-1 실패 시 사진 데이터 기반 결정론적 폴백 선택 (랜덤 아님)
+    typeA = pickFromList(typeA, BABY_GWANSANG_20, b64_1.slice(0, 40));
+    typeB = pickFromList(typeB, GWANSANG_20, b64_2.slice(0, 40));
     console.log(`[parent-child-compat] Call-1 type_a="${typeA ?? "FAILED"}" type_b="${typeB ?? "FAILED"}"`);
 
     // === CALL 2: 전체 가족 궁합 분석 (type_name + score/grade 고정, temperature 0.7) ===

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { lockedScore, gradeSABC, fillNameTokens, validateCompatResult } from "@/lib/compat-helpers";
+import { lockedScore, gradeSABC, fillNameTokens, validateCompatResult, GWANSANG_20, PET_GWANSANG_20, pickFromList } from "@/lib/compat-helpers";
 
 function getGeminiUrl(model = "gemini-2.5-flash") {
   const key = process.env.GEMINI_API_KEY;
@@ -59,19 +59,24 @@ function getSystemPrompt(species: "dog" | "cat") {
 }
 
 // ── Call-1 전용 prompt: 유효성 검증 + type_name 확정 (기간·이름 컨텍스트 없음) ──
+// v(2026-07-14): 자유 작명 → 닫힌 20종 후보 중 선택으로 전환 (같은 사진이 매번 다른 이름을 받던 흔들림 버그 fix)
 function getChar1Prompt(species: "dog" | "cat") {
   const callsign = species === "dog" ? "강아지" : "고양이";
   return `사진1은 집사(사람), 사진2는 ${callsign}이어야 해.
-각 사진의 유효성을 먼저 판단하고, 유효하면 얼굴 특징(눈·코·입·이마·턱 또는 눈매·코·입·털·표정)만 보고 관상 유형명을 결정해.
-얼굴에서 가장 두드러진 특징 1개로 창의적이고 특색 있는 유형명(8~15자) 결정.
+각 사진의 유효성을 먼저 판단하고, 유효하면 얼굴 특징(눈·코·입·이마·턱 또는 눈매·코·입·털·표정)만 보고 아래 20종 관상 유형 중 가장 가까운 것을 하나씩 고르시오.
+⚠️ 반드시 아래 목록에 있는 이름을 토씨 하나 틀리지 않고 그대로 출력할 것. 새로운 이름 창작 절대 금지.
+[집사용 20종 목록 — type_a는 반드시 이 중에서 선택]
+${GWANSANG_20.map((n, i) => `${i + 1}. ${n}`).join("\n")}
+[${callsign}용 20종 목록 — type_b는 반드시 이 중에서 선택]
+${PET_GWANSANG_20.map((n, i) => `${i + 1}. ${n}`).join("\n")}
 ⚠️ 이름·기간은 이 단계에서 완전 무시. 사진만 본다.
 
 JSON만:
 {
   "valid_person": true|false (사진1에 사람 얼굴이 정면/¾각도로 명확히 보이면 true),
   "valid_pet": true|false (사진2에 ${callsign} 1마리의 얼굴이 명확히 보이면 true, 다른 동물·사람·그림·여러마리·가려짐이면 false),
-  "type_a": "집사 관상유형명 (valid_person false면 빈 문자열)",
-  "type_b": "${callsign} 관상유형명 (valid_pet false면 빈 문자열)"
+  "type_a": "집사용 목록에 있는 이름 그대로 (valid_person false면 빈 문자열)",
+  "type_b": "${callsign}용 목록에 있는 이름 그대로 (valid_pet false면 빈 문자열)"
 }`;
 }
 
@@ -157,6 +162,9 @@ export async function POST(request: NextRequest) {
     if (validPet === false) {
       return NextResponse.json({ error: `${callsign} 사진을 다시 확인해주세요. 다른 동물이거나, 여러 마리이거나, 얼굴이 가려진 것 같아요!` }, { status: 400 });
     }
+    // v(2026-07-14): 20종 목록 밖 이름이거나 Call-1 실패 시 사진 데이터 기반 결정론적 폴백 선택 (랜덤 아님)
+    typeA = pickFromList(typeA, GWANSANG_20, b64_1.slice(0, 40));
+    typeB = pickFromList(typeB, PET_GWANSANG_20, b64_2.slice(0, 40));
 
     // === CALL 2: 전체 궁합 분석 (type_name + score/grade 고정, temperature 0.7) ===
     // v(2026-07-09): gwansang-compat 라이브 테스트에서 발견된 버그(점수 흔들림/{nm1}{nm2} 미치환/반쪽짜리 응답) 동일 구조라 선제 수정
