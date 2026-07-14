@@ -1,4 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { ohangForType, OHANG_LUCKY } from "@/lib/ohang-lucky";
+
+// v(2026-07-14): 계층3(실용정보) 고정용 — 프롬프트에 이미 있던 닫힌 후보(재물그릇 4종, 학교유형 5종) 재사용
+const BABY_WEALTH_GRADES = ["소", "중", "대", "왕"];
+const BABY_SCHOOL_TYPES = ["🏫 서울대 프리패스형", "🌎 아이비리그형", "🎨 예고/예대형", "🔬 카이스트형", "💼 경영대형"];
 
 function getGeminiUrl(model = "gemini-2.5-flash") {
   const key = process.env.GEMINI_API_KEY;
@@ -356,6 +361,22 @@ export async function POST(request: NextRequest) {
         parsed.tab4_parenting.match_bad_id  = fix.match_bad_id;
       }
       console.log(`[baby-gwansang] FIXED applied: ct=${ctNum} score=${fix.total_score} genius=${fix.genius_score} charm=${fix.charm_score} type=${fix.genius_type}`);
+
+      // v(2026-07-14): 계층3(실용정보) 고정 — wealth_grade/school_type/lucky_color/lucky_gem/lucky_animal/lucky_direction이
+      // 타입 고정과 무관하게 매번 자유생성이던 문제 fix. character_type 기반 고정 인덱스/오행 매핑으로 확정.
+      const luckyOh = OHANG_LUCKY[ohangForType(ctNum)];
+      if (parsed.tab2_wealth && typeof parsed.tab2_wealth === "object") {
+        const tw = parsed.tab2_wealth as Record<string, unknown>;
+        tw.wealth_grade = BABY_WEALTH_GRADES[(ctNum - 1) % BABY_WEALTH_GRADES.length];
+        tw.school_type = BABY_SCHOOL_TYPES[(ctNum - 1) % BABY_SCHOOL_TYPES.length];
+      }
+      if (parsed.tab4_parenting && typeof parsed.tab4_parenting === "object") {
+        const tp = parsed.tab4_parenting as Record<string, unknown>;
+        tp.lucky_color = luckyOh.color;
+        tp.lucky_gem = luckyOh.gem;
+        tp.lucky_animal = luckyOh.animal;
+      }
+      parsed.lucky_direction = luckyOh.direction;
     }
 
     // 점수 → 등급/상위% 코드 연동 (AI 불일치 방지)

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { ohangForType, OHANG_LUCKY } from "@/lib/ohang-lucky";
 
 function getGeminiUrl(model = "gemini-2.5-flash") {
   const key = process.env.GEMINI_API_KEY;
@@ -298,6 +299,14 @@ export async function POST(request: NextRequest) {
       parsed.total_score = fix.total_score;
       parsed.charm_score = fix.charm_score;
       console.log(`[pet-gwansang] FIXED applied: ct=${ctNum} score=${fix.total_score} charm=${fix.charm_score}`);
+
+      // v(2026-07-14): 계층3(실용정보) 고정 — lucky_color/lucky_direction/lucky_time/lucky_item이
+      // 타입 고정과 무관하게 매번 자유생성이던 문제 fix. character_type 기반 오행 매핑으로 확정.
+      const luckyOh = OHANG_LUCKY[ohangForType(ctNum)];
+      parsed.lucky_color = luckyOh.color;
+      parsed.lucky_direction = luckyOh.direction;
+      parsed.lucky_time = luckyOh.time;
+      parsed.lucky_item = luckyOh.item;
     }
 
     // 점수 → 등급/상위% 코드 연동 (AI 불일치 방지)
