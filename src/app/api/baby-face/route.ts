@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { lockedScore } from "@/lib/compat-helpers";
 
 function getGeminiUrl(model = "gemini-2.5-flash") {
   const key = process.env.GEMINI_API_KEY;
@@ -260,6 +261,45 @@ export async function POST(request: NextRequest) {
     parsed._fullName = babyName;
     parsed._momName = momName;
     parsed._dadName = dadName;
+
+    // v(2026-07-14): 계층1/2/3 고정 — 이전엔 FIXED 테이블이 전혀 없어 총점·등급·재물그릇·유전자비율·밸런스타입까지
+    // 매 호출 자유생성이었음(4,800원 최고가 콘텐츠인데 감사에서 발견된 가장 불안정한 콘텐츠).
+    // 부모 이름+사진 기반 결정론적 해시로 확정 — 같은 부모 사진이면 항상 같은 결과.
+    const babySeed = [momName, dadName, base64Image1.slice(0, 40), base64Image2.slice(0, 40)];
+    parsed.total_score = lockedScore([...babySeed, "score"], 95, 99);
+    parsed.grade = parsed.total_score >= 97 ? "S" : "A";
+    parsed.top_percent =
+      parsed.total_score >= 99 ? "0.1" : parsed.total_score >= 98 ? "0.5" : parsed.total_score >= 97 ? "1" : "3";
+
+    const WEALTH_GRADES = ["소", "중", "대", "왕"];
+    if (!parsed.tab3_wealth || typeof parsed.tab3_wealth !== "object") parsed.tab3_wealth = {};
+    parsed.tab3_wealth.wealth_grade = WEALTH_GRADES[lockedScore([...babySeed, "wealth"], 0, 3)];
+
+    // school_type — 프롬프트에 이미 명시된 5종 후보 중 고정 선택 (자유생성 시 매번 다른 학교유형 출력되던 문제 fix)
+    const SCHOOL_TYPES = ["🏫 서울대 프리패스형", "🌎 아이비리그형", "🎨 예고/예대형", "🔬 카이스트형", "💼 경영대형"];
+    if (!parsed.tab4_study || typeof parsed.tab4_study !== "object") parsed.tab4_study = {};
+    parsed.tab4_study.school_type = SCHOOL_TYPES[lockedScore([...babySeed, "school"], 0, 4)];
+
+    // balance_type — 프롬프트 스펙상 기본값은 이미 고정 문구로 지정돼 있었는데 서버가 강제하지 않아 AI가 다르게 쓰던 문제 fix.
+    // variants(m90/m70/d70/d90)도 프롬프트 예시 라벨을 그대로 고정.
+    parsed.balance_type = "무결점 올라운더 · 황금 밸런스";
+    if (parsed.variants && typeof parsed.variants === "object") {
+      if (parsed.variants.m90) parsed.variants.m90.balance_type = "감성 아티스트형 (엄마 90% 유형)";
+      if (parsed.variants.m70) parsed.variants.m70.balance_type = "균형 감성형 (엄마 70% 유형)";
+      if (parsed.variants.d70) parsed.variants.d70.balance_type = "리더형 (아빠 70% 유형)";
+      if (parsed.variants.d90) parsed.variants.d90.balance_type = "카리스마형 (아빠 90% 유형)";
+    }
+
+    // dna_mix — 부위별 엄마/아빠 비율 고정 (이전엔 재분석할 때마다 눈·코·입 비율이 완전히 달라지던 문제 fix)
+    const DNA_PARTS = ["eyes", "nose", "mouth", "forehead", "ears"];
+    if (parsed.dna_mix && typeof parsed.dna_mix === "object") {
+      DNA_PARTS.forEach((part) => {
+        if (!parsed.dna_mix[part] || typeof parsed.dna_mix[part] !== "object") return;
+        const momPct = lockedScore([...babySeed, part], 20, 80);
+        parsed.dna_mix[part].mom_pct = momPct;
+        parsed.dna_mix[part].dad_pct = 100 - momPct;
+      });
+    }
 
     return NextResponse.json({ result: parsed });
   } catch (error: unknown) {
