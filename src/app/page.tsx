@@ -976,11 +976,14 @@ function EmotionStep({onDone}:{onDone:(answers:any)=>void}){
 // 공유 배지 레벨 정의
 // v392: 라벨에서 이모지 제거 — icon 필드 따로 있어서 중복 표시되던 거 fix
 const SHARE_LEVELS = [
-  {label:"기본",icon:"👤",min:0,max:0,reward:"공유를 시작해보세요!"},
-  {label:"공유자",icon:"🔗",min:1,max:4,reward:"쿠폰 즉시 지급"},
-  {label:"전파자",icon:"📢",min:5,max:9,reward:"디지털 부적 선택"},
-  {label:"홍보대사",icon:"🏆",min:10,max:19,reward:"키링 실물 발송"},
-  {label:"인플루언서",icon:"🌟",min:20,max:999,reward:"명패 실물 발송"},
+  // ⚠️ reward → desc 로 변경 (v818). 마일스톤 자동 지급은 v386에서 폐지됐는데
+  // 화면 3곳이 계속 쿠폰·부적·키링·명패를 약속하고 있었음 → 배지/등급 설명만 남김.
+  // 실제로 살아있는 보상은 출석(7·14·21·30일)과 친구초대(양쪽 380원 쿠폰) 두 가지뿐.
+  {label:"기본",icon:"👤",min:0,max:0,desc:"공유를 시작해보세요!"},
+  {label:"공유자",icon:"🔗",min:1,max:4,desc:"첫 공유를 남긴 단계"},
+  {label:"전파자",icon:"📢",min:5,max:9,desc:"천기를 꾸준히 퍼뜨리는 중"},
+  {label:"홍보대사",icon:"🏆",min:10,max:19,desc:"주변에 천기를 널리 알린 단계"},
+  {label:"인플루언서",icon:"🌟",min:20,max:999,desc:"공유 최고 등급"},
 ];
 
 function getShareLevel(cnt){
@@ -24126,8 +24129,10 @@ function AttendanceSection(){
   const MILESTONES=[
     {day:7,reward:"🎫 무료 콘텐츠 1회 쿠폰",emoji:"🌱",color:"#5fc49e"},
     {day:14,reward:"💎 980원 할인 쿠폰",emoji:"⭐",color:"#5BB5D6"},
-    {day:21,reward:"🎁 디지털 부적 (택1)",emoji:"🌟",color:"#9B8FD4"},
-    {day:30,reward:"🎉 부적 3종 세트 실물 발송",emoji:"🏆",color:"#D4AF37"},
+    // v818: 실제 지급 내용(위 REWARDS 맵)과 문구 일치시킴.
+    // 21일은 선택지 없이 디지털 부적 이용권 1장, 30일은 실물 발송이 아니라 굿즈샵 5,000원 할인 쿠폰.
+    {day:21,reward:"🎁 디지털 부적 이용권",emoji:"🌟",color:"#9B8FD4"},
+    {day:30,reward:"🎉 부적 3종 5,000원 할인 쿠폰",emoji:"🏆",color:"#D4AF37"},
   ];
   const nextMilestone=MILESTONES.find(m=>count<m.day);
   const reachedMilestones=MILESTONES.filter(m=>count>=m.day);
@@ -24169,7 +24174,7 @@ function AttendanceSection(){
           })}
         </div>
         <div style={{background:"rgba(212,175,55,0.07)",borderRadius:10,padding:"9px 12px",fontSize:11,color:"var(--mist)",lineHeight:1.6}}>
-          {count>=30?"🎉 축하합니다! 30일 개근 달성! 부적 3종 세트가 발송됩니다!":nextMilestone?<>🎁 <strong style={{color:nextMilestone.color}}>{nextMilestone.day}일</strong> 도달 시 <strong style={{color:"var(--gold)"}}>{nextMilestone.reward}</strong> 자동 지급! ({nextMilestone.day-count}일 남음)</>:<>🎁 30일 개근 달성 시 <strong style={{color:"var(--gold)"}}>특별 제작 부적 3종 세트</strong> 실물 발송!</>}
+          {count>=30?"🎉 축하합니다! 30일 개근 달성! 부적 3종 5,000원 할인 쿠폰을 받았어요 (실물 발송 신청은 1:1 문의)":nextMilestone?<>🎁 <strong style={{color:nextMilestone.color}}>{nextMilestone.day}일</strong> 도달 시 <strong style={{color:"var(--gold)"}}>{nextMilestone.reward}</strong> 자동 지급! ({nextMilestone.day-count}일 남음)</>:<>🎁 30일 개근 달성 시 <strong style={{color:"var(--gold)"}}>특별 제작 부적 3종 세트</strong> 실물 발송!</>}
         </div>
       </div>
     </div>
@@ -24570,8 +24575,15 @@ function MyPage({isLoggedIn,onLogin,onLogout,savedPersons,setSavedPersons,userHi
     alert("🎉 카카오 친추 쿠폰 2장이 발급됐어요!\n🎟️ 쿠폰함에서 확인하세요.");
   };
   const SAMPLE_COUPONS = myCoupons;
-  // 굿즈 주문 내역 — 실제 굿즈샵 주문만 표시 (현재 데모 단계라 비어있음)
-  const SAMPLE_ORDERS:{date:string,items:string,price:string,status:string}[] = [];
+  // 굿즈 주문 내역 — localStorage("chungi_orders")에서 읽는다.
+  // v818 이전엔 하드코딩된 빈 배열이라, 굿즈샵이 열려 주문이 쌓여도 "주문 내역이 없어요"만 떴을 것.
+  // ⚠️ 굿즈샵 오픈 시 주문 저장 코드는 아래 4개 필드(date/items/price/status)를 맞춰서 써야 함.
+  const SAMPLE_ORDERS:{date:string,items:string,price:string,status:string}[] = (()=>{
+    try{
+      const raw=JSON.parse(localStorage.getItem("chungi_orders")||"[]");
+      return Array.isArray(raw)?raw:[];
+    }catch{return [];}
+  })();
 
   const LEVELS = [
     {name:"🌱 새싹", min:0, desc:"가입한 모든 사람"},
@@ -24782,8 +24794,7 @@ function MyPage({isLoggedIn,onLogin,onLogout,savedPersons,setSavedPersons,userHi
                   <div style={{fontSize:10,color:"rgba(168,196,184,0.4)"}}>{l.min}회{l.max<999?`~${l.max}회`:"+"}</div>
                   {reached&&<span style={{fontSize:9,padding:"1px 6px",borderRadius:8,background:"rgba(95,196,158,0.2)",color:"var(--jade)",fontWeight:700}}>✓ 달성</span>}
                 </div>
-                <div style={{fontSize:11,color:"var(--gold)",marginTop:2}}>{l.reward}</div>
-                {l.min===5&&<div style={{fontSize:10,color:"rgba(168,196,184,0.35)",marginTop:2}}>연애운·재물운·합격운 중 1개 선택</div>}
+                <div style={{fontSize:11,color:"var(--gold)",marginTop:2}}>{l.desc}</div>
               </div>
               <div style={{fontSize:11,color:reached?"var(--jade)":"rgba(168,196,184,0.2)",fontWeight:reached?700:400}}>{Math.min(shareCount,l.min)}/{l.min}</div>
             </div>);
@@ -25181,16 +25192,18 @@ function MyPage({isLoggedIn,onLogin,onLogout,savedPersons,setSavedPersons,userHi
       {/* FAQ 모달 */}
       {activeModal==="faq"&&(()=>{
         const FAQ=[
-          {q:"천기 캐시는 어떻게 적립되나요?",a:"출석 보상 · 일일미션 클리어 · 친구초대(양쪽 1,000원) · 공유 마일스톤(1/5/10/20회) 등으로 자동 적립돼요. 캐시는 모든 콘텐츠·굿즈에 사용 가능합니다. (가입 시에는 1,000원·500원 환영 쿠폰 2종이 자동 지급돼요.)"},
+          {q:"천기 캐시는 어떻게 충전하나요?",a:"내 정보 → 💰 천기캐시/이용권/선물권 에서 충전하거나, 받은 선물권 코드를 등록하면 캐시로 들어와요. 캐시는 모든 콘텐츠·굿즈 결제에 쓸 수 있습니다. (출석·친구초대 보상은 캐시가 아니라 쿠폰·이용권으로 지급돼요.)"},
+          {q:"출석 보상은 뭘 받나요?",a:"7일 — 980원 콘텐츠 쿠폰 / 14일 — 980원 할인 쿠폰 / 21일 — 디지털 부적 이용권 / 30일 개근 — 부적 3종 5,000원 할인 쿠폰. 조건을 채우면 자동 지급되고 알림으로 알려드려요."},
+          {q:"가입하면 뭘 주나요?",a:"가입 시 🌱 새싹 응원 쿠폰(500원 할인, 980원 이상 콘텐츠) 과 🛍️ 첫 굿즈 구매 10% 할인 쿠폰 2종이 자동 지급돼요."},
           {q:"이용권과 캐시의 차이가 뭔가요?",a:"이용권은 특정 콘텐츠 1회 무료 이용권이에요. 캐시는 금액 단위로 자유롭게 결제할 수 있어요. 이용권은 패키지 구매 시 묶음으로 지급됩니다."},
           {q:"본 결과를 다시 볼 수 있나요?",a:"네! 모든 결과는 자동으로 기록소(📋)에 저장돼요. 인물별·검색으로 빠르게 찾을 수 있고, 이미지·PDF로도 다운로드 가능해요."},
-          {q:"결제 후 환불되나요?",a:"디지털 콘텐츠 특성상 결과 확인 전에는 100% 환불 가능합니다. 결과 확인 후에는 환불이 제한될 수 있어요. 자세한 건 1:1 문의 주세요."},
-          {q:"친구 초대 보너스는 어떻게 받나요?",a:"내 정보 → 친구 초대 섹션에서 내 코드 복사 → 카톡 공유. 친구가 가입하면 양쪽 1,000원 쿠폰 자동 지급."},
+          {q:"결제 후 환불되나요?",a:"결제 후 7일 이내, 아직 결과를 열어보지 않은 콘텐츠만 환불 가능합니다. 이미 결과를 확인한 콘텐츠는 환불이 불가해요. 굿즈(실물 상품)는 배송 전 취소만 가능합니다. 신청은 내 정보 → ↩️ 환불 신청에서 안내드려요."},
+          {q:"친구 초대 보너스는 어떻게 받나요?",a:"내 정보 → 친구 초대 섹션에서 내 코드 복사 → 카톡 공유. 친구가 내 링크로 가입한 뒤 첫 유료 결제(1원 이상 실결제)를 완료하면 양쪽 다 380원 쿠폰이 자동 지급돼요 (인원 무제한). 가입·무료 콘텐츠 이용만으로는 지급되지 않고, 동일 디바이스에서 본인 코드 사용은 제외돼요."},
           {q:"운세 결과는 정확한가요?",a:"천기는 사주명리학·관상학·성명학 등 전통 방법에 AI 분석을 결합한 콘텐츠형 서비스예요. 재미와 자기성찰 용도로 활용해주세요."},
           {q:"개인정보는 안전한가요?",a:"업로드 사진은 분석 후 즉시 삭제되며 서버에 저장되지 않아요. 이름·생년월일은 본인 동의 하에 운세 분석에만 사용됩니다."},
           {q:"홈 화면에 설치할 수 있나요?",a:"가능해요! Chrome/Safari에서 '홈 화면에 추가'를 누르면 사이트를 바로 실행할 수 있어요. 알림센터와 출석 리마인더도 받을 수 있습니다."},
           {q:"굿즈는 언제 배송되나요?",a:"평일 기준 주문 후 2~5일 이내 발송돼요. 부적·키링 등 디지털 부적은 즉시 마이페이지 → 이용권에서 확인 가능."},
-          {q:"고객센터 운영시간은?",a:"평일 10:00~18:00 (주말·공휴일 휴무). 1:1 문의 또는 listenstudio.inc@gmail.com으로 연락주세요."},
+          {q:"고객센터 운영시간은?",a:"월~목 10:00~18:00 · 금 10:00~17:00 (점심 12:00~13:30, 주말·공휴일 휴무). 1:1 문의 또는 listenstudio.inc@gmail.com으로 연락주세요. 답변까지 1~2 영업일 걸려요."},
         ];
         const FAQItem=({q,a}:{q:string,a:string})=>{
           const[open,setOpen]=useState(false);
@@ -25251,7 +25264,8 @@ function MyPage({isLoggedIn,onLogin,onLogout,savedPersons,setSavedPersons,userHi
               <textarea value={msg} onChange={e=>setMsg(e.target.value)} placeholder="자세히 적어주실수록 빠른 해결이 가능해요" rows={6} className="inp" style={{resize:"vertical",minHeight:120}}/>
               <div style={{background:"var(--ink3)",borderRadius:10,padding:"10px 12px",fontSize:11,color:"var(--mist)",lineHeight:1.6,marginBottom:12}}>
                 📞 직접 연락: <a href="mailto:listenstudio.inc@gmail.com" style={{color:"var(--gold)",textDecoration:"none"}}>listenstudio.inc@gmail.com</a><br/>
-                🕐 운영시간: 평일 10:00~18:00 (주말·공휴일 휴무)
+                🕐 운영시간: 월~목 10:00~18:00 · 금 10:00~17:00<br/>
+                　（점심 12:00~13:30, 주말·공휴일 휴무 · 답변 1~2 영업일）
               </div>
               <button className="btn btn-p" onClick={send}>📨 메일로 문의 보내기</button>
               <button className="btn btn-g" onClick={()=>setActiveModal(null)}>취소</button>
@@ -25331,33 +25345,8 @@ function MyPage({isLoggedIn,onLogin,onLogout,savedPersons,setSavedPersons,userHi
         </div>
       )}
 
-      {/* 계정 보안 모달 */}
-      {activeModal==="security"&&(
-        <div className="ov">
-          <div className="md"><div className="hd"/>
-        <div style={{position:"sticky",top:0,display:"flex",justifyContent:"flex-end",marginBottom:-20,zIndex:5}}><button onClick={()=>setActiveModal(null)} style={{width:28,height:28,borderRadius:"50%",background:"rgba(255,255,255,0.08)",border:"none",color:"var(--mist)",fontSize:14,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button></div>
-            <div className="mt">🔒 계정 보안</div>
-            <div className="ms">내 계정 정보를 확인하세요</div>
-            <div style={{background:"var(--ink3)",borderRadius:14,padding:"16px",marginBottom:14,border:"1px solid rgba(255,255,255,0.06)"}}>
-              {[["로그인 방법","구글 / 카카오"],["가입일","2026.03.28"],["이메일",userData?.email||"미등록"],["이름",userData?.name||"운세 탐험가"]].map(([label,value],i)=>(
-                <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"10px 0",borderBottom:i<3?"1px solid rgba(255,255,255,0.04)":"none"}}>
-                  <div style={{fontSize:12,color:"var(--mist)"}}>{label}</div>
-                  <div style={{fontSize:12,fontWeight:700}}>{value}</div>
-                </div>
-              ))}
-            </div>
-            <button className="btn btn-sm" style={{background:"transparent",border:"1px solid rgba(139,41,41,0.3)",color:"var(--coral)",fontSize:12,marginBottom:10}} onClick={onLogout}>로그아웃</button>
-            {userData?.isGuest && (
-              <div style={{padding:"0 0 8px"}}>
-                <button onClick={()=>{try{localStorage.removeItem("chungi_guest");localStorage.removeItem("chungi_gwansang_count");localStorage.removeItem("chungi_joseon_count");localStorage.removeItem("chungi_facereading_count");Object.keys(localStorage).filter(k=>k.startsWith("chungi_daily_")).forEach(k=>localStorage.removeItem(k));}catch{}window.location.reload();}} style={{width:"100%",padding:10,background:"none",border:"1px dashed rgba(168,196,184,0.2)",borderRadius:12,color:"rgba(168,196,184,0.4)",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>
-                  🔄 게스트 데이터 초기화
-                </button>
-              </div>
-            )}
-            <button className="btn btn-g" onClick={()=>setActiveModal(null)}>닫기</button>
-          </div>
-        </div>
-      )}
+      {/* 계정 보안 모달 제거됨 — activeModal을 "security"로 바꾸는 곳이 한 군데도 없어 도달 불가한 죽은 코드였음.
+          내용도 "📢 내 정보"(activeModal==="info") 모달의 구버전(로그인방법·가입일 하드코딩)이라 중복. */}
 
       {/* 결과 공유하고 배지 받기 모달 */}
       {activeModal==="share"&&(
@@ -25365,23 +25354,27 @@ function MyPage({isLoggedIn,onLogin,onLogout,savedPersons,setSavedPersons,userHi
           <div className="md"><div className="hd"/>
         <div style={{position:"sticky",top:0,display:"flex",justifyContent:"flex-end",marginBottom:-20,zIndex:5}}><button onClick={()=>setActiveModal(null)} style={{width:28,height:28,borderRadius:"50%",background:"rgba(255,255,255,0.08)",border:"none",color:"var(--mist)",fontSize:14,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button></div>
             <div className="mt">🔗 결과 공유하고 배지 받기</div>
-            <div className="ms">공유할수록 특별한 보상이!</div>
+            <div className="ms">공유할수록 등급이 올라가요</div>
             <div style={{background:"var(--ink3)",borderRadius:14,padding:"14px",marginBottom:14,border:"1px solid rgba(255,255,255,0.06)",textAlign:"center"}}>
               <div style={{fontSize:11,color:"var(--mist)",marginBottom:4}}>현재 공유 횟수</div>
               <div style={{fontSize:28,fontWeight:900,color:"var(--gold)"}}>{shareCount}회</div>
             </div>
-            {[{count:1,reward:"할인 쿠폰",icon:"🎫"},{count:5,reward:"디지털 부적",icon:"🧿"},{count:10,reward:"특별 선물",icon:"🎁"},{count:20,reward:"프리미엄 선물",icon:"👑"}].map((m,i)=>{
-              const progress = Math.min(shareCount/m.count,1);
+            {/* v818: 1/5/10/20회 보상 약속(쿠폰·부적·키링·명패) 제거 — 자동 지급은 v386에서 폐지됐음.
+                공유 배지 섹션과 같은 SHARE_LEVELS 등급 진행만 노출한다. */}
+            {SHARE_LEVELS.slice(1).map((l,i)=>{
+              const progress = Math.min(shareCount/l.min,1);
               return(
-                <div key={i} style={{background:"var(--ink3)",borderRadius:12,padding:"12px 14px",marginBottom:12,border:"1px solid rgba(255,255,255,0.06)"}}>
+                <div key={l.label} style={{background:"var(--ink3)",borderRadius:12,padding:"12px 14px",marginBottom:12,border:"1px solid rgba(255,255,255,0.06)"}}>
                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
-                    <div style={{fontSize:12,fontWeight:700}}>{m.icon} {m.count}회 공유 {shareCount>=m.count&&<span style={{color:"var(--jade)",marginLeft:4}}>✓</span>}</div>
-                    <div style={{fontSize:11,color:"var(--gold)",fontWeight:700}}>{m.reward}</div>
+                    <div style={{fontSize:12,fontWeight:700}}>{l.icon} {l.label} {shareCount>=l.min&&<span style={{color:"var(--jade)",marginLeft:4}}>✓</span>}</div>
+                    <div style={{fontSize:11,color:"var(--mist)",fontWeight:700}}>{l.min}회{l.max<999?`~${l.max}회`:"+"}</div>
                   </div>
                   <div style={{height:6,background:"rgba(255,255,255,0.06)",borderRadius:3,overflow:"hidden"}}>
                     <div style={{height:"100%",width:`${progress*100}%`,background:"linear-gradient(to right,var(--gold3),var(--gold2))",borderRadius:3,transition:"width .3s"}}/>
                   </div>
-                  <div style={{fontSize:10,color:"var(--mist)",marginTop:4,textAlign:"right"}}>{Math.min(shareCount,m.count)}/{m.count}회</div>
+                  <div style={{fontSize:10,color:"var(--mist)",marginTop:4,display:"flex",justifyContent:"space-between"}}>
+                    <span>{l.desc}</span><span>{Math.min(shareCount,l.min)}/{l.min}회</span>
+                  </div>
                 </div>
               );
             })}
@@ -25645,7 +25638,7 @@ function MyPage({isLoggedIn,onLogin,onLogout,savedPersons,setSavedPersons,userHi
                 <div style={{fontSize:18}}>{l.icon}</div>
                 <div style={{flex:1}}>
                   <div style={{fontSize:11,fontWeight:700}}>{l.label}</div>
-                  <div style={{fontSize:10,color:"var(--mist)"}}>{l.min}~{l.max<999?l.max+"회":""}+ 공유 · {l.reward}</div>
+                  <div style={{fontSize:10,color:"var(--mist)"}}>{l.min}~{l.max<999?l.max+"회":""}+ 공유 · {l.desc}</div>
                 </div>
               </div>
             ))}
@@ -25848,7 +25841,7 @@ function MyPage({isLoggedIn,onLogin,onLogout,savedPersons,setSavedPersons,userHi
                 ["주소", "정보없음"],
                 ["등록된 결제카드", "정보없음"],
                 ["등급", currentLevel?.name || "🌱 새싹"],
-                ["가입일", "2026.03.28"],
+                ["가입일", userData?.createdAt ? new Date(userData.createdAt).toLocaleDateString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit"}) : "정보없음"],
               ].map(([label, value], i) => (
                 <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"10px 0",borderBottom:"1px solid rgba(255,255,255,0.04)",fontSize:12}}>
                   <span style={{color:"var(--mist)"}}>{label}</span>
@@ -29110,6 +29103,7 @@ export default function Page(){
           name: session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email?.split("@")[0],
           avatar: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture,
           provider: session.user.app_metadata?.provider || "unknown",
+          createdAt: session.user.created_at, // 내 정보 모달 '가입일' — 예전엔 "2026.03.28"로 하드코딩돼 모두 같은 날짜가 떴음
         });
         // 기록소·쿠폰·푸시 연동을 위한 user_id 저장
         try{localStorage.setItem("chungi_user_id",session.user.id);localStorage.removeItem("chungi_guest");}catch{}
