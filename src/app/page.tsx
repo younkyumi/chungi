@@ -4421,7 +4421,7 @@ function DoljabiSimModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,on
         // v(2026-07-09): 결정론적 콘텐츠라 항상 성공이지만, 원칙 통일을 위해 완료 확인 시점에서 차감 확정
         commitPaymentDeduction(pendingDeduction);
         setPendingDeduction(null);
-        addHistory?.({icon:"🎲",name:"돌잡이 시뮬레이션",svcId:"doljabi_sim",person:personName,date:new Date().toLocaleDateString("ko-KR"),result:`${res.emoji} ${res.name}`,resultType:{...res,_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})},ctx:{ohaeng:ilOh,momWish,dadWish}});
+        addHistory?.({icon:"🎲",name:"돌잡이 시뮬레이션",svcId:"doljabi_sim",person:personName,date:new Date().toLocaleDateString("ko-KR"),result:`${res.emoji} ${res.name}`,resultType:{...res,momWish,dadWish,_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})},ctx:{ohaeng:ilOh,momWish,dadWish}});
       },13200),
     ];
     return()=>timers.forEach(clearTimeout);
@@ -5395,7 +5395,7 @@ function DoljabiSimModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,on
   return null;
 }
 
-function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory, selectedPerson=null, selectedPerson2=null, selectedPerson3=null, onRequestPerson, onOpenService, preloadResult}:any){
+function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory, selectedPerson=null, selectedPerson2=null, selectedPerson3=null, onRequestPerson, onOpenService, onLoginRequest, preloadResult}:any){
   const needPerson=svc._needPerson&&!selectedPerson;
   // preloadResult 있으면 result 단계로 바로 진입 (기록소 재열람)
   // v265: celeb_compat은 무료 + 사전질문 신규로 input 단계 무의미 → preqs로 바로
@@ -5406,6 +5406,16 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
   const _SKIP_INPUT_TO_HANJA=["namereading"];
   const _initStep=preloadResult?"result":(svc._forceIntro?"info":(needPerson?"info":isLoggedIn||svc.free?(_SKIP_INPUT_TO_HANJA.includes(svc.id)&&selectedPerson?"hanjapick":_SKIP_INPUT_TO_PREQS.includes(svc.id)&&selectedPerson?"preqs":"input"):"auth"));
   const[step,setStep]=useState(_initStep);
+  // 🔐 로그인 게이트 — step "auth" 진입 시 진짜 AuthModal(약관 동의 + 카카오/구글 OAuth + 게스트)로 위임.
+  // 예전엔 이 자리에 가짜 소셜 버튼이 있어서 아무거나 눌러도 그냥 input으로 넘어갔음 (인증 없이 유료 콘텐츠 이용됨)
+  const _authGateFired=useRef(false);
+  useEffect(()=>{
+    if(step!=="auth")return;
+    if(_authGateFired.current)return;
+    _authGateFired.current=true;
+    if(onLoginRequest)onLoginRequest(); // 내부에서 모달 닫고 AuthModal 오픈
+    else onClose?.();
+  },[step]);// eslint-disable-line react-hooks/exhaustive-deps
   // celeb_compat 등: 모달 인스턴스 유지된 채로 selectedPerson 들어오면 즉시 다음 step으로 (paint 전 — intro 깜빡임 제거)
   useLayoutEffect(()=>{
     if(!selectedPerson)return;
@@ -5894,7 +5904,9 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
       rt={svcId:svc.id,nrHanjaSurname,nrHanja1,nrHanja2,nrSajuMeta,_birth:selectedPerson?.birth,_preQ:preQ,_testDate:_td};
     }
     if(svc.id==="baby_naming"){
-      rt={svcId:svc.id,babySurnameHanja,babyDolrim2,babyDolrim2None,babyDolrim3,babyDolrim3None,_birth:selectedPerson2?.birth,_preQ:preQ,_testDate:_td};
+      // _birth/_time = 아기(selectedPerson2) 생년월일·시각. 이름 풀 선택이 아기 사주(일간 오행/부족 오행) 기반이라
+      // 시각까지 저장해야 기록소 재열람 때 같은 이름이 나옴 (시각 유실 시 오행이 기본값 '목'으로 떨어져 전혀 다른 이름)
+      rt={svcId:svc.id,babySurnameHanja,babyDolrim2,babyDolrim2None,babyDolrim3,babyDolrim3None,_birth:selectedPerson2?.birth,_time:selectedPerson2?.time,_preQ:preQ,_testDate:_td};
     }
     if(svc.id==="lucky_number"||svc.id==="lucky_wallpaper"){
       rt={svcId:svc.id,_birth:selectedPerson?.birth,_preQ:preQ,_testDate:_td};
@@ -6627,10 +6639,10 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
         })()}
 
         {step==="auth"&&<>
+          {/* 실제 로그인은 위 useEffect가 AuthModal로 위임 — 여기선 전환 순간만 표시 (가짜 로그인 버튼 제거됨) */}
           <div className="mt">로그인 후 이용 가능해요</div>
-          <div className="ms">카카오 또는 구글로 1초 로그인!</div>
-          <button className="social-btn kakao" onClick={()=>setStep("input")}>🟡 카카오로 시작하기</button>
-          <button className="social-btn google" onClick={()=>setStep("input")}>🔵 구글로 시작하기</button>
+          <div className="ms">로그인 창으로 이동할게요…</div>
+          <div style={{padding:"18px 0"}}><Dots/></div>
           <button className="btn btn-g" onClick={onClose}>취소</button>
         </>}
 
@@ -10513,7 +10525,7 @@ function YtypeModal({onClose,cart,setCart,onGoShop,addHistory,onOpenService,prel
   const[form,setForm]=useState({name:selectedPerson?.name||preloadResult?.person||"",year:"",month:"",day:"",hour:"",minute:""});
   const[loading,setLoading]=useState(false);
   const[result,setResult]=useState<any>(_preloadGuardian||null);
-  const[analysisData,setAnalysisData]=useState<any>(null);
+  const[analysisData,setAnalysisData]=useState<any>(preloadResult?.analysisData||null);
   const[showCollection,setShowCollection]=useState(false); // 📚 12종 도감 토글
   const ytSelectStyle:any={padding:"10px",background:"var(--ink3)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:11,color:"var(--white)",fontFamily:"inherit",fontSize:13,outline:"none",width:"100%",appearance:"none" as any};
   function analyze(){
@@ -10525,7 +10537,7 @@ function YtypeModal({onClose,cart,setCart,onGoShop,addHistory,onOpenService,prel
       setResult(g);setAnalysisData(data);setLoading(false);setStep("result");
       addHistory({icon:g.emoji,name:"12수호신",svcId:"guardian",person:form.name||"나",date:new Date().toLocaleDateString("ko-KR"),
         result:`${g.emoji} ${g.name}형`,
-        resultType:{type_name:g.name,guardian_type:g.name,ohang:g.ohangKey,
+        resultType:{type_name:g.name,guardian_type:g.name,ohang:g.ohangKey,analysisData:data,
           _birth:`${yr}-${String(mo).padStart(2,"0")}-${String(dy).padStart(2,"0")}`,_time:hr?`${String(hr).padStart(2,"0")}:00`:undefined,
           _testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})},
         ctx:{ytype:g.name,ohaeng:g.ohangKey,oh:data.oh,star:data.star.name}});
@@ -17007,13 +17019,14 @@ function TodayTarotModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReques
   const[showCollection,setShowCollection]=useState(false);
   const personName=selectedPerson?.name||"나";
   // 날짜 + 인물 이름 기반 seed → 같은 날 같은 사람 = 같은 카드
+  // preloadResult(기록소 재열람) 있으면 그날 저장된 스냅샷을 그대로 사용 — 오늘 날짜로 재계산하지 않음
   const nameSeed=(personName||"").split("").reduce((a,c)=>a+c.charCodeAt(0),0);
   const cardSeed=_todayTarotIdx+nameSeed;
-  const todayCard=TAROT_78[cardSeed%78];
+  const todayCard=preloadResult?.card||TAROT_78[cardSeed%78];
   const rng0=_seededRng(cardSeed+9999);
-  const isReversed=rng0()>0.65;
+  const isReversed=preloadResult?!!preloadResult.isReversed:rng0()>0.65;
   const isGood=todayCard.yesno==="yes"&&!isReversed;
-  const reading=isGood?_TAROT_GOOD[cardSeed%_TAROT_GOOD.length]:_TAROT_BAD[cardSeed%_TAROT_BAD.length];
+  const reading=preloadResult?.reading||(isGood?_TAROT_GOOD[cardSeed%_TAROT_GOOD.length]:_TAROT_BAD[cardSeed%_TAROT_BAD.length]);
 
   useEffect(()=>{if(step==="shuffle"){const t=setTimeout(()=>setStep("spread"),1500);return()=>clearTimeout(t);}},[step]);
   function pickCard(idx:number){
@@ -17023,7 +17036,7 @@ function TodayTarotModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReques
   }
   function onPreqsDone(ans:any){
     setStep("result");
-    addHistory?.({icon:"🃏",name:"오늘의 타로",svcId:"today_tarot",person:personName,date:new Date().toLocaleDateString("ko-KR"),result:`${todayCard.name}${isReversed?" (역)":""}`,resultType:{name:todayCard.name,isReversed,card:todayCard,_testDate:new Date().toLocaleDateString("ko-KR")},ctx:{focus:ans?.focus,mood:ans?.mood}});
+    addHistory?.({icon:"🃏",name:"오늘의 타로",svcId:"today_tarot",person:personName,date:new Date().toLocaleDateString("ko-KR"),result:`${todayCard.name}${isReversed?" (역)":""}`,resultType:{name:todayCard.name,isReversed,card:todayCard,reading,_testDate:new Date().toLocaleDateString("ko-KR")},ctx:{focus:ans?.focus,mood:ans?.mood}});
     try{localStorage.setItem(todayKey,JSON.stringify({done:true}));}catch{}
   }
 
@@ -21357,7 +21370,8 @@ function LottoModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
     return result.sort((a,b)=>a-b).map(n=>({n,isLucky:luckyPool.includes(n),ohang:_OHANG_COLORS[dominant].lucky.includes(n)?dominant:_OHANG_COLORS[second as string].lucky.includes(n)?second:null}));
   });
   const commonNums=isLoggedIn?null:[...TODAY.로또].sort((a:number,b:number)=>a-b);
-  const displayItems:any[]=isLoggedIn?(personalNums||[]):commonNums!.map((n:number)=>({n,isLucky:false,ohang:null}));
+  // preloadResult(기록소 재열람) 있으면 그날 저장된 numbers를 그대로 표시 — 오늘 날짜 기준 재계산 금지
+  const displayItems:any[]=preloadResult?.numbers?preloadResult.numbers.map((n:number)=>{const lp=_OHANG_COLORS[preloadResult.ohang]?.lucky||[];return{n,isLucky:lp.includes(n),ohang:lp.includes(n)?preloadResult.ohang:null};}):(isLoggedIn?(personalNums||[]):commonNums!.map((n:number)=>({n,isLucky:false,ohang:null})));
   // v293: shuffle step 진입 시 슬롯머신 자동 시작
   useEffect(()=>{
     if(step!=="shuffle")return;
@@ -21758,8 +21772,15 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
     },80);
     return()=>clearInterval(iv);
   },[step]);
-  const m=_calcMonthly(!!isLoggedIn,selectedPerson?.birth);
-  const monthLabel=`${new Date().getFullYear()}년 ${new Date().getMonth()+1}월`;
+  // preloadResult(기록소 재열람)에 저장된 데이터로 m 재구성, 없으면 _calcMonthly로 새로 계산 (오늘 기준 재계산 금지)
+  const m=preloadResult&&preloadResult.areas?{
+    headline:{star:preloadResult.star||3,text:preloadResult.headline||"기록된 운세"},
+    areas:preloadResult.areas,
+    weekAdvice:preloadResult.weekAdvice||null,
+    ohang:preloadResult.ohang||"토",
+    ohangColor:_OHANG_COLORS[preloadResult.ohang||"토"]||_OHANG_COLORS["토"]
+  }:_calcMonthly(!!isLoggedIn,selectedPerson?.birth);
+  const monthLabel=preloadResult?.month||`${new Date().getFullYear()}년 ${new Date().getMonth()+1}월`;
   const starStr=(n:number)=>"★".repeat(n)+"☆".repeat(5-n);
   // DB 토정비결 fetch (해당 월 원문 표시)
   const[dbMonthCt,setDbMonthCt]=useState<string|null>(null);
@@ -21778,7 +21799,7 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
   useEffect(()=>{
     if(step==="result"&&!saved){
       setSaved(true);
-      addHistory?.({icon:"📅",name:"이달의 운세",svcId:"monthly_unse",person:personName,date:new Date().toLocaleDateString("ko-KR"),result:`${monthLabel} ${m.headline.text} (${m.headline.star}/5)`,resultType:{star:m.headline.star,headline:m.headline.text,ohang:m.ohang,month:monthLabel,_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})},ctx:{preQ}});
+      addHistory?.({icon:"📅",name:"이달의 운세",svcId:"monthly_unse",person:personName,date:new Date().toLocaleDateString("ko-KR"),result:`${monthLabel} ${m.headline.text} (${m.headline.star}/5)`,resultType:{star:m.headline.star,headline:m.headline.text,ohang:m.ohang,areas:m.areas,weekAdvice:m.weekAdvice,month:monthLabel,_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})},ctx:{preQ}});
     }
   },[step,saved,addHistory,personName,m.headline.text,m.headline.star,m.ohang,monthLabel,preQ]);
 
@@ -27544,7 +27565,7 @@ function ArchivePage({userHistory,savedPersons,setSavedPersons,isLoggedIn,onLogi
           svc={{id:viewItem.svcId,icon:viewItem.icon||"🔮",name:viewItem.name||"천기",desc:"",price:viewItem.price||"",free:viewItem.free}}
           preloadResult={{...viewItem.resultType,_name:viewItem.person,_ctx:viewItem.ctx}}
           selectedPerson={{name:viewItem.person,birth:viewItem.resultType?._birth}}
-          selectedPerson2={viewItem.person2?{name:viewItem.person2}:null}
+          selectedPerson2={viewItem.person2?{name:viewItem.person2,...(viewItem.svcId==="baby_naming"?{birth:viewItem.resultType?._birth,time:viewItem.resultType?._time}:{})}:null}
           selectedPerson3={viewItem.person3?{name:viewItem.person3}:null}
           onClose={()=>setViewItem(null)}
           cart={cart} setCart={setCart}

@@ -409,7 +409,7 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
   const[current,setCurrent]=useState(0);
   const[answers,setAnswers]=useState(Array(40).fill(null));
   const[qType,setQType]=useState(preloadResult?.liv_code||preloadResult?.code||"");
-  const[waveType,setWaveType]=useState(preloadResult?.waveType||null);
+  const[waveType,setWaveType]=useState(preloadResult?.wave_type??preloadResult?.waveType??null);
   const[selected,setSelected]=useState(null);
   const[visible,setVisible]=useState(true);
   const[resultTab,setResultTab]=useState(1); // v249: 기본 타고난 (인증서 탭 제거됨)
