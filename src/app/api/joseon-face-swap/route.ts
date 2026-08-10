@@ -72,13 +72,15 @@ function buildDeglassInput(imgUrl: string): any {
 }
 
 // 합성 전 안경 제거 (1단계 전처리). 미설정/실패 시 null → 원본 그대로 사용 (graceful)
-async function tryRemoveGlasses(token: string, imgUrl: string): Promise<string | null> {
+async function tryRemoveGlasses(token: string, imgUrl: string, deadline: number): Promise<string | null> {
   const versionEnv = process.env.REPLICATE_GLASSES_REMOVE_VERSION;
   if (!versionEnv) return null; // 모델 미설정 → 안경 제거 스킵
   try {
     const version = await resolveModelVersion(token, versionEnv);
     if (!version) return null;
-    const deglassed = await callReplicate(token, version, buildDeglassInput(imgUrl));
+    // 전처리는 전체 예산의 절반까지만 — 본 합성 시간을 잡아먹으면 안 됨
+    const preDeadline = Math.min(deadline, Date.now() + Math.max(0, (deadline - Date.now()) / 2));
+    const deglassed = await callReplicate(token, version, buildDeglassInput(imgUrl), preDeadline);
     return deglassed || null;
   } catch (e) {
     console.error("[joseon-face-swap] 안경 제거 실패 — 원본으로 진행:", e instanceof Error ? e.message : e);
@@ -86,27 +88,57 @@ async function tryRemoveGlasses(token: string, imgUrl: string): Promise<string |
   }
 }
 
+// 이 라우트가 쓸 수 있는 전체 시간 예산.
+// 호출자(joseon-portrait)의 maxDuration이 60초이고 그 안에서 Gemini 분류를 먼저 하므로 여유를 둔다.
+const SWAP_BUDGET_MS = 48_000;
+
 // v362: 에러 메시지를 throw해서 상위에서 클라이언트에 전달 가능하도록
-async function callReplicate(token: string, version: string, input: any): Promise<string> {
-  const createRes = await fetch("https://api.replicate.com/v1/predictions", {
-    method: "POST",
-    headers: {
-      "Authorization": `Token ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ version, input }),
-  });
-  if (!createRes.ok) {
+// v819: 429(throttle) 재시도 추가.
+//   Replicate는 **크레딧이 $5 미만이면** "6 requests/min, burst 1"로 강하게 제한한다.
+//   예전 코드는 create가 429로 튕기면 즉시 포기 → 같은 사진인데도 4번 중 1번만 합성되는 증상.
+//   (2026-08-10 라이브 콘솔에서 확인: "Request was throttled ... while you have less than $5.0 in credit")
+//   ⚠️ 근본 해결은 Replicate 계정 크레딧 충전. 재시도는 완화책일 뿐이다.
+async function callReplicate(token: string, version: string, input: any, deadline: number): Promise<string> {
+  let createRes: Response | null = null;
+  for (let attempt = 0; ; attempt++) {
+    createRes = await fetch("https://api.replicate.com/v1/predictions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ version, input }),
+    });
+    if (createRes.ok) break;
+
     const errText = await createRes.text();
-    console.error("[joseon-face-swap] create fail:", createRes.status, errText.substring(0, 300));
-    throw new Error(`Replicate create ${createRes.status}: ${errText.substring(0, 200)}`);
+    const msg = `Replicate create ${createRes.status}: ${errText.substring(0, 200)}`;
+    const retryable = createRes.status === 429 || createRes.status >= 500;
+    // Retry-After 헤더가 있으면 존중, 없으면 6s → 12s
+    const retryAfterSec = parseInt(createRes.headers.get("retry-after") || "", 10);
+    const waitMs = Math.min(
+      Number.isFinite(retryAfterSec) && retryAfterSec > 0 ? retryAfterSec * 1000 : (attempt === 0 ? 6000 : 12000),
+      15_000
+    );
+    // 재시도해도 폴링 시간이 안 남으면 그냥 포기 (호출자 타임아웃보다 먼저 응답하는 게 낫다)
+    const noTimeLeft = Date.now() + waitMs > deadline - 12_000;
+    if (!retryable || attempt >= 2 || noTimeLeft) {
+      console.error("[joseon-face-swap] create fail:", createRes.status, errText.substring(0, 300));
+      if (createRes.status === 429) {
+        console.error("[joseon-face-swap] 🚨 429 throttle — Replicate 크레딧 잔액을 확인하세요 ($5 미만이면 분당 6회·동시 1회로 제한됨)");
+      }
+      throw new Error(msg);
+    }
+    console.warn(`[joseon-face-swap] ${createRes.status} throttle — ${waitMs}ms 후 재시도 (${attempt + 1}/2)`);
+    await new Promise(r => setTimeout(r, waitMs));
   }
+
   const created = await createRes.json();
   const id = created.id;
   if (!id) throw new Error("Replicate: prediction id 없음");
 
-  // 폴링 (최대 50초)
-  for (let i = 0; i < 25; i++) {
+  // 폴링 — 남은 예산이 다할 때까지
+  while (Date.now() < deadline) {
     await new Promise(r => setTimeout(r, 2000));
     const statusRes = await fetch(`https://api.replicate.com/v1/predictions/${id}`, {
       headers: { "Authorization": `Token ${token}` },
@@ -124,7 +156,7 @@ async function callReplicate(token: string, version: string, input: any): Promis
       throw new Error(`Replicate ${status.status}: ${String(status.error||"").substring(0,200)}`);
     }
   }
-  throw new Error("Replicate: 폴링 타임아웃 (50초)");
+  throw new Error("Replicate: 폴링 타임아웃");
 }
 
 // 조선 페르소나 id (1~60 또는 "E1"~"E6") → 템플릿 이미지 경로
@@ -141,6 +173,7 @@ function joseonTemplateUrl(id: number | string, baseUrl: string): string | null 
 }
 
 export async function POST(req: NextRequest) {
+  const deadline = Date.now() + SWAP_BUDGET_MS; // create 재시도 + 폴링 전체에 적용되는 마감 시각
   try {
     const body = await req.json();
     const { userImage, templateId, removeGlasses } = body;
@@ -206,13 +239,13 @@ export async function POST(req: NextRequest) {
     // 안경 사진이면 합성 전 안경 제거 전처리 (REPLICATE_GLASSES_REMOVE_VERSION 설정 시). 실패해도 원본으로 진행
     let swapSourceUrl = userImgUrl;
     if (removeGlasses) {
-      const deglassed = await tryRemoveGlasses(token, userImgUrl);
+      const deglassed = await tryRemoveGlasses(token, userImgUrl, deadline);
       if (deglassed) swapSourceUrl = deglassed;
     }
     // 모델별 input 키 자동 매핑
     const input = buildSwapInput(versionEnv, swapSourceUrl, templateUrl);
     try {
-      const swapUrl = await callReplicate(token, version, input);
+      const swapUrl = await callReplicate(token, version, input, deadline);
       return NextResponse.json({
         swap_url: swapUrl,
         template_url: templateUrl,

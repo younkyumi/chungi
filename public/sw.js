@@ -1,4 +1,4 @@
-const CACHE_NAME = 'chungi-v818';
+const CACHE_NAME = 'chungi-v819';
 
 self.addEventListener('install', event => {
   self.skipWaiting();
@@ -12,9 +12,25 @@ self.addEventListener('activate', event => {
   );
 });
 
+// ⚠️ v819 fix — 예전 코드는 `fetch(...).catch(() => caches.match(...))` 였음.
+// caches.match()는 캐시에 없으면 undefined를 반환하는데 respondWith()는 Response만 받는다
+// → "TypeError: Failed to convert value to 'Response'" + 브라우저에 하드 네트워크 에러 전달.
+// 게다가 이 SW는 cache.put을 한 번도 하지 않아 캐시가 항상 비어 있어서, 네트워크가 한 번만
+// 실패해도 무조건 이 경로를 타 흰 화면이 떴음. (신호 약한 모바일에서 특히)
 self.addEventListener('fetch', event => {
+  // GET만 가로챈다. POST(/api/*)는 브라우저 기본 동작에 맡겨야 재시도·에러 처리가 정상 동작함
+  if (event.request.method !== 'GET') return;
   event.respondWith(
-    fetch(event.request).catch(() => caches.match(event.request))
+    fetch(event.request).catch(async () => {
+      const cached = await caches.match(event.request);
+      if (cached) return cached;
+      // 캐시에도 없으면 undefined 대신 반드시 Response를 돌려준다
+      return new Response('오프라인이거나 네트워크가 불안정해요. 연결을 확인하고 새로고침해주세요.', {
+        status: 503,
+        statusText: 'Service Unavailable',
+        headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+      });
+    })
   );
 });
 
