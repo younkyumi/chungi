@@ -25417,26 +25417,8 @@ function MyPage({isLoggedIn,onLogin,onLogout,savedPersons,setSavedPersons,userHi
       )}
 
       {/* FAQ 모달 */}
-      {activeModal==="faq"&&(
-        <div className="ov">
-          <div className="md"><div className="hd"/>
-        <div style={{position:"sticky",top:0,display:"flex",justifyContent:"flex-end",marginBottom:-20,zIndex:5}}><button onClick={()=>setActiveModal(null)} style={{width:28,height:28,borderRadius:"50%",background:"rgba(255,255,255,0.08)",border:"none",color:"var(--mist)",fontSize:14,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button></div>
-            <div className="mt">❓ 자주 묻는 질문</div>
-            {[
-              {q:"결제 후 결과가 안 나와요",a:"잠시 후 다시 시도해주세요. 지속되면 고객센터로 문의해주세요."},
-              {q:"환불은 어떻게 하나요?",a:"결제 후 7일 이내, 미열람 콘텐츠만 환불 가능합니다. 내정보 > 환불신청에서 진행하세요."},
-              {q:"굿즈 배송은 얼마나 걸리나요?",a:"주문 후 2~5 영업일 내 발송됩니다."},
-              {q:"공유하면 뭐가 좋아요?",a:"공유 횟수에 따라 쿠폰, 디지털 부적, 실물 선물을 드려요!"},
-            ].map((faq,i)=>(
-              <div key={i} style={{background:"var(--ink3)",borderRadius:14,padding:"14px",marginBottom:12,border:"1px solid rgba(255,255,255,0.06)"}}>
-                <div style={{fontSize:13,fontWeight:700,marginBottom:4}}>Q. {faq.q}</div>
-                <div style={{fontSize:12,color:"var(--mist)",lineHeight:1.7}}>A. {faq.a}</div>
-              </div>
-            ))}
-            <button className="btn btn-g" onClick={()=>setActiveModal(null)}>닫기</button>
-          </div>
-        </div>
-      )}
+      {/* FAQ 구버전(4개짜리) 제거됨 — activeModal==="faq" 조건이 신버전과 중복이라 팝업이 겹쳐 떴음.
+          신버전(FAQ 10개 + 아코디언 + 1:1 문의 연결)은 위쪽에 있음. */}
 
       {/* 문의하기 모달 */}
       {activeModal==="contact"&&(

@@ -27,13 +27,26 @@ export async function GET() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents: [{ parts: [{ text: "Say 'OK' in one word." }] }],
-          generationConfig: { temperature: 0, maxOutputTokens: 10 },
+          // ⚠️ thinkingBudget:0 필수 — 2.5 계열은 사고 토큰도 maxOutputTokens에 포함돼서,
+          // 이게 없으면 10토큰을 사고에 다 쓰고 빈 응답이 온다.
+          // (예전엔 이 진단 엔드포인트조차 그래서 2.5-flash를 "(no text)"로 보고했음)
+          generationConfig: { temperature: 0, maxOutputTokens: 64, thinkingConfig: { thinkingBudget: 0 } },
         }),
       });
       if (res.ok) {
         const data = await res.json();
-        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "(no text)";
-        results[model] = { ok: true, status: res.status, text: text.substring(0, 50) };
+        const cand = data?.candidates?.[0];
+        const text = cand?.content?.parts?.[0]?.text || "";
+        const finishReason = cand?.finishReason || "EMPTY";
+        const usage = data?.usageMetadata || {};
+        results[model] = {
+          ok: !!text.trim(),
+          status: res.status,
+          finishReason,
+          thoughtsTokens: usage.thoughtsTokenCount ?? null,
+          outputTokens: usage.candidatesTokenCount ?? null,
+          text: text.trim() ? text.substring(0, 50) : "❌ 빈 응답(백지)",
+        };
       } else {
         const errBody = await res.text();
         results[model] = {

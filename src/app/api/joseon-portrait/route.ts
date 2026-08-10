@@ -1,7 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
+import { geminiGenConfig, logGeminiModel, inspectGeminiResponse } from "@/lib/gemini-config";
 
 // v365: 단일 모델 → 다중 모델 fallback 체인 (overload 503 대응)
 const GEMINI_MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-flash-lite"];
+
+// ⚠️ 모듈 최상단 상수 — 잘못된 토큰 조합이면 next build 단계에서 즉시 throw된다.
+// (2026-08-10 실측: maxOutputTokens 100 + thinkingBudget 512면 사고에서 94토큰을 태우고
+//  finishReason=MAX_TOKENS로 본문이 잘려 프롬프트와 무관하게 100% 빈 응답이 나옴)
+const CLASSIFY_GEN_CONFIG = geminiGenConfig({
+  label: "joseon-portrait/classify",
+  temperature: 0,
+  maxOutputTokens: 200,
+  thinkingBudget: 0, // 짧은 분류 Call — 사고 끔 (다른 사진 분류 라우트와 동일 표준)
+  responseMimeType: "application/json",
+});
 function getGeminiUrl(model: string) {
   const key = process.env.GEMINI_API_KEY;
   if (!key) throw new Error("GEMINI_API_KEY not set");
@@ -90,28 +102,20 @@ export async function POST(request: NextRequest) {
         { inlineData: { mimeType: resolvedMediaType, data: base64Image } },
         { text: "이 사진을 분류하고, human이면 60종 중 매칭해. JSON만 출력." }
       ]}],
-      generationConfig: {
-        temperature: 0,
-        // ⚠️ Gemini 2.5는 thinking 토큰도 maxOutputTokens에 포함됨.
-        // 예전 설정(maxOutputTokens:100 + thinkingBudget:512)은 thinking에서 예산을 다 태우고
-        // finishReason=MAX_TOKENS로 본문이 빈 채 잘려서 → 파싱 실패 → E2(심령) 에러카드로 떨어졌음.
-        // = 어떤 사진을 올려도 무조건 "전설의 고향상" 나오던 원인.
-        // 다른 사진 분류 Call-1(baby-gwansang/face-reading-premium/pet-gwansang 등)과 동일하게 thinking 끔.
-        maxOutputTokens: 200,
-        responseMimeType: "application/json",
-        thinkingConfig: { thinkingBudget: 0 },
-      },
+      generationConfig: CLASSIFY_GEN_CONFIG,
     });
 
     // 모델 체인 순회 — 각 모델당 최대 2회 retry, 503/overload면 다음 모델로
     let geminiRes: Response | null = null;
     let lastErrMsg = "";
-    outer: for (const model of GEMINI_MODELS) {
+    let usedModel = GEMINI_MODELS[0]; // ① 실제로 응답을 준 모델 (폴백 추적용)
+    outer: for (let mi = 0; mi < GEMINI_MODELS.length; mi++) {
+      const model = GEMINI_MODELS[mi];
       const GEMINI_URL = getGeminiUrl(model);
       for (let attempt = 0; attempt < 2; attempt++) {
         try {
           geminiRes = await fetch(GEMINI_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: reqBody });
-          if (geminiRes.ok) break outer;
+          if (geminiRes.ok) { usedModel = model; logGeminiModel("joseon-portrait", model, mi, attempt); break outer; }
           const errCheck = await geminiRes.clone().json().catch(() => null);
           lastErrMsg = errCheck?.error?.message || `HTTP ${geminiRes.status}`;
           // 503 / overloaded / high demand → retry then next model
@@ -140,15 +144,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "AI 분석 중 오류: " + (geminiData.error.message || "").substring(0, 100) }, { status: 500 });
     }
 
-    const parts = geminiData?.candidates?.[0]?.content?.parts || [];
-    let rawText = "";
-    for (const part of parts) { if (part.text) rawText = part.text; }
+    // ② 빈 응답(백지) 진단 — finishReason·사고토큰까지 콘솔에 크게 남긴다
+    const inspected = inspectGeminiResponse("joseon-portrait", geminiData, usedModel);
+    const rawText = inspected.rawText;
+    const finishReason = inspected.finishReason;
 
     const { parseGeminiJson } = await import("@/lib/gemini-parse");
     let parsed = rawText ? parseGeminiJson(rawText) : null;
-    // 빈 응답 또는 파싱 실패 시 — raw에서 숫자 추출 시도, 실패 시 E2(불분명) 에러카드
+    // 파싱 실패 시 — raw에서 숫자 추출만 시도. 실패하면 에러카드가 아니라 재시도 에러.
     if (!parsed) {
-      const finishReason = geminiData?.candidates?.[0]?.finishReason || "EMPTY";
       console.warn("[joseon-portrait] parse fail (finishReason:", finishReason, ") raw:", rawText.substring(0, 200));
       const numMatch = rawText.match(/"type_id"\s*:\s*(\d+)/);
       const fallbackId = numMatch ? parseInt(numMatch[1]) : null;

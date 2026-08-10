@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/check-gemini-config.mjs",
     "build": "next build",
+    "check:gemini": "node scripts/check-gemini-config.mjs",
     "start": "next start",
     "lint": "eslint"
   },
