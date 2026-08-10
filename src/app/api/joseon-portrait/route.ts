@@ -92,9 +92,14 @@ export async function POST(request: NextRequest) {
       ]}],
       generationConfig: {
         temperature: 0,
-        maxOutputTokens: 100,
+        // ⚠️ Gemini 2.5는 thinking 토큰도 maxOutputTokens에 포함됨.
+        // 예전 설정(maxOutputTokens:100 + thinkingBudget:512)은 thinking에서 예산을 다 태우고
+        // finishReason=MAX_TOKENS로 본문이 빈 채 잘려서 → 파싱 실패 → E2(심령) 에러카드로 떨어졌음.
+        // = 어떤 사진을 올려도 무조건 "전설의 고향상" 나오던 원인.
+        // 다른 사진 분류 Call-1(baby-gwansang/face-reading-premium/pet-gwansang 등)과 동일하게 thinking 끔.
+        maxOutputTokens: 200,
         responseMimeType: "application/json",
-        thinkingConfig: { thinkingBudget: 512 },
+        thinkingConfig: { thinkingBudget: 0 },
       },
     });
 
@@ -150,7 +155,11 @@ export async function POST(request: NextRequest) {
       if (fallbackId && fallbackId >= 1 && fallbackId <= 60) {
         parsed = { image_type: "human", gender: rawText.includes("男") ? "男" : "女", type_id: fallbackId };
       } else {
-        parsed = { image_type: "unclear", type_id: "E2" };
+        // ⚠️ 파싱 실패를 E2(심령)로 떨어뜨리지 말 것 — 시스템 오류를 "사진이 흐리다"고 사용자 탓으로 돌리게 됨.
+        // 진짜 흐린 사진은 모델이 image_type:"unclear"로 제대로 분류해서 E2가 나옴.
+        return NextResponse.json({
+          error: `AI 분석 응답을 받지 못했어요. 잠시 후 다시 시도해주세요. (${finishReason})`,
+        }, { status: 503 });
       }
     }
 
