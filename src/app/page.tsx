@@ -16244,8 +16244,28 @@ function _getDominantOhang(birth?:string){
 }
 function _seededRng(seed:number){let s=(seed>>>0)||1;return()=>{s=(s*1664525+1013904223)>>>0;return s/0x100000000;};}
 function _pick(arr:any[],rng:any){return arr[Math.floor(rng()*arr.length)];}
+
+/**
+ * 🚨 v(2026-08-11): 생년월일 → seed 성분.
+ *
+ * 오늘의 운세·이달의 운세·행운 로또의 seed가 "날짜 + 로그인여부"뿐이라
+ * **같은 날 로그인한 모든 사용자가 완전히 똑같은 결과**를 보고 있었다.
+ * personBirth는 오행 하나 뽑는 데만 쓰이고 seed에는 안 들어갔음.
+ * 화면에서는 "☯️ 사주 일간 + 절기 + 별자리 교차", "✓ 내 사주 기반 개인 운세"라고 약속하는 중이었다.
+ *
+ * 날짜 성분은 그대로 두고(매일/매월 갱신 유지) 여기서 나온 값을 더한다.
+ * 생년월일이 없으면(비로그인·게스트) 0 — 지금처럼 공통 운세가 되고, 화면 안내도 이미 그렇게 돼 있다.
+ */
+function _birthSeed(personBirth?:string):number{
+  const digits=(personBirth||"").replace(/[^0-9]/g,"");
+  if(!digits)return 0;
+  let h=0;
+  for(let i=0;i<digits.length;i++)h=(h*31+digits.charCodeAt(i))>>>0;
+  return h%100000;
+}
 function _calcUnse(loggedIn:boolean,personBirth?:string){
-  const d=new Date(),seed=d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate()+(loggedIn?7777:0);
+  // v(2026-08-11): + _birthSeed — 이전엔 날짜·로그인여부만 들어가서 같은 날 전 사용자가 같은 운세를 봤음
+  const d=new Date(),seed=d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate()+(loggedIn?7777:0)+_birthSeed(loggedIn?personBirth:undefined);
   const rng=_seededRng(seed);
   const headline=_pick(_UNSE_HEADLINES,rng);
   const dominant=loggedIn?_getDominantOhang(personBirth):"토";
@@ -21403,7 +21423,8 @@ function LottoModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
   // 사주 기반 개인화 번호 (오행 풀 우선 3~4개 + 나머지)
   const[personalNums]=useState(()=>{
     if(!isLoggedIn)return null;
-    const seed=new Date().getFullYear()*10000+(new Date().getMonth()+1)*100+new Date().getDate()+ohangInfo.lucky.length*7;
+    // v(2026-08-11): + _birthSeed — 이전엔 오행 lucky 배열 '길이'만 반영돼서 같은 오행이면 번호가 완전히 같았음
+    const seed=new Date().getFullYear()*10000+(new Date().getMonth()+1)*100+new Date().getDate()+ohangInfo.lucky.length*7+_birthSeed(personBirth);
     const rng=_seededRng(seed);
     const second=Object.entries(_OHANG_COLORS).filter(([k])=>k!==dominant)[Math.floor(rng()*4)][0];
     const luckyPool=Array.from(new Set([..._OHANG_COLORS[dominant].lucky,..._OHANG_COLORS[second].lucky]));
@@ -21743,7 +21764,8 @@ const _WEEK_ADVICE:any={
 };
 const _MONTH_LUCKY={color:["빨간색","초록색","파란색","노란색","보라색","금색"],item:["동쪽 방향 소품","둥근 형태 물건","나무 소재 물건","금속 악세서리","물 관련 소품"],day:["매주 화요일","매주 목요일","홀수 날짜","짝수 날짜","보름 전후"]};
 function _calcMonthly(loggedIn:boolean,personBirth?:string){
-  const d=new Date(),seed=d.getFullYear()*100+(d.getMonth()+1)+(loggedIn?500:0);
+  // v(2026-08-11): + _birthSeed — 오늘의 운세와 같은 문제였음 (달·로그인여부만 들어가 전 사용자 동일)
+  const d=new Date(),seed=d.getFullYear()*100+(d.getMonth()+1)+(loggedIn?500:0)+_birthSeed(loggedIn?personBirth:undefined);
   const rng=_seededRng(seed);
   const headline=_MONTH_HEADLINES[Math.floor(rng()*_MONTH_HEADLINES.length)];
   const dominant=loggedIn?_getDominantOhang(personBirth):"토";
