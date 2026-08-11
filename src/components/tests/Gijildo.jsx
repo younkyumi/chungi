@@ -1,6 +1,7 @@
 ﻿"use client";
 import { useState, useEffect, useRef } from "react";
 import { commitPaymentDeduction } from "@/lib/payment-helpers";
+import { josa } from "@/lib/josa";
 
 // ━━━ 사주 계산 ━━━
 const CHEONGAN=["갑","을","병","정","무","기","경","신","임","계"];
@@ -334,17 +335,8 @@ function getWaveType(answers){
   return{type:tPct>=50?"T":"A",tPct,aPct:100-tPct};
 }
 
-// v(2026-08-11): 조사 자동 선택. 이전엔 "배려을(를)" "배려이(가)"처럼 괄호 폴백이 그대로 화면에 찍혔음
-// (strengths 값이 런타임에 정해져서 문장에 하드코딩할 수 없었던 것). 마지막 글자 받침으로 판별한다.
-// pair는 [받침O, 받침X] 순서 — J("배려","과","와")→"배려와", J("감수성","을","를")→"감수성을"
-function J(word,withJong,noJong){
-  const w=String(word==null?"":word).trim();
-  if(!w)return w;
-  const code=w.charCodeAt(w.length-1);
-  // 한글 음절이 아니면(영문·숫자 등) 받침 없음으로 처리
-  const jong=code>=0xAC00&&code<=0xD7A3&&(code-0xAC00)%28!==0;
-  return w+(jong?withJong:noJong);
-}
+// v(2026-08-11): 조사 자동 선택은 src/lib/josa.ts 공용 유틸로 이관 (다른 콘텐츠도 같은 문제가 있어서)
+const J = josa;
 
 // ━━━ 사전질문 ━━━
 const PRE_Q1=[

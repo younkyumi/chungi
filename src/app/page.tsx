@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import SajuGlossaryFAB from "@/components/SajuGlossaryFAB";
 import { signInWithKakao, signInWithGoogle, signOut, onAuthStateChange } from "@/lib/auth";
 import { commitPaymentDeduction } from "@/lib/payment-helpers";
+import { josaOnly } from "@/lib/josa";
 import { computeSaju, legacyPillars } from "@/lib/saju";
 import GOODS_DB from "@/data/goods.json";
 import GWANSANG_TYPES from "@/data/gwansang-types.json";
@@ -4545,7 +4546,7 @@ function DoljabiSimModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,on
           <div style={{fontSize:10,color:"var(--mist)",marginBottom:10}}>엄마가 잡았으면 하는 미래</div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
             {wishes.map(o=>(
-              <button key={"mom-"+o.l} onClick={()=>setMomWish(o.l)} style={{padding:"10px",borderRadius:10,border:`1px solid ${momWish===o.l?"rgba(255,107,107,0.5)":"rgba(255,255,255,0.08)"}`,background:momWish===o.l?"rgba(255,107,107,0.15)":"var(--ink4)",color:momWish===o.l?"#ff6b6b":"var(--mist)",fontSize:11,fontWeight:momWish===o.l?700:500,cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:6}}>
+              <button key={"mom-"+o.l} onClick={()=>setMomWish(momWish===o.l?"":o.l)} style={{padding:"10px",borderRadius:10,border:`1px solid ${momWish===o.l?"rgba(255,107,107,0.5)":"rgba(255,255,255,0.08)"}`,background:momWish===o.l?"rgba(255,107,107,0.15)":"var(--ink4)",color:momWish===o.l?"#ff6b6b":"var(--mist)",fontSize:11,fontWeight:momWish===o.l?700:500,cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:6}}>
                 <span style={{fontSize:15}}>{o.e}</span><span>{o.l}</span>
                 {momWish===o.l&&<span style={{marginLeft:"auto",color:"#ff6b6b",fontSize:11}}>✓</span>}
               </button>
@@ -4559,7 +4560,7 @@ function DoljabiSimModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,on
           <div style={{fontSize:10,color:"var(--mist)",marginBottom:10}}>아빠가 잡았으면 하는 미래</div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
             {wishes.map(o=>(
-              <button key={"dad-"+o.l} onClick={()=>setDadWish(o.l)} style={{padding:"10px",borderRadius:10,border:`1px solid ${dadWish===o.l?"rgba(116,185,255,0.5)":"rgba(255,255,255,0.08)"}`,background:dadWish===o.l?"rgba(116,185,255,0.15)":"var(--ink4)",color:dadWish===o.l?"#74B9FF":"var(--mist)",fontSize:11,fontWeight:dadWish===o.l?700:500,cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:6}}>
+              <button key={"dad-"+o.l} onClick={()=>setDadWish(dadWish===o.l?"":o.l)} style={{padding:"10px",borderRadius:10,border:`1px solid ${dadWish===o.l?"rgba(116,185,255,0.5)":"rgba(255,255,255,0.08)"}`,background:dadWish===o.l?"rgba(116,185,255,0.15)":"var(--ink4)",color:dadWish===o.l?"#74B9FF":"var(--mist)",fontSize:11,fontWeight:dadWish===o.l?700:500,cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:6}}>
                 <span style={{fontSize:15}}>{o.e}</span><span>{o.l}</span>
                 {dadWish===o.l&&<span style={{marginLeft:"auto",color:"#74B9FF",fontSize:11}}>✓</span>}
               </button>
@@ -27014,7 +27015,7 @@ function ArchivePage({userHistory,savedPersons,setSavedPersons,isLoggedIn,onLogi
         {displayed.length===0&&(
           <div style={{textAlign:"center",padding:"30px 0 12px",color:"var(--mist)",fontSize:12}}>
             <div style={{fontSize:36,marginBottom:10}}>📭</div>
-            {q?`'${searchQuery}'와(과) 일치하는 기록이 없어요`:selectedPerson==="전체"?"운세 기록이 아직 없어요":`${selectedPerson}의 기록이 없어요`}
+            {q?`'${searchQuery}'${josaOnly(searchQuery,"과","와")} 일치하는 기록이 없어요`:selectedPerson==="전체"?"운세 기록이 아직 없어요":`${selectedPerson}의 기록이 없어요`}
           </div>
         )}
         {/* 신규 유저 — 추천 콘텐츠 카드 */}
