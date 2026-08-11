@@ -6628,7 +6628,7 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
                 {/* 듀얼 뱃지 — 무료 콘텐츠 공통 표준 (사용자 요청 v230) */}
                 {(()=>{
                   const FREE_BADGES:Record<string,{count:string,cycle:string,cycleColor?:string,cycleBg?:string,cycleBorder?:string}>={
-                    tarot_yesno:{count:"무료 매일 3회",cycle:"🃏 매일 자정 갱신",cycleColor:"var(--gold)",cycleBg:"rgba(212,175,55,0.12)",cycleBorder:"rgba(212,175,55,0.3)"},
+                    tarot_yesno:{count:"무료 매일 1회",cycle:"🃏 매일 자정 갱신",cycleColor:"var(--gold)",cycleBg:"rgba(212,175,55,0.12)",cycleBorder:"rgba(212,175,55,0.3)"},
                     today_tarot:{count:"무료 매일 1회",cycle:"🃏 매일 자정 갱신",cycleColor:"var(--gold)",cycleBg:"rgba(212,175,55,0.12)",cycleBorder:"rgba(212,175,55,0.3)"},
                     daily_quote:{count:"무료 매일 1회",cycle:"💭 매일 자정 갱신",cycleColor:"var(--gold)",cycleBg:"rgba(212,175,55,0.12)",cycleBorder:"rgba(212,175,55,0.3)"},
                     lotto:{count:"무료 매일 1회",cycle:"🎰 매일 자정 갱신",cycleColor:"#ff6b6b",cycleBg:"rgba(255,107,107,0.12)",cycleBorder:"rgba(255,107,107,0.3)"},
@@ -17940,7 +17940,7 @@ function YesNoTarotModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReques
             </div>
 
             <div style={{display:"flex",gap:6,justifyContent:"center",flexWrap:"wrap",marginBottom:6}}>
-              <span style={{display:"inline-block",fontSize:10,padding:"4px 10px",borderRadius:20,background:"rgba(95,196,158,0.15)",color:"var(--jade)",border:"1px solid rgba(95,196,158,0.3)",fontWeight:700}}>✦ 무료 매일 3회</span>
+              <span style={{display:"inline-block",fontSize:10,padding:"4px 10px",borderRadius:20,background:"rgba(95,196,158,0.15)",color:"var(--jade)",border:"1px solid rgba(95,196,158,0.3)",fontWeight:700}}>✦ 무료 매일 1회</span>
               <span style={{display:"inline-block",fontSize:10,padding:"4px 10px",borderRadius:20,background:"rgba(212,175,55,0.12)",color:"var(--gold)",border:"1px solid rgba(212,175,55,0.3)",fontWeight:700}}>🃏 매일 자정 갱신</span>
             </div>
           </div>
@@ -25541,7 +25541,7 @@ function MyPage({isLoggedIn,onLogin,onLogout,savedPersons,setSavedPersons,userHi
           },
           badge_share:{
             icon:"🔗",title:"공유 배지",
-            desc:`천기 결과를 공유할수록 배지 레벨 UP!\n\n🔗 공유자 (1~4회): 쿠폰 즉시 지급\n📢 전파자 (5~9회): 디지털 부적 (연애/재물/합격 중 택1)\n🏆 홍보대사 (10~19회): 키링 실물 발송\n🌟 인플루언서 (20회+): 명패 실물 발송\n\n━━━━━━━━━━━━━━\n📮 내 초대 코드: ${(()=>{try{return localStorage.getItem("chungi_referral_code")||"CG-???";}catch{return"CG-???";}})()}\n친구가 가입·결제하면 양쪽 380원 쿠폰 + 공유 카운트 +1\n\n'공유하면 그날 운세가 더 좋아진다'는 속설은 덤!`,
+            desc:`천기 결과를 공유할수록 배지 레벨 UP!\n\n🔗 공유자 (1~4회): 첫 공유를 남긴 단계\n📢 전파자 (5~9회): 천기를 꾸준히 퍼뜨리는 중\n🏆 홍보대사 (10~19회): 주변에 천기를 널리 알린 단계\n🌟 인플루언서 (20회+): 공유 최고 등급\n\n━━━━━━━━━━━━━━\n📮 내 초대 코드: ${(()=>{try{return localStorage.getItem("chungi_referral_code")||"CG-???";}catch{return"CG-???";}})()}\n친구가 가입·결제하면 양쪽 380원 쿠폰 + 공유 카운트 +1\n\n'공유하면 그날 운세가 더 좋아진다'는 속설은 덤!`,
             done:shareCount>0,
             doneMsg:shareCount>0?`${shareCount}회 공유 완료 👍`:"아직 공유 이력이 없어요",
             ctaLabel:"결과 공유하고 배지 받기",ctaAction:"share",
