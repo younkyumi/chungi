@@ -11379,7 +11379,9 @@ function BabyGwansangModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,
   const personName=selectedPerson?.name||"우리 아기";
 
   function doAnalyze(){
-    if(PRE_Q_CONFIG["baby_gwansang"]&&Object.keys(preQA).length===0){setStep("preqs");return;}
+    // 매번 띄운다 — 이전 답은 PreQuestionFlow의 initialAnswers={preQA}로 복원됨.
+    // (예전엔 preQA가 비었을 때만 띄워서, 이전 버튼으로 되돌아오면 사전질문을 건너뛰고 결제창으로 직행했음)
+    if(PRE_Q_CONFIG["baby_gwansang"]){setStep("preqs");return;}
     if(!isLoggedIn){setStep("needLogin");return;}
     setStep("pay");
   }
@@ -12063,10 +12065,14 @@ function PetGwansangModal({species,onClose,cart,setCart,onGoShop,addHistory,isLo
     if(!selectedPerson&&!petName.trim()){alert(`먼저 우리 ${petLabel}를 인물등록에서 선택하거나 이름을 입력해주세요!`);return;}
     if(!imgBase64){alert(`${petLabel} 사진을 먼저 올려주세요!`);return;}
     if(!consent){alert(`${petLabel}의 동의가 필요해요 🐾`);return;}
-    // 사전질문이 있으면 먼저 받기
-    if(PRE_Q_CONFIG[svcId]&&Object.keys(preQA).length===0){setStep("preqs");return;}
-    // 결제 후 에러로 재시도하는 경우 — 재결제 X (사용자 요청: "결제 중복")
+    // 결제 후 에러로 재시도하는 경우 — 재결제 X (사용자 요청: "결제 중복"). 재시도는 사전질문도 다시 안 묻는다.
     if(paidRetryCredit){runAnalysis();return;}
+    // 사전질문이 있으면 먼저 받기.
+    // ⚠️ 예전엔 `Object.keys(preQA).length===0`(= 한 번도 답한 적 없을 때)만 띄웠다.
+    // 그래서 사전질문을 마친 뒤 이전 버튼으로 업로드 화면까지 되돌아오면, 다시 진행할 때
+    // 사전질문을 통째로 건너뛰고 결제창으로 직행했음 (재선택 자체가 불가능).
+    // 이전 답은 아래 PreQuestionFlow의 initialAnswers={preQA}로 복원되므로 그냥 매번 띄우면 된다.
+    if(PRE_Q_CONFIG[svcId]){setStep("preqs");return;}
     if(!isLoggedIn){setStep("needLogin");return;}
     // 항상 결제 거침 (첫 1회 무료 분기 제거 — 가격 표기 980원과 일치)
     setStep("pay");
@@ -13246,7 +13252,9 @@ function BabyFaceModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLo
   }
 
   function doAnalyze(){
-    if(PRE_Q_CONFIG["baby_face"]&&Object.keys(preQA).length===0){setStep("preqs");return;}
+    // 매번 띄운다 — 이전 답은 PreQuestionFlow의 initialAnswers={preQA}로 복원됨.
+    // (예전엔 preQA가 비었을 때만 띄워서, 이전 버튼으로 되돌아오면 사전질문을 건너뛰고 결제창으로 직행했음)
+    if(PRE_Q_CONFIG["baby_face"]){setStep("preqs");return;}
     if(!isLoggedIn){setStep("needLogin");return;}
     setStep("pay");
   }
