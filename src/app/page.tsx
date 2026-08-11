@@ -1537,7 +1537,9 @@ const PRE_Q_CONFIG:Record<string,PQuestion[]>={
   ],
   mole:         [{key:"focus",multi:true,title:"특별히 더 집중해서 봐드릴 부분이 있나요?",hint:"없으면 건너뛰어도 돼요 — 전체를 균등하게 분석",skipable:true,opts:_COMMON_FOCUS}],
   // v265: 궁합 연예인 사전질문 (focus 1개) — 무료지만 결과 차별화 위해 추가
-  celeb_compat: [{key:"focus",multi:true,title:"어떤 결의 인연을 원하세요?",hint:"AI가 그 톤에 맞춰 연예인을 추천해드려요",skipable:true,opts:[
+  // v(2026-08-11): hint 정정 — 추천 인물은 사주로 정해지고 사전질문은 해석 관점만 바꾼다.
+  // 이전 문구("그 톤에 맞춰 연예인을 추천")는 실제로 인물이 바뀐다는 뜻이라 사주 기반 설명과 충돌했음.
+  celeb_compat: [{key:"focus",multi:true,title:"어떤 결의 인연을 원하세요?",hint:"선택한 결을 중심으로 해석해드려요 (추천 인물은 사주로 정해져요)",skipable:true,opts:[
     {e:"❤️",l:"운명적 연애·사랑하고 싶은 연예인"},
     {e:"👯",l:"평생 친구·소울메이트 같은 연예인"},
     {e:"💼",l:"비즈니스 파트너로 죽이 잘 맞을 연예인"},
@@ -8410,12 +8412,19 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
             // 매칭 원리 — 상생/같음/상극 안내
             const ohRel:any={목:"수",화:"목",토:"화",금:"토",수:"금"};
             const matchKey={same:"같은 일간 (자연스러운 공명)",생:"나를 생(生)해주는 기운 (든든)",생타:"내가 생(生)해주는 기운 (보살핌)",중립:"무난한 중립 케미"};
-            // v809: focus 사전질문 결과 반영(옵션A) — 선택한 '결'에 맞는 태그의 연예인 가산
+            // v(2026-08-11): focus를 스코어링에서 제거 — 추천 인물은 사주(일간 오행)로만 정한다.
+            // v809에서 focus에 +13을 얹었더니 "사주 기반이라면서 사전질문만 바꿔도 인물이 바뀐다"는
+            // 라이브 지적이 나왔다(캡처 9장). 사전질문은 '해석의 관점'만 바꾸는 것으로 역할을 좁히고,
+            // 대신 아래 _FOCUS_LENS로 결과 해석 문장을 실제로 바꿔서 선택이 헛돌지 않게 한다.
             const _focusArr:string[]=Array.isArray(preQ?.focus)?preQ.focus:(preQ?.focus?[String(preQ.focus)]:[]);
-            const _FOCUS_TAGS:Record<string,string[]>={"운명적 연애":["천생연분","두근","로맨틱","설렘","음양","비주얼합","큐티","귀여움","감정공명","우아매력","아이코닉"],"평생 친구":["청량","소울메이트","영혼친구","편안","순수","동행","발랄","텐션","럭키","긍정"],"비즈니스":["시너지","동반성장","멘토","리더","카리스마"],"멘토":["멘토","리더","안정","차분"],"감성·예술":["예술","아트","영감","감성","영혼교감"]};
-            const _focusKw=new Set<string>();
-            _focusArr.forEach(f=>Object.entries(_FOCUS_TAGS).forEach(([k,kws])=>{if(typeof f==="string"&&f.includes(k))kws.forEach(w=>_focusKw.add(w));}));
-            const _useFocus=_focusKw.size>0&&!_focusArr.some(f=>typeof f==="string"&&f.includes("전체"));
+            // 결별 해석 렌즈 — 추천 인물은 사주로 고정하고, 이 문장으로 "무엇을 중심으로 읽었는지"를 바꾼다
+            const _FOCUS_LENS:Record<string,string>={
+              "운명적 연애":"두 사람의 기운이 끌어당기는 지점 — 설렘과 감정의 결을 중심으로 읽었어요.",
+              "평생 친구":"오래 곁에 둘 수 있는 편안함 — 마찰이 적고 오래가는 결을 중심으로 읽었어요.",
+              "비즈니스":"함께 일할 때의 합 — 판단 속도와 역할 분담이 맞물리는 결을 중심으로 읽었어요.",
+              "멘토":"배울 점이 있는 관계 — 나를 끌어올려 주는 기운의 결을 중심으로 읽었어요.",
+              "감성·예술":"감각이 통하는 지점 — 취향과 표현의 결을 중심으로 읽었어요.",
+            };
             const _FOCUS_SHORT:Record<string,string>={"운명적 연애":"운명적 연애","평생 친구":"평생 친구·소울메이트","비즈니스":"비즈니스 파트너","멘토":"멘토·롤모델","감성·예술":"감성·예술 코드"};
             const _focusLabel=_focusArr.filter(f=>typeof f==="string"&&!f.includes("전체")&&f!=="skip").map(f=>{const hit=Object.keys(_FOCUS_SHORT).find(k=>f.includes(k));return hit?_FOCUS_SHORT[hit]:"";}).filter(Boolean).join(", ");
             const scored=_CELEBS_POOL.map((c,i)=>{
@@ -8423,8 +8432,10 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
               let kind=matchKey.중립;
               if(c.ohaeng===ilOh){score+=18;kind=matchKey.same;}
               else if(c.ohaeng===ohRel[ilOh]){score+=14;kind=matchKey.생;}
-              if(_useFocus&&[..._focusKw].some(w=>c.tag.includes(w)))score+=13; // 선택한 결에 맞는 연예인 가산
-              score+=((seed+i*7)%20);
+              // v(2026-08-11): focus 가산(+13) 제거 — 추천은 사주만으로 정한다
+              // 이름 기반 편차도 0~19 → 0~8로 축소. 이전엔 이 편차가 오행 가산(+14~18)보다 커서
+              // 중립 인물이 같은 일간 인물을 제칠 수 있었고, 그래서 "사주 기반"이라는 설명이 무색했다.
+              score+=((seed+i*7)%9);
               return{...c,match:Math.min(98,score),kind};
             });
             scored.sort((a:any,b:any)=>b.match-a.match);
@@ -8451,7 +8462,7 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
                   <div style={{fontSize:12,color:"#1A3C32",lineHeight:1.75,fontWeight:600,wordBreak:"keep-all" as any}}>{sajuLine[ilOh]||sajuLine.목}</div>
                 </div>
                 <div style={{fontSize:11,color:"#666",lineHeight:1.7,wordBreak:"keep-all" as any}}>아래 5명은 {personName}님의 일간과 가장 잘 어우러지는 오행을 가진 연예인들이에요. <strong style={{color:"#1A3C32"}}>같은 기운(동행)</strong> · <strong style={{color:"#1A3C32"}}>생해주는 기운(보살핌)</strong> · <strong style={{color:"#1A3C32"}}>정반대 기운(끌림)</strong> 순으로 매칭됐어요. 아래 5명 중 한 명을 눌러 자세한 풀이를 확인해보세요!</div>
-                {_focusLabel&&<div style={{marginTop:10,fontSize:11,color:"#7A5C00",fontWeight:700,background:"#fffbe9",borderRadius:8,padding:"8px 11px",lineHeight:1.6,border:"1px solid rgba(212,175,55,0.25)"}}>🎯 <strong>{_focusLabel}</strong> 결을 원하셔서, 그 결에 어울리는 연예인을 우선해서 추천했어요.</div>}
+                {_focusLabel&&<div style={{marginTop:10,fontSize:11,color:"#7A5C00",fontWeight:700,background:"#fffbe9",borderRadius:8,padding:"8px 11px",lineHeight:1.6,border:"1px solid rgba(212,175,55,0.25)"}}>🎯 <strong>{_focusLabel}</strong> 관점으로 봤어요 — {(()=>{const hit=Object.keys(_FOCUS_LENS).find(k=>_focusArr.some(f=>typeof f==="string"&&f.includes(k)));return hit?_FOCUS_LENS[hit]:"선택하신 결을 중심으로 읽었어요.";})()}<br/><span style={{fontWeight:600,opacity:0.85}}>추천 인물은 사전질문과 무관하게 {personName}님의 사주 일간으로 정해져요.</span></div>}
               </div>
 
               {/* TOP 5 미리보기 박스 (이름·이모지 칩) */}
