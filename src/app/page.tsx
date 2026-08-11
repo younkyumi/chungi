@@ -29392,7 +29392,11 @@ export default function Page(){
     }
     if(setting&&!setting.is_public){
       if(isAdmin){adminPreview();return;}
-      return;
+      // v(2026-08-11): 예전엔 조용히 return이라 아무 반응이 없었음.
+      // 결과 하단 "✨ 이것도 해볼래요?" 크로스셀은 모달마다 하드코딩된 정적 배열(40여 곳)이라
+      // is_public을 안 보고 카드를 그린다. 그래서 비공개 콘텐츠 카드를 눌렀을 때 화면이 멈춘 것처럼
+      // 보여 "고장났나?" 싶은 상태였음. 카드 40곳을 다 손대는 대신 이 진입점에서 준비중 안내로 받는다.
+      setModal({...svc,_coming:true});return;
     }
     if(svc.coming){
       if(isAdmin){adminPreview();return;}
