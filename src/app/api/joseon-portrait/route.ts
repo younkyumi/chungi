@@ -232,7 +232,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "조선 초상화 분석 중 오류";
-    console.error("[joseon-portrait] Error:", msg);
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error("[joseon-portrait] Error:", msg); // 상세는 서버 로그로만 — 원문에 과금 안내·request_id가 섞여 나올 수 있음
+    return NextResponse.json({ error: "조선 초상화 분석 중 오류가 발생했어요. 잠시 후 다시 시도해주세요." }, { status: 500 });
   }
 }

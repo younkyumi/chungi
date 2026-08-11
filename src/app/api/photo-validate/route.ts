@@ -127,10 +127,11 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(parsed);
   } catch (error: unknown) {
-    const errorMessage =
-      error instanceof Error ? error.message : "사진 검증 중 오류가 발생했습니다.";
+    // fail-open은 의도된 동작(검증 실패로 정상 사용자를 막지 않기 위함)이지만,
+    // 에러 원문을 응답에 실어 보내면 과금 상태·request_id가 클라이언트까지 전달된다. 상세는 서버 로그로만.
+    console.error("[photo-validate] Error:", error instanceof Error ? error.message : String(error));
     return NextResponse.json(
-      { valid: true, reason: "API 오류로 일단 허용", error: errorMessage },
+      { valid: true, reason: "API 오류로 일단 허용" },
       { status: 200 }
     );
   }

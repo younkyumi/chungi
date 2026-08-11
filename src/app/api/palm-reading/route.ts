@@ -344,8 +344,11 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ result: parsed });
   } catch (error: unknown) {
-    const errorMessage =
-      error instanceof Error ? error.message : "손금 분석 중 오류가 발생했습니다.";
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+    // ⚠️ 원문을 그대로 내보내지 말 것.
+    // 2026-08-11 라이브에서 Anthropic 크레딧이 소진되자 SDK 에러 본문이 통째로 사용자 알림창에 찍혔음:
+    //   400 {"type":"error","error":{"message":"Your credit balance is too low ..."},"request_id":"req_011..."}
+    // 과금 상태·request_id 같은 내부 정보가 최종 사용자에게 노출되는 문제 → 상세는 서버 로그로만 남긴다.
+    console.error("[palm-reading] Error:", error instanceof Error ? error.message : String(error));
+    return NextResponse.json({ error: "손금 분석 중 오류가 발생했어요. 잠시 후 다시 시도해주세요." }, { status: 500 });
   }
 }

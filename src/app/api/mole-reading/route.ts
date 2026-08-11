@@ -231,8 +231,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ result: parsed });
   } catch (error: unknown) {
-    const errorMessage =
-      error instanceof Error ? error.message : "점 분석 중 오류가 발생했습니다.";
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+    // ⚠️ 원문 노출 금지 — palm-reading과 동일 사유 (크레딧 소진 시 과금 안내·request_id가 사용자 화면에 찍혔음)
+    console.error("[mole-reading] Error:", error instanceof Error ? error.message : String(error));
+    return NextResponse.json({ error: "점 분석 중 오류가 발생했어요. 잠시 후 다시 시도해주세요." }, { status: 500 });
   }
 }
