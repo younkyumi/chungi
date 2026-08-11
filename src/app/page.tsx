@@ -1574,12 +1574,16 @@ function PreQuestionFlow({svcId,iconTitle,subtitle,onComplete,onClose,onBack,emb
   const isMulti=!!q.multi;
   const currentVal=answers[q.key];
   const selected:string[]=isMulti?(Array.isArray(currentVal)?currentVal:[]):(currentVal?[currentVal]:[]);
+  // 기타는 "[기타] 입력값" 형태로 저장돼서 옵션 라벨("기타")과 문자열이 다르다.
+  // 이걸 안 봐주면 확인을 눌러도 기타 버튼에 선택 표시가 안 붙는다 (v823 이전 버그).
+  const customVal=selected.find(s=>s.startsWith("[기타]"));
 
   const advance=()=>{if(isLast)onComplete({...answers});else setQStep(qStep+1);setShowCustom(false);setCustomText("");};
 
   // v298: 자동 진입 제거 — 단일 선택도 "다음" 버튼 눌러야 진입 (수정 가능)
   const handlePick=(opt:PQOpt)=>{
-    if(opt.custom){setShowCustom(true);return;}
+    // 기타 재클릭: 이미 입력한 값이 있으면 그 값을 채운 채로 열어 수정 가능하게 (해제는 입력창의 '선택 해제')
+    if(opt.custom){setCustomText(customVal?customVal.replace(/^\[기타\]\s*/,""):"");setShowCustom(true);return;}
     if(isMulti){
       // "전체 다" 토글 시 단독 선택
       if(opt.all){setAnswers({...answers,[q.key]:[opt.l]});return;}
@@ -1609,6 +1613,17 @@ function PreQuestionFlow({svcId,iconTitle,subtitle,onComplete,onClose,onBack,emb
     }
   };
 
+  // 기타 선택 해제 — 나머지 옵션은 다시 눌러 토글 해제되는데(v768/v769) 기타만 해제 수단이 없었다.
+  // 해제 후 화면은 '이 질문에 처음 도착한 상태'와 동일 (옵션 목록은 조건 없이 항상 렌더되므로 갇히지 않음).
+  const handleCustomClear=()=>{
+    if(isMulti){
+      setAnswers({...answers,[q.key]:selected.filter(s=>!s.startsWith("[기타]"))});
+    }else{
+      const next={...answers};delete next[q.key];setAnswers(next);
+    }
+    setShowCustom(false);setCustomText("");
+  };
+
   // v757: 표준 레이아웃 — 모든 사전질문 통일
   // L1 제목(mt 19px) → L2 부제목(ms 12px) → L3 진행바(3px) → L4 안내박스(11px 자동 생성) → L5 질문(13px 보통, 제목과 차별화)
   // hint 자동 생성: multi/skipable 조합으로 표준 멘트 (PRE_Q_CONFIG hint 필드는 무시 — 콘텐츠마다 다른 멘트가 통일 불가 원인)
@@ -1629,12 +1644,13 @@ function PreQuestionFlow({svcId,iconTitle,subtitle,onComplete,onClose,onBack,emb
       <div style={{fontSize:13,fontWeight:600,color:"var(--white)",marginBottom:12,lineHeight:1.5}}>{q.title}</div>
       <div style={{display:"flex",flexDirection:"column",gap:6,marginBottom:12}}>
         {q.opts.map(opt=>{
-          const sel=selected.includes(opt.l);
+          const sel=selected.includes(opt.l)||(!!opt.custom&&!!customVal);
           return(<button key={opt.l} onClick={()=>handlePick(opt)} style={{display:"flex",alignItems:"center",gap:10,padding:"13px 14px",background:sel?"rgba(212,175,55,0.12)":"var(--ink3)",border:sel?"1.5px solid var(--gold)":"1.5px solid rgba(255,255,255,0.06)",borderRadius:12,cursor:"pointer",textAlign:"left",fontFamily:"inherit",transition:"all .18s"}}>
             <span style={{fontSize:18,flexShrink:0}}>{opt.e}</span>
             <div style={{flex:1}}>
               <div style={{fontSize:13,fontWeight:700,color:sel?"var(--gold)":"var(--white)"}}>{opt.l}</div>
               {opt.s&&<div style={{fontSize:10,color:"var(--mist)",marginTop:1}}>{opt.s}</div>}
+              {opt.custom&&customVal&&<div style={{fontSize:10,color:"var(--gold)",marginTop:2}}>{customVal.replace(/^\[기타\]\s*/,"")}</div>}
             </div>
             {isMulti&&<div style={{width:18,height:18,borderRadius:4,border:`1.5px solid ${sel?"var(--gold)":"rgba(168,196,184,0.3)"}`,background:sel?"var(--gold)":"transparent",display:"flex",alignItems:"center",justifyContent:"center",color:"var(--ink)",fontSize:11,fontWeight:900,flexShrink:0}}>{sel?"✓":""}</div>}
           </button>);
@@ -1645,6 +1661,7 @@ function PreQuestionFlow({svcId,iconTitle,subtitle,onComplete,onClose,onBack,emb
           <input value={customText} onChange={e=>setCustomText(e.target.value.slice(0,80))} placeholder="직접 입력하세요" autoFocus style={{width:"100%",padding:"10px",background:"var(--ink2)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:8,color:"#fff",fontSize:13,fontFamily:"inherit"}} onKeyDown={e=>{if(e.key==="Enter")handleCustomConfirm();}}/>
           <div style={{display:"flex",gap:6,marginTop:8}}>
             <button onClick={()=>{setShowCustom(false);setCustomText("");}} style={{flex:1,padding:9,background:"transparent",border:"1px solid rgba(255,255,255,0.1)",borderRadius:8,color:"var(--mist)",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>취소</button>
+            {customVal&&<button onClick={handleCustomClear} style={{flex:1,padding:9,background:"transparent",border:"1px solid rgba(255,255,255,0.1)",borderRadius:8,color:"var(--mist)",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>선택 해제</button>}
             <button onClick={handleCustomConfirm} style={{flex:1,padding:9,background:"var(--gold)",border:"none",borderRadius:8,color:"var(--ink)",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>확인</button>
           </div>
         </div>
