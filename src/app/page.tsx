@@ -1580,6 +1580,19 @@ function PreQuestionFlow({svcId,iconTitle,subtitle,onComplete,onClose,onBack,emb
 
   const advance=()=>{if(isLast)onComplete({...answers});else setQStep(qStep+1);setShowCustom(false);setCustomText("");};
 
+  // v(2026-08-11): 건너뛰기를 항상 노출. 이전엔 selected.length===0일 때만 렌더해서
+  // ① 옵션을 하나라도 누르면 건너뛰기 버튼이 사라져 되돌릴 방법이 없고(같은 옵션 재클릭으로만 해제 가능 — 발견 불가)
+  // ② '이전'으로 돌아오면 답이 복원돼 있어 역시 건너뛰기가 안 보였음.
+  // 선택이 있는 상태에서 누르면 그 질문의 답을 지우고 넘어간다(= 진짜 건너뛴 것).
+  // ⚠️ setAnswers 직후의 advance()는 stale state를 보므로 onComplete에 next를 직접 넘겨야 함.
+  const skip=()=>{
+    const next={...answers};
+    delete next[q.key];
+    setAnswers(next);
+    if(isLast)onComplete(next);else setQStep(qStep+1);
+    setShowCustom(false);setCustomText("");
+  };
+
   // v298: 자동 진입 제거 — 단일 선택도 "다음" 버튼 눌러야 진입 (수정 가능)
   const handlePick=(opt:PQOpt)=>{
     // 기타 재클릭: 이미 입력한 값이 있으면 그 값을 채운 채로 열어 수정 가능하게 (해제는 입력창의 '선택 해제')
@@ -1670,8 +1683,8 @@ function PreQuestionFlow({svcId,iconTitle,subtitle,onComplete,onClose,onBack,emb
       {selected.length>0&&(
         <button className="btn btn-p" style={{marginBottom:8}} onClick={advance}>{isLast?"✨ 완료하고 결과 보기":(isMulti?`다음 → (${selected.length}개 선택)`:"다음 →")}</button>
       )}
-      {q.skipable&&selected.length===0&&(
-        <button onClick={advance} style={{width:"100%",padding:11,background:"transparent",border:"1px dashed rgba(212,175,55,0.25)",borderRadius:12,color:"var(--gold)",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",marginBottom:8}}>건너뛰기 →</button>
+      {q.skipable&&(
+        <button onClick={skip} style={{width:"100%",padding:11,background:"transparent",border:"1px dashed rgba(212,175,55,0.25)",borderRadius:12,color:"var(--gold)",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",marginBottom:8}}>{selected.length>0?"건너뛰기 (선택 취소) →":"건너뛰기 →"}</button>
       )}
       <div style={{display:"flex",gap:6}}>
         <button onClick={()=>{if(qStep>0)setQStep(qStep-1);else if(onBack)onBack();else onClose();}} className="btn btn-g" style={{flex:1,marginTop:0,fontSize:12}}>← 이전</button>
@@ -3019,9 +3032,8 @@ function PawdongModal({onClose, cart, setCart, onGoShop, addHistory, isLoggedIn,
             {preFocus&&preFocus!=="skip"&&(
               <button className="btn btn-p" style={{marginTop:12,marginBottom:8}} onClick={()=>setStep("pay")}>✨ 완료하고 결과 보기</button>
             )}
-            {!preFocus&&(
-              <button className="btn btn-g" style={{marginTop:12,marginBottom:8,fontSize:12}} onClick={()=>{setPreFocus("skip");setStep("pay");}}>건너뛰기</button>
-            )}
+            {/* v(2026-08-11): 건너뛰기 항상 노출 — 옵션을 누르면 버튼이 사라져 되돌릴 수 없던 문제 */}
+            <button className="btn btn-g" style={{marginTop:12,marginBottom:8,fontSize:12}} onClick={()=>{setPreFocus("skip");setStep("pay");}}>{preFocus&&preFocus!=="skip"?"건너뛰기 (선택 취소)":"건너뛰기"}</button>
             {/* v597: preQ 이전 = info step (분위기/스타일 선택)로 복귀 */}
             <div style={{display:"flex",gap:6}}>
               <button onClick={()=>{setInfoStep(2);setStep("info");}} className="btn btn-g" style={{flex:1,marginTop:0,fontSize:12}}>← 이전</button>
@@ -7053,9 +7065,8 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
             {preQ.baby_focus&&preQ.baby_focus!=="skip"&&(
               <button className="btn btn-p" style={{marginTop:12}} onClick={()=>setStep("pay")}>✨ 완료하고 결과 보기</button>
             )}
-            {!preQ.baby_focus&&(
-              <button className="btn btn-g" style={{marginTop:12,fontSize:12}} onClick={()=>{setPreQ((p:any)=>({...p,baby_focus:"skip"}));setStep("pay");}}>건너뛰기</button>
-            )}
+            {/* v(2026-08-11): 건너뛰기 항상 노출 — 옵션을 누르면 버튼이 사라져 되돌릴 수 없던 문제 */}
+            <button className="btn btn-g" style={{marginTop:12,fontSize:12}} onClick={()=>{setPreQ((p:any)=>({...p,baby_focus:"skip"}));setStep("pay");}}>{preQ.baby_focus&&preQ.baby_focus!=="skip"?"건너뛰기 (선택 취소)":"건너뛰기"}</button>
             {/* v597: 표준 [이전 | 닫기] — 이전 = 한자고르기 */}
             <div style={{display:"flex",gap:8,marginTop:8}}>
               <button className="btn btn-g" style={{flex:1,fontSize:12}} onClick={()=>setStep("babyhanja")}>← 이전</button>
@@ -12869,9 +12880,8 @@ function NumerologyModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,on
           {preFocus&&preFocus!=="skip"&&(
             <button className="btn btn-p" style={{marginTop:12,marginBottom:8}} onClick={()=>setStep("pay")}>✨ 완료하고 결과 보기</button>
           )}
-          {!preFocus&&(
-            <button className="btn btn-g" style={{marginTop:12,marginBottom:8,fontSize:12}} onClick={()=>{setPreFocus("skip");setStep("pay");}}>건너뛰기</button>
-          )}
+          {/* v(2026-08-11): 건너뛰기 항상 노출 — 옵션을 누르면 버튼이 사라져 되돌릴 수 없던 문제 */}
+          <button className="btn btn-g" style={{marginTop:12,marginBottom:8,fontSize:12}} onClick={()=>{setPreFocus("skip");setStep("pay");}}>{preFocus&&preFocus!=="skip"?"건너뛰기 (선택 취소)":"건너뛰기"}</button>
           <div style={{display:"flex",gap:6}}>
             <button onClick={()=>{if(onRequestPerson){onRequestPerson({id:"numerology",icon:"🔢",name:"수비학",desc:"",price:"980원"});onClose();}}} className="btn btn-g" style={{flex:1,marginTop:0,fontSize:12}}>← 이전</button>
             <button className="btn btn-g" style={{flex:1,marginTop:0}} onClick={onClose}>닫기</button>
@@ -15060,9 +15070,8 @@ function LoveCompatModal({svc,onClose,isLoggedIn,cart,setCart,onGoShop,addHistor
             {preFocus&&preFocus!=="skip"&&(
               <button className="btn btn-p" style={{marginTop:12,marginBottom:8}} onClick={()=>setStep("pay")}>✨ 완료하고 결과 보기</button>
             )}
-            {!preFocus&&(
-              <button className="btn btn-g" style={{marginTop:12,marginBottom:8,fontSize:12}} onClick={()=>{setPreFocus("skip");setStep("pay");}}>건너뛰기</button>
-            )}
+            {/* v(2026-08-11): 건너뛰기 항상 노출 — 옵션을 누르면 버튼이 사라져 되돌릴 수 없던 문제 */}
+            <button className="btn btn-g" style={{marginTop:12,marginBottom:8,fontSize:12}} onClick={()=>{setPreFocus("skip");setStep("pay");}}>{preFocus&&preFocus!=="skip"?"건너뛰기 (선택 취소)":"건너뛰기"}</button>
             {/* v598: "birth" 존재하지 않는 step → 빈화면 버그. input으로 수정 */}
             <div style={{display:"flex",gap:6}}>
               <button onClick={()=>setStep("input")} className="btn btn-g" style={{flex:1,marginTop:0,fontSize:12}}>← 이전</button>
@@ -21075,8 +21084,8 @@ function TaegilModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLogi
                 setStep(freeOnly?"loading":"pay");
               }}>✨ 완료하고 결과 보기</button>
             )}
-            {!preFocus&&(
-              <button className="btn btn-g" style={{marginTop:12,fontSize:12}} onClick={()=>{
+            {/* v(2026-08-11): 건너뛰기 항상 노출 — 옵션을 누르면 버튼이 사라져 되돌릴 수 없던 문제 */}
+            <button className="btn btn-g" style={{marginTop:12,fontSize:12}} onClick={()=>{
                 if(freeOnly){
                   try{
                     const ck=`chungi_daily_taegil_${new Date().toISOString().slice(0,10)}_count`;
@@ -21085,8 +21094,7 @@ function TaegilModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLogi
                   }catch{}
                 }
                 setPreFocus("skip");setStep(freeOnly?"loading":"pay");
-              }}>건너뛰기</button>
-            )}
+              }}>{preFocus&&preFocus!=="skip"?"건너뛰기 (선택 취소)":"건너뛰기"}</button>
             {/* v368: 사전질문 표준 풋터 (이전·닫기) */}
             <div style={{display:"flex",gap:6,marginTop:8}}>
               <button onClick={()=>setStep("calendar")} className="btn btn-g" style={{flex:1,marginTop:0,fontSize:12}}>← 이전</button>

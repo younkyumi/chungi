@@ -928,9 +928,8 @@ export default function 뇌특성검사({onClose,addHistory,selectedPerson,isLog
         {preFocus&&preFocus!=="skip"&&(
           <button className="btn btn-p" style={{marginTop:12}} onClick={()=>setScreen("pay")}>다음 →</button>
         )}
-        {!preFocus&&(
-          <button className="btn btn-g" style={{marginTop:12,fontSize:12}} onClick={()=>{setPreFocus("skip");setScreen("pay");}}>건너뛰기</button>
-        )}
+        {/* v(2026-08-11): 건너뛰기 항상 노출 — 옵션을 누르면 버튼이 사라져 되돌릴 수 없던 문제 */}
+        <button className="btn btn-g" style={{marginTop:12,fontSize:12}} onClick={()=>{setPreFocus("skip");setScreen("pay");}}>{preFocus&&preFocus!=="skip"?"건너뛰기 (선택 취소)":"건너뛰기"}</button>
         {/* v590: 이전 = test 마지막 문항 (test → 사전질문 → 결제 흐름) */}
         <div style={{display:"flex",gap:6,marginTop:8}}>
           <button onClick={()=>setScreen("test")} className="btn btn-g" style={{flex:1,marginTop:0,fontSize:12}}>← 이전</button>

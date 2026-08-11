@@ -59,7 +59,8 @@ function PreQA({iconTitle,subtitle,title,opts,multi,skipable,answer,setAnswer,on
       })}
     </div>
     {sel.length>0&&<button className="btn btn-p" style={{marginBottom:8}} onClick={onNext}>다음 → ({sel.length}개 선택)</button>}
-    {skipable&&<button onClick={onNext} style={{width:"100%",padding:11,background:"transparent",border:"1px dashed rgba(212,175,55,0.25)",borderRadius:12,color:"var(--gold)",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",marginBottom:8}}>건너뛰기 →</button>}
+    {/* v(2026-08-11): 건너뛰기는 원래도 항상 보였지만 누르면 고른 답이 그대로 남아 있었음 → 답을 비우고 넘어간다 */}
+    {skipable&&<button onClick={()=>{setAnswer(multi?[]:undefined);onNext();}} style={{width:"100%",padding:11,background:"transparent",border:"1px dashed rgba(212,175,55,0.25)",borderRadius:12,color:"var(--gold)",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",marginBottom:8}}>{sel.length>0?"건너뛰기 (선택 취소) →":"건너뛰기 →"}</button>}
     {(onBack||onClose)&&<div style={{display:"flex",gap:6}}>
       {onBack&&<button onClick={onBack} className="btn btn-g" style={{flex:1,marginTop:0,fontSize:12}}>← 이전</button>}
       {onClose&&<button onClick={onClose} className="btn btn-g" style={{flex:1,marginTop:0}}>닫기</button>}

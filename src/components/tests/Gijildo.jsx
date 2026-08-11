@@ -636,7 +636,7 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
           <div style={{display:"flex",flexDirection:"column",gap:8}}>
             {PRE_Q1.map(opt=>{
               const sel=preQ1===opt.label;
-              return <button key={opt.label} onClick={()=>setPreQ1(opt.label)} style={{padding:"14px 16px",background:sel?"rgba(212,175,55,0.12)":"var(--ink3)",border:sel?"1.5px solid var(--gold)":"1.5px solid rgba(255,255,255,0.07)",borderRadius:14,fontSize:13,color:sel?"var(--gold)":"var(--mist)",cursor:"pointer",textAlign:"left",display:"flex",alignItems:"center",gap:10,fontFamily:"inherit"}}>
+              return <button key={opt.label} onClick={()=>setPreQ1(preQ1===opt.label?"":opt.label)} style={{padding:"14px 16px",background:sel?"rgba(212,175,55,0.12)":"var(--ink3)",border:sel?"1.5px solid var(--gold)":"1.5px solid rgba(255,255,255,0.07)",borderRadius:14,fontSize:13,color:sel?"var(--gold)":"var(--mist)",cursor:"pointer",textAlign:"left",display:"flex",alignItems:"center",gap:10,fontFamily:"inherit"}}>
                 <span style={{fontSize:18}}>{opt.emoji}</span>{opt.label}
               </button>;
             })}
@@ -645,9 +645,10 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
           {preQ1&&preQ1!=="skip"&&(
             <button className="btn btn-p" style={{marginTop:12}} onClick={()=>setPreStep(2)}>다음 →</button>
           )}
-          {!preQ1&&(
-            <button className="btn btn-g" style={{marginTop:12,fontSize:12}} onClick={()=>{setPreQ1("skip");setPreStep(2);}}>건너뛰기</button>
-          )}
+          {/* v(2026-08-11): 건너뛰기 항상 노출. 이전엔 !preQ1일 때만 렌더해서
+              ① 옵션을 하나 누르면 건너뛰기가 사라지고 해제 수단도 없어 되돌릴 방법이 없었고
+              ② 건너뛰기 후 '이전'으로 오면 preQ1==="skip"이라 건너뛰기·다음이 둘 다 사라졌음 */}
+          <button className="btn btn-g" style={{marginTop:12,fontSize:12}} onClick={()=>{setPreQ1("skip");setPreStep(2);}}>{preQ1&&preQ1!=="skip"?"건너뛰기 (선택 취소)":"건너뛰기"}</button>
           {/* v590: 이전 = test 마지막 문항 (test → 사전질문 → 결제 흐름) */}
           <div style={{display:"flex",gap:6,marginTop:8}}>
             <button onClick={()=>setScreen("test")} className="btn btn-g" style={{flex:1,marginTop:0,fontSize:12}}>← 이전</button>
@@ -659,7 +660,7 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
           <div style={{display:"flex",flexDirection:"column",gap:8}}>
             {PRE_Q2.map(opt=>{
               const sel=preQ2===opt.label;
-              return <button key={opt.label} onClick={()=>setPreQ2(opt.label)} style={{padding:"14px 16px",background:sel?"rgba(212,175,55,0.12)":"var(--ink3)",border:sel?"1.5px solid var(--gold)":"1.5px solid rgba(255,255,255,0.07)",borderRadius:14,fontSize:13,color:sel?"var(--gold)":"var(--mist)",cursor:"pointer",textAlign:"left",display:"flex",alignItems:"center",gap:10,fontFamily:"inherit"}}>
+              return <button key={opt.label} onClick={()=>setPreQ2(preQ2===opt.label?"":opt.label)} style={{padding:"14px 16px",background:sel?"rgba(212,175,55,0.12)":"var(--ink3)",border:sel?"1.5px solid var(--gold)":"1.5px solid rgba(255,255,255,0.07)",borderRadius:14,fontSize:13,color:sel?"var(--gold)":"var(--mist)",cursor:"pointer",textAlign:"left",display:"flex",alignItems:"center",gap:10,fontFamily:"inherit"}}>
                 <span style={{fontSize:18}}>{opt.emoji}</span>{opt.label}
               </button>;
             })}
@@ -668,9 +669,8 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
           {preQ2&&preQ2!=="skip"&&(
             <button className="btn btn-p" style={{marginTop:12}} onClick={()=>setScreen("pay")}>다음 →</button>
           )}
-          {!preQ2&&(
-            <button className="btn btn-g" style={{marginTop:12,fontSize:12}} onClick={()=>{setPreQ2("skip");setScreen("pay");}}>건너뛰기</button>
-          )}
+          {/* v(2026-08-11): step1과 동일 — 건너뛰기 항상 노출 */}
+          <button className="btn btn-g" style={{marginTop:12,fontSize:12}} onClick={()=>{setPreQ2("skip");setScreen("pay");}}>{preQ2&&preQ2!=="skip"?"건너뛰기 (선택 취소)":"건너뛰기"}</button>
           {/* v368: 사전질문 표준 풋터 (이전·닫기) */}
           <div style={{display:"flex",gap:6,marginTop:8}}>
             <button onClick={()=>setPreStep(1)} className="btn btn-g" style={{flex:1,marginTop:0,fontSize:12}}>← 이전</button>
