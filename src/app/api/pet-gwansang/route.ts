@@ -170,8 +170,19 @@ const CHAR1_PROMPT_PET = `반려동물 사진의 외모·관상 특징(눈매·�
 츤데레: 20(안좋아하는척츤데레-작은 체구+까칠한 표정+도도한 눈빛)
 
 ⚠️ 2·8·12·18 자동 매칭 금지. 관상 근거 명확해야만 선택.
+
+[사진 품질 판정 — character_type보다 **먼저** 결정할 것]
+- 눈·코·입이 정면 또는 ¾각도로 또렷하게 보임 → "valid"
+- 흐릿/어두움/모션블러/물털기·점프 등 역동적이라 얼굴이 흔들려 안 보임 → "unclear"
+- 여러 마리 → "multi"
+- 얼굴 가림/뒷모습/극단 측면/선글라스·안경·모자·마스크·코스튬·이불 등으로 눈이나 코가 가려짐 → "masked"
+⚠️ 귀엽다고 봐주지 마라. 눈이 안 보이면 관상 분석 자체가 불가능하다. "valid" 남발 금지.
+⚠️ 흔들린 사진을 억지로 valid로 통과시키지 마라 — 유료 분석이라 잘못 통과하면 돈이 나간다.
+⚠️ valid가 아니면 character_type과 face_obs는 전부 null로 둬라.
+
 JSON만:
 {
+  "image_type": "valid|unclear|multi|masked",
   "character_type": N,
   "face_obs": {
     "눈매": "눈 특징 (크기·모양·눈꼬리, 10자 이내)",
@@ -234,18 +245,32 @@ export async function POST(request: NextRequest) {
     });
     let characterType: number | null = null;
     let faceObs: Record<string, string> | null = null;
+    let c1ImageType = "";
     try {
       const c1 = await callGeminiPet(char1Body);
       if (c1.ok) {
         const c1d = await c1.json();
         const c1t = (c1d?.candidates?.[0]?.content?.parts || []).reduce((s: string, p: {text?: string}) => p.text ? p.text : s, "");
         const c1j = JSON.parse(c1t.replace(/```json\n?|\n?```/g, "").trim());
+        c1ImageType = String(c1j?.image_type || "").toLowerCase();
         const ct = c1j?.character_type;
         if (typeof ct === "number" && ct >= 1 && ct <= 20) characterType = ct;
         if (c1j?.face_obs && typeof c1j.face_obs === "object") faceObs = c1j.face_obs as Record<string, string>;
       }
     } catch {}
-    console.log(`[pet-gwansang] Call-1 ct=${characterType ?? "FAIL"} face_obs_ok=${!!faceObs}`);
+    console.log(`[pet-gwansang] Call-1 image_type=${c1ImageType || "FAIL"} ct=${characterType ?? "FAIL"} face_obs_ok=${!!faceObs}`);
+
+    // ━━━ 사진 품질 판정은 Call-1(temperature 0.1)이 확정한다 ━━━
+    // 예전엔 unclear/multi/masked 판정을 Call-2(temperature 0.7)에만 맡겨서, 같은 흔들린 사진이
+    // 어떤 때는 정상 결과(88점)로, 어떤 때는 에러카드로 갈렸음 (2026-08-11 라이브 확인).
+    // 유료 콘텐츠라 흐린 사진이 valid로 잘못 통과하면 그대로 결제가 나가는 문제였다.
+    // 여기서 걸러내면 Call-2를 아예 건너뛰므로 응답도 빨라진다.
+    // ※ 종(種) 불일치(unanimal, type_id 21)는 Call-1 프롬프트가 species를 모르므로 Call-2가 계속 담당.
+    const C1_ERR_TYPE_ID: Record<string, number> = { unclear: 22, multi: 23, masked: 24 };
+    if (C1_ERR_TYPE_ID[c1ImageType]) {
+      console.log(`[pet-gwansang] Call-1 에러 확정 → Call-2 생략 (image_type=${c1ImageType})`);
+      return NextResponse.json({ result: { image_type: c1ImageType, type_id: C1_ERR_TYPE_ID[c1ImageType], species } });
+    }
 
     // === CALL 2: 전체 분석 (character_type + 외모 관찰값 고정, temperature 0.7) ===
     const faceObsRule = faceObs
@@ -296,7 +321,11 @@ export async function POST(request: NextRequest) {
     // ⚠️ 판정값은 Call-1이 확정한 characterType이 항상 이긴다. (face-reading-premium·baby-gwansang과 동일 패턴)
     // Call-2가 character_type을 문자열로 주거나 빼먹으면 아래 FIXED 블록이 통째로 스킵돼
     // 점수·매력점수는 물론 계층3(행운색/방향/시간/아이템)까지 전부 자유생성으로 새어나간다.
-    const ctNum = characterType ?? (typeof parsed.character_type === "number" ? parsed.character_type : null);
+    // ⚠️ Call-2가 에러로 판정한 경우(종 불일치 등, type_id 21~24)에는 Call-1의 characterType을 쓰면 안 된다.
+    // 안 그러면 에러카드 응답에 점수·매력점수·페르소나가 주입돼 카드가 깨진다.
+    const c2ImgType = String(parsed.image_type || "").toLowerCase();
+    const c2IsErr = (typeof parsed.type_id === "number" && parsed.type_id >= 21) || (c2ImgType !== "" && c2ImgType !== "valid");
+    const ctNum = c2IsErr ? null : (characterType ?? (typeof parsed.character_type === "number" ? parsed.character_type : null));
     if (ctNum) parsed.character_type = ctNum;
     if (ctNum && PET_FIXED[ctNum]) {
       const fix = PET_FIXED[ctNum];
