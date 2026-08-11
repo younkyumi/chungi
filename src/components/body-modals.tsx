@@ -38,9 +38,11 @@ function ThisToo({items,onOpenService}:any){
 
 function PreQA({iconTitle,subtitle,title,opts,multi,skipable,answer,setAnswer,onNext,onBack,step,total,onClose}:any){
   const sel:string[]=multi?(Array.isArray(answer)?answer:[]):(answer?[answer]:[]);
+  // v(2026-08-11): 단일 선택 자동 진입 제거 — 사이트 표준(v298)이 "고른 뒤 '다음'을 눌러야 진행"인데
+  // 여기만 180ms 뒤 자동으로 넘어가서, 잘못 눌러도 바꿀 틈 없이 다음 화면으로 튀었음. 재클릭 해제도 없었음.
   const pick=(l:string)=>{
     if(multi){const next=sel.includes(l)?sel.filter(x=>x!==l):[...sel,l];setAnswer(next);}
-    else{setAnswer(l);setTimeout(onNext,180);}
+    else{setAnswer(answer===l?undefined:l);}
   };
   // v758: PreQuestionFlow 표준 매치 — 안내박스 자동 생성, 진행바 단독 위치, 질문 13px 보통
   const autoHint = multi && skipable ? "여러 개 선택 가능 · 건너뛰기 가능"
@@ -65,7 +67,7 @@ function PreQA({iconTitle,subtitle,title,opts,multi,skipable,answer,setAnswer,on
         </button>;
       })}
     </div>
-    {multi&&sel.length>0&&<button className="btn btn-p" style={{marginBottom:8}} onClick={onNext}>다음 → ({sel.length}개)</button>}
+    {sel.length>0&&<button className="btn btn-p" style={{marginBottom:8}} onClick={onNext}>{multi?`다음 → (${sel.length}개)`:"다음 →"}</button>}
     {/* v(2026-08-11): 건너뛰기는 원래도 항상 보였지만 누르면 고른 답이 그대로 남아 있었음 → 답을 비우고 넘어간다 */}
     {skipable&&<button onClick={()=>{setAnswer(multi?[]:undefined);onNext();}} style={{width:"100%",padding:11,background:"transparent",border:"1px dashed rgba(212,175,55,0.25)",borderRadius:12,color:"var(--gold)",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit",marginBottom:8}}>{sel.length>0?"건너뛰기 (선택 취소) →":"건너뛰기 →"}</button>}
     {(onBack||onClose)&&<div style={{display:"flex",gap:6}}>

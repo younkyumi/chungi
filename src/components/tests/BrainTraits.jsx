@@ -919,7 +919,8 @@ export default function 뇌특성검사({onClose,addHistory,selectedPerson,isLog
         <div style={{display:"flex",flexDirection:"column",gap:8}}>
           {FOCUS_OPTS.map(opt=>{
             const sel=preFocus===opt.l;
-            return <button key={opt.l} onClick={()=>setPreFocus(opt.l)} style={{padding:"14px 16px",background:sel?"rgba(212,175,55,0.12)":"var(--ink3)",border:sel?"1.5px solid #D4AF37":"1.5px solid rgba(255,255,255,0.07)",borderRadius:14,fontSize:13,color:sel?"#D4AF37":"var(--mist)",cursor:"pointer",textAlign:"left",display:"flex",alignItems:"center",gap:10,fontFamily:"inherit"}}>
+            // v(2026-08-11): 재클릭 해제 추가 — 기질도와 같은 단방향 버그였음
+            return <button key={opt.l} onClick={()=>setPreFocus(preFocus===opt.l?"":opt.l)} style={{padding:"14px 16px",background:sel?"rgba(212,175,55,0.12)":"var(--ink3)",border:sel?"1.5px solid #D4AF37":"1.5px solid rgba(255,255,255,0.07)",borderRadius:14,fontSize:13,color:sel?"#D4AF37":"var(--mist)",cursor:"pointer",textAlign:"left",display:"flex",alignItems:"center",gap:10,fontFamily:"inherit"}}>
               <span style={{fontSize:18}}>{opt.e}</span>{opt.l}
             </button>;
           })}
