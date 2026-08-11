@@ -23574,7 +23574,7 @@ function HomePage({onSvc,isLoggedIn,savedPersons,setSavedPersons,cart,setCart,on
           <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 30% 20%,rgba(212,175,55,0.15) 0%,transparent 70%)",pointerEvents:"none"}}/>
           <div style={{maxWidth:"60%",position:"relative"}}>
             <div style={{fontSize:13,fontWeight:900,marginBottom:4,color:"var(--white)",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif"}}>🎊 첫 이용자 혜택</div>
-            <div style={{fontSize:11,color:"var(--mist)",marginBottom:12,lineHeight:1.6}}>소개팅남 관상짤 첫 1회 무료!<br/>가입 시 환영 쿠폰 2종 즉시 지급 (1,000원 + 500원)!<br/><strong style={{color:"var(--gold)"}}>가입만 해도 무료 콘텐츠 12종 매일 무료!</strong></div>
+            <div style={{fontSize:11,color:"var(--mist)",marginBottom:12,lineHeight:1.6}}>소개팅남 관상짤 첫 1회 무료!<br/>가입 시 환영 쿠폰 2종 즉시 지급 (500원 + 굿즈 10%)!<br/><strong style={{color:"var(--gold)"}}>가입만 해도 무료 콘텐츠 12종 매일 무료!</strong></div>
             <button className="btn btn-sm" style={{maxWidth:160,background:"linear-gradient(135deg,var(--gold),var(--gold3))",color:"var(--ink)",border:"none",fontWeight:700}} onClick={()=>{
               setFreePickOpen(true);
             }}>무료로 시작하기</button>
