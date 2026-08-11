@@ -352,12 +352,22 @@ export async function POST(request: NextRequest) {
     }
 
     // character_type별 고정값 덮어쓰기 (score·charm·wealth)
-    const ctNum = typeof parsed.character_type === "number" ? parsed.character_type : null;
+    // ⚠️ 판정값은 Call-1이 확정한 characterType이 항상 이긴다.
+    // 예전엔 Call-2가 돌려준 parsed.character_type만 봤는데, Call-2가 이 필드를 문자열("18")로
+    // 주거나 아예 빼먹으면 아래 FIXED 블록이 통째로 스킵돼 AI 원본 점수가 그대로 나갔다.
+    // → 같은 사진·같은 캐릭터인데 96점 S등급 ↔ 93점 A+등급으로 갈리던 원인 (2026-08-10 라이브 4회 비교).
+    const ctNum = characterType ?? (typeof parsed.character_type === "number" ? parsed.character_type : null);
+    if (ctNum) parsed.character_type = ctNum;
     if (ctNum && FACE_FIXED[ctNum]) {
       const fix = FACE_FIXED[ctNum];
       parsed.total_score  = fix.total_score;
       parsed.charm_score  = fix.charm_score;
       parsed.wealth_grade = fix.wealth_grade;
+      // 도화살 배지는 중첩 경로(tab8_charm.charm_score)를 읽는데 고정값은 최상위에만 쓰고 있어서
+      // 배지·게이지가 AI 자유생성값 그대로 노출됐다(88%↔95% 흔들림). 렌더 경로도 같이 동기화.
+      if (parsed.tab8_charm && typeof parsed.tab8_charm === "object") {
+        (parsed.tab8_charm as Record<string, unknown>).charm_score = fix.charm_score;
+      }
       console.log(`[face-reading-premium] FIXED applied: ct=${ctNum} score=${fix.total_score} charm=${fix.charm_score} wealth=${fix.wealth_grade}`);
     }
 

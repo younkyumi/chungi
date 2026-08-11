@@ -346,7 +346,11 @@ export async function POST(request: NextRequest) {
     if (!parsed) return NextResponse.json({ error: "AI 응답 파싱 실패", debug: rawText.substring(0, 300) }, { status: 500 });
 
     // character_type별 고정값 덮어쓰기 (score·천재성·매력·찰떡·상극·직업)
-    const ctNum = typeof parsed.character_type === "number" ? parsed.character_type : null;
+    // ⚠️ 판정값은 Call-1이 확정한 characterType이 항상 이긴다. (face-reading-premium과 동일 패턴)
+    // Call-2가 character_type을 문자열로 주거나 빼먹으면 아래 FIXED 블록이 통째로 스킵돼
+    // 점수·천재유형·직업이 전부 AI 자유생성으로 새어나간다.
+    const ctNum = characterType ?? (typeof parsed.character_type === "number" ? parsed.character_type : null);
+    if (ctNum) parsed.character_type = ctNum;
     if (ctNum && BABY_FIXED[ctNum]) {
       const fix = BABY_FIXED[ctNum];
       parsed.total_score  = fix.total_score;
