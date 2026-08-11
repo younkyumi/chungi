@@ -293,7 +293,11 @@ export async function POST(request: NextRequest) {
     if (!parsed) return NextResponse.json({ error: "AI 응답 파싱 실패", debug: rawText.substring(0, 300) }, { status: 500 });
 
     // character_type별 고정값 덮어쓰기 (score·charm)
-    const ctNum = typeof parsed.character_type === "number" ? parsed.character_type : null;
+    // ⚠️ 판정값은 Call-1이 확정한 characterType이 항상 이긴다. (face-reading-premium·baby-gwansang과 동일 패턴)
+    // Call-2가 character_type을 문자열로 주거나 빼먹으면 아래 FIXED 블록이 통째로 스킵돼
+    // 점수·매력점수는 물론 계층3(행운색/방향/시간/아이템)까지 전부 자유생성으로 새어나간다.
+    const ctNum = characterType ?? (typeof parsed.character_type === "number" ? parsed.character_type : null);
+    if (ctNum) parsed.character_type = ctNum;
     if (ctNum && PET_FIXED[ctNum]) {
       const fix = PET_FIXED[ctNum];
       parsed.total_score = fix.total_score;
