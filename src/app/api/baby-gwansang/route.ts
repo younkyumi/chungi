@@ -251,6 +251,35 @@ const BABY_FIXED: Record<number, { total_score: number; genius_score: number; ch
   20: { total_score: 98, genius_score: 97, charm_score: 97, genius_type: "카리스마형 천재", match_good_id: 11, match_good: "🐗 돌진하는 뚝심 베이비 같은 눈빛이 강하고 추진력이 있는 친구와 잘 맞아요. 카리스마와 뚝심이 만나면 어떤 목표도 이뤄내는 불굴의 콤비예요. 함께하면 최강이 돼요.", match_bad_id: 12, match_bad: "🐑 사랑 듬뿍 포근 양 같은 눈이 크고 순한 친구와는 에너지 차이가 크게 나요. 강한 카리스마가 순한 친구에게 부담이 될 수 있어요. 호랑이가 부드러워지면 좋은 친구가 될 수도 있어요.", jobs: ["격투기 선수", "경찰", "소방관"] },
 };
 
+// v(2026-08-11): best_subject·art_fields 고정.
+// BABY_FIXED가 점수·천재유형·직업까지는 잡아줬는데 이 둘만 자유생성으로 남아 있어서,
+// 같은 아기·같은 캐릭터인데 사전질문만 바꾸면 "예술,언어" ↔ "과학" ↔ "미술,요리,실용공학"으로
+// 갈렸음 (2026-08-11 라이브 4회 비교). "실용공학"처럼 실재하지 않는 과목명이 나오던 것도 같이 해소.
+// art_fields는 순서까지 고정 — 집합은 같은데 순서만 바뀌어도 재분석 시 다르게 보였음.
+// 값은 각 타입의 genius_type·jobs와 맥락이 이어지도록 잡음.
+const BABY_TALENT: Record<number, { best_subject: string; art_fields: string[] }> = {
+  1:  { best_subject: "국어 · 음악", art_fields: ["연기", "노래", "방송"] },
+  2:  { best_subject: "수학 · 사회", art_fields: ["경제", "보드게임", "만들기"] },
+  3:  { best_subject: "수학 · 국어", art_fields: ["퍼즐", "수집", "정리"] },
+  4:  { best_subject: "체육 · 미술", art_fields: ["무용", "패션", "디자인"] },
+  5:  { best_subject: "국어 · 영어", art_fields: ["글쓰기", "외국어", "이야기"] },
+  6:  { best_subject: "음악 · 미술", art_fields: ["연기", "노래", "패션"] },
+  7:  { best_subject: "과학 · 체육", art_fields: ["운동", "실험", "바둑"] },
+  8:  { best_subject: "국어 · 사회", art_fields: ["돌봄", "반려동물", "합창"] },
+  9:  { best_subject: "과학 · 수학", art_fields: ["독서", "천문", "발명"] },
+  10: { best_subject: "사회 · 체육", art_fields: ["리더십", "토론", "팀운동"] },
+  11: { best_subject: "체육 · 수학", art_fields: ["운동", "블록놀이", "목공"] },
+  12: { best_subject: "국어 · 음악", art_fields: ["그림책", "돌봄", "율동"] },
+  13: { best_subject: "국어 · 사회", art_fields: ["토론", "역사", "외국어"] },
+  14: { best_subject: "수학 · 과학", art_fields: ["컴퓨터", "로봇", "퍼즐"] },
+  15: { best_subject: "미술 · 음악", art_fields: ["그림", "악기", "글쓰기"] },
+  16: { best_subject: "과학 · 사회", art_fields: ["여행", "자연관찰", "지도놀이"] },
+  17: { best_subject: "국어 · 과학", art_fields: ["요리", "미술", "음악"] },
+  18: { best_subject: "과학 · 국어", art_fields: ["돌봄", "원예", "노래"] },
+  19: { best_subject: "미술 · 음악", art_fields: ["연기", "패션", "영상"] },
+  20: { best_subject: "체육 · 사회", art_fields: ["태권도", "수영", "리더십"] },
+};
+
 async function callGemini(body: string): Promise<Response> {
   const MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-flash-lite"];
   let res: Response | null = null;
@@ -356,7 +385,10 @@ export async function POST(request: NextRequest) {
       parsed.total_score  = fix.total_score;
       parsed.genius_score = fix.genius_score;
       parsed.charm_score  = fix.charm_score;
-      if (parsed.tab2_genius) parsed.tab2_genius.genius_type = fix.genius_type;
+      if (parsed.tab2_genius) {
+        parsed.tab2_genius.genius_type = fix.genius_type;
+        if (BABY_TALENT[ctNum]) parsed.tab2_genius.art_fields = BABY_TALENT[ctNum].art_fields;
+      }
       if (parsed.tab3_social) parsed.tab3_social.jobs = fix.jobs;
       if (parsed.tab4_parenting) {
         parsed.tab4_parenting.match_good    = fix.match_good;
@@ -373,6 +405,7 @@ export async function POST(request: NextRequest) {
         const tw = parsed.tab2_wealth as Record<string, unknown>;
         tw.wealth_grade = BABY_WEALTH_GRADES[(ctNum - 1) % BABY_WEALTH_GRADES.length];
         tw.school_type = BABY_SCHOOL_TYPES[(ctNum - 1) % BABY_SCHOOL_TYPES.length];
+        if (BABY_TALENT[ctNum]) tw.best_subject = BABY_TALENT[ctNum].best_subject;
       }
       if (parsed.tab4_parenting && typeof parsed.tab4_parenting === "object") {
         const tp = parsed.tab4_parenting as Record<string, unknown>;
