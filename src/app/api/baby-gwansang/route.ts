@@ -127,7 +127,6 @@ const SYSTEM_PROMPT = `[ROLE]
   },
 
   "cert_body": "[인증서 본문 3줄. {nm}의 관상 특징을 요약하여 '존귀/대귀/총명/인복' 등 한자어 키워드를 섞어 격조 있게. 예: '{nm}는 타고난 기질이 존귀하고 대귀한 복덩이입니다. 맑은 눈빛에서 총명함이, 야무진 입술에서 리더의 기질이 엿보이며, 사랑으로 키우면 세상을 바꿀 큰 인물이 될 상입니다.']",
-  "cert_tags": ["#존귀", "#총명", "#대귀", "#인복"] (아기 특성에 맞는 4개 키워드),
 
   "future_glimpse": "[10년 후 {nm}의 모습 3~4줄. 학교에서·친구들 사이에서 어떤 모습일지 구체적으로. 부모가 미소 짓게]",
   "baby_quote": "[{nm}이 부모에게 보내는 한 마디 1~2줄. 의인화·아기 시점에서 따뜻하게. 예: '엄마, 오늘도 사랑해 — 내가 별처럼 빛나도록 키워줘서 고마워요']",
@@ -280,6 +279,32 @@ const BABY_TALENT: Record<number, { best_subject: string; art_fields: string[] }
   20: { best_subject: "체육 · 사회", art_fields: ["태권도", "수영", "리더십"] },
 };
 
+// v(2026-08-11): 인증서 둥근칩 4개 — 20종 고정. 아기 콘텐츠라 어려운 한자어는 피했다.
+// 규칙: 각 2~4자 / 페르소나 이름에 이미 있는 단어는 쓰지 않음 / 20종 전체 중복 없음.
+const BABY_CERT_TAGS: Record<number, string[]> = {
+  1 : ["재복","존귀","대운","부귀"], // 세상을 밝히는 꼬마 태양
+  2 : ["풍요","여유","기품","넉넉"], // 복덩이 황금 아기돼지
+  3 : ["실속","야무짐","살림꾼","똑소리"], // 쏙쏙 모으는 알뜰 햄찌
+  4 : ["예술혼","우아","감수성","개성"], // 날아오를 아기 학
+  5 : ["매력","귀염","인기","애교"], // 영리한 아기 여우
+  6 : ["미모","화사","고운결","귀티"], // 눈부신 꽃사슴 베이비
+  7 : ["근면","성실","활력","끈기"], // 부지런한 똑똑 펭귄
+  8 : ["순둥","다정","인복","무해"], // 세상 순한 포근 강아지
+  9 : ["총명","명석","집중력","습득력"], // 지혜로운 아기 부엉이
+  10: ["위엄","리더","통솔","든든"], // 용감한 꼬마 사자왕
+  11: ["독립","강단","당당","기개"], // 돌진하는 뚝심 베이비
+  12: ["온기","위로","치유","상냥"], // 사랑 듬뿍 포근 양
+  13: ["대귀","품격","그릇","기상"], // 하늘을 품은 아기 용
+  14: ["예리","섬세","집념","꼼꼼"], // 눈썰미 만점 똘똘이
+  15: ["서정","차분","사색","다감"], // 감성 만개 나비 베이비
+  16: ["모험","역마","자유","호기심"], // 세계를 누빌 아기 새
+  17: ["먹복","식도락","미식","건강"], // 냠냠 먹보 다람쥐
+  18: ["복덩이","길조","만복","환함"], // 행운 듬뿍 클로버 베이비
+  19: ["논리","통찰","관찰","두뇌파"], // 반짝반짝 별빛 아기
+  20: ["츤데레","까칠","속정","새침"], // 도도한 아기 호랑이
+};
+
+
 async function callGemini(body: string): Promise<Response> {
   const MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-flash-lite"];
   let res: Response | null = null;
@@ -397,6 +422,15 @@ export async function POST(request: NextRequest) {
         parsed.tab4_parenting.match_bad_id  = fix.match_bad_id;
       }
       console.log(`[baby-gwansang] FIXED applied: ct=${ctNum} score=${fix.total_score} genius=${fix.genius_score} charm=${fix.charm_score} type=${fix.genius_type}`);
+
+      // v(2026-08-11): 인증서 둥근칩 4개 고정 — BABY_FIXED가 점수·재능·직업만 커버해서 cert_tags는 자유생성이었음.
+      // 인증서는 결과카드에 박제되고 기록소 저장·공유까지 되는 판정성 필드라 20종 고정으로 전환.
+      // 내관상보기(FACE_CERT_TAGS)·펫(PET_TRAITS_FIXED)과 같은 처리.
+      const babyTags = BABY_CERT_TAGS[ctNum];
+      if (babyTags) {
+        parsed.cert_tags = babyTags;
+        console.log(`[baby-gwansang] TAGS applied: ct=${ctNum} tags=${babyTags.join("·")}`);
+      }
 
       // v(2026-07-14): 계층3(실용정보) 고정 — wealth_grade/school_type/lucky_color/lucky_gem/lucky_animal/lucky_direction이
       // 타입 고정과 무관하게 매번 자유생성이던 문제 fix. character_type 기반 고정 인덱스/오행 매핑으로 확정.

@@ -78,7 +78,6 @@ const SYSTEM_PROMPT = `[ROLE]
   "total_score": 50~99 사이 정수,
   "top_percent": "상위 N%" (score 기반 계산),
   "cert_body": "인증서 전용 본문 4~6줄 (180~280자) — tab1_overview.body와 절대 중복 금지. 인증서 톤(귀한·운명적·복덩이·천상의)으로 풀이. {nm}을 두 번 이상 호명. 사전 질문(나이대/관심사/현재상황) 반영. 첫인상 풀이가 아닌 '평생을 결정짓는 관상의 기운'에 초점",
-  "cert_tags": ["인증서 둥근칩 4개 — 짧은 형용사·기질 키워드. 페르소나/관상 핵심 트레잇 반영. 예: '귀상' '대운' '인복' '총명' / '카리스마' '리더' '재물' '명예' / '복덩이' '예술' '감성' '유연' (각 2~4자, # 빼고 단어만)"],
   "closing_msg": "[가이드 — 절대 출력 금지] {nm}님께 전하는 따뜻한 마무리 한마디. 2~3줄 (80~120자). 이름 한 번 부르며 관상의 핵심 매력을 한 줄로 짚고, 격려·응원으로 마무리. [중요: '🔮 천기의 한마디 —' 같은 라벨 텍스트 절대 본문 포함 금지. 순수 메시지만]",
 
   "tab1_overview": {
@@ -210,6 +209,33 @@ const FACE_FIXED: Record<number, { total_score: number; charm_score: number; wea
   19: { total_score: 97, charm_score: 91, wealth_grade: "중" },
   20: { total_score: 94, charm_score: 87, wealth_grade: "대" },
 };
+
+// v(2026-08-11): 인증서 둥근칩 4개 — 20종 고정.
+// 규칙: 각 2~4자 / 페르소나 이름에 이미 있는 단어는 쓰지 않음 / 20종 전체 중복 없음.
+// (그래서 12번 힐러상은 '힐링' 대신 '치유', 16번 역마살러상은 '역마' 대신 '탐험')
+const FACE_CERT_TAGS: Record<number, string[]> = {
+  1 : ["재복","귀상","대운","부귀"], // 황금손 미다스상
+  2 : ["축재","여유","기품","풍요"], // 강남 건물주상
+  3 : ["실속","알뜰","야무짐","살림꾼"], // 지갑 수호신상
+  4 : ["예술혼","화려","감각","개성"], // 도파민 플렉서상
+  5 : ["매혹","도화","치명적","인기"], // 유죄 인간 폭스상
+  6 : ["미모","황금비율","눈부심","화사"], // 얼굴 천재 프리패스상
+  7 : ["근면","활력","성실","끈기"], // 워커홀릭 갓생러상
+  8 : ["인복","다정","평온","무해"], // 순도100% 진국상
+  9 : ["총명","명석","집중력","습득력"], // 인간 챗GPT상
+  10: ["위엄","카리스마","통솔","든든"], // 갓벽한 대장상
+  11: ["독립","강단","당당","뚝심"], // 알빠노 마이웨이상
+  12: ["온기","위로","포근","치유"], // 무해한 힐러상
+  13: ["총수","시크","절제","품격"], // 영앤리치 예비 CEO상
+  14: ["예리","섬세","완벽주의","집념"], // 디테일 변태 장인상
+  15: ["우수","차분","사색","서정"], // 미친 감성 아티스트상
+  16: ["모험","자유","호기심","탐험"], // 프로 역마살러상
+  17: ["먹복","식도락","미식","풍류"], // 쩝쩝 박사 먹방러상
+  18: ["행운","복덩이","길조","만복"], // 럭키 비키상
+  19: ["논리","통찰","냉철","두뇌파"], // 인간 알고리즘상
+  20: ["까칠","속정","새침","반전"], // 겉바속촉 츤데레상
+};
+
 
 async function callGemini(body: string): Promise<Response> {
   const MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-flash-lite"];
@@ -369,6 +395,16 @@ export async function POST(request: NextRequest) {
         (parsed.tab8_charm as Record<string, unknown>).charm_score = fix.charm_score;
       }
       console.log(`[face-reading-premium] FIXED applied: ct=${ctNum} score=${fix.total_score} charm=${fix.charm_score} wealth=${fix.wealth_grade}`);
+
+      // v(2026-08-11): 인증서 둥근칩 4개 고정. FACE_FIXED가 점수만 커버해서 cert_tags는 자유생성이었고,
+      // 같은 사진 4회에 #인복#똑똑이#행운#사랑스러움 / #인복#천운#사랑#희망 / #인복#행운#사랑#재물 /
+      // #똑똑이#인복#재물#사랑 로 전부 달랐다(라이브 캡처). 인증서는 결과카드에 박제되고 기록소 저장·공유까지
+      // 되는 판정성 필드라 20종 고정으로 전환. 펫(PET_TRAITS_FIXED)과 같은 처리.
+      const tags = FACE_CERT_TAGS[ctNum];
+      if (tags) {
+        parsed.cert_tags = tags;
+        console.log(`[face-reading-premium] TAGS applied: ct=${ctNum} tags=${tags.join("·")}`);
+      }
     }
 
     // v(2026-07-14): 계층3(실용정보) 고정 — lucky_color/lucky_direction/luck_item이 타입 고정과 무관하게
