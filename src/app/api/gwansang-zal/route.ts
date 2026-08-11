@@ -6,7 +6,15 @@ function getGeminiUrl(model = "gemini-2.5-flash") {
   return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
 }
 
-const SYSTEM_PROMPT = `[ROLE]
+// ━━━ 2-call 구조 (v820) ━━━
+// 예전엔 단일 호출로 "분류 + 8192토큰 서술문"을 동시에 만들어서, 같은 사진인데도
+// 캐릭터가 럭키 비키상 ↔ 무해한 힐러상으로 갈렸음(2026-08-10 라이브 확인).
+// 긴 생성 과정에 분류가 끌려다닌 것. 다른 관상 API 5종(우리아기관상/내관상보기/댕댕상·냥냥상/
+// 관상궁합/부모자식궁합)은 이미 2-call로 분리돼 있었는데 관상짤만 빠져 있었다.
+//   Call-1: 사고 끄고 짧게 → image_type + type_id + face_obs만 확정
+//   Call-2: 확정된 값을 앵커로 주입하고 서술문 생성 (분류를 다시 하지 않음)
+// 아래 CLASSIFY_RULES / NARRATIVE_RULES는 기존 SYSTEM_PROMPT를 내용 변경 없이 둘로 쪼갠 것.
+const CLASSIFY_RULES = `[ROLE]
 너는 냉정하고 정확한 이미지 판독기이자, 팩폭 관상 AI 도사 '천기'야. 말투는 친근한 반말(친구 말투).
 
 [STEP 1: STRICT CLASSIFICATION - 절대 규칙, 가장 중요!!]
@@ -85,7 +93,10 @@ const SYSTEM_PROMPT = `[ROLE]
 4. 계열 내 4개 타입 중 가장 정확히 매칭되는 1개 선택
 5. **절대 5·6·8·9·13·18에 자동 매칭하지 마라**. 그 타입을 고르려면 명확한 근거(긴 눈꼬리·황금비율·동그란 얼굴·넓은 이마·시원한 코·처진 눈)가 있어야 한다.
 
-[말투 규칙 (human만 해당)]
+`;
+
+// Call-2 전용 — 말투 규칙 + 출력 스펙 + few-shot (기존 SYSTEM_PROMPT의 후반부 그대로)
+const NARRATIVE_RULES = `[말투 규칙 (human만 해당)]
 - 관점: 소개팅 상대 사진을 친구에게 평가해주는 아는 언니 시점. 상대방한테 직접 말하는 게 아니라 유저에게 상대방을 평가해주는 톤.
 - 주어: "이 사람은~" / "이 관상은~" 사용. "{nm}님은~" 절대 금지.
 - 이름 활용이 필요하면 "이 {nm} 관상은~" 형태만 허용.
@@ -167,7 +178,70 @@ const SYSTEM_PROMPT = `[ROLE]
 예시 7: 애니메이션/웹툰 캐릭터 그림
 {"image_type":"illustration","type_id":26,"killpoint":null,"story":null,"sections":null,"section_titles":null,"fortune_msg":null}`;
 
+// Call-2 시스템 프롬프트 — 기존 SYSTEM_PROMPT와 동일한 내용 (분류 규칙 + 서술 규칙)
+const SYSTEM_PROMPT = `${CLASSIFY_RULES}
+
+${NARRATIVE_RULES}`;
+
+// Call-1 시스템 프롬프트 — 분류 규칙만 쓰고, 출력은 아주 짧게 고정
+const CLASSIFY_PROMPT = `${CLASSIFY_RULES}
+
+[OUTPUT — JSON만 출력. 다른 텍스트·설명·마크다운 절대 금지]
+{"image_type":"human/animal/object/unclear/multi/baby/masked/illustration","type_id":1~26,"face_obs":{"눈":"한 단어","코":"한 단어","입":"한 단어","이마":"한 단어","턱":"한 단어","전체":"한 단어"}}
+
+- face_obs는 사진에서 실제로 보이는 특징을 각각 한 단어로만 (예: 눈="처진", 코="둥근", 입="도톰한").
+- human이 아니면 face_obs는 모두 null.
+- 서술문·킬포인트·섹션은 여기서 절대 만들지 마라. 분류와 관찰만 한다.`;
+
 export const maxDuration = 90; // v502: 60→90s — 모델 체인 retry 여유
+
+// v509: 1.5-flash 제거 — v1beta 미지원. 2.0 → 2.5 → Lite만.
+//       inner retry 3→2, 백오프 0.8s. 마지막 시도 후 sleep 안 함.
+const MODELS = ["gemini-2.0-flash", "gemini-2.5-flash", "gemini-2.5-flash-lite"];
+
+// 모델 체인 순회 — Call-1/Call-2가 공유 (기존 단일 호출의 retry 로직을 그대로 함수로 뺀 것)
+async function callGeminiChain(reqBody: string, label: string): Promise<Response | null> {
+  let geminiRes: Response | null = null;
+  outer: for (const model of MODELS) {
+    const url = getGeminiUrl(model);
+    for (let attempt = 0; attempt < 2; attempt++) {
+      geminiRes = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: reqBody });
+      if (geminiRes.ok) break outer;
+      const errCheck = await geminiRes.clone().json().catch(() => null);
+      const errMsg = errCheck?.error?.message || "";
+      const isHighDemand = errMsg.includes("high demand") || errMsg.includes("overloaded") || geminiRes.status === 503;
+      const isRateLimit = geminiRes.status === 429;
+      if (isHighDemand || isRateLimit) {
+        console.log(`[gwansang-zal:${label}] ${model} attempt ${attempt + 1} failed (${geminiRes.status}), retrying...`);
+        if (attempt === 0) await new Promise(r => setTimeout(r, 800));
+        continue;
+      }
+      break;
+    }
+    console.log(`[gwansang-zal:${label}] ${model} exhausted, trying next model...`);
+  }
+  return geminiRes;
+}
+
+// 응답 parts에서 text 추출 (2.5는 thinking model이라 text가 있는 마지막 part를 찾아야 함)
+function extractText(geminiData: any): string {
+  const parts = geminiData?.candidates?.[0]?.content?.parts || [];
+  let rawText = "";
+  for (const part of parts) if (part.text) rawText = part.text;
+  return rawText;
+}
+
+// image_type → 에러 type_id 매핑 (Call-1 결과에 적용)
+function errorTypeIdFor(imageType: string): number | null {
+  if (imageType === "animal" || imageType === "object") return 21;
+  if (imageType === "unclear") return 22;
+  if (imageType === "multi") return 23;
+  if (imageType === "baby") return 24;
+  if (imageType === "masked" || imageType === "hidden_face") return 25;
+  if (imageType === "illustration" || imageType === "2d_character") return 26;
+  if (imageType !== "human") return 21;
+  return null; // human
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -183,46 +257,90 @@ export async function POST(request: NextRequest) {
     const validMediaTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
     const resolvedMediaType = validMediaTypes.includes(mediaType) ? mediaType : "image/jpeg";
 
-    // ━━━ 단일 호출: 분류 + 분석을 한 번에 ━━━
-    const reqBody = JSON.stringify({
-        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-        contents: [{
-          parts: [
-            { inlineData: { mimeType: resolvedMediaType, data: base64Image } },
-            { text: `이 이미지를 보고 image_type부터 먼저 판단한 뒤, 그에 맞는 JSON을 출력해줘.\n이름/별명: ${personName}. {nm}은 "${personName}"으로 치환될 예정이니 {nm}으로 써줘.\n\n⚠️ 중요: image_type을 반드시 첫 번째 키로 출력해. 사람이 아니면 절대 1~20번을 쓰지 마.` }
-          ]
-        }],
-        generationConfig: {
-          temperature: 0,
-          maxOutputTokens: 8192,
-          responseMimeType: "application/json",
-          thinkingConfig: { thinkingBudget: 1024 },
-        },
-      });
-    // v509: 1.5-flash 제거 — v1beta 미지원. 2.0 → 2.5 → Lite만.
-    //       inner retry 3→2, 백오프 2s/4s→0.8s/1.6s. 마지막 시도 후 sleep 안 함.
-    const MODELS = ["gemini-2.0-flash", "gemini-2.5-flash", "gemini-2.5-flash-lite"];
-    let geminiRes: Response | null = null;
-    outer: for (const model of MODELS) {
-      const url = getGeminiUrl(model);
-      for (let attempt = 0; attempt < 2; attempt++) {
-        geminiRes = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: reqBody });
-        if (geminiRes.ok) break outer;
-        const errCheck = await geminiRes.clone().json().catch(() => null);
-        const errMsg = errCheck?.error?.message || "";
-        const isHighDemand = errMsg.includes("high demand") || errMsg.includes("overloaded") || geminiRes.status === 503;
-        const isRateLimit = geminiRes.status === 429;
-        if (isHighDemand || isRateLimit) {
-          console.log(`[gwansang-zal] ${model} attempt ${attempt+1} failed (${geminiRes.status}), retrying...`);
-          if (attempt === 0) await new Promise(r => setTimeout(r, 800));
-          continue;
-        }
-        break;
-      }
-      console.log(`[gwansang-zal] ${model} exhausted, trying next model...`);
+    // ━━━ Call-1: 분류 + 얼굴 관찰값만. 사고 끄고 짧게 → 같은 사진이면 항상 같은 type_id ━━━
+    const call1Body = JSON.stringify({
+      systemInstruction: { parts: [{ text: CLASSIFY_PROMPT }] },
+      contents: [{
+        parts: [
+          { inlineData: { mimeType: resolvedMediaType, data: base64Image } },
+          { text: "이 사진을 분류하고 얼굴 관찰값을 뽑아. JSON만 출력." }
+        ]
+      }],
+      generationConfig: {
+        temperature: 0.1,
+        maxOutputTokens: 300,
+        responseMimeType: "application/json",
+        thinkingConfig: { thinkingBudget: 0 },
+      },
+    });
+    const call1Res = await callGeminiChain(call1Body, "Call-1");
+    if (!call1Res || !call1Res.ok) {
+      return NextResponse.json({ error: "high_demand", message: "AI 서버가 잠시 혼잡해요 🙏 30초 뒤 다시 시도해주세요." }, { status: 503 });
+    }
+    const call1Data = await call1Res.json();
+    const { parseGeminiJson } = await import("@/lib/gemini-parse");
+    const c1 = parseGeminiJson(extractText(call1Data));
+    if (!c1) {
+      console.error("[gwansang-zal:Call-1] parse fail:", extractText(call1Data).substring(0, 300));
+      return NextResponse.json({ error: "parse_error", message: "AI 응답 파싱 실패" }, { status: 500 });
     }
 
-    const geminiData = await geminiRes!.json();
+    const c1ImageType = (c1.image_type || "").toLowerCase();
+    const errId = errorTypeIdFor(c1ImageType);
+    const faceObs = c1.face_obs || null;
+    console.log(`[gwansang-zal] Call-1 image_type=${c1ImageType} type_id=${c1.type_id} face_obs_ok=${!!faceObs}`);
+
+    // 사람이 아니면 Call-2 생략 — 에러카드는 클라이언트가 정적 데이터로 그린다 (응답도 빨라짐)
+    if (errId !== null) {
+      return NextResponse.json({
+        result: {
+          image_type: c1ImageType, type_id: errId,
+          killpoint: null, story: null, sections: null, section_titles: null, fortune_msg: null,
+          _debug_image_type: c1ImageType,
+        }
+      });
+    }
+
+    // human — Call-1이 고른 1~20 확정. 범위 밖이면 방어적으로 21
+    const fixedTypeId = (typeof c1.type_id === "number" && c1.type_id >= 1 && c1.type_id <= 20) ? c1.type_id : null;
+    if (fixedTypeId === null) {
+      console.error("[gwansang-zal] Call-1 human인데 type_id 이상:", c1.type_id);
+      return NextResponse.json({ result: { image_type: "human", type_id: 21, _debug_image_type: c1ImageType } });
+    }
+
+    // ━━━ Call-2: 확정된 타입을 앵커로 주입하고 서술문만 생성 (분류 재수행 금지) ━━━
+    const anchor = `
+
+⚠️⚠️ 분류 결과 고정 (절대 변경 금지) ⚠️⚠️
+이미 1단계 판독이 끝났다. 아래 값은 확정이며 다시 판단하지 마라.
+- image_type: "human"
+- type_id: ${fixedTypeId}
+${faceObs ? `- 확정된 얼굴 관찰값: ${JSON.stringify(faceObs)}
+  → 모든 서술은 반드시 이 관찰값과 일치해야 한다. 여기 없는 특징을 지어내지 마라.` : ""}
+너의 일은 오직 위 type_id에 맞는 서술문(killpoint/story/sections/section_titles/fortune_msg 등)을 쓰는 것이다.
+출력 JSON의 image_type은 "human", type_id는 ${fixedTypeId}으로 그대로 써라.`;
+
+    const call2Body = JSON.stringify({
+      systemInstruction: { parts: [{ text: SYSTEM_PROMPT + anchor }] },
+      contents: [{
+        parts: [
+          { inlineData: { mimeType: resolvedMediaType, data: base64Image } },
+          { text: `type_id ${fixedTypeId}번 관상으로 확정됐어. 그에 맞는 JSON을 출력해줘.\n이름/별명: ${personName}. {nm}은 "${personName}"으로 치환될 예정이니 {nm}으로 써줘.` }
+        ]
+      }],
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 8192,
+        responseMimeType: "application/json",
+        thinkingConfig: { thinkingBudget: 1024 },
+      },
+    });
+    const geminiRes = await callGeminiChain(call2Body, "Call-2");
+    if (!geminiRes) {
+      return NextResponse.json({ error: "high_demand", message: "AI 서버가 잠시 혼잡해요 🙏 30초 뒤 다시 시도해주세요." }, { status: 503 });
+    }
+
+    const geminiData = await geminiRes.json();
 
     // Gemini API 에러 체크
     if (geminiData.error) {
@@ -237,58 +355,31 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "api_error", message: "AI 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.", debug: debugMsg }, { status: 500 });
     }
 
-    // Gemini 2.5 Flash는 thinking model → parts 중 text가 있는 마지막 part를 찾음
-    const parts = geminiData?.candidates?.[0]?.content?.parts || [];
-    let rawText = "";
-    for (const part of parts) {
-      if (part.text) rawText = part.text;
-    }
+    const rawText = extractText(geminiData);
     const finishReason = geminiData?.candidates?.[0]?.finishReason || "";
-    console.log("[gwansang-zal] parts count:", parts.length, "finishReason:", finishReason);
-    console.log("[gwansang-zal] raw response:", rawText.substring(0, 500));
+    console.log("[gwansang-zal:Call-2] finishReason:", finishReason, "raw:", rawText.substring(0, 300));
 
     if (!rawText) {
-      console.error("[gwansang-zal] Empty response from Gemini");
+      console.error("[gwansang-zal:Call-2] Empty response from Gemini");
       return NextResponse.json({ error: "empty_response", message: "AI 응답이 비어있습니다.", debug: JSON.stringify(geminiData).substring(0, 500) }, { status: 500 });
     }
 
-    const { parseGeminiJson } = await import("@/lib/gemini-parse");
     const parsed = parseGeminiJson(rawText);
     if (!parsed) {
-      console.error("[gwansang-zal] JSON parse failed:", rawText.substring(0, 300));
+      console.error("[gwansang-zal:Call-2] JSON parse failed:", rawText.substring(0, 300));
       return NextResponse.json({ error: "parse_error", message: "AI 응답 파싱 실패", debug: rawText.substring(0, 300) }, { status: 500 });
     }
 
-    // image_type 기반 안전장치
-    const imageType = (parsed.image_type || "").toLowerCase();
-    console.log("[gwansang-zal] image_type:", imageType, "type_id:", parsed.type_id);
-
-    if (imageType === "animal" || imageType === "object") {
-      parsed.type_id = 21;
-    } else if (imageType === "unclear") {
-      parsed.type_id = 22;
-    } else if (imageType === "multi") {
-      parsed.type_id = 23;
-    } else if (imageType === "baby") {
-      parsed.type_id = 24;
-    } else if (imageType === "masked" || imageType === "hidden_face") {
-      parsed.type_id = 25;
-    } else if (imageType === "illustration" || imageType === "2d_character") {
-      parsed.type_id = 26;
-    } else if (imageType !== "human") {
-      parsed.type_id = 21;
+    // ⚠️ 분류는 Call-1이 확정한 값이 항상 이긴다.
+    // Call-2가 서술문을 쓰다가 type_id를 흔들어도(예전에 같은 사진이 럭키비키상↔무해한힐러상으로
+    // 갈리던 원인) 여기서 되돌려놓는다.
+    if (parsed.type_id !== fixedTypeId) {
+      console.warn(`[gwansang-zal] Call-2가 type_id를 ${parsed.type_id}로 바꾸려 함 → Call-1 값 ${fixedTypeId}로 고정`);
     }
-
-    // result_id → type_id 호환
-    if (parsed.result_id && !parsed.type_id) parsed.type_id = parsed.result_id;
-
-    // 최종 안전장치: type_id가 유효하지 않으면 21번
-    if (!parsed.type_id || parsed.type_id < 1 || parsed.type_id > 26) {
-      parsed.type_id = 21;
-    }
-
-    // 디버그용: image_type 포함
-    parsed._debug_image_type = imageType;
+    parsed.image_type = "human";
+    parsed.type_id = fixedTypeId;
+    parsed._debug_image_type = "human";
+    if (faceObs) parsed._face_obs = faceObs;
     return NextResponse.json({ result: parsed });
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : "관상 분석 중 오류가 발생했습니다.";
