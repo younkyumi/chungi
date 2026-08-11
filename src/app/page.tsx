@@ -1710,24 +1710,32 @@ function CouponCodeInput({onAdded}:{onAdded:(c:any)=>void}){
   const[code,setCode]=useState("");
   const[busy,setBusy]=useState(false);
   const[err,setErr]=useState("");
-  // DEMO 쿠폰 (서버 미연동 시 fallback) — 어드민 등록 코드 + 카톡 채널 쿠폰 수동 입력 지원
-  // expDays: 발급일로부터 N일 후 만료 (어드민 정책과 일치)
-  const DEMO_REDEEM:any={
-    "WELCOME":{name:"🎉 가입 환영 1,000원 쿠폰",discount:"1,000원",discount_amount:1000,minPrice:1980,target:"전 상품",expDays:30},
-    "FREELOOK":{name:"🎁 관상짤 무료 쿠폰",discount:"380원",discount_amount:380,minPrice:380,target:"관상짤",expDays:30},
-    "OPEN500":{name:"🎊 오픈 기념 500원 쿠폰",discount:"500원",discount_amount:500,minPrice:980,target:"전 상품",expDays:30},
-    "WELCOME280":{name:"🎉 관상짤 280원 할인 (카톡 친추)",discount:"280원",discount_amount:280,minPrice:100,target:"관상짤",expDays:7},
-    "PREMIUM2000":{name:"💎 프리미엄 2,800원 할인 (카톡 친추)",discount:"2,800원",discount_amount:2800,minPrice:2000,target:"4,800원 프리미엄 콘텐츠",expDays:3},
-    "NEWSAJU500":{name:"🌱 새싹 응원 쿠폰",discount:"500원",discount_amount:500,minPrice:980,target:"전 콘텐츠",expDays:3},
-    "NEWGOODS10":{name:"🛍️ 첫 굿즈 구매 10% 할인",discount:"10%",discount_amount:0,discount_percent:10,minPrice:10000,target:"굿즈샵",expDays:365},
-  };
+  // 🚨 v(2026-08-11): 로컬 DEMO 쿠폰 전면 폐지 — 무제한 쿠폰 자판기였음
+  //
+  // 여기 있던 7개 코드는 로그인 여부와 무관하게 localStorage만 보고 쿠폰을 찍어줬다.
+  // 중복 체크가 기기 단위(localStorage)라 브라우저 데이터를 지우거나 기기를 바꾸면 몇 번이든 재발급됐고,
+  // "WELCOME" 같은 건 추측하기도 쉬웠다. 게다가 4개는 이미 자동 지급되는 것들이라 중복 수령 경로였다:
+  //   WELCOME(1,000원)  — v386에 폐지된 혜택인데 코드만 살아 있었음
+  //   FREELOOK(380원)   — 관상짤 무료. 안내되는 곳 없음
+  //   OPEN500(500원)    — 안내되는 곳 없음
+  //   WELCOME280 / PREMIUM2000 — 카톡 채널 친추 시 자동 지급(중복 수령)
+  //   NEWSAJU500 / NEWGOODS10  — 가입 시 자동 지급(중복 수령)
+  //
+  // 정상 경로는 서버(/api/coupons/redeem)다. 거기는 마스터 코드 조회 + 만료 + 사용 한도 +
+  // **user_id 기준 중복 사용 차단**이 이미 구현돼 있다. 새 코드는 어드민에서 등록할 것.
+  // ⚠️ 여기에 코드를 다시 추가하지 말 것 — 추가하는 순간 그 금액이 무제한으로 나간다.
+  const DEMO_REDEEM: any = {};
   async function redeem(){
     const c=code.trim().toUpperCase();
     if(!c){setErr("코드를 입력해주세요");return;}
     setBusy(true);setErr("");
+    // v(2026-08-11): 쿠폰 등록은 서버(user_id 기준 중복 차단)에서만 처리한다.
+    // 비로그인은 검증할 방법이 없어 예전엔 로컬 DEMO로 그냥 발급했었음 → 차단하고 안내만 한다.
+    const _uid=(typeof window!=="undefined"&&localStorage.getItem("chungi_user_id"))||null;
+    if(!_uid){setErr("쿠폰 등록은 로그인 후 이용할 수 있어요");setBusy(false);return;}
     // 1) 서버 API 시도 (로그인 시)
     try{
-      const userId=(typeof window!=="undefined"&&localStorage.getItem("chungi_user_id"))||null;
+      const userId=_uid;
       if(userId){
         const r=await fetch("/api/coupons/redeem",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:userId,code:c})});
         const j=await r.json();
@@ -23574,7 +23582,7 @@ function HomePage({onSvc,isLoggedIn,savedPersons,setSavedPersons,cart,setCart,on
           <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 30% 20%,rgba(212,175,55,0.15) 0%,transparent 70%)",pointerEvents:"none"}}/>
           <div style={{maxWidth:"60%",position:"relative"}}>
             <div style={{fontSize:13,fontWeight:900,marginBottom:4,color:"var(--white)",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif"}}>🎊 첫 이용자 혜택</div>
-            <div style={{fontSize:11,color:"var(--mist)",marginBottom:12,lineHeight:1.6}}>소개팅남 관상짤 첫 1회 무료!<br/>가입 시 환영 쿠폰 2종 즉시 지급 (500원 + 굿즈 10%)!<br/><strong style={{color:"var(--gold)"}}>가입만 해도 무료 콘텐츠 12종 매일 무료!</strong></div>
+            <div style={{fontSize:11,color:"var(--mist)",marginBottom:12,lineHeight:1.6}}>소개팅남 관상짤 첫 1회 무료!<br/>가입 시 환영 쿠폰 2종 즉시 지급 (500원 + 굿즈 10%)!<br/><strong style={{color:"var(--gold)"}}>가입만 해도 무료 콘텐츠 9종 매일 무료!</strong></div>
             <button className="btn btn-sm" style={{maxWidth:160,background:"linear-gradient(135deg,var(--gold),var(--gold3))",color:"var(--ink)",border:"none",fontWeight:700}} onClick={()=>{
               setFreePickOpen(true);
             }}>무료로 시작하기</button>
@@ -23675,7 +23683,7 @@ function HomePage({onSvc,isLoggedIn,savedPersons,setSavedPersons,cart,setCart,on
           <div style={{position:"sticky",top:0,display:"flex",justifyContent:"flex-end",marginBottom:-20,zIndex:5}}>
             <button onClick={()=>setFreePickOpen(false)} style={{width:28,height:28,borderRadius:"50%",background:"rgba(255,255,255,0.08)",border:"none",color:"var(--mist)",fontSize:14,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
           </div>
-          <div className="mt">🎁 무료 콘텐츠 12종</div>
+          <div className="mt">🎁 무료 콘텐츠 9종</div>
           <div className="ms">매일 무료로 이용할 수 있어요!<br/>원하는 콘텐츠를 선택하세요.</div>
           <div style={{display:"flex",flexDirection:"column",gap:8}}>
             {[
@@ -23684,13 +23692,13 @@ function HomePage({onSvc,isLoggedIn,savedPersons,setSavedPersons,cart,setCart,on
               {sid:"tarot_yesno",icon:"✨",name:"YES/NO 타로",desc:"할까 말까? 단호박 해답"},
               {sid:"lotto",icon:"🎱",name:"행운 로또 번호",desc:"오늘의 행운 숫자"},
               {sid:"daily_quote",icon:"📜",name:"오늘의 명언",desc:"하루를 여는 한마디"},
-              {sid:"ddi",icon:"🐯",name:"띠별 운세",desc:"12가지 띠별 오늘 운세"},
-              {sid:"zodiac",icon:"⭐",name:"별자리 운세",desc:"12궁 별자리 운세"},
-              {sid:"blood",icon:"🩸",name:"혈액형 운세",desc:"A/B/O/AB 성격 분석"},
+              {sid:"monthly_unse",icon:"🌸",name:"이달의 운세",desc:"이번 달 흐름 한눈에"},
               {sid:"celeb_compat",icon:"💕",name:"궁합 연예인",desc:"나랑 찰떡인 연예인"},
               {sid:"gwansang_zal",icon:"📸",name:"관상짤 (첫 1회)",desc:"소개팅남 관상 분석"},
-              {sid:"synthesis",icon:"🔍",name:"나의 천기 리포트",desc:"내 운명 종합서"},
               {sid:"ytype_intro",icon:"🐉",name:"12수호신 소개",desc:"나는 어떤 수호신?"},
+              // v(2026-08-11): 띠별·별자리·혈액형·천기리포트 제외 — 무료지만 오픈 범위상 미오픈.
+              // 무료 목록에 넣어두면 오픈 직후 준비중/미완성 결과로 들어가게 된다. 오픈 시 다시 추가할 것.
+              // 반대로 오픈확정 무료인 이달의 운세가 빠져 있어 추가했다.
             ].map(item=>(
               <div key={item.sid} style={{display:"flex",alignItems:"center",gap:10,padding:"11px 14px",background:"var(--ink3)",borderRadius:12,border:"1px solid rgba(255,255,255,0.06)",cursor:"pointer",transition:"all .18s"}}
                 onClick={()=>{setFreePickOpen(false);onSvc({id:item.sid,icon:item.icon,name:item.name,desc:item.desc,price:"무료",free:true,coming:false});}}>
