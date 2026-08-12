@@ -16360,6 +16360,11 @@ function DailyQuoteModal({onClose,isLoggedIn,onLoginRequest,addHistory,cart,setC
     return byTitle?.id||"chungi";
   })():"chungi";
   const[step,setStep]=useState<"intro"|"picker"|"loading"|"result">(preloadResult?"result":"intro");
+  // v(2026-08-12): "오늘 이미 명언을 봤는가" 표시. 두 번째부터 "명언 찾는 중" 게이지를 건너뛴다.
+  // ⚠️ 첫 회는 연출을 그대로 둔다 — 처음부터 게이지가 없으면 그건 그것대로 이상하다.
+  // 로그인/비로그인 키를 갈라 로그아웃 후 상태가 섞이지 않게 한다.
+  const _quoteSeenKey=`chungi_daily_quote_${isLoggedIn?"login":"guest"}_${new Date().toISOString().slice(0,10)}`;
+  const[_quoteSeenToday]=useState(()=>{try{return localStorage.getItem(_quoteSeenKey)==="1";}catch{return false;}});
   const[selBook,setSelBook]=useState(preloadBookId);
   // preloadResult 재열람 시에는 addHistory 중복 저장 방지
   const[saved,setSaved]=useState(!!preloadResult);
@@ -16382,6 +16387,10 @@ function DailyQuoteModal({onClose,isLoggedIn,onLoginRequest,addHistory,cart,setC
   useEffect(()=>{
     if(step==="result"&&!saved){
       setSaved(true);
+      // v(2026-08-12): 오늘 봤다는 표시 — 다음 진입부터 로딩 게이지를 건너뛰기 위한 것.
+      try{localStorage.setItem(_quoteSeenKey,"1");}catch{}
+      // 비로그인은 기록소에 저장하지 않는다 (무료 4종 공통 정책 — 오늘의 운세·이달의 운세·로또와 동일).
+      if(!isLoggedIn)return;
       addHistory?.({icon:book.cover||"📜",name:"오늘의 명언",svcId:"daily_quote",person:"나",date:new Date().toLocaleDateString("ko-KR"),result:`「${book.title}」 ${quote.slice(0,30)}`,resultType:{book:book.title,quote,_testDate:new Date().toLocaleDateString("ko-KR")},ctx:{}});
     }
   },[step,saved,addHistory,book.cover,book.title,quote]);
@@ -16447,10 +16456,10 @@ function DailyQuoteModal({onClose,isLoggedIn,onLoginRequest,addHistory,cart,setC
                 if(isAd){_handleAdSlotClick();return;}
                 if(isLocked){alert("로그인하면 모든 책의 명언을 볼 수 있어요!");onLoginRequest?.();return;}
                 // v291: 분석중 거쳐서 결과로
-                // v(2026-08-12): 비로그인은 로딩을 건너뛴다. 비로그인은 「천기의 말씀」 1권만 열리고
-                // 그 안의 명언도 매번 같은 공통 값이라, "오늘의 명언 찾는 중" 게이지가 돌면
-                // 새로 뽑아주는 것처럼 보여 오해를 준다. 로그인 사용자만 연출을 유지한다.
-                setSelBook(b.id);setStep(isLoggedIn?"loading":"result");
+                // v(2026-08-12): 오늘 이미 본 적이 있으면 로딩을 건너뛴다.
+                // 명언은 매일 자정에 갱신되는 고정값이라, 두 번째부터 "찾는 중" 게이지가 돌면
+                // 새로 뽑아주는 것처럼 보여 오해를 준다. 첫 회는 연출 유지.
+                setSelBook(b.id);setStep(_quoteSeenToday?"result":"loading");
               }} style={{display:"flex",alignItems:"center",gap:10,padding:"12px",borderRadius:12,background:isAd?"rgba(156,163,175,0.08)":isLocked?"rgba(0,0,0,0.25)":`${b.accent}14`,border:isAd?`1.5px dashed ${b.accent}99`:`1.5px solid ${b.accent}${isLocked?"33":"66"}`,cursor:"pointer",opacity:isAd?0.85:isLocked?0.55:1,transition:"all .18s"}}>
                 <div style={{flexShrink:0,position:"relative",width:56,height:56,borderRadius:10,overflow:"hidden",background:`${b.accent}18`,border:`1px solid ${b.accent}44`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:28}}>
                   {b.coverImg?
@@ -21432,7 +21441,14 @@ function TaegilModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLogi
 
 
 function LottoModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onOpenService,selectedPerson,addHistory,onRequestPerson,preloadResult}:any){
-  const todayKey=`chungi_daily_lotto_${selectedPerson?.name||"me"}_${new Date().toISOString().slice(0,10)}`;
+  // v(2026-08-12): 🚨 로그인/비로그인 캐시 공유 차단.
+  // 예전 키는 `chungi_daily_lotto_{이름}_{날짜}`로 로그인 여부가 안 들어갔고, 아래 스캔들도
+  // prefix가 `chungi_daily_lotto_`라 **아무 키나** 날짜만 맞으면 잡았다. 그래서 로그인 때 저장한
+  // 개인 사주 번호를 로그아웃 후 비로그인이 그대로 꺼내 봤다(인물 정보도 기록소도 없는데 개인 결과가 뜸).
+  // 반대로 비로그인 공통 번호가 로그인 화면에 뜨는 경로도 같이 있었다.
+  const _lottoScope=isLoggedIn?"login":"guest";
+  const _lottoPrefix=`chungi_daily_lotto_${_lottoScope}_`;
+  const todayKey=`${_lottoPrefix}${selectedPerson?.name||"me"}_${new Date().toISOString().slice(0,10)}`;
   // preloadResult(기록소 재열람) 우선 → 정확 person key → 오늘 다른 person key 폴백 → null
   // v309: 다른 인물·me 키로 저장된 오늘 결과도 fallback으로 보여줌 (1번 후 인물 다시 묻고 결과 못 보는 버그 fix)
   const[savedResult]=useState(()=>{
@@ -21443,7 +21459,7 @@ function LottoModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
       const today=new Date().toISOString().slice(0,10);
       for(let i=0;i<localStorage.length;i++){
         const k=localStorage.key(i);
-        if(k&&k.startsWith('chungi_daily_lotto_')&&k.endsWith('_'+today)){
+        if(k&&k.startsWith(_lottoPrefix)&&k.endsWith('_'+today)){
           const v=localStorage.getItem(k);
           if(v)return JSON.parse(v);
         }
@@ -21457,10 +21473,9 @@ function LottoModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
   const _anyLottoToday=(()=>{
     try{
       const today=new Date().toISOString().slice(0,10);
-      const prefix='chungi_daily_lotto_';
       for(let i=0;i<localStorage.length;i++){
         const k=localStorage.key(i);
-        if(k&&k.startsWith(prefix)&&k.endsWith('_'+today))return true;
+        if(k&&k.startsWith(_lottoPrefix)&&k.endsWith('_'+today))return true;
       }
     }catch{}
     return false;
@@ -21862,7 +21877,12 @@ function _calcMonthly(loggedIn:boolean,personBirth?:string){
 
 function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onOpenService,selectedPerson,addHistory,onRequestPerson,preloadResult}:any){
   // 1회/월 제한 — 이번 달 본 결과 있으면 바로 result로
-  const monthKey=`chungi_monthly_${(selectedPerson?.name||"me")}_${new Date().getFullYear()}_${new Date().getMonth()+1}`;
+  // v(2026-08-12): 🚨 로그인/비로그인 캐시 공유 차단 (로또와 동일 규칙).
+  // 예전 키 `chungi_monthly_{이름}_{연}_{월}`은 로그인 여부가 없었고 스캔 prefix도 `chungi_monthly_`라,
+  // 로그아웃 후 비로그인으로 열면 **로그인 때 저장된 이름**을 키에서 뽑아 그대로 표시했다(내용은 공통인데 이름만 개인).
+  const _monScope=isLoggedIn?"login":"guest";
+  const _monPrefix=`chungi_monthly_${_monScope}_`;
+  const monthKey=`${_monPrefix}${(selectedPerson?.name||"me")}_${new Date().getFullYear()}_${new Date().getMonth()+1}`;
   // preloadResult(기록소 재열람) 우선 → 정확 person key → 이번 달 다른 person key 폴백 → null
   // v309: 다른 인물 키로 저장된 이번 달 결과도 fallback (1번 후 인물 다시 묻고 결과 못 보는 버그 fix)
   const[savedPreQ]=useState(()=>{
@@ -21874,7 +21894,7 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
       const suffix=`_${yr}_${mo}`;
       for(let i=0;i<localStorage.length;i++){
         const k=localStorage.key(i);
-        if(k&&k.startsWith('chungi_monthly_')&&k.endsWith(suffix)){
+        if(k&&k.startsWith(_monPrefix)&&k.endsWith(suffix)){
           const v=localStorage.getItem(k);
           if(v)return JSON.parse(v);
         }
@@ -21887,10 +21907,9 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
     try{
       const yr=new Date().getFullYear();const mo=new Date().getMonth()+1;
       const suffix=`_${yr}_${mo}`;
-      const prefix='chungi_monthly_';
       for(let i=0;i<localStorage.length;i++){
         const k=localStorage.key(i);
-        if(k&&k.startsWith(prefix)&&k.endsWith(suffix))return true;
+        if(k&&k.startsWith(_monPrefix)&&k.endsWith(suffix))return true;
       }
     }catch{}
     return false;
@@ -29463,11 +29482,14 @@ export default function Page(){
     if(svc.id==="lotto"&&!svc._fromAd){
       try{
         const today=new Date().toISOString().slice(0,10);
+        // v(2026-08-12): 로그인/비로그인 키 분리 — 스캔도 같은 모드만 본다.
+        // 예전엔 prefix가 `chungi_daily_lotto_`라 로그인 때 저장한 개인 번호를 비로그인이 꺼내 갔다.
+        const _lp=`chungi_daily_lotto_${isLoggedIn?"login":"guest"}_`;
         let pastResult=null,pastPerson=null;
         for(let i=0;i<localStorage.length;i++){
           const k=localStorage.key(i);
-          if(k&&k.startsWith('chungi_daily_lotto_')&&k.endsWith('_'+today)){
-            pastPerson=k.slice('chungi_daily_lotto_'.length,-('_'+today).length);
+          if(k&&k.startsWith(_lp)&&k.endsWith('_'+today)){
+            pastPerson=k.slice(_lp.length,-('_'+today).length);
             const v=localStorage.getItem(k);
             if(v){pastResult=JSON.parse(v);break;}
           }
@@ -29484,11 +29506,14 @@ export default function Page(){
       try{
         const yr=new Date().getFullYear();const mo=new Date().getMonth()+1;
         const suffix=`_${yr}_${mo}`;
+        // v(2026-08-12): 로그인/비로그인 키 분리 — 스캔도 같은 모드만 본다.
+        // 예전엔 비로그인으로 열어도 로그인 때 저장된 이름이 키에서 뽑혀 화면에 찍혔다.
+        const _mp=`chungi_monthly_${isLoggedIn?"login":"guest"}_`;
         let pastPreQ=null,pastPerson=null;
         for(let i=0;i<localStorage.length;i++){
           const k=localStorage.key(i);
-          if(k&&k.startsWith('chungi_monthly_')&&k.endsWith(suffix)){
-            pastPerson=k.slice('chungi_monthly_'.length,-suffix.length);
+          if(k&&k.startsWith(_mp)&&k.endsWith(suffix)){
+            pastPerson=k.slice(_mp.length,-suffix.length);
             const v=localStorage.getItem(k);
             if(v){pastPreQ=JSON.parse(v);break;}
           }
