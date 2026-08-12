@@ -278,6 +278,17 @@ export async function POST(request: NextRequest) {
     if (!parsed.tab4_study || typeof parsed.tab4_study !== "object") parsed.tab4_study = {};
     parsed.tab4_study.school_type = SCHOOL_TYPES[lockedScore([...babySeed, "school"], 0, 4)];
 
+    // v(2026-08-13): best_subject도 같은 방식으로 고정.
+    // school_type만 잡고 옆의 잘하는 과목은 자유생성으로 남아 있어, 재분석하면 "카이스트형인데
+    // 잘하는 과목은 국어" 같은 어긋남이 생길 수 있었다. 2세얼굴엔 페르소나(character_type) 개념이
+    // 없으므로 20종 표가 아니라 babySeed 해시로 뽑는다 — total_score·IQ·인증서 칩과 같은 규칙.
+    // 형식은 우리아기관상 BABY_TALENT의 "국어 · 음악"과 맞춰 두 과목 조합으로 통일.
+    const BEST_SUBJECTS = [
+      "수학 · 과학", "국어 · 영어", "미술 · 음악", "체육 · 사회",
+      "과학 · 미술", "국어 · 사회", "수학 · 영어", "음악 · 체육",
+    ];
+    parsed.tab4_study.best_subject = BEST_SUBJECTS[lockedScore([...babySeed, "subject"], 0, BEST_SUBJECTS.length - 1)];
+
     // balance_type — 프롬프트 스펙상 기본값은 이미 고정 문구로 지정돼 있었는데 서버가 강제하지 않아 AI가 다르게 쓰던 문제 fix.
     // variants(m90/m70/d70/d90)도 프롬프트 예시 라벨을 그대로 고정.
     parsed.balance_type = "무결점 올라운더 · 황금 밸런스";

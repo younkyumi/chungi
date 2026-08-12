@@ -16,10 +16,11 @@ import { join, relative } from "node:path";
 
 const ROOT = process.cwd();
 const SRC = join(ROOT, "src");
-let fail = 0;   // R1·R2 — 빌드 차단
-let warn = 0;   // R3 — 경고 (기존 미주입 필드 백로그가 남아 있어 아직 차단하지 않는다)
+// v(2026-08-13): R3도 차단으로 승격. 백로그 7건을 전부 정리해서 0건이 됐다.
+// 이제 새 콘텐츠를 만들면서 판정성 필드 주입을 빠뜨리면 빌드가 실패한다.
+// (서술형이 의도인 필드는 `ai-free: 사유` 주석으로 선언할 것)
+let fail = 0;
 const bad = (file, line, rule, msg) => {
-  if (rule === "R3") { console.warn(`  ⚠️ [${rule}] ${relative(ROOT, file)}:${line}\n     ${msg}`); warn++; return; }
   console.error(`  ❌ [${rule}] ${relative(ROOT, file)}:${line}\n     ${msg}`);
   fail++;
 };
@@ -107,10 +108,9 @@ for (const f of walk(apiDir)) {
   }
 }
 
-if (warn) console.log(`\n⚠️ R3 경고 ${warn}건 — 기존 백로그. 다 정리되면 R3도 차단으로 승격할 것.`);
 console.log(
   fail === 0
-    ? "✅ AI 필드 검사 통과 — R1 무필터 키 순회 / R2 무세정 HTML 주입 (R3는 현재 경고)"
+    ? "✅ AI 필드 검사 통과 — 규칙 3종 (R1 무필터 키 순회 / R2 무세정 HTML 주입 / R3 미주입 판정성 필드)"
     : `\n❌ ${fail}건 위반 (빌드 중단)`
 );
 process.exit(fail === 0 ? 0 : 1);
