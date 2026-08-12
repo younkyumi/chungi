@@ -885,8 +885,13 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
             <span style={{fontSize:11,color:"#666",fontWeight:700}}>{isSame?"타고난 그대로":`${diffAxes.length}축 차이`}</span>
           </div>
           <div style={{display:"flex",justifyContent:"center",gap:6,padding:"0 16px 16px",background:"#fafafa",flexWrap:"wrap"}}>
-            <span style={{fontSize:10,fontWeight:700,padding:"3px 10px",borderRadius:20,background:"#fff0f3",color:"#e03131",border:"1px solid #ffe0e6"}}>🧬 {sData.mbti}→{qData.mbti}</span>
-            <span style={{fontSize:10,fontWeight:700,padding:"3px 10px",borderRadius:20,background:"#fffbeb",color:"#b45309",border:"1px solid #fde68a"}}>🔯 {sData.name}·{qData.name}형</span>
+            {/* v(2026-08-12): 두 칩 모두 "타고난 ↔ 살아온" 대조라 어느 한쪽이 아니다.
+                이 카드 안에서 🧬=타고난 / 🪞=살아온이 이미 각자 의미를 갖고 있어(🧬 타고난 기질 vs 🪞 살아온 기질),
+                칩에 그 둘을 다시 쓰면 "이 칩은 타고난 쪽"이라는 틀린 신호를 준다.
+                🔯은 콘텐츠 정체성(제목·도감·기록소) 전용이라 여기 쓰면 안 된다.
+                → 겹치지 않는 대조 기호 🔀로 둘을 통일. */}
+            <span style={{fontSize:10,fontWeight:700,padding:"3px 10px",borderRadius:20,background:"#fff0f3",color:"#e03131",border:"1px solid #ffe0e6"}}>🔀 {sData.mbti}→{qData.mbti}</span>
+            <span style={{fontSize:10,fontWeight:700,padding:"3px 10px",borderRadius:20,background:"#fffbeb",color:"#b45309",border:"1px solid #fde68a"}}>🔀 {sData.name}·{qData.name}형</span>
             {waveType&&<span style={{fontSize:10,fontWeight:700,padding:"3px 10px",borderRadius:20,background:"#e8fdf4",color:"#054D95",border:"1px solid #b2f5ea"}}>🌊 {waveType.type==="A"?"호수":"파도"}형 {waveType.type==="A"?waveType.aPct:waveType.tPct}%</span>}
           </div>
 
