@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ohangForType, OHANG_LUCKY } from "@/lib/ohang-lucky";
+// v(2026-08-13): 캐릭터명 고정용 정식 목록. 여기 20종을 그대로 쓴다 —
+// route에 이름을 다시 적으면 compat-helpers와 어긋날 수 있다(이미 5곳 일치를 맞춰둔 목록).
+import { BABY_GWANSANG_20 } from "@/lib/compat-helpers";
 
 // v(2026-07-14): 계층3(실용정보) 고정용 — 프롬프트에 이미 있던 닫힌 후보(재물그릇 4종, 학교유형 5종) 재사용
 const BABY_WEALTH_GRADES = ["소", "중", "대", "왕"];
@@ -430,6 +433,17 @@ export async function POST(request: NextRequest) {
       if (babyTags) {
         parsed.cert_tags = babyTags;
         console.log(`[baby-gwansang] TAGS applied: ct=${ctNum} tags=${babyTags.join("·")}`);
+      }
+
+      // v(2026-08-13): character_name 고정.
+      // 프롬프트가 "프리미엄 캐릭터명 (예: 세상을 밝히는 꼬마 태양…)"이라고만 시키고 주입은 0건이라
+      // AI가 매번 새로 작명했다. 예시로 든 이름이 곧 BABY_GWANSANG_20 1번이라, 원래부터
+      // 20종 목록에서 와야 할 값이었다. character_type은 Call-1에서 확정되므로 그 번호로 그대로 뽑는다.
+      // ⚠️ 내관상보기의 character_name은 성격이 다르다 — 그쪽은 "시적 칭호"로 자유생성이 의도다.
+      const babyName = BABY_GWANSANG_20[ctNum - 1];
+      if (babyName) {
+        parsed.character_name = babyName;
+        console.log(`[baby-gwansang] NAME applied: ct=${ctNum} name=${babyName}`);
       }
 
       // v(2026-07-14): 계층3(실용정보) 고정 — wealth_grade/school_type/lucky_color/lucky_gem/lucky_animal/lucky_direction이

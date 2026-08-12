@@ -73,6 +73,8 @@ const SYSTEM_PROMPT = `[ROLE]
 {
   "image_type": "human",
   "character_type": "1~20 중 하나. 위 알고리즘 따라 가장 정확한 타입 선택",
+  // ai-free: 캐릭터 '이름'이 아니라 시적 칭호다. character_type과 별개로 매번 새로 지어내는 게 의도.
+  //          (아기관상의 character_name은 반대로 20종 목록에서 와야 하는 값이라 서버가 확정한다)
   "character_name": "🌟 추가 시적 칭호 (관상짤보다 격조있게. 예: '조용한 폭풍의 눈', '만인의 심장 저격수', '황금빛 인복 자석'). character_type과 별개로 시적 묘사",
   "grade": "S/A/B/C/D 중 하나",
   "total_score": 50~99 사이 정수,

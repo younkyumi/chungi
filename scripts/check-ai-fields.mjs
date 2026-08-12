@@ -93,10 +93,17 @@ for (const f of walk(apiDir)) {
     if (!inPrompt) continue;
     // 코드가 확정하는가 — parsed.field = / parsed.x.field = / .field = FIXED[...]
     const injected = new RegExp(`(?:parsed|tw|r)(?:\\.[A-Za-z_$][\\w$]*)*\\.${field}\\s*=`).test(src);
-    if (!injected) {
-      const line = src.split(/\r?\n/).findIndex((l) => new RegExp(`"${field}"\\s*:`).test(l)) + 1;
-      bad(f, line, "R3", `"${field}" 가 프롬프트에만 있고 서버가 확정하지 않는다 → 재분석마다 값이 바뀐다. 20종 고정표를 만들거나 프롬프트에서 필드를 뺄 것.`);
-    }
+    if (injected) continue;
+    // 필드명은 판정성처럼 보여도 실제로는 서술형(시적 칭호 등)이라 자유생성이 의도인 경우가 있다.
+    // 그런 필드는 프롬프트 줄이나 바로 윗줄에 `ai-free: 사유` 를 적어 예외로 둔다.
+    // ai-safe와 같은 철학 — 사유를 쓰게 해서 "귀찮아서 통과"를 막는다.
+    const srcLines = src.split(/\r?\n/);
+    const idx = srcLines.findIndex((l) => new RegExp(`"${field}"\\s*:`).test(l));
+    // 사유가 길어 주석이 여러 줄일 수 있으므로 위로 3줄까지 본다.
+    const declared = /ai-free:/.test(srcLines[idx] || "")
+      || srcLines.slice(Math.max(0, idx - 3), idx).some((l) => /ai-free:/.test(l));
+    if (declared) continue;
+    bad(f, idx + 1, "R3", `"${field}" 가 프롬프트에만 있고 서버가 확정하지 않는다 → 재분석마다 값이 바뀐다. 20종 고정표를 만들거나 프롬프트에서 필드를 뺄 것. (서술형이 의도면 \`ai-free: 사유\` 주석)`);
   }
 }
 
