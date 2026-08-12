@@ -1771,7 +1771,7 @@ function CouponCodeInput({onAdded}:{onAdded:(c:any)=>void}){
   return <div style={{marginTop:10,padding:"10px 12px",background:"rgba(212,175,55,0.06)",border:"1px dashed rgba(212,175,55,0.25)",borderRadius:11}}>
     <div style={{fontSize:10,color:"var(--gold)",fontWeight:700,marginBottom:6}}>🎁 쿠폰 코드 등록</div>
     <div style={{display:"flex",gap:6}}>
-      <input value={code} onChange={e=>{setCode(e.target.value);setErr("");}} placeholder="예: WELCOME" style={{flex:1,padding:"9px 12px",background:"var(--ink3)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:9,color:"var(--white)",fontFamily:"inherit",fontSize:12,outline:"none",textTransform:"uppercase"}}/>
+      <input value={code} onChange={e=>{setCode(e.target.value);setErr("");}} placeholder="쿠폰 코드를 입력하세요" style={{flex:1,padding:"9px 12px",background:"var(--ink3)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:9,color:"var(--white)",fontFamily:"inherit",fontSize:12,outline:"none",textTransform:"uppercase"}}/>
       <button onClick={redeem} disabled={busy||!code} style={{padding:"9px 14px",borderRadius:9,border:"none",background:busy||!code?"rgba(212,175,55,0.2)":"var(--gold)",color:busy||!code?"var(--mist)":"var(--ink)",fontSize:12,fontWeight:800,cursor:busy||!code?"default":"pointer",fontFamily:"inherit"}}>{busy?"...":"등록"}</button>
     </div>
     {err&&<div style={{fontSize:10,color:"var(--coral)",marginTop:5}}>{err}</div>}
