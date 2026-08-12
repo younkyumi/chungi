@@ -9305,7 +9305,7 @@ function DdiModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLoginRe
             <div style={{padding:"10px 16px 0",textAlign:"center"}}>
               <BrandLine>띠별 운세</BrandLine>
               {/* v352: 큰 이모지 삭제 (검사 정보에 노출됨), 제목 의미 명확화 */}
-              <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>{d.id}띠를 위한 오늘의 기운</div>
+              <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>{selectedPerson?.name?`🐯 ${selectedPerson.name}님의 띠별 운세`:`🐯 ${d.id}띠를 위한 오늘의 기운`}</div>
               {dbData&&<div style={{fontSize:10,color:"#7A5C00",marginTop:3,fontWeight:700}}>✦ {dbData.element} 기운 · 행운수 {dbData.lucky_number}</div>}
               {/* v432: 검사 정보 — 인물 등록 시 이름 + 띠, 미등록 시 띠만 */}
               <div style={{fontSize:10,color:"#888",fontWeight:600,marginTop:6,lineHeight:1.6}}>
@@ -9787,7 +9787,7 @@ function ZodiacModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLogi
             <div style={{padding:"10px 16px 0",textAlign:"center"}}>
               <BrandLine>별자리 운세</BrandLine>
               {/* v352: 큰 이모지 삭제, 제목 의미 명확화 */}
-              <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>{z.id}를 위한 오늘의 기운</div>
+              <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>{selectedPerson?.name?`⭐ ${selectedPerson.name}님의 별자리 운세`:`⭐ ${z.id}를 위한 오늘의 기운`}</div>
               {dbData?<div style={{fontSize:10,color:"#7c3aed",marginTop:3,fontWeight:700}}>✦ {dbData.element} · {dbData.ruling_planet}</div>:<div style={{fontSize:10,color:"#888",marginTop:3}}>수호석: {z.stone}</div>}
               {/* v432: 검사 정보 — 인물 등록 시 이름 + 별자리, 미등록 시 별자리만 */}
               <div style={{fontSize:10,color:"#888",fontWeight:600,marginTop:6,lineHeight:1.6}}>
@@ -10257,7 +10257,7 @@ function BloodModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLogin
             <div style={{padding:"10px 16px 0",textAlign:"center"}}>
               <BrandLine>혈액형 운세</BrandLine>
               {/* v352: 큰 이모지 삭제, 제목 의미 명확화 */}
-              <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>{b.type}형을 위한 오늘의 기운</div>
+              <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>{selectedPerson?.name?`🩸 ${selectedPerson.name}님의 혈액형 운세`:`🩸 ${b.type}형을 위한 오늘의 기운`}</div>
               {dbData&&<div style={{fontSize:10,color:"#dc2626",marginTop:3,fontWeight:700}}>✦ 찰떡 {dbData.compatible_type} · 상극 {dbData.incompatible_type}</div>}
               {/* v322: 검사 정보 */}
               <div style={{fontSize:10,color:"#888",fontWeight:600,marginTop:6,lineHeight:1.6}}>
@@ -12979,6 +12979,11 @@ function NumerologyModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,on
         {/* ═══ PAGE 1 ═══ 헤더 + 원형이미지 + 소울넘버 + 행운석/수호성 (캡쳐각) */}
         <div style={pageCardStyle}>
           {brandTopNum}
+          {/* v(2026-08-12): 결과 제목 신설. 다른 콘텐츠는 전부 브랜드 줄 아래에
+              "{이모지} {이름}님의 {콘텐츠}" 제목이 있는데 수비학만 없어서, 카드만 봐서는
+              무슨 결과인지 알 수 없었다(공유·캡처 때 특히). 🔢은 기록소·크로스셀의 정식값.
+              색은 theme.accent — 마스터넘버 11 다크테마에서도 대비가 유지된다. */}
+          <div style={{textAlign:"center",fontSize:18,fontWeight:900,color:theme.accent,fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35,marginBottom:6}}>🔢 {personName}님의 수비학</div>
           {/* v317: 검사 정보 — 생년월일 + 진행 날짜시각 (사주 필수) */}
           <div style={{textAlign:"center",fontSize:10,color:theme.hint,fontWeight:600,marginBottom:12,lineHeight:1.6}}>
             <div>{formatPersonInfoLine({name:personName,birth:selectedPerson?.birth,time:selectedPerson?.time,calendar:selectedPerson?.calendar,gender:selectedPerson?.gender})}</div>
