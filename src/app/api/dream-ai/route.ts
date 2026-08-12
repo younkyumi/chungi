@@ -1,4 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
+import { lockedScore } from "@/lib/compat-helpers";
+
+// v(2026-08-13): 시간대별 가이드 키워드 배지 고정 (A안 — 배지만, Do/Avoid는 자유 유지).
+// time_guide가 프롬프트 정의만 있고 주입이 0건이라, 같은 꿈을 다시 넣으면 배지가 매번 바뀌었다.
+// 라이브 실측 4회: 아침 #학습/#영감/#시작/#시작, 오후 #숙고/#소통/#학습/#실행.
+// 배지는 그 시간대의 '성격'을 정하는 타입성 값이라 흔들리면 안 된다.
+// Do/Avoid 문장은 서술형이라 변주가 오히려 자연스러워 그대로 둔다.
+// 시드는 꿈 텍스트 — 같은 꿈이면 항상 같은 배지, 다른 꿈이면 다른 배지가 나온다.
+const TIME_KEYWORDS: Record<string, string[]> = {
+  morning:   ["시작", "계획", "집중", "정리", "다짐", "활력"],
+  lunch:     ["영양", "소통", "재충전", "여유", "대화", "균형"],
+  afternoon: ["실행", "학습", "점검", "속도", "몰입", "마무리"],
+  evening:   ["휴식", "회복", "성찰", "교류", "비움", "마음"],
+};
 
 // AI 꿈/태몽 해석 — Gemini 풀 문장 종합 해석 (단일 키워드 lookup 한계 극복)
 // POST /api/dream-ai  body: { dream: string, mode: "dream"|"taemong" }
@@ -643,6 +657,16 @@ export async function POST(req: NextRequest) {
                 },
               ];
         }
+        // v(2026-08-13): 시간대 배지 고정 — 슬롯별 후보에서 꿈 텍스트 해시로 뽑는다.
+        if (parsed?.time_guide) {
+          for (const slot of Object.keys(TIME_KEYWORDS)) {
+            const pool = TIME_KEYWORDS[slot];
+            if (parsed.time_guide[slot] && pool) {
+              parsed.time_guide[slot].keyword = pool[lockedScore([dream.slice(0, 60), slot, "timeguide"], 0, pool.length - 1)];
+            }
+          }
+        }
+
         return NextResponse.json({ ok: true, mode, result: parsed, model, matchedCategory: taemongCat || dreamCat || null });
       } catch (e: unknown) {
         lastError = e instanceof Error ? e.message : "network";
