@@ -16530,7 +16530,14 @@ function DailyQuoteModal({onClose,isLoggedIn,onLoginRequest,addHistory,cart,setC
         <div style={{padding:"10px 16px 0",textAlign:"center"}}>
           <BrandLine>오늘의 명언</BrandLine>
           <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35,marginBottom:4}}>📜 오늘의 명언</div>
-          <div style={{fontSize:11,color:"#888"}}>{TODAY.date} · 매일 자정에 새로운 명언</div>
+          {/* v(2026-08-12): 비로그인 부제 — 다른 무료 3종과 문구 규격 통일 */}
+          {!isLoggedIn&&<div style={{fontSize:10,color:"#aaa",marginTop:4}}>공통 명언 · 로그인하면 {_QUOTE_BOOKS.filter(b=>!b.isAd).length}권 모두 보기 가능</div>}
+          {/* v(2026-08-12): 검사 정보 규격에 맞춘다 — 👤 줄 + 🔍 날짜 줄.
+              날짜도 "2026년 8월 12일 수요일" → "2026. 08. 12. 수." 로 다른 콘텐츠와 통일. */}
+          <div style={{fontSize:10,color:"#888",fontWeight:600,marginTop:6,lineHeight:1.6}}>
+            {!isLoggedIn&&<div>👤 공통</div>}
+            <div style={{color:"#aaa"}}>🔍 {(()=>{const d=new Date();const w=["일","월","화","수","목","금","토"][d.getDay()];return `${d.getFullYear()}. ${String(d.getMonth()+1).padStart(2,"0")}. ${String(d.getDate()).padStart(2,"0")}. ${w}.`;})()} 매일 자정에 새로운 명언</div>
+          </div>
         </div>
         <div style={{padding:"32px 20px 28px",textAlign:"center",background:`linear-gradient(180deg,${book.accent}08 0%,transparent 60%)`}}>
           {/* 책 결과카드 일러스트 — 있으면 이미지, 없으면 이모지 */}
@@ -16821,8 +16828,10 @@ function TodayUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest
             {!isLoggedIn&&<div style={{fontSize:10,color:"#aaa",marginTop:4}}>공통 운세 · 로그인하면 내 사주 기반으로!</div>}
             {isLoggedIn&&<div style={{fontSize:10,color:"#059669",marginTop:4,fontWeight:700}}>✓ 내 사주 기반 개인 운세</div>}
             {/* v322: 검사 정보 통일 */}
+            {/* v(2026-08-12): 비로그인은 이름 대신 "공통". 사주를 안 쓰는 전체 공통 운세인데
+                👤 나 로 찍혀서 개인 결과처럼 보였다. 본문은 personName을 그대로 쓴다(문장이 깨지므로). */}
             <div style={{fontSize:10,color:"#888",fontWeight:600,marginTop:6,lineHeight:1.6}}>
-              <div>{formatPersonInfoLine({name:personName,birth:selectedPerson?.birth,time:selectedPerson?.time,calendar:selectedPerson?.calendar,gender:selectedPerson?.gender})}</div>
+              <div>{formatPersonInfoLine({name:isLoggedIn?personName:"공통",birth:selectedPerson?.birth,time:selectedPerson?.time,calendar:selectedPerson?.calendar,gender:selectedPerson?.gender})}</div>
               <div style={{color:"#aaa"}}>{formatTestDateLine(preloadResult?._testDate)}</div>
             </div>
             {/* v407: 사주 고정 정보 chip (일간 + 띠 + 별자리) */}
@@ -21678,9 +21687,14 @@ function LottoModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
               <BrandLine>{isLoggedIn?"사주 기반 행운 로또번호":"오늘의 공통 행운 로또번호"}</BrandLine>
               <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>{isLoggedIn?`🎰 ${selectedPerson?.name||"나"}님의 행운 로또번호`:"🎰 행운 로또번호"}</div>
               {/* v655: "{날짜} · 1일 1회 무료" 삭제 (사용자 요청) */}
+              {/* v(2026-08-12): 비로그인 부제 — 오늘의 운세·이달의 운세와 문구 규격 통일 */}
+              {!isLoggedIn&&<div style={{fontSize:10,color:"#aaa",marginTop:4}}>공통 행운 · 로그인하면 내 사주 기반으로!</div>}
               {/* v322: 검사 정보 */}
               <div style={{fontSize:10,color:"#888",fontWeight:600,marginTop:6,lineHeight:1.6}}>
-                {selectedPerson?.birth&&<div>👤 {selectedPerson?.name||"나"} : {selectedPerson.birth}{selectedPerson?.time&&selectedPerson.time!=="모름"?` · ${selectedPerson.time}생`:"생"}{selectedPerson?.calendar?` · ${selectedPerson.calendar}`:""}{selectedPerson?.gender?` · ${selectedPerson.gender}`:""}</div>}
+                {selectedPerson?.birth
+                  ?<div>👤 {selectedPerson?.name||"나"} : {selectedPerson.birth}{selectedPerson?.time&&selectedPerson.time!=="모름"?` · ${selectedPerson.time}생`:"생"}{selectedPerson?.calendar?` · ${selectedPerson.calendar}`:""}{selectedPerson?.gender?` · ${selectedPerson.gender}`:""}</div>
+                  /* v(2026-08-12): 비로그인은 인물 줄이 아예 없어서 다른 무료 콘텐츠와 모양이 달랐다 → 👤 공통 */
+                  :!isLoggedIn&&<div>👤 공통</div>}
                 <div style={{color:"#aaa"}}>{formatTestDateLine(preloadResult?._testDate)}</div>
               </div>
             </div>
@@ -22111,8 +22125,10 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
             {!isLoggedIn&&<div style={{fontSize:10,color:"#aaa",marginTop:3}}>공통 운세 · 로그인하면 내 사주 기반으로!</div>}
             {isLoggedIn&&<div style={{fontSize:10,color:"#059669",marginTop:3}}>✓ {personName}님 사주 기반 개인 운세</div>}
             {/* v317: 검사 정보 */}
+            {/* v(2026-08-12): 비로그인은 이름 대신 "공통" — 오늘의 운세와 동일 규칙.
+                예전엔 로그인 때 저장된 이름(me 등)이 그대로 찍혀 개인 결과처럼 보였다. */}
             <div style={{fontSize:10,color:"#888",fontWeight:600,marginTop:6,lineHeight:1.6}}>
-              <div>{formatPersonInfoLine({name:personName,birth:selectedPerson?.birth,time:selectedPerson?.time,calendar:selectedPerson?.calendar,gender:selectedPerson?.gender})}</div>
+              <div>{formatPersonInfoLine({name:isLoggedIn?personName:"공통",birth:selectedPerson?.birth,time:selectedPerson?.time,calendar:selectedPerson?.calendar,gender:selectedPerson?.gender})}</div>
               <div style={{color:"#aaa"}}>{formatTestDateLine(preloadResult?._testDate)}</div>
             </div>
             {/* v407: 사주 고정 정보 chip (일간 + 띠 + 별자리) — 헤더에 표시 */}
