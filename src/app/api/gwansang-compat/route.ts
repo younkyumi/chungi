@@ -209,6 +209,13 @@ export async function POST(request: NextRequest) {
 
     // 점수/등급 하드 고정 (Call-2가 지시 무시해도 강제 override)
     if (lockedSc !== null) { parsed.score = lockedSc; parsed.grade = lockedGr; }
+    // v(2026-08-13): type_name도 하드 고정.
+    // 예전엔 Call-2 프롬프트에 `person_a.type_name은 반드시 "..."` 앵커만 넣고 응답을 덮어쓰지 않았다.
+    // 점수·등급은 위에서 override하면서 유형명만 AI 말을 믿고 있었던 셈이다.
+    // v821에서 데인 구조와 같다 — 그때도 Call-2 응답을 신뢰했다가 FIXED가 통째로 스킵됐다.
+    // typeA/typeB는 pickFromList로 이미 닫힌 20종 안에서 확정된 값이라 그대로 덮어써도 안전하다.
+    if (typeA && parsed.person_a) parsed.person_a.type_name = typeA;
+    if (typeB && parsed.person_b) parsed.person_b.type_name = typeB;
     // {nm1}/{nm2} 템플릿 변수 잔존 시 실제 이름으로 강제 치환 (안전망)
     parsed = fillNameTokens(parsed, { "{nm1}": name1, "{nm2}": name2 });
 

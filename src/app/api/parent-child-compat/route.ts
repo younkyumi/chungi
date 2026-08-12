@@ -180,6 +180,11 @@ export async function POST(request: NextRequest) {
     if (parsed.error === "face_not_found") return NextResponse.json({ error: "얼굴이 인식되지 않았어요. 자녀와 보호자의 정면 사진을 다시 올려주세요!" }, { status: 400 });
 
     if (lockedSc !== null) { parsed.score = lockedSc; parsed.grade = lockedGr; }
+    // v(2026-08-13): type_name 하드 고정 — 앵커만 있고 덮어쓰기가 없어 Call-2가 지시를 무시하면
+    // 새 유형명이 그대로 나갔다. typeA는 BABY_GWANSANG_20(자녀), typeB는 GWANSANG_20(부모)에서
+    // pickFromList로 확정된 값이다. 상세는 gwansang-compat 동일 주석 참고.
+    if (typeA && parsed.person_a) parsed.person_a.type_name = typeA;
+    if (typeB && parsed.person_b) parsed.person_b.type_name = typeB;
     parsed = fillNameTokens(parsed, { "{nm1}": name1, "{nm2}": name2 });
 
     const validationErr = validateCompatResult(parsed);
