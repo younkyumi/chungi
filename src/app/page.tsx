@@ -17147,13 +17147,15 @@ function TodayUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest
           <div style={{background:"linear-gradient(135deg,#ffe5e5,#ffd1d1)",border:"2px solid rgba(255,107,107,0.45)",borderRadius:16,padding:"16px",boxShadow:"0 4px 14px rgba(255,107,107,0.1)"}}>
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:10}}>
               <div style={{flex:1}}>
-                <div style={{fontSize:13,fontWeight:900,color:"#c92a2a",marginBottom:4}}>🎁 친구에게 선물하기</div>
-                <div style={{fontSize:11,color:"#5a1f1f",lineHeight:1.6}}>오늘의 운세를 친구에게 선물해요!<br/><strong>친구 생일만 알면 1회 무료</strong> 운세 봐줄 수 있어요</div>
+                {/* v(2026-08-13): "선물하기"가 이용권을 넘겨주는 것으로 오해됐다.
+                    실제 동작은 남은 무료 1회를 써서 내가 친구 운세를 대신 봐주는 것이라 문구를 맞춘다. */}
+                <div style={{fontSize:13,fontWeight:900,color:"#c92a2a",marginBottom:4}}>🎁 친구 운세 봐주기</div>
+                <div style={{fontSize:11,color:"#5a1f1f",lineHeight:1.6}}>남은 무료 1회로 친구 운세를 봐줄 수 있어요!<br/><strong>친구 생일만 알면</strong> 바로 볼 수 있어요</div>
               </div>
               <button style={{padding:"12px 18px",background:"linear-gradient(135deg,#ff6b6b,#ee5a24)",border:"none",borderRadius:12,cursor:"pointer",fontSize:13,fontWeight:800,color:"#fff",flexShrink:0,boxShadow:"0 3px 10px rgba(255,107,107,0.4)",fontFamily:"inherit"}} onClick={()=>{
                 if(onRequestPerson){onRequestPerson({id:"today_unse",icon:"🎁",name:"친구 운세 선물",desc:"친구의 생년월일로 오늘의 운세를 봐주세요!",price:"무료"});onClose();}
                 else if(onLoginRequest){onClose();onLoginRequest();}
-              }}>선물하기 →</button>
+              }}>친구 운세 봐주기 →</button>
             </div>
           </div>
         </div>}
@@ -23505,7 +23507,11 @@ function HomePage({onSvc,isLoggedIn,savedPersons,setSavedPersons,cart,setCart,on
     {id:"lotto",   ic:"🎰",bg:"rgba(212,175,55,0.15)", border:"rgba(212,175,55,0.25)",  name:"행운 로또번호",   value:"내 사주 오행에 딱 맞춘 로또 1등 번호",   price:"무료"},
     {id:"yesno",   ic:"✨",bg:"rgba(95,196,158,0.1)",  border:"rgba(95,196,158,0.2)",   name:"YES/NO 타로",     value:"할까 말까? 단호박 해답",               price:"무료"},
     // 꿈해몽 380원 (AI 자유 문장 분석) / 태몽해몽 980원 (AI 정밀 + 태교 가이드)
-    {id:"dream",   ic:"🌙",bg:"rgba(155,143,212,0.1)", border:"rgba(155,143,212,0.15)", name:`꿈 해몽 · 태몽 해몽`,  value:"어젯밤 그 꿈, 길몽일까? 태몽일까?",     price:"380원 / 980원"},
+    // v(2026-08-13): 🌙 → 🌠 (사용자 요청 "달 말고 별"). 🌙은 월별 운세 기록소 아이콘과 겹쳤고,
+    // 이 카드는 꿈+태몽 묶음이라 어느 한쪽 이모지(💭·🤰)를 쓰기도 애매했다.
+    // ⭐는 별자리 운세, ✨는 YES/NO 타로, 🌟는 인생 타로가 이미 쓴다.
+    // 🌠(별똥별)는 장식용으로만 쓰여 콘텐츠 이모지로 비어 있고, 태몽에 별 떨어지는 꿈이 흔해 소재와도 맞는다.
+    {id:"dream",   ic:"🌠",bg:"rgba(155,143,212,0.1)", border:"rgba(155,143,212,0.15)", name:`꿈 해몽 · 태몽 해몽`,  value:"어젯밤 그 꿈, 길몽일까? 태몽일까?",     price:"380원 / 980원"},
   ];
   const todayCards=todayCardsAll.filter(c=>{const cs=getCS(todayIdMap[c.id]);return isAdmin||!cs||cs.is_public!==false;});
 
