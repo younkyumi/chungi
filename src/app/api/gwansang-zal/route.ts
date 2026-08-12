@@ -267,7 +267,10 @@ export async function POST(request: NextRequest) {
         ]
       }],
       generationConfig: {
-        temperature: 0.1,
+        // 분류만 하는 호출이라 다양성이 필요 없다 — 0.1은 애매한 얼굴형에서 아주 낮은 확률로
+        // 여전히 타입이 갈릴 수 있어 0으로 내린다. 타입에 20종 도감·굿즈·공유카드가 전부 걸려 있어
+        // 한 번만 갈려도 사용자가 바로 알아챈다.
+        temperature: 0,
         maxOutputTokens: 300,
         responseMimeType: "application/json",
         thinkingConfig: { thinkingBudget: 0 },
