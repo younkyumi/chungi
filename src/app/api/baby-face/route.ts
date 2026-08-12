@@ -56,7 +56,6 @@ const SYSTEM_PROMPT = `[ROLE]
   "total_score": 95~99,
   "grade": "S" 또는 "A",
   "top_percent": "상위 0.1~5%",
-  "iq_estimate": "140+",
 
   "tab1_genius": {
     "title": "{nm}의 천재성 분석",
@@ -119,7 +118,6 @@ const SYSTEM_PROMPT = `[ROLE]
   "cert_title": "황금 유전자의 기적 (인증서 큰 타이틀 한 줄, 8~14자 이내, 시적이고 웅장하게. 예: '황금 유전자의 기적', '천상의 아이가 내렸도다', '명당의 기운 담은 아이')",
   "cert_subtitle": "이 세상에 단 하나뿐인 운명",
   "cert_body": "인증서 본문 3줄. {nm}의 유전자 특징을 요약. 엄마의 XX과 아빠의 XX이 만나 천상의 아이가 태어날 운명. 한자어 키워드 포함.",
-  "cert_tags": ["#황금유전자", "#S등급", "#IQ145+", "#청출어람"],
 
   "variants": {
     "m90": {
@@ -300,6 +298,31 @@ export async function POST(request: NextRequest) {
         parsed.dna_mix[part].dad_pct = 100 - momPct;
       });
     }
+
+    // v(2026-08-12): iq_estimate · cert_tags 고정 — 인증서 칩 4개 중 2개가 자유생성으로 흔들리던 문제
+    //
+    // 칩은 렌더(page.tsx 인증서 해시태그)가 이 순서로 조립한다:
+    //   ① #황금유전자(하드코딩) ② #{grade}등급 ③ #IQ{iq_estimate} ④ AI cert_tags 잔여분
+    // ①②는 이미 고정이었다(②는 위에서 확정한 grade 파생이라 등급 모순은 원래 불가능).
+    // 흔들린 건 ③④. 특히 iq_estimate는 인증서 큰 숫자와 상단 🧠 IQ 배지에도 같이 쓰여서,
+    // 총점·등급은 고정인데 재분석하면 IQ만 통째로 갈리는 상태였다(4,800원 최고가 콘텐츠).
+    //
+    // ③ IQ는 등급 밖으로 못 나가게 묶는다 — S등급인데 A등급보다 낮은 IQ가 나오는 역전 방지.
+    //    밴드(135~160)는 새로 만든 게 아니라, 프롬프트 예시 140+·렌더 기본값 145+로 이미 나가던 범위.
+    const IQ_BY_GRADE: Record<string, string[]> = {
+      S: ["145+", "150+", "155+", "160+"],
+      A: ["135+", "138+", "140+", "142+"],
+    };
+    const iqPool = IQ_BY_GRADE[parsed.grade] || IQ_BY_GRADE.A;
+    parsed.iq_estimate = iqPool[lockedScore([...babySeed, "iq"], 0, iqPool.length - 1)];
+
+    // ④ 네 번째 칩 — 닫힌 후보 8종에서 해시 선택. ①②③과 겹치는 단어(등급·IQ·황금유전자) 없음.
+    const CERT_TAG_POOL = ["#청출어람", "#금지옥엽", "#천상의아이", "#명당기운", "#귀골", "#만복", "#천복", "#영재"];
+    const fourthTag = CERT_TAG_POOL[lockedScore([...babySeed, "certtag"], 0, CERT_TAG_POOL.length - 1)];
+
+    // 렌더가 조립하는 순서 그대로 4개를 확정해 넣는다 — 기록소 재열람·공유카드 등 다른 소비처도 같은 값을 보게.
+    // (렌더는 AI 태그 중 IQ·등급 포함분을 걸러내고 ①②③을 다시 붙이므로, 이 값을 넣어도 결과가 동일하다)
+    parsed.cert_tags = ["#황금유전자", `#${parsed.grade}등급`, `#IQ${parsed.iq_estimate}`, fourthTag];
 
     return NextResponse.json({ result: parsed });
   } catch (error: unknown) {
