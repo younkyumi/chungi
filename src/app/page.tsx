@@ -16446,7 +16446,11 @@ function DailyQuoteModal({onClose,isLoggedIn,onLoginRequest,addHistory,cart,setC
               return(<div key={b.id} onClick={()=>{
                 if(isAd){_handleAdSlotClick();return;}
                 if(isLocked){alert("로그인하면 모든 책의 명언을 볼 수 있어요!");onLoginRequest?.();return;}
-                setSelBook(b.id);setStep("loading"); // v291: 분석중 거쳐서 결과로
+                // v291: 분석중 거쳐서 결과로
+                // v(2026-08-12): 비로그인은 로딩을 건너뛴다. 비로그인은 「천기의 말씀」 1권만 열리고
+                // 그 안의 명언도 매번 같은 공통 값이라, "오늘의 명언 찾는 중" 게이지가 돌면
+                // 새로 뽑아주는 것처럼 보여 오해를 준다. 로그인 사용자만 연출을 유지한다.
+                setSelBook(b.id);setStep(isLoggedIn?"loading":"result");
               }} style={{display:"flex",alignItems:"center",gap:10,padding:"12px",borderRadius:12,background:isAd?"rgba(156,163,175,0.08)":isLocked?"rgba(0,0,0,0.25)":`${b.accent}14`,border:isAd?`1.5px dashed ${b.accent}99`:`1.5px solid ${b.accent}${isLocked?"33":"66"}`,cursor:"pointer",opacity:isAd?0.85:isLocked?0.55:1,transition:"all .18s"}}>
                 <div style={{flexShrink:0,position:"relative",width:56,height:56,borderRadius:10,overflow:"hidden",background:`${b.accent}18`,border:`1px solid ${b.accent}44`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:28}}>
                   {b.coverImg?
@@ -16592,10 +16596,48 @@ function DailyQuoteModal({onClose,isLoggedIn,onLoginRequest,addHistory,cart,setC
   );
 }
 
-function TodayUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onOpenService,selectedPerson,addHistory,onRequestPerson,preloadResult}:any){
+// ━━━ 비로그인 섹션 잠금 카드 (오늘의 운세 · 이달의 운세 공용) ━━━
+// v(2026-08-12): "개인 운세를 만들어놓고 절반을 블러로 가린다" → "짧은 공통 운세를 온전히 준다"로 전환.
+// 블러는 '내 결과인데 가려놨다'는 인상을 준다. 비로그인은 애초에 전체 공통 운세라 가릴 내 결과가 없다.
+// 그래서 개인화가 실제로 들어가는 섹션만 통째로 빼고, 제목과 함께 이 카드를 대신 세운다.
+// 기존 컬러 가이드 잠금 카드(점선 테두리 + 이모지 + 제목 + 안내 + 로그인 버튼)를 그대로 규격화한 것.
+function SectionLockCard({icon,title,desc,onLogin}:{icon:string;title:string;desc:string;onLogin:()=>void}){
+  return(
+    <div style={{padding:"14px 16px 12px"}}>
+      <div style={{background:"#fff",border:"1px dashed rgba(0,0,0,0.15)",borderRadius:14,padding:"14px",textAlign:"center"}}>
+        <div style={{fontSize:20,marginBottom:4}}>{icon}</div>
+        <div style={{fontSize:12,fontWeight:700,color:"#333",marginBottom:3}}>{title}</div>
+        <div style={{fontSize:10,color:"#888",lineHeight:1.6,marginBottom:8}} dangerouslySetInnerHTML={{__html:desc}}/>
+        <button style={{fontSize:10,padding:"6px 14px",borderRadius:18,background:"linear-gradient(135deg,#D4AF37,#B8942E)",color:"#fff",border:"none",fontWeight:700,cursor:"pointer",fontFamily:"inherit"}} onClick={onLogin}>로그인하기 →</button>
+      </div>
+    </div>
+  );
+}
+
+// ━━━ 비로그인 하단 로그인 유도 CTA (오늘의 운세 · 이달의 운세 공용) ━━━
+function LoginCtaBox({lockedCount,onLogin}:{lockedCount:number;onLogin:()=>void}){
+  return(
+    <div style={{padding:"0 16px 14px"}}>
+      <div style={{background:"#fef9e7",border:"1px solid rgba(212,175,55,0.3)",borderRadius:14,padding:"14px",textAlign:"center"}}>
+        <div style={{fontSize:12,fontWeight:700,color:"#D4AF37",marginBottom:4}}>🔒 {lockedCount}개 항목이 잠겨있어요</div>
+        <div style={{fontSize:11,color:"#888",marginBottom:10,lineHeight:1.6}}>지금은 <strong style={{color:"#333"}}>전체 공통 운세</strong>예요. 로그인하면 <strong style={{color:"#333"}}>내 사주 기반 개인 맞춤</strong> + {lockedCount}개 항목 공개!</div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+          <button style={{padding:10,borderRadius:12,border:"none",background:"#FAE100",color:"#3B1B1B",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}} onClick={onLogin}>🟡 카카오 로그인</button>
+          <button style={{padding:10,borderRadius:12,border:"1px solid #ddd",background:"#fff",color:"#333",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}} onClick={onLogin}>🔵 구글 로그인</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TodayUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onOpenService,selectedPerson,addHistory,onRequestPerson,preloadResult,svc}:any){
   // preloadResult 있으면 result 스텝으로 바로 진입 (기록소 재열람용)
   // 인물 선택 후 다시 열렸으면 info 스킵 (로그인 시) → 바로 questions
-  const[step,setStep]=useState<"info"|"questions"|"loading"|"result">(preloadResult?"result":(isLoggedIn&&selectedPerson?"questions":"info"));
+  // v(2026-08-12): _guestSeen — 비로그인이 오늘 이미 본 경우 handleSvc가 붙여준다.
+  // 비로그인 결과는 전체 공통값이라 다시 계산해도 같은 값이 나온다. 저장된 결과를 꺼낼 필요 없이
+  // 곧바로 result로 열어, 다시 눌렀을 때 인트로가 아니라 오늘 본 공통 운세가 그대로 보이게 한다.
+  const _guestReentry=!isLoggedIn&&!!svc?._guestSeen;
+  const[step,setStep]=useState<"info"|"questions"|"loading"|"result">((preloadResult||_guestReentry)?"result":(isLoggedIn&&selectedPerson?"questions":"info"));
   const[preQ,setPreQ]=useState<any>({});
   const[expandedArea,setExpandedArea]=useState<string|null>(null);
   const[used,setUsed]=useState(!!preloadResult);
@@ -16634,11 +16676,19 @@ function TodayUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest
   }:_calcUnse(!!isLoggedIn,selectedPerson?.birth);
 
   // 카운팅 + 기록소 저장: 결과 화면 진입 시 1회만 (사전질문/광고가 아닌 진짜 결과를 본 시점)
-  const unseKey=`chungi_daily_unse_${new Date().toISOString().slice(0,10)}`;
+  // v(2026-08-12): 비로그인/로그인 카운터 분리 — 비로그인 1회, 로그인 2회.
+  // 키를 쪼개면 로그인하는 순간 로그인용 카운터(0회)를 보게 되므로, "비로그인에서 쓴 횟수는
+  // 로그인하면 리셋되어야 한다"가 별도 리셋 코드 없이 자동으로 성립한다.
+  const unseKey=`chungi_daily_unse_${isLoggedIn?"login":"guest"}_${new Date().toISOString().slice(0,10)}`;
   useEffect(()=>{
     if(step!=="result"||used)return;
     setUsed(true);
-    try{const cur=parseInt(localStorage.getItem(unseKey)||"0");localStorage.setItem(unseKey,String(cur+1));}catch{}
+    // 재열람(비로그인이 오늘 본 공통 결과를 다시 보는 경우)은 횟수를 다시 세지 않는다.
+    if(!_guestReentry){try{const cur=parseInt(localStorage.getItem(unseKey)||"0");localStorage.setItem(unseKey,String(cur+1));}catch{}}
+    // v(2026-08-12): 비로그인은 기록소에 저장하지 않는다.
+    // 토글 팝업이 "🌐 공통 결과 먼저 보기 (저장 안 됨)"이라고 약속해놓고 실제로는 저장하고 있었다.
+    // 저장되는 값이 전체 공통 운세라, 나중에 로그인해서 그 기록을 열면 개인 운세인 척 남는다.
+    if(!isLoggedIn)return;
     addHistory?.({icon:"🌙",name:"오늘의 운세",svcId:"today_unse",person:personName,date:new Date().toLocaleDateString("ko-KR"),result:`${unse.headline} (${unse.totalScore}점)`,resultType:{star:unse.star,totalScore:unse.totalScore,headline:unse.headline,ohang:unse.ohang,spoiler:unse.spoiler,lastWord:unse.lastWord,solution:unse.solution,spot:unse.spot,guiin:unse.guiin,areas:unse.areas,_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})},ctx:{preQ}});
   },[step]);
   const handleExpand=(area:string)=>{
@@ -16832,12 +16882,15 @@ function TodayUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest
                 return(<div key={r} style={{display:"contents"}}>
                   {rowAreas.map((a:any,idx:number)=>{
                     const i=r*2+idx;
-                    const locked=!isLoggedIn&&i>=4;
+                    // v(2026-08-12): 비로그인 블러 해제 — 예전엔 `!isLoggedIn && i>=4`로 5번째부터
+                    // blur(2.5px)를 씌워 10영역 중 4개만 보였다. 10가지 기운은 전체 공통 운세라
+                    // 개인화가 들어가지 않으므로 가릴 '내 결과'가 없다. 온전히 보여주고,
+                    // 개인화가 실제로 걸리는 하위 6개 항목만 SectionLockCard로 돌린다.
                     const expanded=expandedArea===a.id;
                     const grade=a.score>=85?"S":a.score>=70?"A":a.score>=55?"B":a.score>=40?"C":"D";
                     const gradeColor=a.score>=85?"#059669":a.score>=70?"#D4AF37":a.score>=55?"#74B9FF":a.score>=40?"#888":"#DC3545";
                     return(
-                      <div key={a.id} style={{background:"#fff",borderRadius:10,padding:"11px 12px 12px",cursor:locked?"default":"pointer",opacity:locked?0.45:1,filter:locked?"blur(2.5px)":"none",border:`1px solid ${expanded?a.color:"#eee"}`,boxShadow:expanded?`0 2px 8px ${a.color}22`:"0 1px 3px rgba(0,0,0,0.03)",transition:"all .2s"}} onClick={()=>!locked&&handleExpand(a.id)}>
+                      <div key={a.id} style={{background:"#fff",borderRadius:10,padding:"11px 12px 12px",cursor:"pointer",border:`1px solid ${expanded?a.color:"#eee"}`,boxShadow:expanded?`0 2px 8px ${a.color}22`:"0 1px 3px rgba(0,0,0,0.03)",transition:"all .2s"}} onClick={()=>handleExpand(a.id)}>
                         <div style={{display:"flex",alignItems:"center",gap:5,marginBottom:8}}>
                           <span style={{fontSize:14,flexShrink:0}}>{a.emoji}</span>
                           <div style={{flex:1,minWidth:0,fontSize:11,fontWeight:800,color:"#1A3C32",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{a.area}</div>
@@ -16908,6 +16961,7 @@ function TodayUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest
           </div>
 
           {/* ━━ ④ ✦ 오늘의 수호 기운 — 5칸 (컬러 빠짐, 컬러 가이드로 흡수) ━━ */}
+          {!isLoggedIn?<SectionLockCard icon="🛡️" title="오늘의 수호 기운" desc="로그인하면 내 사주에 맞는<br/>숫자·방향·음식·시간·수호 동물을 볼 수 있어요" onLogin={()=>{onClose();onLoginRequest?.();}}/>:(
           <div style={{padding:"14px 16px 12px"}}>
             <div style={{fontSize:11,fontWeight:700,color:"#7A5C00",letterSpacing:1.5,marginBottom:10}}>✦ 오늘의 수호 기운</div>
             <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:5}}>
@@ -16925,10 +16979,11 @@ function TodayUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest
                 </div>
               ))}
             </div>
-          </div>
+          </div>)}
 
           {/* ━━ ⑤ ✦ 오늘 시간대별 흐름 — v412 NEW (아침/낮/저녁/밤 4구간) ━━ */}
           {(()=>{
+            if(!isLoggedIn)return <SectionLockCard icon="⏰" title="오늘 시간대별 흐름" desc="로그인하면 아침·낮·저녁·밤 4구간<br/>시간대별 길흉 흐름을 볼 수 있어요" onLogin={()=>{onClose();onLoginRequest?.();}}/>;
             const tDay=[{n:"아침",ic:"🌅",h:"6-12시"},{n:"낮",ic:"☀️",h:"12-18시"},{n:"저녁",ic:"🌆",h:"18-21시"},{n:"밤",ic:"🌙",h:"21-6시"}];
             const TXT:any={"길":["기운이 강한 시간","좋은 흐름이에요","맑은 에너지","집중도 최고","행운이 따라요","적극적으로","기회가 보여요","마음이 편해요"],"평":["무난한 시간","평이한 흐름","루틴 유지","차분히 가요","담담하게","평소대로 OK","무리 말고 천천히","평온한 분위기"],"흉":["조심하는 게 좋아요","무리는 금물","쉬어가는 게 나음","속도 늦추세요","감정 다스리기","결정 미루기","말 아끼기","휴식 우선"]};
             const baseSeed=parseInt(TODAY.date.replace(/[^0-9]/g,"").slice(0,8))+(personName.charCodeAt(0)||0);
@@ -16955,6 +17010,7 @@ function TodayUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest
           })()}
 
           {/* ━━ ⑥ 시그널 & 가이드 — v416: Do/Don't와 위치 swap (Do/Don't가 한마디 직전 마지막) ━━ */}
+          {!isLoggedIn?<SectionLockCard icon="💡" title="오늘의 시그널 & 가이드" desc="로그인하면 나만의 솔루션 + 럭키 스팟<br/>+ 오늘의 귀인까지 볼 수 있어요" onLogin={()=>{onClose();onLoginRequest?.();}}/>:(
           <div style={{padding:"14px 16px 12px"}}>
             <div style={{fontSize:11,fontWeight:700,color:"#7A5C00",letterSpacing:1.5,marginBottom:12}}>✦ 오늘의 시그널 & 가이드</div>
             <div style={{display:"grid",gridTemplateColumns:"1fr",gap:8}}>
@@ -16974,10 +17030,11 @@ function TodayUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest
                 <div style={{fontSize:11,color:"#666",lineHeight:1.7,wordBreak:"keep-all"}}>{unse.guiin.why}</div>
               </div>
             </div>
-          </div>
+          </div>)}
 
           {/* ━━ ⑦ ✦ 오늘 Do & Don't — v416: 한마디 직전 마지막 행동 강조 ━━ */}
           {(()=>{
+            if(!isLoggedIn)return <SectionLockCard icon="✅" title="오늘 Do & Don't" desc="로그인하면 오늘 꼭 할 것 /<br/>피해야 할 것을 볼 수 있어요" onLogin={()=>{onClose();onLoginRequest?.();}}/>;
             const DOS=["먼저 인사·먼저 메시지","정리정돈 / 환기","산책 30분","감사 한 마디","오늘 안에 끝낼 일 1개","건강한 식사","물 충분히","휴대폰 잠시 꺼두기","칭찬 한 마디","책 한 페이지","스트레칭","웃기","감사 일기 한 줄","따뜻한 차 한 잔","좋아하는 음악 듣기","가벼운 명상 5분","오랜만에 안부 인사","받은 메시지 답장","좋은 자세 의식","아침 햇볕 5분"];
             const DONTS=["충동 결정 / 큰 지출","감정적 답장","야식·과식","험담·뒷담","무리한 약속","비교 마인드","SNS 과몰입","부정 표현","무리한 운동","늦은 카페인","불필요한 논쟁","과거 후회","불평·불만","스스로 자책","급한 결론","약속 어기기","과로·무리","시간 흘려보내기","걱정 미리 사기","독설·험담"];
             const seed=parseInt(TODAY.date.replace(/[^0-9]/g,"").slice(0,8))+(personName.charCodeAt(0)||0);
@@ -16999,6 +17056,7 @@ function TodayUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest
           })()}
 
           {/* ━━ 마지막 한마디 — v378: 무지개 보더 얇고 연하게 ━━ */}
+          {!isLoggedIn?<SectionLockCard icon="🔮" title="천기의 한마디" desc="로그인하면 내 사주를 읽고 건네는<br/>오늘의 마무리 한마디를 볼 수 있어요" onLogin={()=>{onClose();onLoginRequest?.();}}/>:(
           <div style={{padding:"12px 16px 14px"}}>
             <div style={{borderRadius:16,padding:1.5,backgroundImage:"linear-gradient(135deg,#ffb8b8,#ffd9a8,#b8e0c8,#bcd6f0,#cdc5e8)",boxShadow:"0 4px 14px rgba(155,143,212,0.08)"}}>
               <div style={{background:"#fafbfd",borderRadius:14.5,padding:"20px 18px",textAlign:"center"}}>
@@ -17006,21 +17064,12 @@ function TodayUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest
                 <div style={{fontSize:13,color:"#1A3C32",fontWeight:700,lineHeight:1.85,wordBreak:"keep-all",fontFamily:"'Noto Serif KR','Batang',serif"}}>"{unse.lastWord}"</div>
               </div>
             </div>
-          </div>
+          </div>)}
 
-          {/* 비로그인: 로그인 유도 (카드 안) */}
-          {!isLoggedIn&&(
-            <div style={{padding:"0 16px 14px"}}>
-              <div style={{background:"#fef9e7",border:"1px solid rgba(212,175,55,0.3)",borderRadius:14,padding:"14px",textAlign:"center"}}>
-                <div style={{fontSize:12,fontWeight:700,color:"#D4AF37",marginBottom:4}}>🔒 6개 항목이 잠겨있어요</div>
-                <div style={{fontSize:11,color:"#888",marginBottom:10,lineHeight:1.6}}>로그인하면 <strong style={{color:"#333"}}>내 사주 기반 개인 맞춤 운세</strong> + 전체 10영역 공개!</div>
-                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-                  <button style={{padding:10,borderRadius:12,border:"none",background:"#FAE100",color:"#3B1B1B",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}} onClick={()=>{onClose();onLoginRequest?.();}}>🟡 카카오 로그인</button>
-                  <button style={{padding:10,borderRadius:12,border:"1px solid #ddd",background:"#fff",color:"#333",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}} onClick={()=>{onClose();onLoginRequest?.();}}>🔵 구글 로그인</button>
-                </div>
-              </div>
-            </div>
-          )}
+          {/* 비로그인: 로그인 유도 — 잠긴 6개(컬러·수호기운·시간대·시그널·Do&Don't·한마디) 안내.
+              v(2026-08-12): "전체 10영역 공개" 문구 삭제 — 10가지 기운은 이제 비로그인도 다 보이므로
+              그대로 두면 거짓 약속이 된다. LoginCtaBox가 lockedCount로 문구를 만든다. */}
+          {!isLoggedIn&&<LoginCtaBox lockedCount={6} onLogin={()=>{onClose();onLoginRequest?.();}}/>}
 
           {/* 푸터 해시태그 */}
           <div style={{display:"flex",justifyContent:"space-between",padding:"10px 16px 10px",marginTop:14,fontSize:9,color:"#aaa",fontWeight:600,letterSpacing:0.3,borderTop:"1px solid #f0f0f0"}}>
@@ -17031,7 +17080,9 @@ function TodayUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest
         {/* ═══ 화이트 카드 끝 ═══ */}
 
         {/* v358: 🎁 친구에게 선물하기 — 카드 밖으로 이동 (1일 2회 무료 / 첫 번째 사용일 때만) */}
-        {(()=>{try{const c=parseInt(localStorage.getItem(unseKey)||"0");return c<2;}catch{return true;}})()&&
+        {/* v(2026-08-12): 비로그인은 숨김 — 선물하기는 인물 선택을 타는 흐름이라 비로그인은 진행이 안 된다.
+            남은 횟수 기준도 로그인 2회 / 비로그인 1회로 갈린다. */}
+        {isLoggedIn&&(()=>{try{const c=parseInt(localStorage.getItem(unseKey)||"0");return c<2;}catch{return true;}})()&&
         <div style={{marginBottom:10}}>
           <div style={{background:"linear-gradient(135deg,#ffe5e5,#ffd1d1)",border:"2px solid rgba(255,107,107,0.45)",borderRadius:16,padding:"16px",boxShadow:"0 4px 14px rgba(255,107,107,0.1)"}}>
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:10}}>
@@ -21495,6 +21546,10 @@ function LottoModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
     displayItems.forEach((_,i)=>setTimeout(()=>setRevealedCount(c=>Math.max(c,i+1)),i*180));
     try{localStorage.setItem(todayKey,JSON.stringify({done:true,result:{numbers:displayItems.map(x=>x.n)}}));}catch{}
     const nums=displayItems.map(x=>x.n).join(", ");
+    // v(2026-08-12): 비로그인은 기록소에 저장하지 않는다 (토글 팝업의 "저장 안 됨" 약속).
+    // 위 localStorage 저장은 그대로 둔다 — 그래야 비로그인도 다시 눌렀을 때 인트로가 아니라
+    // 오늘의 공통 번호를 그대로 다시 볼 수 있다. 기록소(개인 이력)에만 안 남기는 것.
+    if(!isLoggedIn)return;
     addHistory?.({icon:"🎰",name:"행운 로또번호",svcId:"lotto",person:selectedPerson?.name||"나",date:new Date().toLocaleDateString("ko-KR"),result:isLoggedIn?`${dominant}기운 · ${nums}`:nums,resultType:{numbers:displayItems.map(x=>x.n),ohang:dominant,personalized:!!isLoggedIn,_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})},ctx:{ohang:dominant}});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[step]);
@@ -21840,8 +21895,11 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
     }catch{}
     return false;
   })();
-  // v305: isLoggedIn 조건 제거
-  const _shouldSkipIntro=_anyMonthlyThisMonth&&!selectedPerson;
+  // v(2026-08-12): 로또(LottoModal)와 같은 사고 구조라 같은 방식으로 막는다.
+  // 매 렌더 재계산이면 결과 저장 직후 조건이 뒤집혀 방금 그린 결과가 사라질 수 있고,
+  // 비로그인은 등록 인물이 0명이라 인물선택으로 보낼 곳 자체가 없다.
+  // mount 시 1회 고정 + 로그인 사용자에게만 적용 + 보여줄 결과가 있으면 결과가 우선.
+  const[_shouldSkipIntro]=useState(()=>isLoggedIn&&_anyMonthlyThisMonth&&!selectedPerson&&!savedPreQ&&!preloadResult);
   // 인물 선택 후 다시 열렸으면 info 스킵 (로그인 시) → 바로 questions
   const[step,setStep]=useState<"info"|"questions"|"loading"|"result">((preloadResult||savedPreQ)?"result":(isLoggedIn&&selectedPerson?"questions":"info"));
   // intro 스킵하고 mount 시 바로 인물선택 (이번 달 본 적 있고 인물 미선택 상태)
@@ -21872,7 +21930,11 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
   const m=preloadResult&&preloadResult.areas?{
     headline:{star:preloadResult.star||3,text:preloadResult.headline||"기록된 운세"},
     areas:preloadResult.areas,
-    weekAdvice:preloadResult.weekAdvice||null,
+    // v(2026-08-12): 로그인해도 "🔒 주차별 흐름" 잠금이 안 풀리던 무한 반복 fix.
+    // 비로그인으로 본 결과는 weekAdvice가 null인 채 기록소에 저장된다. 그 기록을 나중에
+    // 로그인 상태로 열어도 저장된 null을 그대로 읽어서 영영 잠금 화면만 나왔다.
+    // 로그인 상태라면 저장값이 비어 있어도 오행으로 다시 만들어 준다.
+    weekAdvice:preloadResult.weekAdvice||(isLoggedIn?_WEEK_ADVICE[preloadResult.ohang||"토"]:null),
     ohang:preloadResult.ohang||"토",
     ohangColor:_OHANG_COLORS[preloadResult.ohang||"토"]||_OHANG_COLORS["토"]
   }:_calcMonthly(!!isLoggedIn,selectedPerson?.birth);
@@ -21895,6 +21957,15 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
   useEffect(()=>{
     if(step==="result"&&!saved){
       setSaved(true);
+      // v(2026-08-12): 결과 진입 시점에 이번 달 키를 남긴다.
+      // 예전엔 사전질문(PreQuestionFlow) 완료 시에만 썼는데, 비로그인은 그 경로를 안 타서 키가
+      // 안 남았다. 그래서 다시 눌러도 savedPreQ가 null이라 인트로가 또 떴다(로또는 결과가 떴는데
+      // 이달의 운세만 인트로가 뜨던 원인). 로또와 동작을 맞춘다 — 비로그인도 재진입 시 결과 직행.
+      try{localStorage.setItem(monthKey,JSON.stringify(preQ||{}));}catch{}
+      // 비로그인은 기록소에 저장하지 않는다 (토글 팝업의 "저장 안 됨" 약속).
+      // 여기서 저장된 비로그인 기록은 weekAdvice가 null이라, 나중에 로그인해서 열어도
+      // "🔒 주차별 흐름" 잠금이 영영 안 풀리던 무한 반복의 원인이었다.
+      if(!isLoggedIn)return;
       addHistory?.({icon:"📅",name:"이달의 운세",svcId:"monthly_unse",person:personName,date:new Date().toLocaleDateString("ko-KR"),result:`${monthLabel} ${m.headline.text} (${m.headline.star}/5)`,resultType:{star:m.headline.star,headline:m.headline.text,ohang:m.ohang,areas:m.areas,weekAdvice:m.weekAdvice,month:monthLabel,_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})},ctx:{preQ}});
     }
   },[step,saved,addHistory,personName,m.headline.text,m.headline.star,m.ohang,monthLabel,preQ]);
@@ -22116,6 +22187,7 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
           </div>
 
           {/* ━━ ⑤ ✦ 주차별 흐름 — v418: "개인화" 배지 제거 (헤더에 ✓ 사주 기반 표시로 충분) ━━ */}
+          {!isLoggedIn?<SectionLockCard icon="📆" title="주차별 흐름" desc="로그인하면 이번 달을 4주로 나눈<br/>내 사주 기반 시기별 가이드를 볼 수 있어요" onLogin={()=>{onClose();onLoginRequest?.();}}/>:(
           <div style={{padding:"14px 16px"}}>
             <div style={{fontSize:11,fontWeight:700,color:"#7A5C00",letterSpacing:1.5,marginBottom:10}}>✦ 주차별 흐름</div>
             {isLoggedIn&&m.weekAdvice?(
@@ -22134,10 +22206,11 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
                 <button style={{fontSize:10,padding:"6px 14px",borderRadius:18,background:"linear-gradient(135deg,#D4AF37,#B8942E)",color:"#fff",border:"none",fontWeight:700,cursor:"pointer",fontFamily:"inherit"}} onClick={()=>{onClose();onLoginRequest?.();}}>로그인하기 →</button>
               </div>
             )}
-          </div>
+          </div>)}
 
           {/* ━━ ⑥ ✦ 이달 운명의 날 (구체 날짜) ━━ */}
           {(()=>{
+            if(!isLoggedIn)return <SectionLockCard icon="📅" title="이달 운명의 날" desc="로그인하면 이번 달 좋은 날·주의할 날을<br/>구체적인 날짜로 볼 수 있어요" onLogin={()=>{onClose();onLoginRequest?.();}}/>;
             const yr=new Date().getFullYear();const mo=new Date().getMonth();
             const daysInMonth=new Date(yr,mo+1,0).getDate();
             const seed=(personName.charCodeAt(0)||0)+yr*100+(mo+1);
@@ -22166,7 +22239,8 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
           })()}
 
           {/* ━━ ⑦ ✦ 1~12월 한 해 흐름 — 참고/광고 유도 ━━ */}
-          {dbGwe&&<div style={{padding:"14px 16px"}}>
+          {!isLoggedIn?<SectionLockCard icon="🌙" title="1~12월 한 해 흐름 · 토정비결" desc="로그인하면 올해 열두 달의 길·주의 흐름과<br/>내 토정비결 괘를 볼 수 있어요" onLogin={()=>{onClose();onLoginRequest?.();}}/>:
+           dbGwe&&<div style={{padding:"14px 16px"}}>
             <div style={{fontSize:11,fontWeight:700,color:"#7A5C00",letterSpacing:1.5,marginBottom:8}}>✦ 1~12월 한 해 흐름 · 토정비결 #{dbGwe}괘</div>
             <div style={{fontSize:10,color:"#666",marginBottom:10,lineHeight:1.6}}>이번 달 외 다른 달도 궁금하면 <strong style={{color:"#D4AF37"}}>월별 운세 (980원)</strong>에서 풀이를 볼 수 있어요.</div>
             <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:5}}>
@@ -22187,6 +22261,7 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
 
           {/* ━━ ⑧ ✦ 이달 Do & Don't — v416: 한마디 직전 마지막 행동 강조 ━━ */}
           {(()=>{
+            if(!isLoggedIn)return <SectionLockCard icon="✅" title="이달 Do & Don't" desc="로그인하면 이번 달 꼭 할 것 /<br/>피해야 할 것을 볼 수 있어요" onLogin={()=>{onClose();onLoginRequest?.();}}/>;
             const DOS_M=["새 시작·새 도전","사람 관계 다지기","미뤄둔 일 정리","건강 루틴 만들기","공부·자기계발","돈 관리 점검","청소·정리정돈","감사 일기","천천히 깊게","꾸준한 운동","책 한 권 완독","마음 비우기","목표 한 가지 정하기","오랜 친구에게 연락","집안 정돈","새 취미 시도","월간 회고","자기 칭찬 한 줄","일찍 자기","아침형 루틴"];
             const DONTS_M=["충동 결정·큰 지출","무리한 약속","감정적 충돌","과로·번아웃","비교·자책","SNS 과몰입","미루기 습관","불필요한 모임","과식·야식","부정 표현","과거 매달림","급한 판단","자기 비하","무책임한 약속","과한 카페인","수면 부족","미해결 갈등 방치","부정 뉴스 몰입","약속 미루기","과한 다이어트"];
             const yr=new Date().getFullYear();const mo=new Date().getMonth()+1;
@@ -22210,6 +22285,7 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
 
           {/* 💌 이달의 한마디 */}
           {(()=>{
+            if(!isLoggedIn)return <SectionLockCard icon="💌" title="이달의 한마디" desc="로그인하면 내 사주를 읽고 건네는<br/>이번 달 마무리 한마디를 볼 수 있어요" onLogin={()=>{onClose();onLoginRequest?.();}}/>;
             const MSGS=[
               `${personName}님, 이번 달은 천천히 가도 괜찮은 달이에요. 서두르지 않아도 결국 도착해요.`,
               `${personName}님, 이번 달은 작게 시작해서 크게 키워가는 흐름. 첫 발을 두려워하지 마세요.`,
@@ -22237,6 +22313,10 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
               </div>
             </div>;
           })()}
+
+          {/* 비로그인: 로그인 유도 — 잠긴 5개(주차별·운명의 날·한 해 흐름·Do&Don't·한마디) 안내.
+              오늘의 운세와 같은 규격(LoginCtaBox)을 쓴다. */}
+          {!isLoggedIn&&<LoginCtaBox lockedCount={5} onLogin={()=>{onClose();onLoginRequest?.();}}/>}
 
           {/* 푸터 */}
           <div style={{display:"flex",justifyContent:"space-between",padding:"10px 16px 10px",marginTop:14,fontSize:9,color:"#aaa",fontWeight:600,letterSpacing:0.3,borderTop:"1px solid #f0f0f0"}}>
@@ -23315,8 +23395,10 @@ function HomePage({onSvc,isLoggedIn,savedPersons,setSavedPersons,cart,setCart,on
   // todayCard ID → content_settings ID 매핑
   const todayIdMap:{[k:string]:string}={unse:"daily_unse",tarot:"today_tarot",lotto:"lotto",monthly:"monthly_unse",yesno:"tarot_yesno",dream:"dream",quote:"daily_quote"};
 
-  // 오늘의 운세 1일 2회 제한 — 모달 닫힘 시 자동 동기화
-  const unseKey=`chungi_daily_unse_${new Date().toISOString().slice(0,10)}`;
+  // 오늘의 운세 무료 횟수 — v(2026-08-12): 비로그인 1회 / 로그인 2회로 분리.
+  // 키가 갈려 있어야 로그인 시 비로그인에서 쓴 횟수가 자동으로 리셋된다(TodayUnseModal과 동일 규칙).
+  const unseMax=isLoggedIn?2:1;
+  const unseKey=`chungi_daily_unse_${isLoggedIn?"login":"guest"}_${new Date().toISOString().slice(0,10)}`;
   const dreamKey=`chungi_daily_dream_${new Date().toISOString().slice(0,10)}_count`; // v276
   const taegilKey=`chungi_daily_taegil_${new Date().toISOString().slice(0,10)}_count`; // v303
   const[unseCount,setUnseCount]=useState(()=>{try{return parseInt(localStorage.getItem(unseKey)||"0");}catch{return 0;}});
@@ -23338,7 +23420,7 @@ function HomePage({onSvc,isLoggedIn,savedPersons,setSavedPersons,cart,setCart,on
   },[unseKey,dreamKey]);
 
   const todayCardsAll=[
-    {id:"unse",    ic:"🔮",bg:"rgba(155,143,212,0.12)",border:"rgba(155,143,212,0.2)",  name:`오늘의 운세 (${Math.min(unseCount,2)}/2)`, value:"친구에게 오늘의 운세를 선물하세요!", price:"무료"},
+    {id:"unse",    ic:"🔮",bg:"rgba(155,143,212,0.12)",border:"rgba(155,143,212,0.2)",  name:`오늘의 운세 (${Math.min(unseCount,unseMax)}/${unseMax})`, value:"친구에게 오늘의 운세를 선물하세요!", price:"무료"},
     {id:"tarot",   ic:"🃏",bg:"rgba(212,175,55,0.1)",  border:"rgba(212,175,55,0.2)",   name:"오늘의 타로",     value:"카드 한 장이 오늘 하루를 바꿔줄지도?",   price:"무료"},
     {id:"lotto",   ic:"🎰",bg:"rgba(212,175,55,0.15)", border:"rgba(212,175,55,0.25)",  name:"행운 로또번호",   value:"내 사주 오행에 딱 맞춘 로또 1등 번호",   price:"무료"},
     {id:"yesno",   ic:"✨",bg:"rgba(95,196,158,0.1)",  border:"rgba(95,196,158,0.2)",   name:"YES/NO 타로",     value:"할까 말까? 단호박 해답",               price:"무료"},
@@ -23354,7 +23436,14 @@ function HomePage({onSvc,isLoggedIn,savedPersons,setSavedPersons,cart,setCart,on
     const cs=csId?getCS(csId):null;
     if(cs?.is_preparing){onSvc({id:csId,icon:"",name:todayCardsAll.find(c=>c.id===cardId)?.name||cardId,desc:"",price:"무료",coming:false,_coming:true});return;}
     // 오늘의 운세 1일 2회 제한 (카운팅은 결과 확인 시 TodayUnseModal 내부에서)
-    if(cardId==="unse"&&unseCount>=2){alert("오늘의 운세는 1일 2회까지 무료예요!\n내일 다시 이용해주세요.\n\n📋 오늘 본 결과는 기록소에서 다시 확인할 수 있어요.");return;}
+    // v(2026-08-12): 비로그인 1회 / 로그인 2회.
+    // 로그인은 2회 소진 시 경고(B안 — 일부러 그렇게 둔 정책).
+    // 비로그인은 경고를 띄우지 않고 그대로 통과시킨다 → handleSvc의 _guestSeen 분기가
+    // 오늘 본 공통 결과를 바로 열어준다(인트로·토글 팝업 없이). 로또와 같은 경험.
+    if(cardId==="unse"&&isLoggedIn&&unseCount>=unseMax){
+      alert("오늘의 운세는 1일 2회까지 무료예요!\n내일 다시 이용해주세요.\n\n📋 오늘 본 결과는 기록소에서 다시 확인할 수 있어요.");
+      return;
+    }
     // v305: 꿈해몽 게이트 제거 — 태몽도 같은 모달이라 막히면 안 됨. DreamModal 내부 "꿈" 버튼에서 체크
     // v293: 이달의운세·로또 alert 제거 — 모달이 savedPreQ/savedResult 보고 자동으로 result로 진입
     // 인물선택이 필요 없는 카드는 직접 모달
@@ -29359,6 +29448,15 @@ export default function Page(){
             return;
           }
         }
+      }catch{}
+    }
+    // v(2026-08-12): 오늘의 운세 — 비로그인이 오늘 이미 봤으면 토글 팝업·인트로를 건너뛰고
+    // 공통 결과로 직행한다(로또와 동일 규칙). 비로그인 결과는 전체 공통값이라 재계산해도 같다.
+    // 이 분기가 아래 로그인 게이트보다 먼저 와야 "🌐 공통 결과 먼저 보기" 팝업을 다시 안 본다.
+    if(svc.id==="today_unse"&&!svc._fromAd&&!isLoggedIn){
+      try{
+        const gk=`chungi_daily_unse_guest_${new Date().toISOString().slice(0,10)}`;
+        if(parseInt(localStorage.getItem(gk)||"0")>=1){setModal({...svc,_guestSeen:true});return;}
       }catch{}
     }
     // v310: 로또 1일 1회 — 오늘 결과 있으면 인물선택 스킵하고 결과 직행
