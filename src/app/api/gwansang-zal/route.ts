@@ -1,4 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
+import { lockedScore } from "@/lib/compat-helpers";
+
+// v(2026-08-13): 도화살(charm_score) 타입별 밴드 — 재분석마다 숫자가 바뀌던 문제 fix.
+// 프롬프트에만 있고 주입이 0건이라 AI가 매번 새로 뱉었고, 아예 누락되는 회차도 있었다
+// (도화살 게이지 바 + % 숫자로 실제 렌더되는 필드다 — 죽은 코드가 아니다).
+//
+// 20종 고정값이 아니라 "타입별 밴드 + 사진 해시"로 간다.
+// 같은 타입이면 무조건 같은 %인 것보다, 사람마다 미묘하게 다른 게 도화살이라는 소재에 맞다.
+// 2세얼굴 IQ를 등급 밴드 안에서 해시로 뽑은 것과 같은 방식. 밴드 폭은 12~13.
+const CHARM_BAND: Record<number, [number, number]> = {
+  1:  [60, 72], // 황금손 미다스상 — 재물
+  2:  [65, 77], // 강남 건물주상 — 여유·기품
+  3:  [55, 67], // 지갑 수호신상 — 실속
+  4:  [80, 92], // 도파민 플렉서상 — 화려·개성
+  5:  [88, 98], // 유죄 인간 폭스상 — 매혹·도화 (최고 밴드)
+  6:  [85, 96], // 얼굴 천재 프리패스상 — 미모
+  7:  [58, 70], // 워커홀릭 갓생러상 — 근면
+  8:  [70, 82], // 순도100% 진국상 — 인복·다정
+  9:  [55, 67], // 인간 챗GPT상 — 총명
+  10: [75, 87], // 갓벽한 대장상 — 위엄·카리스마
+  11: [68, 80], // 알빠노 마이웨이상 — 독립·당당
+  12: [72, 84], // 무해한 힐러상 — 온기·포근
+  13: [78, 90], // 영앤리치 예비 CEO상 — 시크·품격
+  14: [52, 64], // 디테일 변태 장인상 — 예리·집념
+  15: [74, 86], // 미친 감성 아티스트상 — 서정·감수성
+  16: [66, 78], // 프로 역마살러상 — 자유·호기심
+  17: [62, 74], // 쩝쩝 박사 먹방러상 — 식도락
+  18: [76, 88], // 럭키 비키상 — 복덩이·환함
+  19: [50, 62], // 인간 알고리즘상 — 논리·냉철 (최저 밴드)
+  20: [70, 82], // 겉바속촉 츤데레상 — 반전·속정
+};
 
 function getGeminiUrl(model = "gemini-2.5-flash") {
   const key = process.env.GEMINI_API_KEY;
@@ -398,6 +429,11 @@ ${faceObs ? `- 확정된 얼굴 관찰값: ${JSON.stringify(faceObs)}
     };
     parsed.sections = pickAllowed(parsed.sections);
     parsed.section_titles = pickAllowed(parsed.section_titles);
+
+    // v(2026-08-13): 도화살 고정 — 타입 밴드 안에서 사진 해시로 뽑는다.
+    // 같은 사진이면 항상 같은 값, 다른 사람이면 같은 타입이어도 미묘하게 다르다.
+    const band = CHARM_BAND[fixedTypeId];
+    if (band) parsed.charm_score = lockedScore([base64Image.slice(0, 40), String(fixedTypeId), "charm"], band[0], band[1]);
 
     parsed.image_type = "human";
     parsed.type_id = fixedTypeId;
