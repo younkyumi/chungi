@@ -680,7 +680,10 @@ export function TojeongModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedI
   function onLoaded(){
     setStep("result");
     commitPaymentDeduction(pendingDeduction); setPendingDeduction(null); // v(2026-07-09): 결과 확정 시점 차감
-    addHistory({icon:"📜",name:"토정비결",svcId:"tojeong",person:nm,result:`${yr}년 ${dbData?.gwe_number?`#${dbData.gwe_number}괘`:GWAE_DATA.name}`,date:new Date().toLocaleDateString("ko-KR"),preQuestions:{focus:ans1,age:ans2},resultType:{_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})}});
+    // v(2026-08-12): 📜 → 📖. 오늘의 명언을 📜로 고정하면서 겹쳤다.
+      // 「토정비결」은 실제 책 이름이라 📖가 의미도 맞고 명언의 두루마리와 모양이 갈린다.
+      // (🎴·🀄는 화투·마작이라 일본·중국 연상으로 제외. 🎋는 신년 운세가 이미 사용 중)
+      addHistory({icon:"📖",name:"토정비결",svcId:"tojeong",person:nm,result:`${yr}년 ${dbData?.gwe_number?`#${dbData.gwe_number}괘`:GWAE_DATA.name}`,date:new Date().toLocaleDateString("ko-KR"),preQuestions:{focus:ans1,age:ans2},resultType:{_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})}});
   }
   // DB 토정비결 데이터 fetch (loading → result 전환 시)
   useEffect(()=>{

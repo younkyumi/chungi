@@ -10591,7 +10591,10 @@ function YtypeModal({onClose,cart,setCart,onGoShop,addHistory,onOpenService,prel
       const data=_getGuardian(yr,mo,dy,hr);
       const g=data.guardian;
       setResult(g);setAnalysisData(data);setLoading(false);setStep("result");
-      addHistory({icon:g.emoji,name:"12수호신",svcId:"guardian",person:form.name||"나",date:new Date().toLocaleDateString("ko-KR"),
+      // v(2026-08-12): g.emoji(수호신마다 다름) → 🐉 고정.
+      // 기록소는 "어떤 콘텐츠인지"를 보여주는 자리인데 결과에 따라 아이콘이 달라져 같은 콘텐츠가
+      // 제각각으로 보였다. 🐉은 무료 12종 목록·결과 제목에서 이미 쓰는 정식값.
+      addHistory({icon:"🐉",name:"12수호신",svcId:"guardian",person:form.name||"나",date:new Date().toLocaleDateString("ko-KR"),
         result:`${g.emoji} ${g.name}형`,
         resultType:{type_name:g.name,guardian_type:g.name,ohang:g.ohangKey,analysisData:data,
           _birth:`${yr}-${String(mo).padStart(2,"0")}-${String(dy).padStart(2,"0")}`,_time:hr?`${String(hr).padStart(2,"0")}:00`:undefined,
@@ -10870,7 +10873,9 @@ function FaceReadingModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,o
         const ct=data.result?.character_type;
         const ZAL_NAMES:Record<number,string>={1:"황금손 미다스",2:"강남 건물주",3:"지갑 수호신",4:"도파민 플렉서",5:"유죄 인간폭스",6:"얼굴 천재 프리패스",7:"워커홀릭 갓생러",8:"순도100% 진국",9:"인간 챗GPT",10:"갓벽한 대장",11:"알빠노 마이웨이",12:"무해한 힐러",13:"영앤리치 예비 CEO",14:"디테일 변태 장인",15:"미친 감성 아티스트",16:"프로 역마살러",17:"쩝쩝 박사 먹방러",18:"럭키 비키",19:"인간 알고리즘",20:"겉바속촉 츤데레"};
         const charName=ct&&ZAL_NAMES[ct]?`${ZAL_NAMES[ct]}상`:(data.result?.character_name?`${data.result.character_name}`:`종합 ${data.result?.total_score||"?"}점`);
-        addHistory({icon:"🔍",name:"내 관상보기",svcId:"gwansang_full",person:personName,result:`📚 ${charName}`,date:new Date().toLocaleDateString("ko-KR"),resultType:{...data.result,_imgSrc:imgBase64||imgSrc,_testDate:new Date().toLocaleDateString("ko-KR")}});
+        // v(2026-08-12): 🔍 → 🪞. 크로스셀 8곳이 전부 🪞(거울)인데 기록소만 🔍이었고,
+    // 그 🔍가 나의 천기 리포트와 겹쳐 기록소에서 두 콘텐츠 구분이 안 됐다. 코드 정식값으로 통일.
+    addHistory({icon:"🪞",name:"내 관상보기",svcId:"gwansang_full",person:personName,result:`📚 ${charName}`,date:new Date().toLocaleDateString("ko-KR"),resultType:{...data.result,_imgSrc:imgBase64||imgSrc,_testDate:new Date().toLocaleDateString("ko-KR")}});
       }
     }catch(err:any){
       // 분석 실패 = 결제 실패. paidRetryCredit으로 모달 내 재시도 무료 보장 (게스트 모드).
@@ -13349,7 +13354,9 @@ function BabyFaceModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLo
         });
       {
         const label=data.result?.character_name?`🧬 ${data.result.character_name}`:`종합 ${data.result?.total_score||"?"}점`;
-        addHistory({icon:"🤰",name:"2세 얼굴 & 운명 예측",svcId:"baby_face",person:babyName,person2:momName,person3:dadName,result:label,date:new Date().toLocaleDateString("ko-KR"),resultType:{...data.result,_imgSrc1:imgBase64_1||imgSrc1,_imgSrc2:imgBase64_2||imgSrc2,_testDate:new Date().toLocaleDateString("ko-KR")},preQuestions:preQA});
+        // v(2026-08-12): 🤰 → 👶. 태몽 해몽과 겹쳐 기록소에서 구분이 안 됐다.
+    // svc 정의(id:"baby_face",icon:"👶") 4곳이 이미 👶라 코드 정식값으로 통일.
+    addHistory({icon:"👶",name:"2세 얼굴 & 운명 예측",svcId:"baby_face",person:babyName,person2:momName,person3:dadName,result:label,date:new Date().toLocaleDateString("ko-KR"),resultType:{...data.result,_imgSrc1:imgBase64_1||imgSrc1,_imgSrc2:imgBase64_2||imgSrc2,_testDate:new Date().toLocaleDateString("ko-KR")},preQuestions:preQA});
       }
     }catch(err:any){
       // 분석 실패 = 결제 실패. paidRetryCredit으로 모달 내 재시도 무료 보장 (게스트 모드).
@@ -14575,14 +14582,14 @@ function GwansangZalModal({onClose,savedPersons,setSavedPersons,cart,setCart,onG
           setPendingDeduction(null);
         }
         if(personName.trim()&&!savedPersons.find((p:any)=>p.name===personName)){setSavedPersons((prev:any)=>[...prev,{name:personName,emoji:"👤",date:new Date().toLocaleDateString("ko-KR"),relation:"기타",relationCustom:"관상짤"}]);}
-        addHistory({icon:"🪞",name:"관상짤",svcId:"gwansang_zal",person:personName||"익명",date:new Date().toLocaleDateString("ko-KR"),result:`${finalType.title_ko} (${finalType.title_en})`,resultType:{...finalType,_imgSrc:imgBase64||imgSrc},ctx:{ohaeng:"화"}});
+        addHistory({icon:"📸",name:"관상짤",svcId:"gwansang_zal",person:personName||"익명",date:new Date().toLocaleDateString("ko-KR"),result:`${finalType.title_ko} (${finalType.title_en})`,resultType:{...finalType,_imgSrc:imgBase64||imgSrc},ctx:{ohaeng:"화"}});
       } else {
         // API 실패 → 21번 에러카드로 + 기록소 저장
         const allTypes=GWANSANG_TYPES.gwansang_types.types;
         const errorType=allTypes.find((t:any)=>t.id===21)||allTypes[0];
         setResultType(errorType);
         setStep("result");
-        addHistory({icon:"🪞",name:"관상짤",svcId:"gwansang_zal",person:personName||"익명",date:new Date().toLocaleDateString("ko-KR"),result:`${errorType.title_ko} (${errorType.title_en})`,resultType:{...errorType,_imgSrc:imgBase64||imgSrc},ctx:{ohaeng:"화"}});
+        addHistory({icon:"📸",name:"관상짤",svcId:"gwansang_zal",person:personName||"익명",date:new Date().toLocaleDateString("ko-KR"),result:`${errorType.title_ko} (${errorType.title_en})`,resultType:{...errorType,_imgSrc:imgBase64||imgSrc},ctx:{ohaeng:"화"}});
       }
     }catch(err:any){
       console.error("API error:",err);
@@ -14898,7 +14905,9 @@ function LoveCompatModal({svc,onClose,isLoggedIn,cart,setCart,onGoShop,addHistor
     // v(2026-07-09): 결정론적 콘텐츠라 항상 성공이지만, 원칙 통일을 위해 완료 확인 시점에서 차감 확정
     commitPaymentDeduction(pendingDeduction);
     setPendingDeduction(null);
-    addHistory({icon:mode==="couple"?"💌":"👫",name:"연애운·궁합",svcId:"love",person:me.name,person2:partner.name,result:`${me.name}${mode==="couple"?"♥":"&"}${partner.name} ${score}점`,date:new Date().toLocaleDateString("ko-KR"),resultType:{score,scores,msg:finalMsg,mode,focus:preFocus,me,partner,_testDate:testDate},ctx:{focus:preFocus,mode}});
+    // v(2026-08-12): 모드별 💌/👫 → 💌 고정. 같은 콘텐츠가 기록소에서 두 아이콘으로 보였다.
+    // 💌은 인물선택 타이틀(love)에서 이미 쓰는 정식값.
+    addHistory({icon:"💌",name:"연애운·궁합",svcId:"love",person:me.name,person2:partner.name,result:`${me.name}${mode==="couple"?"♥":"&"}${partner.name} ${score}점`,date:new Date().toLocaleDateString("ko-KR"),resultType:{score,scores,msg:finalMsg,mode,focus:preFocus,me,partner,_testDate:testDate},ctx:{focus:preFocus,mode}});
   }
 
   function onPay(_method?:string,deductionIntent?:any){if(deductionIntent)setPendingDeduction(deductionIntent);setLoading(true);setTimeout(()=>{setLoading(false);setShowPayDone(true);},1800);}
@@ -22609,7 +22618,8 @@ function SynthesisModal({onClose, cart, setCart, onGoShop, addHistory, userHisto
       setResult({...g, _reportData:reportResult, _doneCount:doneCount});
       setLoading(false);
       setStep("result");
-      addHistory({icon:"🔍",name:"나의 천기 리포트",svcId:"synthesis",person:"나",date:new Date().toLocaleDateString("ko-KR"),
+      // v(2026-08-12): 🔍 → 📊 (사용자 결정). 내 관상보기와 겹치던 것 해소.
+    addHistory({icon:"📊",name:"나의 천기 리포트",svcId:"synthesis",person:"나",date:new Date().toLocaleDateString("ko-KR"),
         result:`${g.emoji} ${g.name}형`,
         // v665: 결과↔기록소 동기화 — 풀 guardian 데이터 + _reportData + _doneCount 보존
         resultType:{...g,_reportData:reportResult,_doneCount:doneCount,type_name:g.name,guardian_type:g.name,ohang:g.ohangKey},
