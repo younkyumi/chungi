@@ -1291,7 +1291,7 @@ function ResultActions({isLoggedIn, onLoginRequest, onShare, captureId}:{isLogge
     <div ref={rootRef} style={{marginBottom:14}}>
       {!isLoggedIn&&(
         <div style={{background:"#fffbe9",border:"2px solid rgba(212,175,55,0.4)",borderRadius:12,padding:"12px",marginBottom:12,textAlign:"center",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}}>
-          <button onClick={onLoginRequest} style={{fontSize:12,fontWeight:700,color:"#1A3C32",background:"none",border:"1px solid rgba(212,175,55,0.5)",borderRadius:20,padding:"8px 20px",cursor:"pointer",fontFamily:"inherit"}}>☁️ 로그인하고 저장해요!</button>
+          <button onClick={onLoginRequest} style={{fontSize:12,fontWeight:700,color:"#1A3C32",background:"none",border:"1px solid rgba(212,175,55,0.5)",borderRadius:20,padding:"8px 20px",cursor:"pointer",fontFamily:"inherit"}}>☁️ 로그인하면 내 사주로 다시 받아요</button>
         </div>
       )}
 
@@ -20397,7 +20397,7 @@ function DreamModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
             <div style={{background:"#ffffff",borderRadius:20,overflow:"hidden",border:"1px solid rgba(212,175,55,0.3)",boxShadow:"0 10px 30px rgba(0,0,0,0.06)",color:"#333"}}>
             <div style={{padding:"10px 16px 8px",textAlign:"center"}}>
               <BrandLine>AI 태몽 정밀 분석</BrandLine>
-              <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>🌙 말씀하신 태몽 정밀 분석</div>
+              <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>🤰 말씀하신 태몽 정밀 분석</div>
               <div style={{fontSize:10,color:"#888",fontWeight:600,marginTop:6,lineHeight:1.6}}>
                 {selectedPerson?.birth&&<div>👤 {selectedPerson?.name||"나"} : {selectedPerson.birth}{selectedPerson?.time&&selectedPerson.time!=="모름"?` · ${selectedPerson.time}생`:"생"}{selectedPerson?.calendar?` · ${selectedPerson.calendar}`:""}{selectedPerson?.gender?` · ${selectedPerson.gender}`:""}</div>}
                 <div style={{color:"#aaa"}}>{formatTestDateLine(preloadResult?._testDate)}</div>

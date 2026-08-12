@@ -477,7 +477,9 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
             const qData=TYPES[qType]||TYPES["양천리강"];
             const sData=TYPES[sajuInfo?.code]||TYPES["양천리강"];
             const GIJILDO_CODE_TO_ID={"양천리강":1,"양천리유":2,"양천정강":3,"양천정유":4,"양지리강":5,"양지리유":6,"양지정강":7,"양지정유":8,"음천리강":9,"음천리유":10,"음천정강":11,"음천정유":12,"음지리강":13,"음지리유":14,"음지정강":15,"음지정유":16};
-            addHistory?.({icon:"🧬",name:"기질도",svcId:"gijildo",person:personName,date:new Date().toLocaleDateString("ko-KR"),
+            // v(2026-08-12): 🧬 → 🔯. 결과 제목·도감을 🔯로 통일했으므로 기록소도 맞춘다.
+      // (기질도 안에서 🧬는 "타고난 기질/찰떡/상극"과 "사주 기반 내 타입" 쪽으로 넘겼다)
+      addHistory?.({icon:"🔯",name:"기질도",svcId:"gijildo",person:personName,date:new Date().toLocaleDateString("ko-KR"),
               result:`${sData.emoji} ${sData.name}(${sData.mbti}) vs ${qData.emoji} ${qData.name}(${qData.mbti})`,
               resultType:{character_type:GIJILDO_CODE_TO_ID[qType]||0,type_name:qData.name,mbti:qData.mbti,subtitle:qData.subtitle,ohang:sajuInfo?.ohang,
                 saju_name:sData.name,saju_mbti:sData.mbti,saju_emoji:sData.emoji,
@@ -628,7 +630,7 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
           <button onClick={onClose} style={{width:28,height:28,borderRadius:"50%",background:"rgba(255,255,255,0.08)",border:"none",color:"var(--mist)",fontSize:14,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
         </div>
         {/* v582: 사이트 표준 (내관상보기 패턴) — 상단 콘텐츠 제목 추가 */}
-        <div className="mt">🧬 {personName}님의 기질도</div>
+        <div className="mt">🔯 {personName}님의 기질도</div>
         <div className="ms">{step}/2 · 더 정확한 분석을 위해</div>
         {/* v758: 사전질문 표준 매치 */}
         <div style={{height:3,background:"rgba(255,255,255,0.06)",borderRadius:99,marginBottom:14,overflow:"hidden"}}>
@@ -846,7 +848,7 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
           {/* v428: 헤더 — 천기 라인만 borderBottom (다른 콘텐츠와 통일) */}
           <div style={{padding:"10px 16px 14px",textAlign:"center"}}>
             <div style={{fontSize:9,color:"#aaa",fontWeight:600,letterSpacing:0.3,paddingBottom:10,marginBottom:14,marginLeft:-16,marginRight:-16,paddingLeft:16,paddingRight:16,borderBottom:"1px solid #f0f0f0"}}>🔮 천기(天機) 오리지널 | 오행·음양으로 푸는 16가지 氣質圖</div>
-            <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35,marginBottom:8}}>🧬 {personName}님의 기질도</div>
+            <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35,marginBottom:8}}>🔯 {personName}님의 기질도</div>
             {/* v316: 검사 정보 — 생년월일분시 + 진행 날짜시각 */}
             <div style={{fontSize:10,color:"#888",fontWeight:600,lineHeight:1.6}}>
               {birthStr&&<div>👤 {personName} : {birthStr}</div>}
@@ -856,7 +858,7 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
 
           {/* 듀얼 캐릭터 카드 — 컬러 대비 강화 (사용자 요청 v248: 연노랑 글자 안 보임 fix) */}
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,padding:"18px 16px",background:"#fafafa"}}>
-            {[{d:sData,c:sChars,label:"🔯 타고난 기질",sub:"사주 기반"},{d:qData,c:qChars,label:"🪞 살아온 기질",sub:"테스트 기반"}].map(({d,c,label,sub},ci)=>(
+            {[{d:sData,c:sChars,label:"🧬 타고난 기질",sub:"사주 기반"},{d:qData,c:qChars,label:"🪞 살아온 기질",sub:"테스트 기반"}].map(({d,c,label,sub},ci)=>(
               <div key={ci} style={{background:`linear-gradient(135deg,${d.color}10,${d.color}20)`,border:`2px solid ${d.color}80`,borderRadius:14,padding:"14px 10px",textAlign:"center",boxShadow:`0 4px 16px ${d.color}30`}}>
                 {/* 라벨 — 키컬러 칩 (강조 강화) */}
                 <div style={{display:"inline-block",fontSize:11,color:"#fff",fontWeight:800,padding:"5px 14px",borderRadius:14,background:d.color,marginBottom:10,letterSpacing:0.5,boxShadow:`0 2px 6px ${d.color}55`}}>{label}</div>
@@ -928,8 +930,8 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
             <div style={{fontSize:11,fontWeight:800,color:"#c92a2a",marginBottom:14}}>💕 찰떡 / ⚡ 상극 매칭</div>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:5}}>
               {[
-                {t:TYPES[sData.match],lb:"🔯 타고난 찰떡",bg:"#fff5f5",bd:"#ffe0e6",lc:"#c92a2a"},
-                {t:TYPES[sData.anti], lb:"🔯 타고난 상극",bg:"#f8f9fa",bd:"#e6e6e6",lc:"#666"},
+                {t:TYPES[sData.match],lb:"🧬 타고난 찰떡",bg:"#fff5f5",bd:"#ffe0e6",lc:"#c92a2a"},
+                {t:TYPES[sData.anti], lb:"🧬 타고난 상극",bg:"#f8f9fa",bd:"#e6e6e6",lc:"#666"},
                 {t:TYPES[qData.match],lb:"🪞 살아온 찰떡",bg:"#fff0f8",bd:"#ffd6ec",lc:"#a8205c"},
                 {t:TYPES[qData.anti], lb:"🪞 살아온 상극",bg:"#f4f5f7",bd:"#dcdcdc",lc:"#555"},
               ].map(({t,lb,bg,bd,lc},i)=>t?<div key={i} style={{background:bg,border:`1px solid ${bd}`,borderRadius:10,padding:"8px 5px",textAlign:"center"}}>
@@ -1220,7 +1222,7 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
           <div style={{padding:"10px 16px 14px",textAlign:"center"}}>
             <div style={{fontSize:9,color:"#aaa",fontWeight:600,letterSpacing:0.3,paddingBottom:10,marginBottom:14,marginLeft:-16,marginRight:-16,paddingLeft:16,paddingRight:16,borderBottom:"1px solid #f0f0f0"}}>🔮 천기(天機) 오리지널 | 오행·음양으로 푸는 16가지 氣質圖</div>
             <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>⚡ 두 기질 비교 분석</div>
-            <div style={{fontSize:11,color:"#888",marginTop:4,fontWeight:600}}>🔯 타고난 기질 vs 🪞 살아온 기질</div>
+            <div style={{fontSize:11,color:"#888",marginTop:4,fontWeight:600}}>🧬 타고난 기질 vs 🪞 살아온 기질</div>
           </div>
 
           {/* 듀얼 캐릭터 카드 + 싱크로율 통합 박스 */}
@@ -1229,7 +1231,7 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
               {/* 듀얼 캐릭터 */}
               <div style={{display:"grid",gridTemplateColumns:"1fr auto 1fr",gap:0,alignItems:"center",padding:"14px 10px",background:"#fafafa",borderBottom:`1px solid ${isSame?"#bbf7d0":"#fde68a"}`}}>
                 <div style={{textAlign:"center",padding:"0 6px"}}>
-                  <div style={{display:"inline-block",fontSize:9,color:"#fff",fontWeight:800,padding:"3px 10px",borderRadius:10,background:sData.color,marginBottom:6}}>🔯 타고난 기질</div>
+                  <div style={{display:"inline-block",fontSize:9,color:"#fff",fontWeight:800,padding:"3px 10px",borderRadius:10,background:sData.color,marginBottom:6}}>🧬 타고난 기질</div>
                   {sData.card?
                     <div style={{position:"relative",width:84,height:84,margin:"0 auto 4px"}}>
                       <span style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:42,zIndex:0}}>{sData.emoji}</span>
@@ -1448,7 +1450,7 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
               </div>
               <div style={{background:"#FDFCF8",borderRadius:18,padding:"18px 16px 20px",marginBottom:14,boxShadow:"0 8px 28px rgba(0,0,0,0.3)",border:"2px solid rgba(201,167,78,0.35)",color:"#333"}}>
               <div style={{fontSize:9,color:"#aaa",fontWeight:600,letterSpacing:0.3,textAlign:"center",marginBottom:10}}>🔮 천기(天機) 오리지널 | 16 기질도 도감</div>
-              <div style={{textAlign:"center",fontSize:54,marginBottom:6}}>🧬</div>
+              <div style={{textAlign:"center",fontSize:54,marginBottom:6}}>🔯</div>
               <div style={{textAlign:"center",fontSize:22,fontWeight:900,color:"#1A1A1A",fontFamily:"'Noto Serif KR','Batang',serif",marginBottom:4,lineHeight:1.4}}>16 기질도 전체 도감</div>
               <div style={{textAlign:"center",fontSize:12,color:"#7A5C00",marginBottom:14,fontWeight:600}}>음양 × 천지 × 리정 × 강유 = 16유형</div>
 
@@ -1509,7 +1511,7 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
                   );
                 };
                 return <>
-                  {renderTypeCard(sCur,"🔯 사주 기반 내 타입")}
+                  {renderTypeCard(sCur,"🧬 사주 기반 내 타입")}
                   {renderTypeCard(qCur,"🪞 살아온 내 타입")}
                   <div style={{fontSize:10,color:"#7A5C00",margin:"4px 0 10px",textAlign:"center",lineHeight:1.6}}>아래 16종 중 ✦ 표시가 내 타입이에요</div>
                 </>;
