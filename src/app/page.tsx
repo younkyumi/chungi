@@ -11216,7 +11216,7 @@ function FaceReadingModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,o
               {cur.key==="tab1_overview"&&result.character_name&&<div style={{display:"flex",justifyContent:"center",marginBottom:12}}><span style={{display:"inline-block",fontSize:11,fontWeight:800,padding:"5px 14px",borderRadius:20,background:"#fff8eb",color:"#D4AF37",border:"1px solid #fde68a"}}>✨ "{result.character_name.replace(/^[✨💼💖🌟🪞👑🎯🌈🌊⭐]\s*/,"")}"</span></div>}
 
               {/* 부가 정보 */}
-              {cur.key==="tab6_personality"&&data.mbti_guess&&<div style={{textAlign:"center",marginBottom:10}}><span style={{fontSize:11,fontWeight:700,padding:"4px 14px",borderRadius:20,background:"#f0e6ff",color:"#7c3aed"}}>MBTI 예측: {data.mbti_guess}</span></div>}
+              {cur.key==="tab6_personality"&&data.mbti_guess&&<div style={{textAlign:"center",marginBottom:10}}><span style={{fontSize:11,fontWeight:700,padding:"4px 14px",borderRadius:20,background:"#f0e6ff",color:"#7c3aed"}}>관상 MBTI: {data.mbti_guess}</span></div>}
               {cur.key==="tab6_personality"&&data.persona&&<div style={{textAlign:"center",marginBottom:10}}><span style={{fontSize:10,fontWeight:700,padding:"4px 14px",borderRadius:20,background:"#f8f0ff",color:"#6d28d9"}}>👺 {data.persona}</span></div>}
               {/* 찰떡/상극 관상 — 성격 탭으로 이동 (사용자 요청 v245, 매몰비용 X 인간관계 매칭이 성격 탭에 적합) */}
               {cur.key==="tab6_personality"&&(bestType||worstType)&&<div style={{display:"flex",gap:8,marginBottom:10}}>
@@ -15215,6 +15215,7 @@ function LoveCompatModal({svc,onClose,isLoggedIn,cart,setCart,onGoShop,addHistor
             {/* 세부 궁합 */}
             <div style={{padding:"14px 16px"}}>
               <div style={{fontSize:9,color:"#7A5C00",letterSpacing:2,fontWeight:700,marginBottom:10}}>📊 세부 궁합</div>
+              {/* ai-safe: scores는 AI가 아니라 코드가 만든다 — coupleScores/bffScores로 축이 하드코딩돼 있다 */}
               {Object.entries(result.scores).map(([k,v])=>{
                 const c=(v as number)>=80?"#22c55e":(v as number)>=65?"#f59e0b":"#ef4444";
                 return <div key={k} style={{marginBottom:8}}>
@@ -16000,7 +16001,7 @@ function JoseonPortraitModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedI
                     </div>
                     {/* v751: 각 결의 한줄 풀이 (선택된 값만) */}
                     <div style={{background:"#fffdf5",borderRadius:9,padding:"10px 12px",marginBottom:10,border:"1px solid rgba(212,175,55,0.2)"}}>
-                      {Object.entries(resultType.attrs).map(([k,v]:any)=>{
+                      {Object.entries(resultType.attrs).filter(([k]:any)=>ATTR_DESC[k]).map(([k,v]:any)=>{
                         const desc=ATTR_DESC[k]?.[v];
                         if(!desc)return null;
                         return(
@@ -19561,6 +19562,7 @@ function SajuModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onOp
 
               {/* 오행 균형 bars */}
               {data.ohang&&(()=>{
+                // ai-safe: 오행(목화토금수)은 사주 계산 결과다 — AI가 키를 만들지 않는다
                 const entries=Object.entries(data.ohang) as [string,number][];
                 const total=entries.reduce((a,[,v])=>a+v,0)||1;
                 return(
@@ -27907,6 +27909,7 @@ function ArchivePage({userHistory,savedPersons,setSavedPersons,isLoggedIn,onLogi
                 </div>
               )}
               {/* 사전질문 */}
+              {/* ai-safe: 사용자가 고른 사전질문 답이다 — AI 응답이 아니다 */}
               {viewItem.preQuestions&&Object.keys(viewItem.preQuestions).length>0&&(
                 <div style={{padding:"10px 16px",background:"#f9fafb"}}>
                   <div style={{fontSize:9,color:"#7A5C00",letterSpacing:2,fontWeight:700,marginBottom:6}}>✦ 분석 시 입력한 사전질문</div>
@@ -27916,6 +27919,7 @@ function ArchivePage({userHistory,savedPersons,setSavedPersons,isLoggedIn,onLogi
                 </div>
               )}
               {/* 감성 */}
+              {/* ai-safe: 사용자가 고른 감성질문 답이다 — AI 응답이 아니다 */}
               {viewItem.emotion&&Object.keys(viewItem.emotion).length>0&&(
                 <div style={{padding:"10px 16px",background:"#f9fafb"}}>
                   <div style={{fontSize:9,color:"#888",letterSpacing:2,fontWeight:700,marginBottom:6}}>📝 분석 시 입력한 정보</div>
@@ -28102,6 +28106,7 @@ function BambooPage({onGoHome,isLoggedIn,onLogin,userData,userHistory}:any){
       const saved=localStorage.getItem("chungi_bamboo_comments");
       const parsed=saved?JSON.parse(saved):null;
       // 저장 데이터 없거나 빈 객체면 샘플 댓글 사용 / 있으면 샘플 위에 저장분 병합
+      // ai-safe: 대나무숲 댓글 localStorage 저장분 — AI 응답이 아니다
       if(!parsed||Object.keys(parsed).length===0)return BAMBOO_SAMPLE_COMMENTS;
       return{...BAMBOO_SAMPLE_COMMENTS,...parsed};
     }catch{return BAMBOO_SAMPLE_COMMENTS;}

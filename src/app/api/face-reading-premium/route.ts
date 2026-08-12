@@ -213,6 +213,35 @@ const FACE_FIXED: Record<number, { total_score: number; charm_score: number; wea
 // v(2026-08-11): 인증서 둥근칩 4개 — 20종 고정.
 // 규칙: 각 2~4자 / 페르소나 이름에 이미 있는 단어는 쓰지 않음 / 20종 전체 중복 없음.
 // (그래서 12번 힐러상은 '힐링' 대신 '치유', 16번 역마살러상은 '역마' 대신 '탐험')
+// v(2026-08-13): MBTI 20종 고정 (사용자 승인 완료).
+// mbti_guess가 프롬프트 예시("ENFP")만 있고 주입 0건이라, 같은 사진 4회에 INFP↔ENFP로 갈렸다.
+// MBTI는 서술형이 아니라 판정성 값이라 재분석 때 바뀌면 사용자가 바로 알아챈다.
+// ⚠️ 기질도는 사주로 MBTI를 계산한다(Gallery.jsx: 청룡=ENTJ, 안개=INTP …). 산출 근거가 다르므로
+//    화면 라벨을 "관상 MBTI"로 두어 기질도의 "사주 MBTI"와 구분한다. 값이 달라도 모순이 아니다.
+// 페르소나 20종 > MBTI 16종이라 중복은 불가피 — ISTJ·ESFP·INTJ·ISTP 4쌍만 겹치고 16종을 전부 쓴다.
+const FACE_MBTI: Record<number, string> = {
+  1:  "ESTP", // 황금손 미다스상 — 기회 포착·즉시 실행
+  2:  "ISTJ", // 강남 건물주상 — 안정·축재·관리
+  3:  "ISFJ", // 지갑 수호신상 — 실속·살림꾼
+  4:  "ESFP", // 도파민 플렉서상 — 화려·개성
+  5:  "ENFJ", // 유죄 인간 폭스상 — 매혹·사람 끌어당김
+  6:  "ESFJ", // 얼굴 천재 프리패스상 — 화사·인기
+  7:  "ESTJ", // 워커홀릭 갓생러상 — 근면·끈기
+  8:  "INFP", // 순도100% 진국상 — 다정·무해
+  9:  "INTP", // 인간 챗GPT상 — 총명·습득
+  10: "ENTJ", // 갓벽한 대장상 — 위엄·통솔
+  11: "ISTP", // 알빠노 마이웨이상 — 독립·강단
+  12: "INFJ", // 무해한 힐러상 — 온기·위로
+  13: "INTJ", // 영앤리치 예비 CEO상 — 시크·절제·전략
+  14: "ISTJ", // 디테일 변태 장인상 — 완벽주의·집념
+  15: "ISFP", // 미친 감성 아티스트상 — 서정·감수성
+  16: "ENTP", // 프로 역마살러상 — 호기심·탐험
+  17: "ESFP", // 쩝쩝 박사 먹방러상 — 식도락·풍류
+  18: "ENFP", // 럭키 비키상 — 복덩이·낙천
+  19: "INTJ", // 인간 알고리즘상 — 논리·통찰·냉철
+  20: "ISTP", // 겉바속촉 츤데레상 — 까칠·속정
+};
+
 // v(2026-08-13): 겉 vs 속 한 줄 — GWANSANG_20 20종 고정 (사용자 승인 완료).
 // 형식은 "겉은 A, 속은 B"로 통일. 겉과 속이 대비돼야 재미가 산다.
 // ⚠️ 페르소나 이름·같은 번호 FACE_CERT_TAGS에 있는 단어를 다시 쓰지 말 것 (검증기가 잡는다).
@@ -440,6 +469,10 @@ export async function POST(request: NextRequest) {
       // 값은 사용자 승인 완료. 검증 8항목 통과 — 형식 통일 / 페르소나명·cert_tags 단어 재사용 0 /
       // 문구 중복 0 / 길이 18~40자 / 겉↔속 대비 / 펫 표와 문장 중복 0.
       if (FACE_PERSONA_LINE[ctNum]) parsed.persona = FACE_PERSONA_LINE[ctNum];
+
+      // v(2026-08-13): MBTI도 같은 이유로 고정 (같은 사진 4회에 INFP↔ENFP로 갈렸다).
+      if (parsed.tab6_personality && FACE_MBTI[ctNum]) parsed.tab6_personality.mbti_guess = FACE_MBTI[ctNum];
+      if (FACE_MBTI[ctNum]) parsed.mbti_guess = FACE_MBTI[ctNum];
     }
 
     // v(2026-07-14): 계층3(실용정보) 고정 — lucky_color/lucky_direction/luck_item이 타입 고정과 무관하게

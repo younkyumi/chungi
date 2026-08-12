@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/check-gemini-config.mjs && node scripts/check-prequestion.mjs",
+    "prebuild": "node scripts/check-gemini-config.mjs && node scripts/check-prequestion.mjs && node scripts/check-ai-fields.mjs",
     "build": "next build",
     "check:gemini": "node scripts/check-gemini-config.mjs",
     "check:preq": "node scripts/check-prequestion.mjs",
+    "check:ai": "node scripts/check-ai-fields.mjs",
     "start": "next start",
     "lint": "eslint"
   },
