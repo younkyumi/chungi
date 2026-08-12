@@ -21414,8 +21414,21 @@ function LottoModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
     }catch{}
     return false;
   })();
-  // v305: isLoggedIn 조건 제거 — 비로그인도 me 키로 저장됨
-  const _shouldSkipIntro=_anyLottoToday&&!selectedPerson;
+  // v(2026-08-12): 비로그인 결과 팝업이 스스로 사라지던 사고 fix.
+  //
+  // 예전: const _shouldSkipIntro = _anyLottoToday && !selectedPerson;  ← 매 렌더 재계산
+  // 비로그인 첫 회에 멈추기 → analyzing → result 로 들어가면, 결과 useEffect가 todayKey를
+  // localStorage에 쓰는 순간 _anyLottoToday가 true로 바뀐다. 비로그인은 selectedPerson이
+  // 항상 null이라 곧바로 _shouldSkipIntro가 서고, 21491의 `return null`이 방금 그린 결과를
+  // 통째로 지워버렸다(화면에 홈만 남음). 자기가 저장한 결과 때문에 자기가 사라지는 구조였다.
+  //
+  // 세 가지를 건다:
+  //  1) useState 초기화 → mount 시점에 한 번만 계산. 도중에 조건이 뒤집히지 않는다.
+  //  2) isLoggedIn — 이 분기의 목적은 "사주 맞춤 번호를 뽑을 인물을 고르게 하는 것"이다.
+  //     비로그인은 공통 번호라 인물 개념이 없고, 등록 인물도 0명이라 보낼 곳이 없다.
+  //     (v305에서 isLoggedIn을 뺐던 게 이 사고의 원인)
+  //  3) !savedResult / !preloadResult — 보여줄 결과가 이미 있으면 인물선택이 아니라 결과가 맞다.
+  const[_shouldSkipIntro]=useState(()=>isLoggedIn&&_anyLottoToday&&!selectedPerson&&!savedResult&&!preloadResult);
   const[step,setStep]=useState<"intro"|"shuffle"|"analyzing"|"result">(savedResult?"result":(isLoggedIn&&selectedPerson?"shuffle":"intro"));
   // intro 스킵하고 mount 시 바로 인물선택 (오늘 본 적 있고 인물 미선택 상태)
   useEffect(()=>{
@@ -23620,7 +23633,7 @@ function HomePage({onSvc,isLoggedIn,savedPersons,setSavedPersons,cart,setCart,on
           <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 30% 20%,rgba(212,175,55,0.15) 0%,transparent 70%)",pointerEvents:"none"}}/>
           <div style={{maxWidth:"60%",position:"relative"}}>
             <div style={{fontSize:13,fontWeight:900,marginBottom:4,color:"var(--white)",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif"}}>🎊 첫 이용자 혜택</div>
-            <div style={{fontSize:11,color:"var(--mist)",marginBottom:12,lineHeight:1.6}}>소개팅남 관상짤 첫 1회 무료!<br/>가입 시 환영 쿠폰 2종 즉시 지급 (500원 + 굿즈 10%)!<br/><strong style={{color:"var(--gold)"}}>가입만 해도 무료 콘텐츠 9종 매일 무료!</strong></div>
+            <div style={{fontSize:11,color:"var(--mist)",marginBottom:12,lineHeight:1.6}}>소개팅남 관상짤 첫 1회 무료!<br/>가입 시 환영 쿠폰 2종 즉시 지급!<br/><strong style={{color:"var(--gold)"}}>가입만 해도 무료 콘텐츠 12종 매일 무료!</strong></div>
             <button className="btn btn-sm" style={{maxWidth:160,background:"linear-gradient(135deg,var(--gold),var(--gold3))",color:"var(--ink)",border:"none",fontWeight:700}} onClick={()=>{
               setFreePickOpen(true);
             }}>무료로 시작하기</button>
@@ -23721,7 +23734,7 @@ function HomePage({onSvc,isLoggedIn,savedPersons,setSavedPersons,cart,setCart,on
           <div style={{position:"sticky",top:0,display:"flex",justifyContent:"flex-end",marginBottom:-20,zIndex:5}}>
             <button onClick={()=>setFreePickOpen(false)} style={{width:28,height:28,borderRadius:"50%",background:"rgba(255,255,255,0.08)",border:"none",color:"var(--mist)",fontSize:14,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
           </div>
-          <div className="mt">🎁 무료 콘텐츠 9종</div>
+          <div className="mt">🎁 무료 콘텐츠 12종</div>
           <div className="ms">매일 무료로 이용할 수 있어요!<br/>원하는 콘텐츠를 선택하세요.</div>
           <div style={{display:"flex",flexDirection:"column",gap:8}}>
             {[
@@ -23734,9 +23747,14 @@ function HomePage({onSvc,isLoggedIn,savedPersons,setSavedPersons,cart,setCart,on
               {sid:"celeb_compat",icon:"💕",name:"궁합 연예인",desc:"나랑 찰떡인 연예인"},
               {sid:"gwansang_zal",icon:"📸",name:"관상짤 (첫 1회)",desc:"소개팅남 관상 분석"},
               {sid:"ytype_intro",icon:"🐉",name:"12수호신 소개",desc:"나는 어떤 수호신?"},
-              // v(2026-08-11): 띠별·별자리·혈액형·천기리포트 제외 — 무료지만 오픈 범위상 미오픈.
-              // 무료 목록에 넣어두면 오픈 직후 준비중/미완성 결과로 들어가게 된다. 오픈 시 다시 추가할 것.
-              // 반대로 오픈확정 무료인 이달의 운세가 빠져 있어 추가했다.
+              // v(2026-08-12): 띠별·별자리·혈액형 원복 — 12종으로 되돌린다.
+              // 전날 미오픈이라고 뺐었는데, 이 셋은 눌러도 handleSvc(is_public 검사)가 "준비중" 안내로
+              // 받아주므로 미완성 결과로 들어갈 일이 없다. 목록에서 빼니 배너의 "12종"과 숫자가 어긋나서
+              // 오히려 혼란만 커졌다. 오픈 범위 조절은 어드민 content_settings로 하는 게 맞다.
+              // (천기리포트(synthesis)는 원래 이 목록에 없었으므로 그대로 둔다 → 총 12종)
+              {sid:"ddi",icon:"🐯",name:"띠별 운세",desc:"내 띠의 오늘 흐름"},
+              {sid:"zodiac",icon:"⭐",name:"별자리 운세",desc:"12별자리 오늘 운세"},
+              {sid:"blood",icon:"🩸",name:"혈액형 운세",desc:"A·B·O·AB 오늘 운세"},
             ].map(item=>(
               <div key={item.sid} style={{display:"flex",alignItems:"center",gap:10,padding:"11px 14px",background:"var(--ink3)",borderRadius:12,border:"1px solid rgba(255,255,255,0.06)",cursor:"pointer",transition:"all .18s"}}
                 onClick={()=>{setFreePickOpen(false);onSvc({id:item.sid,icon:item.icon,name:item.name,desc:item.desc,price:"무료",free:true,coming:false});}}>
