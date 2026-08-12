@@ -14369,7 +14369,12 @@ function GwansangSwipeResult({resultType,personName,imgSrc,hidePhoto,setHidePhot
           </div>
           <div style={{padding:"14px 18px"}}>
             <div style={{marginBottom:8}}><div style={{fontSize:12,fontWeight:800,color:"#333",marginBottom:2}}>🔍 천기 AI가 포착한 킬포인트</div><div style={{fontSize:11,color:"#555",lineHeight:"18px",background:"#fff3cd",border:"1px solid #ffe69c",padding:"8px 12px",borderRadius:12}}>{(resultType.killpoint||"").replace(/\{nm\}/g,nm)}</div></div>
-            {resultType.sections&&Object.entries(resultType.sections).map(([key,val])=>{
+            {/* 🚨 v(2026-08-13): AI가 지어낸 섹션 키가 그대로 화면에 나오던 문제 차단.
+                예전엔 Object.entries를 전부 순회하고 모르는 키는 "✦"로 폴백해서 그렸다.
+                라이브에서 "✦ 섹스:" 섹션이 생성돼 380원 콘텐츠에 성적 서술이 노출됐다.
+                서버(gwansang-zal route)에서도 잘라내지만, 이미 저장된 기록에는 남아 있으므로
+                렌더에서도 허용 키만 그린다(2중 방어). */}
+            {resultType.sections&&Object.entries(resultType.sections).filter(([key])=>["재물","애정","성격","직업"].includes(key)).map(([key,val])=>{
               const ic:any={"재물":"💸","애정":"❤️","성격":"🧠","직업":"💼"};
               const st=resultType.section_titles?.[key]||"";
               return <div key={key} style={{marginBottom:6}}><div style={{fontSize:12,fontWeight:800,color:"#333",marginBottom:2}}>{ic[key]||"✦"} {key}: {st&&`"${st}"`}</div><div style={{fontSize:11,color:"#555",lineHeight:"18px",background:"#f8f9fa",padding:"8px 12px",borderRadius:12}}>{(val as string).replace(/\{nm\}/g,nm)}</div></div>;
@@ -14806,7 +14811,9 @@ function GwansangZalModal({onClose,savedPersons,setSavedPersons,cart,setCart,onG
           };
           const longTitles:any={"재물":`"명품관 VIP상? 현실은 다이소 VIP"`,"애정":`"뚝딱거리는 AI 로봇급 플러팅"`,"성격":`"혼자만의 세계에 갇힌 은은한 광인"`,"직업":`"말수 0, 성과 100의 실력파"`};
           const icons:any={"재물":"💸","애정":"❤️","성격":"🧠","직업":"💼","정체성":"🐾"};
-          const sectionKeys=Object.keys(resultType.sections||{});
+          // 🚨 v(2026-08-13): AI가 지어낸 섹션 키가 카드 목록에까지 추가되던 문제 차단.
+          // 아래 icons 맵의 키 = 정식 섹션 목록. 거기 없는 키는 AI 창작물이라 카드로 만들지 않는다.
+          const sectionKeys=Object.keys(resultType.sections||{}).filter(k=>["재물","애정","성격","직업","정체성"].includes(k));
 
           // 카드 데이터: [요약, 킬포인트, ...섹션들, 천기한마디, 추천]
           const cards=[
@@ -15968,7 +15975,9 @@ function JoseonPortraitModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedI
                   return(<>
                     <div style={{fontSize:10,color:"#7A5C00",letterSpacing:2,fontWeight:800,marginTop:14,marginBottom:8}}>✨ 얼굴이 풍기는 다섯 가지 결</div>
                     <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:5,marginBottom:10}}>
-                      {Object.entries(resultType.attrs).map(([k,v]:any)=>(
+                      {/* v(2026-08-13): labels에 없는 키는 그리지 않는다 — AI가 attrs에 필드를
+                          추가하면 raw 키 이름으로 노출되던 구조 (관상짤 "섹스" 사고와 동일 패턴) */}
+                      {Object.entries(resultType.attrs).filter(([k]:any)=>labels[k]).map(([k,v]:any)=>(
                         <div key={k} style={{background:"#fff",border:"1px solid rgba(212,175,55,0.3)",borderRadius:9,padding:"8px 2px",textAlign:"center"}}>
                           <div style={{fontSize:9,color:"#888",marginBottom:3}}>{labels[k]||k}</div>
                           <div style={{fontSize:11,fontWeight:800,color:"#7A5C00",wordBreak:"keep-all"}}>{k==="vibe_age"?String(v).replace(/한$/,""):v}</div>
@@ -27847,7 +27856,10 @@ function ArchivePage({userHistory,savedPersons,setSavedPersons,isLoggedIn,onLogi
                 <div style={{fontSize:12,color:"#555",lineHeight:1.75}}>{viewItem.result}</div>
               </div>}
               {/* sections (관상짤 등) */}
-              {viewItem.resultType?.sections&&Object.entries(viewItem.resultType.sections).map(([key,val])=>{
+              {/* 🚨 v(2026-08-13): 기록소 재열람도 AI가 지어낸 섹션 키를 그대로 그렸다.
+                  여긴 여러 콘텐츠가 공유하는 렌더라 아래 ic 맵의 키 = 정식 섹션 목록으로 본다.
+                  거기 없는 키는 AI 창작물이므로 그리지 않는다. */}
+              {viewItem.resultType?.sections&&Object.entries(viewItem.resultType.sections).filter(([key])=>["재물","애정","성격","직업","건강","인연","사회성"].includes(key)).map(([key,val])=>{
                 const ic:any={"재물":"💸","애정":"❤️","성격":"🧠","직업":"💼","건강":"🌿","인연":"💕","사회성":"🤝"};
                 return <div key={key} style={{padding:"12px 16px"}}>
                   <div style={{fontSize:9,color:"#7A5C00",letterSpacing:2,fontWeight:700,marginBottom:6}}>{ic[key]||"▸"} {key}</div>
@@ -27855,9 +27867,14 @@ function ArchivePage({userHistory,savedPersons,setSavedPersons,isLoggedIn,onLogi
                 </div>;
               })}
               {/* generic resultType */}
+              {/* 🚨 v(2026-08-13): 제외목록(블랙리스트) → 허용목록(화이트리스트)으로 전환.
+                  예전엔 몇 개만 빼고 나머지를 전부 그려서, AI가 resultType에 필드를 하나 지어내면
+                  기록소에 "▸ {키이름}"으로 그대로 노출됐다. 관상짤의 "✦ 섹스:" 사고와 같은 구조다.
+                  아래 label 맵의 키 = 우리가 의도한 표시 항목이므로 그걸 허용목록으로 쓴다.
+                  (모르는 키를 raw 키 이름으로 보여주던 것 자체가 원래 이상한 UX이기도 했다) */}
               {viewItem.resultType&&!viewItem.resultType.title_ko&&Object.entries(viewItem.resultType).filter(([k,v])=>{
-                if(k.startsWith("_"))return false;
-                if(["sections","fortune_msg","icon","title_ko","title_en","main","summary"].includes(k))return false;
+                const ALLOWED=["ilgan","gyeokguk","yongsin","headline","keyword","question","answer","card","yn","persona","charm_score","breed","breed_name","character_name","character_type","total_score","grade"];
+                if(!ALLOWED.includes(k))return false;
                 if(v==null||v==="")return false;
                 return true;
               }).slice(0,12).map(([k,v])=>{

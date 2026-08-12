@@ -379,6 +379,23 @@ ${faceObs ? `- 확정된 얼굴 관찰값: ${JSON.stringify(faceObs)}
     if (parsed.type_id !== fixedTypeId) {
       console.warn(`[gwansang-zal] Call-2가 type_id를 ${parsed.type_id}로 바꾸려 함 → Call-1 값 ${fixedTypeId}로 고정`);
     }
+    // 🚨 v(2026-08-13): AI가 sections에 없는 키를 만들어 넣던 문제 차단.
+    // 프롬프트는 재물·애정·성격·직업 4개만 정의하는데, 렌더(page.tsx)가 Object.entries로
+    // 전부 순회해서 그리는 구조라 AI가 키를 하나 더 지어내면 그대로 화면에 나왔다.
+    // 실제로 라이브에서 "✦ 섹스:" 섹션이 생성돼 380원 콘텐츠에 성적 서술이 노출됐다.
+    // 서버에서 화이트리스트로 잘라 기록소·공유카드 등 모든 소비처를 한 번에 막는다.
+    const ALLOWED_SECTIONS = ["재물", "애정", "성격", "직업"];
+    const pickAllowed = (obj: any) => {
+      if (!obj || typeof obj !== "object") return obj;
+      const out: Record<string, any> = {};
+      for (const k of ALLOWED_SECTIONS) if (obj[k] != null) out[k] = obj[k];
+      const dropped = Object.keys(obj).filter((k) => !ALLOWED_SECTIONS.includes(k));
+      if (dropped.length) console.warn(`[gwansang-zal] 허용되지 않은 섹션 삭제: ${dropped.join(", ")}`);
+      return out;
+    };
+    parsed.sections = pickAllowed(parsed.sections);
+    parsed.section_titles = pickAllowed(parsed.section_titles);
+
     parsed.image_type = "human";
     parsed.type_id = fixedTypeId;
     parsed._debug_image_type = "human";
