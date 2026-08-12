@@ -16391,7 +16391,10 @@ function DailyQuoteModal({onClose,isLoggedIn,onLoginRequest,addHistory,cart,setC
       try{localStorage.setItem(_quoteSeenKey,"1");}catch{}
       // 비로그인은 기록소에 저장하지 않는다 (무료 4종 공통 정책 — 오늘의 운세·이달의 운세·로또와 동일).
       if(!isLoggedIn)return;
-      addHistory?.({icon:book.cover||"📜",name:"오늘의 명언",svcId:"daily_quote",person:"나",date:new Date().toLocaleDateString("ko-KR"),result:`「${book.title}」 ${quote.slice(0,30)}`,resultType:{book:book.title,quote,_testDate:new Date().toLocaleDateString("ko-KR")},ctx:{}});
+      // v(2026-08-12): 기록소 이모지를 결과 팝업 제목과 맞춘다.
+      // 예전엔 book.cover(책 표지 이모지)라 고른 책마다 달라졌고, 「천기의 말씀」은 🔮이 찍혀서
+      // 결과 팝업의 📜와 어긋났다. 기록소는 '어떤 콘텐츠인지'를 보여주는 자리라 콘텐츠 이모지로 고정.
+      addHistory?.({icon:"📜",name:"오늘의 명언",svcId:"daily_quote",person:"나",date:new Date().toLocaleDateString("ko-KR"),result:`「${book.title}」 ${quote.slice(0,30)}`,resultType:{book:book.title,quote,_testDate:new Date().toLocaleDateString("ko-KR")},ctx:{}});
     }
   },[step,saved,addHistory,book.cover,book.title,quote]);
 
@@ -16698,7 +16701,8 @@ function TodayUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest
     // 토글 팝업이 "🌐 공통 결과 먼저 보기 (저장 안 됨)"이라고 약속해놓고 실제로는 저장하고 있었다.
     // 저장되는 값이 전체 공통 운세라, 나중에 로그인해서 그 기록을 열면 개인 운세인 척 남는다.
     if(!isLoggedIn)return;
-    addHistory?.({icon:"🌙",name:"오늘의 운세",svcId:"today_unse",person:personName,date:new Date().toLocaleDateString("ko-KR"),result:`${unse.headline} (${unse.totalScore}점)`,resultType:{star:unse.star,totalScore:unse.totalScore,headline:unse.headline,ohang:unse.ohang,spoiler:unse.spoiler,lastWord:unse.lastWord,solution:unse.solution,spot:unse.spot,guiin:unse.guiin,areas:unse.areas,_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})},ctx:{preQ}});
+    // v(2026-08-12): 기록소 이모지를 결과 팝업 제목(🔮)과 일치시킨다. 예전엔 🌙.
+    addHistory?.({icon:"🔮",name:"오늘의 운세",svcId:"today_unse",person:personName,date:new Date().toLocaleDateString("ko-KR"),result:`${unse.headline} (${unse.totalScore}점)`,resultType:{star:unse.star,totalScore:unse.totalScore,headline:unse.headline,ohang:unse.ohang,spoiler:unse.spoiler,lastWord:unse.lastWord,solution:unse.solution,spot:unse.spot,guiin:unse.guiin,areas:unse.areas,_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})},ctx:{preQ}});
   },[step]);
   const handleExpand=(area:string)=>{
     setExpandedArea(expandedArea===area?null:area);
@@ -16804,7 +16808,7 @@ function TodayUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest
           {/* v417: 천기 라인 자체 borderBottom만 (다른 콘텐츠와 통일) */}
           <div style={{padding:"10px 16px 12px",textAlign:"center"}}>
             <BrandLine>오늘의 운세</BrandLine>
-            <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35,marginBottom:4}}>{personName}님의 오늘의 운세</div>
+            <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35,marginBottom:4}}>{isLoggedIn?`🔮 ${personName}님의 오늘의 운세`:"🔮 오늘의 운세"}</div>
             {!isLoggedIn&&<div style={{fontSize:10,color:"#aaa",marginTop:4}}>공통 운세 · 로그인하면 내 사주 기반으로!</div>}
             {isLoggedIn&&<div style={{fontSize:10,color:"#059669",marginTop:4,fontWeight:700}}>✓ 내 사주 기반 개인 운세</div>}
             {/* v322: 검사 정보 통일 */}
@@ -17271,7 +17275,7 @@ function TodayTarotModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReques
             {/* 헤더 */}
             <div style={{padding:"10px 16px 0",textAlign:"center"}}>
               <BrandLine>오늘의 운명 한 장</BrandLine>
-              <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>{personName}님의 오늘의 카드</div>
+              <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>🃏 {personName}님의 오늘의 카드</div>
               {/* v322: 검사 정보 */}
               <div style={{fontSize:10,color:"#888",fontWeight:600,marginTop:6,lineHeight:1.6}}>
                 <div>{formatPersonInfoLine({name:personName,birth:selectedPerson?.birth,time:selectedPerson?.time,calendar:selectedPerson?.calendar,gender:selectedPerson?.gender})}</div>
@@ -18106,7 +18110,7 @@ function YesNoTarotModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReques
             <div style={{padding:"10px 16px 12px",textAlign:"center"}}>
               {/* v655: 브랜딩 이모지 제거 (사용자 요청) */}
               <BrandLine>YES/NO 타로</BrandLine>
-              <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>✨ 나의 YES/NO 타로</div>
+              <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>✨ {personName}님의 YES/NO 타로</div>
               {/* v322 → v707: 검사 정보 v677 표준 통일 */}
               <div style={{fontSize:10,color:"#888",fontWeight:600,marginTop:6,marginBottom:14,lineHeight:1.6}}>
                 <div>{formatPersonInfoLine({name:selectedPerson?.name,birth:selectedPerson?.birth,time:selectedPerson?.time,calendar:selectedPerson?.calendar,gender:selectedPerson?.gender})}</div>
@@ -21618,7 +21622,7 @@ function LottoModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
 
         {/* ═══ SHUFFLE: 슬롯머신 회전 + 멈추기 ═══ */}
         {step==="shuffle"&&<>
-          <div className="mt">{isLoggedIn?"✨ 내 사주 맞춤 행운번호":"🎰 오늘의 공통 행운번호"}</div>
+          <div className="mt">🎰 행운 로또번호</div>
           <div className="ms">{TODAY.date} · 마음이 끌릴 때 멈추세요</div>
           {/* v379: 노란 박스 제거 — 깔끔하게 */}
           <div style={{textAlign:"center",margin:"14px 0 12px",padding:"24px 16px"}}>
@@ -21663,7 +21667,7 @@ function LottoModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
           <div id="lotto-capture" style={{background:"#ffffff",borderRadius:20,overflow:"hidden",border:"1px solid rgba(212,175,55,0.3)",boxShadow:"0 10px 30px rgba(0,0,0,0.06)",marginBottom:12,color:"#333"}}>
             <div style={{padding:"10px 16px 0",textAlign:"center"}}>
               <BrandLine>{isLoggedIn?"사주 기반 행운 로또번호":"오늘의 공통 행운 로또번호"}</BrandLine>
-              <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>{isLoggedIn?`✨ ${selectedPerson?.name||"나"}님 사주 맞춤 행운번호`:"🎰 오늘의 공통 행운번호"}</div>
+              <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>{isLoggedIn?`🎰 ${selectedPerson?.name||"나"}님의 행운 로또번호`:"🎰 행운 로또번호"}</div>
               {/* v655: "{날짜} · 1일 1회 무료" 삭제 (사용자 요청) */}
               {/* v322: 검사 정보 */}
               <div style={{fontSize:10,color:"#888",fontWeight:600,marginTop:6,lineHeight:1.6}}>
@@ -21985,7 +21989,8 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
       // 여기서 저장된 비로그인 기록은 weekAdvice가 null이라, 나중에 로그인해서 열어도
       // "🔒 주차별 흐름" 잠금이 영영 안 풀리던 무한 반복의 원인이었다.
       if(!isLoggedIn)return;
-      addHistory?.({icon:"📅",name:"이달의 운세",svcId:"monthly_unse",person:personName,date:new Date().toLocaleDateString("ko-KR"),result:`${monthLabel} ${m.headline.text} (${m.headline.star}/5)`,resultType:{star:m.headline.star,headline:m.headline.text,ohang:m.ohang,areas:m.areas,weekAdvice:m.weekAdvice,month:monthLabel,_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})},ctx:{preQ}});
+      // v(2026-08-12): 기록소 이모지를 결과 팝업 제목(🌸)과 일치시킨다. 예전엔 📅.
+      addHistory?.({icon:"🌸",name:"이달의 운세",svcId:"monthly_unse",person:personName,date:new Date().toLocaleDateString("ko-KR"),result:`${monthLabel} ${m.headline.text} (${m.headline.star}/5)`,resultType:{star:m.headline.star,headline:m.headline.text,ohang:m.ohang,areas:m.areas,weekAdvice:m.weekAdvice,month:monthLabel,_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})},ctx:{preQ}});
     }
   },[step,saved,addHistory,personName,m.headline.text,m.headline.star,m.ohang,monthLabel,preQ]);
 
@@ -22093,8 +22098,8 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
           {/* v417: 천기 라인 자체 borderBottom만 (다른 콘텐츠와 통일) */}
           <div style={{padding:"10px 16px 12px",textAlign:"center"}}>
             <BrandLine>이달의 운세</BrandLine>
-            <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>{personName}님의 {monthLabel} 운세</div>
-            {!isLoggedIn&&<div style={{fontSize:10,color:"#aaa",marginTop:3}}>공통 운세 · 로그인하면 내 사주 기반</div>}
+            <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>{isLoggedIn?`🌸 ${personName}님의 ${monthLabel} 운세`:"🌸 이달의 운세"}</div>
+            {!isLoggedIn&&<div style={{fontSize:10,color:"#aaa",marginTop:3}}>공통 운세 · 로그인하면 내 사주 기반으로!</div>}
             {isLoggedIn&&<div style={{fontSize:10,color:"#059669",marginTop:3}}>✓ {personName}님 사주 기반 개인 운세</div>}
             {/* v317: 검사 정보 */}
             <div style={{fontSize:10,color:"#888",fontWeight:600,marginTop:6,lineHeight:1.6}}>
