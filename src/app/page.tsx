@@ -28,6 +28,18 @@ import BrainTraitsComp from "@/components/tests/BrainTraits";
 import {MonthlyModal as MonthlyModalRich, NewYearModal, TojeongModal, PastLifeModal as PastLifeModalRich, PastLifeFullModal, DaeunRichModal, YearlyRichModal} from "@/components/fortune-modals";
 import {formatPersonInfoLine, formatTestDateLine, BrandLine, HashFooter} from "@/components/ResultCard";
 
+// 🚨 v(2026-08-13): AI 텍스트를 dangerouslySetInnerHTML로 넣던 자리 전용 세정기.
+// 수비학·2세얼굴이 AI 문장을 HTML로 그대로 주입하고 있었다. AI 응답에는 사용자가 등록한 이름이
+// 그대로 섞여 나오므로, 이름을 `<img src=x onerror=...>` 로 등록하면 결과 화면에서 실행된다.
+// (React는 innerHTML로 넣은 <script>는 실행하지 않지만 onerror 같은 인라인 핸들러는 실행된다.
+//  게다가 /share/[id] 공유 링크가 있어 본인만 당하고 끝나지 않는다.)
+// 전부 이스케이프한 뒤 강조·줄바꿈 태그만 되살린다 — 원래 의도했던 <b>/<br>은 그대로 살아 있다.
+function _safeHtml(s: any): string {
+  const esc = String(s ?? "")
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  return esc.replace(/&lt;(\/?)(b|strong|br|em|i)\s*\/?&gt;/gi, (_m, slash, tag) => `<${slash}${String(tag).toLowerCase()}>`);
+}
+
 // 전생운세: 생년월일 → 오행 → 유형 매칭 (AI 없이 로컬 연산)
 function getPastLifeType(name:string,year:number,month:number,day:number,hour?:number){
   // v806(Phase2): 가짜 Date-diff 일간 → 정확한 단일 엔진 일간(한자)으로 교체
@@ -12997,7 +13009,7 @@ function NumerologyModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,on
           </div>
           <div style={{textAlign:"center",fontSize:28,color:theme.accent,fontWeight:900,marginBottom:4}}>소울 넘버 : {r.soul_number}</div>
           <div style={{textAlign:"center",fontSize:15,color:theme.accent2,fontWeight:700,marginBottom:12}}>[ {r.soul_name} ]</div>
-          {r.quote&&<div style={{textAlign:"center",fontStyle:"italic",color:theme.hint,fontSize:11,lineHeight:1.7,padding:"0 6px",marginBottom:12,wordBreak:"keep-all" as any}} dangerouslySetInnerHTML={{__html:r.quote.replace(/{nm}/g,personName)}}/>}
+          {r.quote&&<div style={{textAlign:"center",fontStyle:"italic",color:theme.hint,fontSize:11,lineHeight:1.7,padding:"0 6px",marginBottom:12,wordBreak:"keep-all" as any}} dangerouslySetInnerHTML={{__html:_safeHtml(r.quote).replace(/{nm}/g,personName)}}/>}
           <div style={{display:"flex",justifyContent:"center",gap:8,marginBottom:12,flexWrap:"wrap"}}>
             <div style={{background:theme.soft,border:`1px solid ${theme.soft}`,padding:"8px 14px",borderRadius:20,fontSize:11,color:theme.accent2,fontWeight:700}}>✨ 행운석 : {r.soul_stone}</div>
             <div style={{background:theme.soft,border:`1px solid ${theme.soft}`,padding:"8px 14px",borderRadius:20,fontSize:11,color:theme.accent2,fontWeight:700}}>🪐 수호성 : {r.soul_planet}</div>
@@ -13056,7 +13068,7 @@ function NumerologyModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,on
                 {cur.keys&&cur.keys.filter((s:any)=>r[s.k]).map((sec:any)=>(
                   <div key={sec.k} style={{marginBottom:12,background:"rgba(255,255,255,0.04)",padding:"14px 16px",borderRadius:12,borderLeft:`3px solid ${theme.accent}`}}>
                     <div style={{color:theme.accent2,fontSize:11.5,fontWeight:800,marginBottom:6}}>{sec.t}</div>
-                    <div style={{fontSize:11,lineHeight:1.85,color:theme.text,wordBreak:"keep-all" as any}} dangerouslySetInnerHTML={{__html:r[sec.k].replace(/{nm}/g,personName)}}/>
+                    <div style={{fontSize:11,lineHeight:1.85,color:theme.text,wordBreak:"keep-all" as any}} dangerouslySetInnerHTML={{__html:_safeHtml(r[sec.k]).replace(/{nm}/g,personName)}}/>
                   </div>
                 ))}
                 {/* v554: 재물·인연 탭 하단 — 끌리는 영혼 / 상극의 파동 박스 */}
@@ -13127,7 +13139,7 @@ function NumerologyModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,on
                   {/* 1. 매일의 주파수 동기화 루틴 */}
                   {r.routine&&<div style={{marginBottom:12,background:"rgba(255,255,255,0.04)",padding:"14px 16px",borderRadius:12,borderLeft:`3px solid ${theme.accent}`}}>
                     <div style={{color:theme.accent2,fontSize:11.5,fontWeight:800,marginBottom:8}}>🧘 매일의 주파수 동기화 루틴</div>
-                    <div style={{fontSize:11,lineHeight:1.85,color:theme.text,wordBreak:"keep-all" as any}} dangerouslySetInnerHTML={{__html:r.routine.replace(/{nm}/g,personName)}}/>
+                    <div style={{fontSize:11,lineHeight:1.85,color:theme.text,wordBreak:"keep-all" as any}} dangerouslySetInnerHTML={{__html:_safeHtml(r.routine).replace(/{nm}/g,personName)}}/>
                   </div>}
                   {/* 2. 6박스 그리드 — 동일 사이즈 (minHeight:96) */}
                   <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:12}}>
@@ -13157,7 +13169,7 @@ function NumerologyModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,on
                   {r.closing&&<div style={{marginBottom:12,borderRadius:16,padding:1.5,backgroundImage:"linear-gradient(135deg,#ffb8b8,#ffd9a8,#b8e0c8,#bcd6f0,#cdc5e8)",boxShadow:"0 4px 14px rgba(155,143,212,0.15)"}}>
                     <div style={{background:"#fafbfd",borderRadius:14.5,padding:"20px 18px",textAlign:"center"}}>
                       <div style={{fontSize:13,color:"#1A3C32",letterSpacing:1.5,fontWeight:900,marginBottom:10}}>🔮 천기의 한마디</div>
-                      <div style={{fontSize:13,color:"#1A3C32",fontWeight:700,lineHeight:1.85,wordBreak:"keep-all" as any,fontFamily:"'Noto Serif KR','Batang',serif"}} dangerouslySetInnerHTML={{__html:r.closing.replace(/{nm}/g,personName)}}/>
+                      <div style={{fontSize:13,color:"#1A3C32",fontWeight:700,lineHeight:1.85,wordBreak:"keep-all" as any,fontFamily:"'Noto Serif KR','Batang',serif"}} dangerouslySetInnerHTML={{__html:_safeHtml(r.closing).replace(/{nm}/g,personName)}}/>
                     </div>
                   </div>}
                 </>}
@@ -13709,7 +13721,9 @@ function BabyFaceModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLo
                 {/* 종합 판독 */}
                 {r.mix_summary&&<div style={{background:"rgba(255,255,255,0.7)",borderRadius:12,padding:14,border:"1px dashed rgba(212,175,55,0.4)"}}>
                   <div style={{fontSize:10,fontWeight:800,color:"#b45309",textAlign:"center",marginBottom:8,letterSpacing:1}}>🔮 천기의 종합 판독</div>
-                  <div style={{fontSize:11,color:"#1A3C32",lineHeight:1.85,wordBreak:"keep-all" as any}} dangerouslySetInnerHTML={{__html:String(r.mix_summary).replace(/<([^>/]+)>/g,"<b style=\"color:#D4AF37\">$1</b>")}}/>
+                  <div style={{fontSize:11,color:"#1A3C32",lineHeight:1.85,wordBreak:"keep-all" as any}} /* v(2026-08-13): 먼저 세정한 뒤 강조 치환. 예전엔 원문을 그대로 HTML로 넣어서
+                       AI가 뱉은(=사용자 이름이 섞인) 마크업이 살아 있었다. */
+                  dangerouslySetInnerHTML={{__html:_safeHtml(r.mix_summary).replace(/&lt;([^&]+?)&gt;/g,"<b style=\"color:#D4AF37\">$1</b>")}}/>
                 </div>}
               </div>
             </div>
