@@ -19429,6 +19429,54 @@ const _SINSAL_DETAIL:Record<string,string>={
 };
 
 // 일간별 성격·재물·연애·건강·직업 풀이 (오행 기반)
+// ━━━ 사주풀이 사전질문 녹여내기 (v 2026-08-14) ━━━
+// 문제: preQ(focus/stage/wish)가 상단 요약 박스에 "고른 것"으로만 뜨고 본문엔 0% 반영이었다.
+// 방식: 새 섹션 없음. **성격 탭 아래 인용구(affirmation) 한 줄을 간절한 것 맞춤으로 교체**한다.
+//       위치·분량·줄 수 전부 불변. 상단 요약 박스가 이미 배너 역할을 하므로 배너는 추가 안 함.
+//       stage(지금 삶의 단계)로 톤만 가른다 — 힘든 시기엔 다독이고, 나머지엔 밀어준다.
+const _SAJU_WISH_WORD:Record<string,{up:string,down:string}>={
+  "돈이 들어오는 시기가 언제인지":{
+    up:"들어올 자리는 이미 열려 있어요. 준비된 손에 먼저 담깁니다.",
+    down:"지금 비어 보이는 건 없어서가 아니라 채우는 중이라서예요.",
+  },
+  "좋은 인연이 언제 오는지":{
+    up:"좋은 인연은 찾아 나설 때가 아니라 내가 편안해질 때 옵니다.",
+    down:"지금 혼자인 시간은 버려지는 게 아니라 골라내는 중이에요.",
+  },
+  "이 일이 나와 맞는지":{
+    up:"맞는지 묻는 마음 자체가 이미 답을 반쯤 알고 있다는 뜻이에요.",
+    down:"안 맞는 게 아니라 아직 내 자리를 못 찾은 것일 수 있어요.",
+  },
+  "합격·취업·관운이 될지":{
+    up:"쌓아둔 게 있으니 문이 열릴 때 바로 들어갈 수 있어요.",
+    down:"늦는 것과 안 되는 것은 달라요. 지금은 늦는 쪽입니다.",
+  },
+  "건강·수명이 걱정돼":{
+    up:"몸을 아끼는 사람에게 시간은 늘 넉넉하게 흘러요.",
+    down:"걱정이 앞선다는 건 몸의 신호를 잘 듣고 있다는 뜻이에요.",
+  },
+  "부동산·이사·계약 타이밍":{
+    up:"자리를 옮기는 기운이 순한 편이에요. 서두르지만 않으면 됩니다.",
+    down:"조건이 안 맞을 땐 기다리는 것도 하나의 계약이에요.",
+  },
+  "자녀운·임신 가능성":{
+    up:"품는 기운이 넉넉한 사주예요. 마음을 편히 두세요.",
+    down:"조급함만 내려놓으면 몸도 마음도 훨씬 수월해집니다.",
+  },
+  "내 사주의 강점과 약점":{
+    up:"약점을 아는 사람은 이미 그걸 강점으로 쓰기 시작한 거예요.",
+    down:"부족해 보이는 자리가 사실 가장 많이 자란 자리예요.",
+  },
+};
+const _SAJU_STAGE_DOWN=["어렵고 힘든 시기야","변화가 필요한 시기야"];
+function _sajuWovenAffirm(base:string,preQ:any){
+  const w=typeof preQ?.wish==="string"?preQ.wish:"";
+  const hit=_SAJU_WISH_WORD[w];
+  if(!hit)return base; // 건너뛰기·기타 → 기존 인용구 그대로
+  const stage=typeof preQ?.stage==="string"?preQ.stage:"";
+  return _SAJU_STAGE_DOWN.includes(stage)?hit.down:hit.up;
+}
+
 const _SAJU_PROFILE:Record<string,{
   personality:{title:string,text:string[]},
   money:{score:number,title:string,text:string[],advice:string[]},
@@ -19627,8 +19675,12 @@ function SajuModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onOp
             },
             scores:{money:profile.money.score,love:profile.love.score,health:profile.health.score,career:profile.career.score},
             personality_title:profile.personality.title,
-            fortune_msg:(profile.affirmation||"").replace(/\{nm\}/g,personName),
+            // v(2026-08-14): 녹여낸 인용구를 저장한다. 예전엔 원본 affirmation을 넣어서
+            // 기록소 재열람 때 사전질문 반영분이 사라졌다.
+            fortune_msg:_sajuWovenAffirm(profile.affirmation||"",preQ).replace(/\{nm\}/g,personName),
             gaeun:profile.gaeun,
+            // v(2026-08-14): preQ 저장 — 없어서 재열람 시 상단 요약 박스와 인용구가 기본값으로 돌아갔다.
+            preQ,
             _birth:selectedPerson?.birth,_time:selectedPerson?.time,
             _testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}),
           },ctx:{ohaeng:ilOh,preQ}});
@@ -20049,7 +20101,7 @@ function SajuModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onOp
             {profile.personality.text.map((t,i)=>(<div key={i} style={{fontSize:12,color:"#444",lineHeight:1.95,marginBottom:8,wordBreak:"keep-all"}}>{fillNm(t)}</div>))}
             {/* v735: 천기의 한마디에서 옮긴 affirmation 인용구 — 성격 본문 바로 아래 짧은 imprint */}
             <div style={{marginTop:14,padding:"12px 16px",background:"linear-gradient(135deg,#fffbe9,#fff8d6)",borderLeft:"3px solid #D4AF37",borderRadius:8,fontStyle:"italic",fontSize:12.5,color:"#7A5C00",fontWeight:600,lineHeight:1.85,wordBreak:"keep-all",fontFamily:"'Noto Serif KR','Batang',serif"}}>
-              "{fillNm(profile.affirmation).replace(/^💫\s*/,"")}"
+              "{fillNm(_sajuWovenAffirm(profile.affirmation,preQ)).replace(/^💫\s*/,"")}"
             </div>
             {/* v689: 같은 일간 유명인 — 성격 탭 제일 하단으로 이동 + 작은 둥근 칩 (사용자 요청) */}
             <div style={{marginTop:14,paddingTop:14,borderTop:"1px dashed #eee"}}>
