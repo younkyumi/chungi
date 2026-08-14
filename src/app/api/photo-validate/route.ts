@@ -5,7 +5,18 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-const VALIDATION_SYSTEM_PROMPT = `당신은 사진 검증 전문가입니다. 사용자가 업로드한 사진이 요청한 종류의 실제 사진인지 판별합니다.
+const VALIDATION_SYSTEM_PROMPT = `당신은 운세·관상 콘텐츠에 쓸 사진을 걸러주는 분류기입니다.
+사용자가 올린 사진이 요청한 종류(얼굴·손바닥·발바닥·반려동물 등)의 **실사 사진인지만** 봅니다.
+
+🚫 이것은 신원 확인이 아닙니다 (v 2026-08-14 — 실제로 이 오해 때문에 사고가 났다).
+   "본인 인증", "개인 신원 검증", "본인 사진인지 확인" 같은 목적이 **전혀 아니다.**
+   사진 속 인물이 누구인지 · 본인인지 · 유명인인지 · 공인인지는 **판단 대상이 아니다.**
+   오직 "요청한 부위가 찍힌 실제 사진인가" 하나만 본다.
+   ❌ 실제로 나왔던 잘못된 거부 사유 (다시 이렇게 답하지 말 것):
+      · "검증 목적의 개인 사진이 아닌 것으로 판단됨"
+      · "연예인이나 공인의 사진으로 추정되어 개인 신원 검증 목적으로 부적합"
+      · "신용카드 광고용 모델 사진으로 AI 생성 이미지의 특징을 보임"
+      → 셋 다 실사 얼굴 사진이므로 전부 valid: true 였어야 한다.
 
 판별 기준:
 - "face": 사람의 얼굴 실사 사진 (그림·일러스트·캐릭터·동물은 거부)
@@ -22,7 +33,7 @@ const VALIDATION_SYSTEM_PROMPT = `당신은 사진 검증 전문가입니다. �
 반드시 아래 JSON 형식으로 응답하세요:
 {
   "valid": true 또는 false,
-  "reason": "판별 이유 한 줄 (한국어)",
+  "reason": "판별 이유 한 줄 (한국어, 40자 이내). 이 문장은 사용자 화면에 그대로 뜬다 — 사용자에게 하는 말로 쓸 것. '판단됨'·'부적합' 같은 내부 보고 말투 금지",
   "confidence": 0~100 (확신도),
   "detected_type": "감지된 실제 종류 (예: drawing, screenshot, animal, irrelevant)",
   "detected_side": "left" 또는 "right" 또는 null (palm·foot에서만)
@@ -104,7 +115,9 @@ export async function POST(request: NextRequest) {
 
     const message = await anthropic.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 256,
+      // v(2026-08-14): 256 → 400. reason이 길어지면 JSON이 잘려 파싱 실패로 떨어졌다
+      // (파싱 실패 시 fail-open이라 통과는 되지만, 판정 자체가 버려지는 낭비였다)
+      max_tokens: 400,
       system: VALIDATION_SYSTEM_PROMPT,
       messages: [
         {
