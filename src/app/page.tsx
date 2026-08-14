@@ -14963,6 +14963,35 @@ function GwansangZalModal({onClose,savedPersons,setSavedPersons,cart,setCart,onG
 }
 
 // ─── 연애운·궁합 모달 (2명 입력) ─────────────────────────────────────────────
+// ━━━ 연애운·궁합 사전질문 녹여내기 (v 2026-08-14) ━━━
+// 커플(couple)/베프(bff) 각 8지선다. "전체 다 균형있게"·건너뛰기는 기존 메시지를 그대로 둔다.
+// 점수(score)는 안 건드리고 한 줄 메시지만 교체 → 사실값 불변, 분량 불변.
+// 점수와 어긋나지 않게 up(75점 이상)/down(75점 미만) 두 톤을 따로 뒀다.
+const _LOVE_FOCUS_MSG:Record<string,{up:string,down:string}>={
+  // couple
+  "결혼 가능성·타이밍을 알고 싶어":{up:"결혼을 이야기하기 좋은 흐름이에요. 조건보다 속도를 맞추는 게 먼저예요.",down:"아직은 확정할 때가 아니에요. 서로의 계획부터 맞춰보세요."},
+  "갈등 포인트·해결법을 보고 싶어":{up:"부딪히는 지점이 뚜렷해서 오히려 고치기 쉬운 사이예요.",down:"같은 주제로 반복해서 싸우는 결이에요. 방식부터 바꿔야 해요."},
+  "관계 발전·성장 가능성":{up:"지금보다 더 좋아질 여지가 큰 사이예요. 시간이 편이에요.",down:"지금 모양대로 굳으면 아쉬워요. 새로운 경험을 같이 만들어보세요."},
+  "헤어질 위험 신호가 있는지":{up:"당장 위험한 신호는 안 보여요. 불안은 마음에서 온 걸 수 있어요.",down:"멀어지는 결이 보여요. 다만 지금 손쓰면 되돌릴 수 있는 단계예요."},
+  "잠자리·궁합·도화살":{up:"끌림이 강한 조합이에요. 표현을 아끼지 않아도 되는 사이예요.",down:"몸보다 마음의 거리가 먼저예요. 대화가 풀리면 나머지도 풀립니다."},
+  "미래 가족·자녀운까지":{up:"함께 가정을 그리기 좋은 기운이에요. 서로의 속도만 맞추면 됩니다.",down:"가족 이야기는 조금 뒤로 미뤄도 돼요. 지금은 둘에 집중할 때예요."},
+  "우리 잘 맞는지 종합 점수가 궁금해":{up:"수치보다 실제 결이 더 좋은 사이예요. 편안함이 최대 강점입니다.",down:"점수는 딱 지금까지의 이야기예요. 맞춰가면 얼마든지 올라갑니다."},
+  // bff
+  "성격·소통 코드 잘 맞는지":{up:"말 안 해도 통하는 구석이 많아요. 대화가 편한 조합이에요.",down:"코드가 달라서 오해가 생겨요. 짐작 말고 물어보는 게 답이에요."},
+  "부딪히는 포인트·서로 자극":{up:"자극이 되는 쪽이라 서로를 키워주는 사이예요.",down:"비슷한 지점에서 계속 걸려요. 그 주제만 피해도 훨씬 편해집니다."},
+  "이 우정 얼마나 갈까?":{up:"오래 갈 결이에요. 자주 안 봐도 끊기지 않는 사이예요.",down:"환경이 바뀌면 흔들릴 수 있어요. 먼저 연락하는 쪽이 지킵니다."},
+  "동업·일 파트너로도 잘 맞을지":{up:"역할만 나누면 일로도 잘 맞는 조합이에요.",down:"친구로는 좋아도 일은 다른 이야기예요. 돈 이야기는 문서로 남기세요."},
+  "같이 놀기 시너지 점수":{up:"같이 있을 때 에너지가 올라가는 조합이에요. 자주 만나세요.",down:"취향이 갈려요. 한 명이 맞춰주는 구조면 오래 못 갑니다."},
+  "가족·연인 관계로 발전 가능성":{up:"선을 넘어도 어색하지 않을 만큼 편한 사이예요.",down:"지금 자리가 가장 좋은 자리일 수 있어요. 서두르지 마세요."},
+  "우리 베프 점수가 얼마나?":{up:"숫자보다 실제가 더 좋은 사이예요. 편안함이 최대 강점입니다.",down:"점수는 지금까지의 기록일 뿐이에요. 쌓으면 올라갑니다."},
+};
+function _loveWovenMsg(base:string,preFocus:string|null,score:number){
+  if(!preFocus||preFocus==="skip")return base;
+  const hit=_LOVE_FOCUS_MSG[preFocus];
+  if(!hit)return base; // "전체 다 균형있게" 등 → 기존 메시지 그대로
+  return score>=75?hit.up:hit.down;
+}
+
 function LoveCompatModal({svc,onClose,isLoggedIn,cart,setCart,onGoShop,addHistory,onLoginRequest,selectedPerson=null,selectedPerson2=null,onOpenService,onRequestPerson,forceIntro,preloadResult}:any){
   // v270: 흐름 재배치 — input → preQ → pay → loading → result (매몰비용 극대화)
   const[step,setStep]=useState(preloadResult?"result":(selectedPerson?.name&&selectedPerson2?.name?"input":"intro"));
@@ -15020,7 +15049,10 @@ function LoveCompatModal({svc,onClose,isLoggedIn,cart,setCart,onGoShop,addHistor
     const bffMsgs=["찐친 감정! 서로 통하는 부분이 많아요!","같이 있으면 시너지가 폭발하는 조합!","서로의 장점을 끌어올리는 베프 궁합!","웃음이 끊이지 않는 환상의 콤비!"];
     const msgs=mode==="couple"?coupleMsgs:bffMsgs;
     // v667: msg/testDate 단일값 — setResult와 addHistory가 같은 값 쓰도록 (이전엔 두 번 random + new Date()로 결과↔기록소 미세 차이)
-    const finalMsg=msgs[Math.floor(rng()*msgs.length)];
+    // v(2026-08-14): 사전질문 녹여내기. 예전엔 preFocus를 result.focus에 담기만 하고
+    // 메시지는 rng()로만 뽑아서, 무엇을 고르든 문장이 똑같았다(반영 0%).
+    // 점수·세부 스탯은 그대로 두고 **한 줄 메시지만** 고른 관심사 맞춤으로 교체한다.
+    const finalMsg=_loveWovenMsg(msgs[Math.floor(rng()*msgs.length)],preFocus,score);
     const testDate=new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
     setResult({score,scores,msg:finalMsg,mode,focus:preFocus,me,partner,_testDate:testDate});
     setStep("result");
