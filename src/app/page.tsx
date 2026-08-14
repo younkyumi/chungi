@@ -1700,8 +1700,14 @@ function PreQuestionFlow({svcId,iconTitle,subtitle,onComplete,onClose,onBack,emb
     // 기타 재클릭: 이미 입력한 값이 있으면 그 값을 채운 채로 열어 수정 가능하게 (해제는 입력창의 '선택 해제')
     if(opt.custom){setCustomText(customVal?customVal.replace(/^\[기타\]\s*/,""):"");setShowCustom(true);return;}
     if(isMulti){
-      // "전체 다" 토글 시 단독 선택
-      if(opt.all){setAnswers({...answers,[q.key]:[opt.l]});return;}
+      // "전체 다" — 고르면 단독 선택, v(2026-08-14) 다시 누르면 해제(기준 C).
+      // 예전엔 무조건 [opt.l]로 덮어써서 이 항목만 선택 취소가 안 됐다(다른 옵션은 다 됐음).
+      if(opt.all){
+        const already=selected.includes(opt.l);
+        const next={...answers};
+        if(already)delete next[q.key]; else next[q.key]=[opt.l];
+        setAnswers(next);return;
+      }
       // 일반 옵션: "전체 다" 해제 + 토글
       let next=selected.filter(x=>!questions[qStep].opts.find(o=>o.l===x&&o.all));
       next=next.includes(opt.l)?next.filter(x=>x!==opt.l):[...next,opt.l];

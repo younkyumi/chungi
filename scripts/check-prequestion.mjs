@@ -98,6 +98,27 @@ function check(file) {
     });
   }
 
+  // ── R5: "전체 다"(all:true) 옵션이 단방향인가 (재클릭 해제 불가)
+  //   R2는 onClick={()=>setX(opt.l)} 형태만 본다. 핸들러 안쪽은 못 봐서
+  //   `if(opt.all){setAnswers({...answers,[q.key]:[opt.l]});return;}` 가 그대로 통과했었다.
+  //   → 다른 옵션은 다 해제되는데 "전체 다 알려줘!"만 취소가 안 됐음 (2026-08-14 사용자 발견).
+  //   위반:  if(opt.all){ setAnswers({...answers,[q.key]:[opt.l]}); return; }
+  //   정상:  if(opt.all){ const already=selected.includes(opt.l); ... delete/할당 분기 }
+  for (const m of src.matchAll(/if\s*\(\s*(opt|option|o)\.all\s*\)\s*\{/g)) {
+    const ln = lineOf(src, m.index);
+    if (isComment(lines[ln - 1] ?? "")) continue;
+    const body = src.slice(m.index, m.index + 300);
+    if (!/\.includes\(|delete\s+/.test(body)) {
+      violations.push({
+        rule: "R5",
+        file,
+        line: ln,
+        msg: `"전체 다"(all:true) 옵션 처리에 해제 분기가 없습니다 — 한 번 고르면 다시 눌러도 취소가 안 됩니다.`,
+        fix: `이미 선택돼 있으면(selected.includes) 답을 지우고, 아니면 단독 선택하도록 분기를 넣으세요.`,
+      });
+    }
+  }
+
   // ── R4: 조사 괄호 폴백
   for (const m of src.matchAll(/[가-힣]\s*\((?:가|를|는|와|과|을|이|은)\)/g)) {
     const ln = lineOf(src, m.index);
@@ -119,6 +140,7 @@ const RULE_NAMES = {
   R2: "옵션 재클릭 해제",
   R3: "자동 진입 금지",
   R4: "조사 자동 선택",
+  R5: "전체 다 옵션 재클릭 해제",
 };
 
 if (violations.length) {
@@ -132,4 +154,4 @@ if (violations.length) {
   process.exit(1);
 }
 
-console.log("✅ 사전질문 검사 통과 — 검사 파일 " + TARGETS.length + "개, 규칙 4종 (R1 건너뛰기 상시 노출 / R2 재클릭 해제 / R3 자동 진입 금지 / R4 조사 자동 선택)");
+console.log("✅ 사전질문 검사 통과 — 검사 파일 " + TARGETS.length + "개, 규칙 5종 (R1 건너뛰기 상시 노출 / R2 재클릭 해제 / R3 자동 진입 금지 / R4 조사 자동 선택 / R5 전체 다 옵션 재클릭 해제)");
