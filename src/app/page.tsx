@@ -23705,8 +23705,16 @@ function HomePage({onSvc,freePickSignal=0,isLoggedIn,savedPersons,setSavedPerson
   const[todayModal,setTodayModal]=useState<any>(null);
   const[freePickOpen,setFreePickOpen]=useState(false);
   // v(2026-08-14): 무료 12종 목록에서 연 콘텐츠를 닫으면 Page가 신호를 올려준다 → 목록 재오픈.
-  // 초기값 0은 무시(첫 렌더에 목록이 저절로 뜨면 안 됨).
-  useEffect(()=>{if(freePickSignal>0)setFreePickOpen(true);},[freePickSignal]);
+  // ⚠️ 값이 0보다 큰지가 아니라 **직전에 본 값에서 늘었는지**로 판단해야 한다.
+  //    HomePage는 tab==="home"일 때만 렌더돼서 내정보·굿즈 등으로 갔다 오면 통째로 재마운트된다.
+  //    그때 useEffect가 다시 돌면서 예전 신호값을 "새 신호"로 오인해 목록이 저절로 떴었다.
+  //    ref 초기값을 현재 신호로 잡아두면 재마운트만으로는 절대 안 열린다.
+  const _fpSeen=useRef(freePickSignal);
+  useEffect(()=>{
+    if(freePickSignal===_fpSeen.current)return;
+    _fpSeen.current=freePickSignal;
+    if(freePickSignal>0)setFreePickOpen(true);
+  },[freePickSignal]);
 
   // ② 맞춤 배너 — 이용 기록 기반
   const personalGoods = getPersonalizedGoods(userHistory);
