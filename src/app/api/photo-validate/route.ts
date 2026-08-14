@@ -8,7 +8,10 @@ const anthropic = new Anthropic({
 const VALIDATION_SYSTEM_PROMPT = `당신은 사진 검증 전문가입니다. 사용자가 업로드한 사진이 요청한 종류의 실제 사진인지 판별합니다.
 
 판별 기준:
-- "face": 사람의 얼굴 실사 사진 (그림·일러스트·캐릭터·동물·연예인 사진은 거부)
+- "face": 사람의 얼굴 실사 사진 (그림·일러스트·캐릭터·동물은 거부)
+  ⚠️ 연예인·모델·프로필·화보·보정된 사진도 **실사 사람 얼굴이면 통과**시킬 것.
+     유명인인지 아닌지, 잘 찍혔는지 아닌지는 판별 대상이 아니다.
+     (예전 프롬프트가 "연예인 사진은 거부"라고 지시해서, 조금만 프로필 같아도 막혔다)
 - "palm": 사람의 손바닥 실사 사진 (손등·그림·일러스트는 거부) + 왼손/오른손 자동 감지
 - "foot": 사람의 발바닥 실사 사진 + 왼발/오른발 자동 감지
 - "mole_face": 얼굴에 점이 보이는 실사 사진
@@ -79,7 +82,7 @@ export async function POST(request: NextRequest) {
 
     const { expectedSide } = body; // "left" 또는 "right" — palm/foot에서만
     const TYPE_PROMPTS: Record<string, string> = {
-      face: "이 사진이 사람의 얼굴 실사 사진인지 판별해주세요. 그림·일러스트·캐릭터는 거부.",
+      face: "이 사진이 사람의 얼굴 실사 사진인지 판별해주세요. 그림·일러스트·캐릭터·동물만 거부하고, 연예인·모델·프로필·화보·보정 사진은 실사이므로 통과시키세요.",
       palm: `이 사진이 사람의 손바닥 실사 사진인지 판별해주세요. 손등·그림·동물 발은 거부. ${expectedSide?`사용자는 "${expectedSide==="left"?"왼손":"오른손"}"을 올렸다고 주장합니다 — detected_side로 실제 어느 손인지 답하세요.`:"왼손/오른손도 detected_side로 답하세요."}`,
       foot: `이 사진이 사람의 발바닥 실사 사진인지 판별해주세요. ${expectedSide?`사용자는 "${expectedSide==="left"?"왼발":"오른발"}"을 올렸다고 주장합니다 — detected_side로 실제 어느 발인지 답하세요.`:"왼발/오른발도 detected_side로 답하세요."}`,
       mole_face: "이 사진이 얼굴 점이 보이는 실사 사진인지 판별해주세요.",
