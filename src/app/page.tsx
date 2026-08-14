@@ -20879,7 +20879,9 @@ function DreamModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
 
         {/* 태몽 결제 */}
         {step==="pay"&&<>
-          <div className="mt">🤰 태몽 해몽</div>
+          {/* v(2026-08-14): 제목이 "🤰 태몽 해몽"으로 하드코딩돼 있어서, 꿈 해몽을 결제할 때도
+              태몽 제목이 떴다. 바로 아래 부제·입력값·가격은 전부 mode 분기인데 제목만 빠져 있었다. */}
+          <div className="mt">{mode==="taemong"?"🤰 태몽 해몽":"💭 꿈 해몽"}</div>
           <div className="ms">{mode==="taemong"?"태몽 정밀 분석 · 980원":"꿈 해몽 분석 · 380원"}</div>
           <div style={{background:"var(--ink3)",borderRadius:12,padding:"12px 14px",marginBottom:14,border:"1px solid rgba(255,107,107,0.2)"}}>
             <div style={{fontSize:9,color:"var(--coral)",letterSpacing:2,fontWeight:700,marginBottom:6}}>✦ 입력하신 {mode==="taemong"?"태몽":"꿈"}</div>
