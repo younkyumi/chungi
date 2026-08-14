@@ -37,14 +37,22 @@ const AFTER = /[\s,.·…!?)"'」』\]}]|$/;
  * 여기 추가할 때는 **값의 후보가 닫혀 있고 받침이 일정한지** 반드시 확인할 것.
  */
 const SAFE_VAR = /^\$\{\s*[A-Za-z_$][\w$.?[\]]*\s*\}$/;
-const SAFE_NAMES = [
-  /oh(aeng|ang)?$/i, /ilOh$/i, /IlganOh$/i, /dominant$/i, /personOh$/i, /ohInfo/i,  // 오행
-  /IQ$/i, /score$/i, /count$/i, /num(ber)?$/i, /year$/i, /age$/i,                    // 숫자
-];
-function isSafe(expr) {
-  if (!SAFE_VAR.test(expr)) return false;                       // 삼항·함수호출 등 복합식은 안전 판단 불가
+// 값이 **항상 받침 있음** — 이 뒤엔 은/이/을/과/으로 만 맞다
+const ALWAYS_JONG = [/oh(aeng|ang)?$/i, /ilOh$/i, /IlganOh$/i, /dominant$/i, /personOh$/i];
+// 값이 숫자 — 한글로 안 읽으므로 로/를 고정이 관용
+const NUMERIC = [/IQ$/i, /score$/i, /count$/i, /num(ber)?$/i, /year$/i, /age$/i];
+const JONG_OK = new Set(["은", "이", "을", "과", "으로", "이나", "이라", "이랑", "이며"]);
+/**
+ * 안전하면 true. ⚠️ 단순히 "이 변수는 통과"로 넘기면 **버그를 숨긴다.**
+ * 실제로 `${ilOh}({...})와` 가 이 목록에 가려져 라이브에 나갔다("금 …와" ← "과"가 맞다).
+ * 그래서 받침이 항상 있는 값이면 **조사가 받침용인지까지** 확인한다.
+ */
+function isSafe(expr, particle) {
+  if (!SAFE_VAR.test(expr)) return false;             // 삼항·함수호출 등 복합식은 안전 판단 불가
   const name = expr.replace(/^\$\{\s*|\s*\}$/g, "");
-  return SAFE_NAMES.some((re) => re.test(name));
+  if (NUMERIC.some((re) => re.test(name))) return true;
+  if (ALWAYS_JONG.some((re) => re.test(name))) return JONG_OK.has(particle); // 받침용이 아니면 위반
+  return false;
 }
 
 const violations = [];
@@ -69,7 +77,7 @@ function check(file) {
     if (!hit) continue;
     // josa()/josaOnly() 호출 결과에 붙은 건 정상 (이미 처리한 것)
     if (/josa(Only)?\([^)]*\)\s*$/.test(m[0])) continue;
-    if (isSafe(m[0])) continue;  // 오행·숫자처럼 받침이 일정한 값
+    if (isSafe(m[0], hit)) continue;  // 오행·숫자처럼 받침이 일정하고 조사도 맞는 경우
     violations.push({
       rule: "J1", file, line: ln,
       msg: `변수 뒤에 조사 "${hit}"가 고정으로 붙어 있습니다 — ${m[0]}${hit}`,

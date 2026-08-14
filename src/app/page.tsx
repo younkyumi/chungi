@@ -8788,7 +8788,7 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
                   {/* 연예인 사주 베이스 */}
                   <div style={{background:"#fff",borderRadius:10,padding:"10px 12px",marginBottom:12}}>
                     <div style={{fontSize:10,color:"#7A5C00",fontWeight:800,letterSpacing:1,marginBottom:5}}>🌱 {cur.name}의 사주 <span style={{color:"#888",fontWeight:600}}>({cur.ohaeng} — {ilOhMeaning[cur.ohaeng]})</span></div>
-                    <div style={{fontSize:12,color:"#555",lineHeight:1.75,wordBreak:"keep-all" as any}}>{cur.base} {cur.name}의 일간 {cur.ohaeng}({ilOhMeaning[cur.ohaeng]}) 기운이 {personName}님의 {ilOh}({ilOhMeaning[ilOh]})와 자연스럽게 어우러져요.</div>
+                    <div style={{fontSize:12,color:"#555",lineHeight:1.75,wordBreak:"keep-all" as any}}>{cur.base} {cur.name}의 일간 {cur.ohaeng}({ilOhMeaning[cur.ohaeng]}) 기운이 {personName}님의 {ilOh}({ilOhMeaning[ilOh]})과 자연스럽게 어우러져요.</div>
                   </div>
                   {/* 왜 잘 맞는지 */}
                   <div style={{background:"#fff",borderRadius:10,padding:"10px 12px",marginBottom:12}}>
