@@ -11215,11 +11215,16 @@ function FaceReadingModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,o
                 <div>{formatPersonInfoLine({name:nm,birth:selectedPerson?.birth,time:selectedPerson?.time,calendar:selectedPerson?.calendar,gender:selectedPerson?.gender})}</div>
                 <div style={{color:"#aaa"}}>{formatTestDateLine(preloadResult?._testDate)}</div>
               </div>
-              {/* v(2026-07-09): 사전질문 focus 반영 배너 — "전체 다 알려줘!" 선택 시엔 특정 초점이 없으니 생략 */}
+              {/* v(2026-07-09): 사전질문 focus 반영 배너.
+                  v(2026-08-14): "전체 다 알려줘!"만 고르면 배너가 통째로 사라져서 "내 선택이 무시됐나?"로 보였다.
+                  → 이제 전체 선택도 전용 문구로 띄운다. 아무것도 안 고른(건너뛴) 경우에만 생략. */}
               {(()=>{
-                const _fq=Array.isArray(questions?.focus)?questions.focus.filter((f:string)=>f&&f!=="전체 다 알려줘!"):[];
-                if(_fq.length===0)return null;
-                return <div style={{marginTop:10,fontSize:11,color:"#B8942E",fontWeight:700,background:"#fffbe9",borderRadius:8,padding:"8px 11px",lineHeight:1.6,border:"1px solid #fde68a",textAlign:"center",wordBreak:"keep-all" as any}}>🎯 <strong>{_fq.join(" · ")}</strong> 영역에 집중해서 분석했어요.</div>;
+                const _raw=Array.isArray(questions?.focus)?questions.focus.filter((f:string)=>f&&f!=="skip"):(questions?.focus?[questions.focus]:[]);
+                if(_raw.length===0)return null;
+                const _fq=_raw.filter((f:string)=>f!=="전체 다 알려줘!");
+                const _box=(inner:any)=><div style={{marginTop:10,fontSize:11,color:"#B8942E",fontWeight:700,background:"#fffbe9",borderRadius:8,padding:"8px 11px",lineHeight:1.6,border:"1px solid #fde68a",textAlign:"center",wordBreak:"keep-all" as any}}>{inner}</div>;
+                if(_fq.length===0)return _box(<>🎯 특정 영역을 정하지 않고 <strong>전체를 골고루</strong> 분석했어요.</>);
+                return _box(<>🎯 <strong>{_fq.join(" · ")}</strong> 영역에 집중해서 분석했어요.</>);
               })()}
             </div>
 
@@ -19775,8 +19780,12 @@ function SajuModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onOp
   // ━━━ RESULT ━━━
   if(step==="result"&&sajuData){
     const q1Arr=preQ.focus;
-    // v(2026-07-09): 다중선택인데 첫 항목만 보여주던 버그 fix — 선택한 항목 전부 표시("전체 다 궁금해요!" 제외)
-    const q1=Array.isArray(q1Arr)?q1Arr.filter((f:string)=>f&&f!=="전체 다 궁금해요!").join(" · "):(q1Arr||"");
+    // v(2026-07-09): 다중선택인데 첫 항목만 보여주던 버그 fix — 선택한 항목 전부 표시
+    // v(2026-08-14): "전체 다 궁금해요!"만 고르면 q1이 빈 문자열이 돼서 요약 박스가 통째로 사라졌다.
+    //   ("내 선택이 무시됐나?"로 보임) → 전체 선택도 전용 문구로 채운다. 건너뛴 경우에만 빈 값.
+    const _q1Raw=Array.isArray(q1Arr)?q1Arr.filter((f:string)=>f&&f!=="skip"):(q1Arr?[q1Arr]:[]);
+    const _q1Sel=_q1Raw.filter((f:string)=>f!=="전체 다 궁금해요!");
+    const q1=_q1Raw.length===0?"":(_q1Sel.length===0?"전체를 골고루 (특정 영역 지정 안 함)":_q1Sel.join(" · "));
     const q2=preQ.stage||"";const q3=preQ.wish||"";
     return(
       <div className="ov"><div className="md"><div className="hd"/>
