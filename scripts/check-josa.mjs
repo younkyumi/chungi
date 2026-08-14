@@ -48,11 +48,39 @@ const JONG_OK = new Set(["은", "이", "을", "과", "으로", "이나", "이라
  * 그래서 받침이 항상 있는 값이면 **조사가 받침용인지까지** 확인한다.
  */
 function isSafe(expr, particle) {
-  if (!SAFE_VAR.test(expr)) return false;             // 삼항·함수호출 등 복합식은 안전 판단 불가
+  if (!SAFE_VAR.test(expr)) return literalSafe(expr, particle);  // 삼항 등은 리터럴 판정으로
   const name = expr.replace(/^\$\{\s*|\s*\}$/g, "");
   if (NUMERIC.some((re) => re.test(name))) return true;
   if (ALWAYS_JONG.some((re) => re.test(name))) return JONG_OK.has(particle); // 받침용이 아니면 위반
   return false;
+}
+
+/** 한글 음절의 받침 유무 */
+function hasJong(ch) {
+  const c = (ch || "").charCodeAt(0);
+  if (!(c >= 0xac00 && c <= 0xd7a3)) return null;   // 한글이 아니면 판단 불가
+  return (c - 0xac00) % 28 !== 0;
+}
+const NO_JONG_OK = new Set(["는", "가", "를", "와", "로", "나", "라", "랑", "며"]);
+/**
+ * `${cond ? "문장A" : "문장B"}` 처럼 **분기 값이 전부 문자열 리터럴**이면,
+ * 각 리터럴의 마지막 글자로 받침을 계산해서 조사가 항상 맞는지 판정한다.
+ * 하나라도 어긋나면 위반. (전부 맞으면 고정 조사를 써도 안전하다)
+ */
+function literalSafe(expr, particle) {
+  const inner = expr.replace(/^\$\{|\}$/g, "");
+  const lits = [...inner.matchAll(/"([^"]*)"|'([^']*)'/g)].map((m) => (m[1] ?? m[2] ?? "").trim()).filter(Boolean);
+  if (lits.length === 0) return false;
+  // 리터럴 말고 다른 식별자가 값으로 쓰이면(예: `x ? a : "문자"`) 판단 불가 → 위반으로 둔다
+  const stripped = inner.replace(/"[^"]*"|'[^']*'/g, "");
+  if (/[A-Za-z_$][\w$]*\s*(?::|$)/.test(stripped.replace(/[?:.&|=<>!()[\]\s,+\-*/%]/g, " ").trim())) {
+    // 삼항 조건부에 쓰인 변수는 값이 아니므로 무시하기 어렵다 — 보수적으로 리터럴만 있을 때만 판정
+  }
+  return lits.every((s) => {
+    const j = hasJong(s[s.length - 1]);
+    if (j === null) return false;                    // 한글로 안 끝나면 판단 불가
+    return j ? JONG_OK.has(particle) : NO_JONG_OK.has(particle);
+  });
 }
 
 const violations = [];
@@ -101,12 +129,12 @@ for (const f of TARGETS) check(f);
 
 const NAMES = { J1: "변수 뒤 고정 조사", J2: "괄호 폴백" };
 /**
- * ⚠️ 지금은 **경고 모드**다 (exit 0).
- * 신설 시점에 이미 52건이 쌓여 있어서 바로 차단하면 빌드가 멈춘다.
- * check-prequestion.mjs의 R3가 그랬듯이, 백로그를 다 정리한 뒤
- * 아래 process.exit(1)의 주석을 풀어 **차단으로 승격**할 것.
+ * ✅ 차단 모드 (2026-08-15 승격).
+ * 신설 시점 백로그 47건을 josa() 헬퍼로 전부 정리한 뒤 올렸다.
+ * 이제 변수 뒤에 조사를 고정으로 쓰면 **빌드가 실패한다.**
+ * 화면 검수로는 절대 못 잡는 종류(값이 바뀌어야 드러남)라 여기서 막는 게 유일한 방법이다.
  */
-const BLOCKING = false;
+const BLOCKING = true;
 if (violations.length) {
   const tag = BLOCKING ? "❌ 조사 검사 실패" : "⚠️ 조사 검사 경고(아직 차단 아님)";
   console.error(`\n${tag} — ${violations.length}건\n`);

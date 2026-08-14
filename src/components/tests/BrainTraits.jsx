@@ -1,6 +1,7 @@
 ﻿"use client";
 import { useState, useEffect, useRef } from "react";
 import { commitPaymentDeduction } from "@/lib/payment-helpers";
+import { josa } from "@/lib/josa";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // 40개 특성 데이터
@@ -495,7 +496,7 @@ function IndexModal({ name, indices, onClose }) {
   const avgPos = ((100-60)/85)*100;
 
   const personalAnalysis = iq >= 130
-    ? `${info.code} ${iq} — 상위 2%에 해당해요! 이 지수가 이렇게 높다는 건 ${info.def.split(".")[0]}는 능력이 탁월하다는 뜻이에요. 주변에서 이 능력이 발휘될 때 놀라는 경우가 분명 있었을 거예요. 이 능력을 의식적으로 더 활용하면 독보적인 강점이 돼요.`
+    ? `${info.code} ${iq} — 상위 2%에 해당해요! 이 지수가 이렇게 높다는 건 ${josa(info.def.split(".")[0],"은","는")} 능력이 탁월하다는 뜻이에요. 주변에서 이 능력이 발휘될 때 놀라는 경우가 분명 있었을 거예요. 이 능력을 의식적으로 더 활용하면 독보적인 강점이 돼요.`
     : iq >= 120
     ? `${info.code} ${iq} — 상위 9%예요. 이 지수 덕분에 당신은 많은 사람들이 어려워하는 상황에서 자연스럽게 능력을 발휘하고 있을 거예요. 조금만 더 의식적으로 갈고닦으면 최상위권에 들 수 있어요.`
     : iq >= 110

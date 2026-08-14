@@ -1,4 +1,4 @@
-const CACHE_NAME = 'chungi-v856';
+const CACHE_NAME = 'chungi-v857';
 
 self.addEventListener('install', event => {
   self.skipWaiting();

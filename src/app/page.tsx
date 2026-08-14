@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import SajuGlossaryFAB from "@/components/SajuGlossaryFAB";
 import { signInWithKakao, signInWithGoogle, signOut, onAuthStateChange } from "@/lib/auth";
 import { commitPaymentDeduction } from "@/lib/payment-helpers";
-import { josaOnly } from "@/lib/josa";
+import { josa, josaOnly } from "@/lib/josa";
 import { computeSaju, legacyPillars } from "@/lib/saju";
 import GOODS_DB from "@/data/goods.json";
 import GWANSANG_TYPES from "@/data/gwansang-types.json";
@@ -2402,7 +2402,7 @@ function _buildHanjaStory(surname:any,h1:any,h2:any,nm:string):string{
       parts.push(`'${h1.c}${h2.c}'(${h1.y}${h2.y}) — ${s1}, 그리고 ${s2} 살아가라는 부모님의 깊은 바람이 담긴 이름이에요.`);
     }else{
       const m1=h1.m?`'${h1.m}'의 뜻`:"";const m2=h2.m?`'${h2.m}'의 뜻`:"";
-      parts.push(`부모님이 고심해서 '${h1.c}${h2.c}' — ${m1}${m1&&m2?"과 ":""}${m2}을 담아 지어주셨어요. ${nm}님이 그 의미대로 살아가길 바라는 마음이 한 글자 한 글자에 새겨져 있죠.`);
+      parts.push(`부모님이 고심해서 '${h1.c}${h2.c}' — ${m1}${m1&&m2?"과 ":""}${josa(m2,"을","를")} 담아 지어주셨어요. ${nm}님이 그 의미대로 살아가길 바라는 마음이 한 글자 한 글자에 새겨져 있죠.`);
     }
   }else if(h1){
     if(s1)parts.push(`'${h1.c}'(${h1.y}) — ${s1} 살아가라는 부모님의 마음이 담긴 이름이에요.`);
@@ -5057,11 +5057,11 @@ function DoljabiSimModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,on
     };
     // 오행별 양육 팁 (3줄)
     const ohParenting:any={
-      목:[`${nameOnly}는 자기만의 리듬으로 자라는 아이예요. 남들과 비교하지 말고 스스로 피어나는 걸 기다려주세요.`,"감정을 자주 물어봐 주세요. 표현할 기회를 많이 주면 감수성이 강점이 돼요.","자연·식물·그림책 — 생명 있는 것들과 가까이 지내게 해주세요."],
-      화:[`${nameOnly}는 칭찬을 먹고 자라는 아이예요. 작은 성취도 크게 기뻐해 주세요.`,"감정 기복을 '나쁜 것'으로 보지 말고 '풍부한 마음'으로 인정해 주세요.","무대·공연·발표 — 주목받는 경험을 두려워하지 않게 응원해주세요."],
+      목:[`${josa(nameOnly,"은","는")} 자기만의 리듬으로 자라는 아이예요. 남들과 비교하지 말고 스스로 피어나는 걸 기다려주세요.`,"감정을 자주 물어봐 주세요. 표현할 기회를 많이 주면 감수성이 강점이 돼요.","자연·식물·그림책 — 생명 있는 것들과 가까이 지내게 해주세요."],
+      화:[`${josa(nameOnly,"은","는")} 칭찬을 먹고 자라는 아이예요. 작은 성취도 크게 기뻐해 주세요.`,"감정 기복을 '나쁜 것'으로 보지 말고 '풍부한 마음'으로 인정해 주세요.","무대·공연·발표 — 주목받는 경험을 두려워하지 않게 응원해주세요."],
       토:[`${nameOnly}${_josa(nameOnly,"이가")} 느리게 반응해도 기다려주세요. 속도는 느리지만 한 번 익히면 평생 가요.`,"약속과 규칙을 명확하게 세우면 훨씬 안정감을 느껴요.","변화보다 반복이 좋아요. 같은 책·같은 놀이를 반복해도 괜찮아요."],
-      금:[`${nameOnly}는 완벽주의로 자신을 몰아붙이기 쉬워요. '실수해도 괜찮아'를 자주 말해주세요.`,"원칙을 중요하게 여기니 약속을 어른이 먼저 지키는 모습을 보여주세요.","손으로 만들고 꾸미는 활동(레고·퍼즐·공예)을 많이 준비해주세요."],
-      수:[`${nameOnly}는 혼자 생각하는 시간이 꼭 필요한 아이예요. 억지로 밖으로 끌고 나오지 마세요.`,"질문이 많을 거예요. '왜?'에 진지하게 답해주는 것이 최고의 교육이에요.","물놀이·책·조용한 공간 — 깊이 빠져드는 시간을 존중해 주세요."],
+      금:[`${josa(nameOnly,"은","는")} 완벽주의로 자신을 몰아붙이기 쉬워요. '실수해도 괜찮아'를 자주 말해주세요.`,"원칙을 중요하게 여기니 약속을 어른이 먼저 지키는 모습을 보여주세요.","손으로 만들고 꾸미는 활동(레고·퍼즐·공예)을 많이 준비해주세요."],
+      수:[`${josa(nameOnly,"은","는")} 혼자 생각하는 시간이 꼭 필요한 아이예요. 억지로 밖으로 끌고 나오지 마세요.`,"질문이 많을 거예요. '왜?'에 진지하게 답해주는 것이 최고의 교육이에요.","물놀이·책·조용한 공간 — 깊이 빠져드는 시간을 존중해 주세요."],
     };
     // v566: 오행별 보충 데이터 — 색깔·친구·놀이·MBTI·음식·운동·발달·수면·황금기·시기별 운세
     const ohColor:any={
@@ -5828,7 +5828,7 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
         if(expectedSide&&j?.detected_side&&j.detected_side!==expectedSide){
           const expLabel=validateType==="palm"?(expectedSide==="left"?"왼손":"오른손"):(expectedSide==="left"?"왼발":"오른발");
           const detLabel=validateType==="palm"?(j.detected_side==="left"?"왼손":"오른손"):(j.detected_side==="left"?"왼발":"오른발");
-          const proceed=confirm(`⚠️ ${expLabel}을 선택하셨는데 사진은 ${detLabel}으로 보여요.\n\n그대로 분석할까요? (취소하면 다시 올리기)`);
+          const proceed=confirm(`⚠️ ${josa(expLabel,"을","를")} 선택하셨는데 사진은 ${josa(detLabel,"으로","로")} 보여요.\n\n그대로 분석할까요? (취소하면 다시 올리기)`);
           if(!proceed){setter(null);setValidating(false);return;}
         }
       }catch{}
@@ -7618,7 +7618,7 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
                 content:{
                   total:{title:"덕질의 운명적 케미",sub:"내 최애와의 영혼 연결고리",body:`${p1}님과 ${p2}님(최애)의 사주에는 '연성(緣星)'의 흔적이 보여요. 우연히 좋아하게 된 게 아니라, 별의 운행이 두 사람을 연결한 거예요.\n\n${total>=85?"S급 — 운명적 최애! 한 시대를 함께한 인연":total>=70?"A급 — 깊은 팬심, 평생 응원할 만한 인연":"B급 — 즐거운 덕질, 내 영혼의 비타민"} (${grade}등급)\n\n좋아하는 마음에 죄책감이나 부담을 느끼지 마세요. 이 덕질은 ${p1}님의 일상에 색을 더해주는 소중한 에너지의 원천이에요.`,good:`최애 보면 행복 호르몬 폭발\n팬덤 친구도 좋은 인연`,bad:`너무 깊이 빠져 일상 흔들 주의\n과한 비교·집착 경계`,score:total,grade,rank},
                   p1:{title:`${p1}님의 덕후 기질`,sub:"왜 최애에게 빠졌는지",body:`${p1}님의 관상에는 '심미안'과 '깊이 있게 좋아하는' 기운이 강해요. 한번 마음을 둔 대상에는 깊이 빠지는 형상입니다.\n\n좋아하는 마음을 표현하는 데 두려움이 없는 ${p1}님 — 사주의 식상(食傷) 기운이 강해 감정을 그대로 표출할 수 있는 사람.\n\n이 덕후 기질은 단점이 아니라 ${p1}님의 강한 매력이에요.`,good:`깊이 있게 좋아할 줄 아는 마음\n좋아하는 만큼 응원할 의지`,bad:`너무 빠지면 현실 균형 흔들 위험`},
-                  p2:{title:`최애 ${p2}님의 매력`,sub:"왜 ${p1}님이 빠졌나",body:`${p2}님의 관상·이미지에서 ${p1}님의 일간을 끌어당기는 강력한 자석이 보여요. ${p2}님이 가진 본연의 빛이 ${p1}님의 가장 약한 부분에 정확히 닿아요.\n\n특히 ${p2}님의 표정·말투·행동에서 ${p1}님이 부족하다고 느끼는 것 — 자신감·자유로움·창의력 등 — 이 자연스럽게 흘러나와요. 그래서 ${p2}님을 보면 영감을 받는 거예요.`,good:`${p1}님에게 영감·위로의 원천\n바라보는 것만으로도 충전됨`,bad:`현실의 사람과 비교하면 위험`},
+                  p2:{title:`최애 ${p2}님의 매력`,sub:`왜 ${p1}님이 빠졌나`,body:`${p2}님의 관상·이미지에서 ${p1}님의 일간을 끌어당기는 강력한 자석이 보여요. ${p2}님이 가진 본연의 빛이 ${p1}님의 가장 약한 부분에 정확히 닿아요.\n\n특히 ${p2}님의 표정·말투·행동에서 ${p1}님이 부족하다고 느끼는 것 — 자신감·자유로움·창의력 등 — 이 자연스럽게 흘러나와요. 그래서 ${p2}님을 보면 영감을 받는 거예요.`,good:`${p1}님에게 영감·위로의 원천\n바라보는 것만으로도 충전됨`,bad:`현실의 사람과 비교하면 위험`},
                   harmony:{title:"두 분의 운명적 연결",sub:"전생 인연 추적",body:`전생에서 ${p1}님은 ${p2}님과 ${total>=80?"같은 시대를 살았던 무리 — 함께 그를 응원했던 친구이거나 가까이서 도움을 줬던 인연":total>=65?"잠깐 스쳐갔지만 강렬한 인상을 남긴 인연":"멀리서 동경하며 바라봤던 인연"}이었어요.\n\n그래서 이번 생에 다시 만났을 때 ${p2}님을 보자마자 마음이 끌린 거예요. 이건 단순한 팬심이 아니라 영혼의 기억이 부른 신호.`,good:`설명할 수 없는 끌림 = 전생 흔적`,bad:`현실에선 만날 수 없을 수도`,score:Math.min(98,total+10),grade:"A+",rank:"상위 6%"},
                   fight:{title:"덕질 위기 관리",sub:"최애가 흔들릴 때",body:`덕질하다 보면 위기가 와요. 최애의 스캔들·휴식·은퇴 등. 그때 ${p1}님은 큰 충격을 받을 수 있어요.\n\n하지만 잊지 마세요 — ${p1}님이 사랑한 건 ${p2}님이라는 사람의 본질, 이미지, 영감이지 완벽한 환상이 아니에요.\n\n✨ 위기 대처법 — '한 발짝 거리 두기'. 잠시 덕질을 쉬고 일상으로 돌아오세요. 진짜 깊은 팬심은 시간이 지나도 변하지 않아요.`,good:`성숙한 덕후 = 흔들림 적음`,bad:`최애 위기 = 본인 멘탈 위기`,score:Math.max(40,total-15),grade:"B",rank:"흔한 케이스"},
                   future:{title:"성덕(성공한 덕후) 가능성",sub:"앞으로 만남 가능성",body:`${total>=85?"S급! 콘서트·팬싸·우연한 만남 가능성 매우 높음. 2026~2027년 사이에 운명적 만남의 기운이 강해요.":total>=70?"A급. 콘서트·팬미팅에서 눈 마주칠 가능성 있음. 의미 있는 순간이 올 거예요.":"B급. 직접 만남보다는 SNS·소속사 이벤트로 연결될 가능성. 그것도 충분히 의미 있어요."}\n\n${p1}님이 ${p2}님께 영향받아 성장한 모습 — 그것이 진정한 성덕이에요.`,good:`덕질이 본인 성장으로 이어짐`,bad:`너무 큰 기대는 실망의 씨앗`,score:Math.min(95,total+5),grade:"A",rank:"상위 15%"},
@@ -7644,15 +7644,15 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
                 emoji:"🐾",svcName:"멍·냥 주인 인연",accent:"#f97316",accentBg:"#fff7ed",accentBd:"#fed7aa",
                 tabs:[{k:"total",l:"총평"},{k:"p1",l:`${p1}님 (집사)`},{k:"p2",l:`${p2}`},{k:"harmony",l:"교감"},{k:"fight",l:"케어 가이드"},{k:"future",l:"평생 동행"},{k:"care",l:"공동 개운법"}],
                 content:{
-                  total:{title:"전생부터 이어진 가족",sub:"우리 애랑 나는 어떤 인연일까",body:`${p1}님과 ${p2}는 단순한 주인-반려동물이 아니에요. 사주·관상학에서 반려동물과의 인연은 '천연(天緣) 가족'이라 불러요.\n\n총점 ${total}점 (${grade}등급, ${rank}) — 두 분은 전생에 ${total>=80?"가장 가까운 가족 (부모-자식이거나 영혼의 동반자)":total>=65?"오래 알고 지낸 친구 또는 깊은 인연":"잠깐 스쳐간 인연이지만 강렬했던 만남"}이었어요.\n\n이번 생에 다시 만난 건 큰 선물이에요. ${p2}는 ${p1}님께 ${total>=75?"평생의 위로와 무조건적 사랑":"일상의 작은 행복과 따뜻함"}을 주기 위해 찾아온 거예요.`,good:`무조건적 사랑 받기\n일상의 작은 행복 폭발`,bad:`헤어짐 시 큰 슬픔\n케어 책임 무거움`,score:total,grade,rank},
-                  p1:{title:`${p1}님의 집사 기질`,sub:"반려동물에게 주는 영향",body:`${p1}님의 관상에는 따뜻함과 보살핌의 기운이 강해요. 작은 생명도 소중히 여기는 형상입니다.\n\n${p1}님이 ${p2}를 바라보는 눈빛에서 진심이 느껴져요. ${p2}는 ${p1}님의 감정을 100% 정확하게 읽어내고, ${p1}님이 슬플 때 가장 먼저 다가오는 영혼의 친구예요.`,good:`따뜻한 보살핌 · 깊은 교감`,bad:`혼자 다 책임지려 지칠 수 있음`},
-                  p2:{title:`${p2}의 본성과 매력`,sub:"이 아이는 어떤 영혼인가",body:`${p2}는 ${p1}님께 특별한 영혼이에요. 단순한 동물이 아니라, 전생에서 함께 살았던 인연이 다시 작은 몸으로 찾아온 거예요.\n\n${p2}가 자꾸 ${p1}님만 따라다니는 이유, 다른 사람보다 ${p1}님께 특별히 다정한 이유 — 이 모든 게 영혼의 기억 때문이에요.`,good:`${p1}님께 특별히 다정\n영혼의 메신저`,bad:`너무 의존적이 될 수 있음`},
-                  harmony:{title:"두 분의 영혼 교감",sub:"말 없이도 통하는 사이",body:`${p1}님과 ${p2}는 사람-동물 관계라 말은 통하지 않지만, 영혼 차원에서는 ${total>=80?"100%":total>=65?"80%":"60%"} 통하고 있어요.\n\n${p2}가 ${p1}님 앞에서만 보여주는 행동들 — 그게 두 분만의 비밀 언어예요. 이 교감은 시간이 지날수록 더 깊어집니다.\n\n💞 교감 강화 신호\n👁️ 눈을 깊이 마주칠 때 — 영혼 인사\n🐾 ${p1}님 옆에 와서 잠들 때 — 완전한 신뢰\n🥺 ${p1}님 우는 모습 보면 옆에 올 때 — 공감 능력`,good:`말 없이 통하는 깊은 교감\n시간 갈수록 깊어짐`,bad:`서로 너무 익숙해 무관심 주의`,score:Math.min(98,total+8),grade:"A+",rank:"상위 6%"},
-                  fight:{title:"케어·소통 가이드",sub:"우리 애가 더 행복해지는 법",body:`${p2}가 가끔 이상한 행동을 한다면 그건 ${p1}님께 무언가 말하고 있는 거예요. 짖음·울음·식욕 부진·과한 애교 — 모두 신호입니다.\n\n✨ 우리 애 행복 신호 vs 위험 신호\n🟢 좋은 신호: 꼬리 흔들기, 배 보이기, 옆에 와서 잠들기, 자연스러운 식욕\n🔴 주의 신호: 갑작스런 식욕 변화, 이유 없는 짖음, 한곳에 숨기, 그루밍 과다\n\n💡 ${p1}님이 ${p2}를 위해 할 수 있는 최고의 일 — 매일 5분 '눈 맞추고 가만히 있기'. 이게 가장 깊은 교감 시간이에요.`,good:`작은 변화 알아채는 능력`,bad:`바쁘면 신호 놓칠 수 있음`,score:Math.max(50,total-10),grade:"B+",rank:"평균"},
-                  future:{title:"평생 동행의 의미",sub:"${p2}가 ${p1}님께 오는 시간",body:`반려동물의 시간은 짧아요. 평균 13~17년. 하지만 그 시간이 ${p1}님 인생에 주는 의미는 80~90년 인생만큼 큽니다.\n\n${p2}가 ${p1}님 곁을 떠나는 그날까지, 매 순간이 영원처럼 소중해요. 사진·영상 자주 남기고, 함께 있는 시간을 의식적으로 음미하세요.\n\n그리고 언젠가 ${p2}가 떠나도, 영혼은 사라지지 않아요. ${p1}님의 다음 반려동물에서 다시 만날 수도 있어요. 이 인연은 한 번이 아니에요.`,good:`매 순간이 인생의 보물`,bad:`헤어짐의 슬픔 깊을 수 있음`,score:Math.min(95,total+4),grade:"A",rank:"상위 12%"},
-                  care:{title:"공동 개운법",sub:"두 분의 운을 함께 높이는 법",body:`✨ 우리 집의 공동 개운 의식\n🐾 산책 시간 = 두 분의 동조 시간 (운 동조)\n📷 함께 찍은 사진을 거실에 — 가족 에너지 강화\n🌿 ${p2}가 좋아하는 자리에 식물 — 그 영역의 기운 정화\n🍚 같은 시간에 식사 — 리듬 동조\n💝 ${p2} 생일·기념일 챙기기 — 인연의 의식\n🛁 그루밍·목욕 시간 = 정성과 사랑의 시간`,good:`함께하는 일상이 곧 개운`,bad:`소홀하면 우울·분리불안 위험`},
+                  total:{title:"전생부터 이어진 가족",sub:"우리 애랑 나는 어떤 인연일까",body:`${p1}님과 ${josa(p2,"은","는")} 단순한 주인-반려동물이 아니에요. 사주·관상학에서 반려동물과의 인연은 '천연(天緣) 가족'이라 불러요.\n\n총점 ${total}점 (${grade}등급, ${rank}) — 두 분은 전생에 ${josa(total>=80?"가장 가까운 가족 (부모-자식이거나 영혼의 동반자)":total>=65?"오래 알고 지낸 친구 또는 깊은 인연":"잠깐 스쳐간 인연이지만 강렬했던 만남","이","가")}었어요.\n\n이번 생에 다시 만난 건 큰 선물이에요. ${josa(p2,"은","는")} ${p1}님께 ${total>=75?"평생의 위로와 무조건적 사랑":"일상의 작은 행복과 따뜻함"}을 주기 위해 찾아온 거예요.`,good:`무조건적 사랑 받기\n일상의 작은 행복 폭발`,bad:`헤어짐 시 큰 슬픔\n케어 책임 무거움`,score:total,grade,rank},
+                  p1:{title:`${p1}님의 집사 기질`,sub:"반려동물에게 주는 영향",body:`${p1}님의 관상에는 따뜻함과 보살핌의 기운이 강해요. 작은 생명도 소중히 여기는 형상입니다.\n\n${p1}님이 ${josa(p2,"을","를")} 바라보는 눈빛에서 진심이 느껴져요. ${josa(p2,"은","는")} ${p1}님의 감정을 100% 정확하게 읽어내고, ${p1}님이 슬플 때 가장 먼저 다가오는 영혼의 친구예요.`,good:`따뜻한 보살핌 · 깊은 교감`,bad:`혼자 다 책임지려 지칠 수 있음`},
+                  p2:{title:`${p2}의 본성과 매력`,sub:"이 아이는 어떤 영혼인가",body:`${josa(p2,"은","는")} ${p1}님께 특별한 영혼이에요. 단순한 동물이 아니라, 전생에서 함께 살았던 인연이 다시 작은 몸으로 찾아온 거예요.\n\n${josa(p2,"이","가")} 자꾸 ${p1}님만 따라다니는 이유, 다른 사람보다 ${p1}님께 특별히 다정한 이유 — 이 모든 게 영혼의 기억 때문이에요.`,good:`${p1}님께 특별히 다정\n영혼의 메신저`,bad:`너무 의존적이 될 수 있음`},
+                  harmony:{title:"두 분의 영혼 교감",sub:"말 없이도 통하는 사이",body:`${p1}님과 ${josa(p2,"은","는")} 사람-동물 관계라 말은 통하지 않지만, 영혼 차원에서는 ${total>=80?"100%":total>=65?"80%":"60%"} 통하고 있어요.\n\n${josa(p2,"이","가")} ${p1}님 앞에서만 보여주는 행동들 — 그게 두 분만의 비밀 언어예요. 이 교감은 시간이 지날수록 더 깊어집니다.\n\n💞 교감 강화 신호\n👁️ 눈을 깊이 마주칠 때 — 영혼 인사\n🐾 ${p1}님 옆에 와서 잠들 때 — 완전한 신뢰\n🥺 ${p1}님 우는 모습 보면 옆에 올 때 — 공감 능력`,good:`말 없이 통하는 깊은 교감\n시간 갈수록 깊어짐`,bad:`서로 너무 익숙해 무관심 주의`,score:Math.min(98,total+8),grade:"A+",rank:"상위 6%"},
+                  fight:{title:"케어·소통 가이드",sub:"우리 애가 더 행복해지는 법",body:`${josa(p2,"이","가")} 가끔 이상한 행동을 한다면 그건 ${p1}님께 무언가 말하고 있는 거예요. 짖음·울음·식욕 부진·과한 애교 — 모두 신호입니다.\n\n✨ 우리 애 행복 신호 vs 위험 신호\n🟢 좋은 신호: 꼬리 흔들기, 배 보이기, 옆에 와서 잠들기, 자연스러운 식욕\n🔴 주의 신호: 갑작스런 식욕 변화, 이유 없는 짖음, 한곳에 숨기, 그루밍 과다\n\n💡 ${p1}님이 ${josa(p2,"을","를")} 위해 할 수 있는 최고의 일 — 매일 5분 '눈 맞추고 가만히 있기'. 이게 가장 깊은 교감 시간이에요.`,good:`작은 변화 알아채는 능력`,bad:`바쁘면 신호 놓칠 수 있음`,score:Math.max(50,total-10),grade:"B+",rank:"평균"},
+                  future:{title:"평생 동행의 의미",sub:`${josa(p2,"이","가")} ${p1}님께 오는 시간`,body:`반려동물의 시간은 짧아요. 평균 13~17년. 하지만 그 시간이 ${p1}님 인생에 주는 의미는 80~90년 인생만큼 큽니다.\n\n${josa(p2,"이","가")} ${p1}님 곁을 떠나는 그날까지, 매 순간이 영원처럼 소중해요. 사진·영상 자주 남기고, 함께 있는 시간을 의식적으로 음미하세요.\n\n그리고 언젠가 ${josa(p2,"이","가")} 떠나도, 영혼은 사라지지 않아요. ${p1}님의 다음 반려동물에서 다시 만날 수도 있어요. 이 인연은 한 번이 아니에요.`,good:`매 순간이 인생의 보물`,bad:`헤어짐의 슬픔 깊을 수 있음`,score:Math.min(95,total+4),grade:"A",rank:"상위 12%"},
+                  care:{title:"공동 개운법",sub:"두 분의 운을 함께 높이는 법",body:`✨ 우리 집의 공동 개운 의식\n🐾 산책 시간 = 두 분의 동조 시간 (운 동조)\n📷 함께 찍은 사진을 거실에 — 가족 에너지 강화\n🌿 ${josa(p2,"이","가")} 좋아하는 자리에 식물 — 그 영역의 기운 정화\n🍚 같은 시간에 식사 — 리듬 동조\n💝 ${p2} 생일·기념일 챙기기 — 인연의 의식\n🛁 그루밍·목욕 시간 = 정성과 사랑의 시간`,good:`함께하는 일상이 곧 개운`,bad:`소홀하면 우울·분리불안 위험`},
                 },
-                cert:{label:"RAINBOW 🌈 주황 인증서",title:"🐾 영혼의 가족",subtitle:"전생부터 이어진 작은 가족의 인연",bodyLines:[`${p1}님과 ${p2}는`,"전생부터 이어진 영혼의 가족.","말은 통하지 않아도","마음은 100% 통하는","천연(天緣)의 인연입니다."],hashtags:["#영혼의가족",`#${rank.replace(/\s/g,"")}`,"#천연인연","#반려영혼메이트"]},
+                cert:{label:"RAINBOW 🌈 주황 인증서",title:"🐾 영혼의 가족",subtitle:"전생부터 이어진 작은 가족의 인연",bodyLines:[`${p1}님과 ${josa(p2,"은","는")}`,"전생부터 이어진 영혼의 가족.","말은 통하지 않아도","마음은 100% 통하는","천연(天緣)의 인연입니다."],hashtags:["#영혼의가족",`#${rank.replace(/\s/g,"")}`,"#천연인연","#반려영혼메이트"]},
               },
             };
             // 기본 cfg (다른 svc는 기본형 사용)
@@ -7663,7 +7663,7 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
                 total:{title:`${p1}님 × ${p2}님 종합`,sub:"두 사람의 관상·사주 합 분석",body:`${p1}님과 ${p2}님 두 분의 관상을 종합 분석한 결과, ${total}점 (${grade}등급, ${rank})으로 ${total>=80?"매우 좋은":total>=65?"평균 이상":"노력이 필요한"} 합을 보여요.\n\n두 분의 기운이 만났을 때의 시너지가 어떻게 발현되는지, 7가지 영역으로 깊이 풀어드릴게요.\n\n각 탭을 눌러 두 분의 합을 정밀하게 확인해보세요.`,good:"두 사람 기운 시너지\n서로의 빈틈 채움",bad:"가끔 충돌 가능\n속도 차이 주의",score:total,grade,rank},
                 p1:{title:`${p1}님 관상`,sub:"본인의 타고난 기운",body:`${p1}님의 관상에서 읽히는 기운은 안정과 책임감이에요. 가족·동료 안에서 중심을 잡아주는 형상입니다.\n\n눈빛이 깊고 따뜻한 형은 사람을 끌어당기는 매력의 원천. 어디서든 신뢰받는 자리에 잘 어울려요.`,good:"신뢰 · 따뜻함",bad:"혼자 짊어지는 경향"},
                 p2:{title:`${p2}님 관상`,sub:"상대의 타고난 기운",body:`${p2}님의 관상은 활력과 호기심의 형상이에요. 새로운 시도를 좋아하고 분위기를 띄우는 기질이 강합니다.\n\n${p1}님과 함께할 때 두 기운이 자연스럽게 보완돼요.`,good:"활력 · 추진력",bad:"충동적 결정 주의"},
-                harmony:{title:"두 분의 합",sub:"기운이 만났을 때의 시너지",body:`두 분의 관상을 합쳐 보면 ${total>=80?"환상의 케미":total>=65?"좋은 합":"개선 가능한 합"}을 보여요. 서로의 빈 곳을 자연스럽게 채우는 구조입니다.\n\n특히 두 분 사이에는 사주에서도 좋은 작용이 보여요. 함께 있으면 운이 더 좋아지는 관계예요.`,good:"보완형 케미\n서로의 강점 살림",bad:"속도 차이 → 오해 주의",score:Math.min(98,total+5),grade:total>=80?"A+":"A",rank:total>=80?"상위 8%":"상위 15%"},
+                harmony:{title:"두 분의 합",sub:"기운이 만났을 때의 시너지",body:`두 분의 관상을 합쳐 보면 ${josa(total>=80?"환상의 케미":total>=65?"좋은 합":"개선 가능한 합","을","를")} 보여요. 서로의 빈 곳을 자연스럽게 채우는 구조입니다.\n\n특히 두 분 사이에는 사주에서도 좋은 작용이 보여요. 함께 있으면 운이 더 좋아지는 관계예요.`,good:"보완형 케미\n서로의 강점 살림",bad:"속도 차이 → 오해 주의",score:Math.min(98,total+5),grade:total>=80?"A+":"A",rank:total>=80?"상위 8%":"상위 15%"},
                 fight:{title:"갈등 패턴",sub:"왜 부딪히는지 + 해결법",body:`두 분 사이에 갈등이 있다면 그 이유는 '서로 다른 표현 방식'에 있어요. 두 분 모두 진심이지만 표현하는 방법이 다를 뿐입니다.\n\n✨ 해결법 — "나는 너를 사랑하지만 표현 방식이 달라"라고 솔직히 말해보세요.`,good:"빠른 화해 가능",bad:"표현 방식 차이",score:Math.max(45,total-12),grade:"B+",rank:"평균"},
                 future:{title:"앞으로의 흐름",sub:"시간이 갈수록의 변화",body:`두 분의 관계는 시간이 지날수록 ${total>=75?"깊어지는":"안정되는"} 형상이에요. 2026년 하반기에 좋은 일이 함께 찾아옵니다.\n\n관계의 운은 두 분이 함께 만들어가는 것. 지금 ${total}점에서 더 올라갈 가능성이 충분해요.`,good:"2026 하반기 좋은 흐름",bad:"바쁠 때 소홀 주의",score:Math.min(95,total+3),grade:"A",rank:"상위 22%"},
                 care:{title:"두 분 개운법",sub:"기운을 높이는 일상 팁",body:`✨ 두 분에게 추천하는 개운 아이템\n🌳 함께 키우는 식물 — 木 기운 강화\n🍚 같이 먹는 식사 — 土 기운 안정\n📷 함께 찍은 사진 — 인연 에너지 응축\n🚶 같이 걷는 산책 — 기운 동조\n💎 같은 색 액세서리 — 시각적 케미`,good:"함께 시간 = 기운 강화",bad:"각자 시간 너무 길면 멀어질 수 있어요"},
@@ -7677,9 +7677,9 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
               content:{
                 total:{title:"왜 이 사람만 만나면 기운 빠질까",sub:"전생부터 묶인 충(沖)의 흔적",body:`${p1}님과 ${p2}님의 관상은 '상극(相剋)'의 형상이에요. 한쪽이 강해질수록 다른 쪽이 눌리는 구조라, 함께 있으면 둘 다 본래의 빛을 잃습니다.\n\n전통 관상학에서 이런 조합을 '충형(沖形)'이라 불러요. 서로의 기운이 부딪치면서 에너지가 소모되는 형국입니다.\n\n총점 ${total}점은 ${total>=70?"비교적 견딜 만한 충돌이지만 장기간 누적되면 큰 데미지":total>=50?"중간 강도의 충돌. 의식적인 거리 두기가 필요":"강한 상극. 이 관계에서 빠져나오는 게 정답일 수 있어요"}.`,good:`인지하면 회피 가능\n충돌 패턴이 명확함`,bad:`함께 있을수록 기운 소모\n작은 자극에도 큰 반응`,score:total,grade,rank},
                 p1:{title:`${p1}님 관상 분석`,sub:"이 관계에서 받는 영향",body:`${p1}님은 본래 안정적이고 따뜻한 기운을 가진 분이에요. 그런데 ${p2}님 앞에서는 평소답지 않게 예민해지고 작은 일에도 발끈하게 됩니다.\n\n이건 ${p1}님의 문제가 아니라 두 사람 사이에 형성된 충(沖) 작용 때문이에요. 다른 사람과 있을 때의 ${p1}님과 ${p2}님과 있을 때의 ${p1}님은 완전히 다른 사람처럼 보일 수 있어요.`,good:`다른 곳에선 멀쩡함\n특정 관계에서만 무너짐`,bad:`이 사람 앞에서만 자기 모습 잃음`},
-                p2:{title:`${p2}님 관상 분석`,sub:"${p1}님에게 주는 영향",body:`${p2}님 자체가 나쁜 사람이라기보다는 ${p1}님에게 특별히 안 맞는 기운이에요. ${p2}님의 자연스러운 행동·말투가 ${p1}님의 가장 약한 부분을 정확히 자극합니다.\n\n관상학에서는 이런 관계를 '서로의 약점을 비추는 거울'이라 불러요. 의도하지 않아도 서로의 가장 어두운 면을 끌어내요.`,good:`다른 사람과는 잘 지냄`,bad:`${p1}님 약점만 정확히 건드림`},
+                p2:{title:`${p2}님 관상 분석`,sub:`${p1}님에게 주는 영향`,body:`${p2}님 자체가 나쁜 사람이라기보다는 ${p1}님에게 특별히 안 맞는 기운이에요. ${p2}님의 자연스러운 행동·말투가 ${p1}님의 가장 약한 부분을 정확히 자극합니다.\n\n관상학에서는 이런 관계를 '서로의 약점을 비추는 거울'이라 불러요. 의도하지 않아도 서로의 가장 어두운 면을 끌어내요.`,good:`다른 사람과는 잘 지냄`,bad:`${p1}님 약점만 정확히 건드림`},
                 clash:{title:"충돌 패턴 분석",sub:"왜 자꾸 부딪힐까",body:`두 분의 관상에서 가장 강하게 부딪히는 부분은 가치관과 표현 방식이에요. ${p1}님이 중요하게 여기는 것을 ${p2}님은 가볍게 보고, ${p2}님이 자연스럽게 하는 행동을 ${p1}님은 예의 없다고 느낍니다.\n\n작은 일이 큰 싸움으로 번지는 이유는 두 분의 사주가 충(沖) 관계에 있기 때문이에요. 이건 노력으로 극복하기 어려운 구조적 문제입니다.\n\n⚠️ 자주 폭발하는 트리거 — 사소한 말투, 시간 약속, 돈 문제, 가족 이야기`,good:`패턴이 분명해서 회피 쉬움`,bad:`작은 일에 큰 폭발\n노력해도 좁혀지지 않음`,score:Math.max(20,100-total),grade:"D",rank:"피해야 함"},
-                karma:{title:"전생 빚 추적",sub:"이번 생에 다시 만난 이유",body:`두 분이 이번 생에 만난 건 우연이 아니에요. 관상학에서는 강한 상극 관계를 '전생의 빚을 청산하러 온 인연'이라 봅니다.\n\n전생에서 ${total>=60?"한쪽이 다른 쪽에게 큰 상처를 줬거나, 둘 사이에 풀지 못한 갈등":total>=40?"두 사람이 서로를 깊이 미워했거나, 한쪽이 다른 쪽을 배신":"두 사람이 깊이 얽혀 있던 가해자-피해자 관계"}가 있었을 가능성이 높아요.\n\n이번 생에서 다시 만난 건 그 빚을 청산하기 위함. 청산이 끝나면 자연스럽게 멀어집니다.`,good:`청산 끝나면 끊어짐\n영원한 인연 아님`,bad:`청산 과정에서 상처 깊음`},
+                karma:{title:"전생 빚 추적",sub:"이번 생에 다시 만난 이유",body:`두 분이 이번 생에 만난 건 우연이 아니에요. 관상학에서는 강한 상극 관계를 '전생의 빚을 청산하러 온 인연'이라 봅니다.\n\n전생에서 ${josa(total>=60?"한쪽이 다른 쪽에게 큰 상처를 줬거나, 둘 사이에 풀지 못한 갈등":total>=40?"두 사람이 서로를 깊이 미워했거나, 한쪽이 다른 쪽을 배신":"두 사람이 깊이 얽혀 있던 가해자-피해자 관계","이","가")} 있었을 가능성이 높아요.\n\n이번 생에서 다시 만난 건 그 빚을 청산하기 위함. 청산이 끝나면 자연스럽게 멀어집니다.`,good:`청산 끝나면 끊어짐\n영원한 인연 아님`,bad:`청산 과정에서 상처 깊음`},
                 escape:{title:"거리두기 가이드",sub:"이 관계에서 살아남는 법",body:`상극 관계는 '극복'이 아니라 '관리'가 답이에요. 가족·직장 등 끊을 수 없는 관계라면 다음 원칙을 지키세요.\n\n📋 거리두기 7원칙\n1. 만남 빈도 50% 줄이기 (월 4회 → 2회)\n2. 1:1 만남 피하고 항상 제3자 동석\n3. 깊은 대화 금지, 표면적 인사만\n4. 돈·약속 같은 책임 관계 절대 만들지 말기\n5. SNS·연락처 숨기기 (불필요한 자극 차단)\n6. 만난 후 반드시 혼자 회복 시간 갖기\n7. 만남 전후로 정화 의식 (샤워·향초·묵상)`,good:`거리두면 평화로움\n에너지 회복 빠름`,bad:`완전 차단 어려운 관계는 더 힘듦`,score:Math.min(80,total+10),grade:"B",rank:"실천 가능"},
                 care:{title:"방어 개운법",sub:"이 사람으로부터 내 기운 지키기",body:`✨ 상극 방어 아이템 (이 사람 만나기 전·후 사용)\n🛡️ 흑요석·헤마타이트 — 부정적 기운 차단\n🌿 세이지·팔로산토 — 만남 후 공간 정화\n🧂 굵은소금 한 줌 — 현관에 두기 (방어막)\n🪞 작은 거울 — 가방에 (액운 반사)\n🕯️ 흰 양초 — 만남 다음 날 30분 켜두기 (정화)\n💎 자수정 팔찌 — 평소 착용 (영적 보호)\n🌸 만남 직후 손 씻기 + 차가운 물로 얼굴 — 기운 리셋`,good:`작은 의식만으로도 방어 가능\n나만의 안전지대 확보`,bad:`방심하면 또 휘말림`},
               },
@@ -9972,7 +9972,7 @@ function ZodiacModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLogi
       keywords:deep?.keywords,strength:deep?.strength,weakness:deep?.weakness,
       compatible:deep?.compatible,incompatible:deep?.incompatible,
       element:dbResult?.element,ruling_planet:dbResult?.ruling_planet,
-      fortune_msg:dbResult?.this_year_fortune||`${sel}는 올해 ${total>=80?"빛나는":"꾸준한"} 한 해.`,
+      fortune_msg:dbResult?.this_year_fortune||`${josa(sel,"은","는")} 올해 ${total>=80?"빛나는":"꾸준한"} 한 해.`,
     }});
   }
   const z=ZODIACS.find(z=>z.id===sel);
@@ -10063,7 +10063,7 @@ function ZodiacModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLogi
             <div style={{padding:"10px 16px 0",textAlign:"center"}}>
               <BrandLine>별자리 운세</BrandLine>
               {/* v352: 큰 이모지 삭제, 제목 의미 명확화 */}
-              <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>{selectedPerson?.name?`⭐ ${selectedPerson.name}님의 별자리 운세`:`⭐ ${z.id}를 위한 오늘의 기운`}</div>
+              <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>{selectedPerson?.name?`⭐ ${selectedPerson.name}님의 별자리 운세`:`⭐ ${josa(z.id,"을","를")} 위한 오늘의 기운`}</div>
               {dbData?<div style={{fontSize:10,color:"#7c3aed",marginTop:3,fontWeight:700}}>✦ {dbData.element} · {dbData.ruling_planet}</div>:<div style={{fontSize:10,color:"#888",marginTop:3}}>수호석: {z.stone}</div>}
               {/* v432: 검사 정보 — 인물 등록 시 이름 + 별자리, 미등록 시 별자리만 */}
               <div style={{fontSize:10,color:"#888",fontWeight:600,marginTop:6,lineHeight:1.6}}>
@@ -12384,7 +12384,7 @@ function PetGwansangModal({species,onClose,cart,setCart,onGoShop,addHistory,isLo
 
   function doAnalyze(){
     // 인물등록 통합: selectedPerson에서 이름 가져오므로 petName 별도 검증 불필요
-    if(!selectedPerson&&!petName.trim()){alert(`먼저 우리 ${petLabel}를 인물등록에서 선택하거나 이름을 입력해주세요!`);return;}
+    if(!selectedPerson&&!petName.trim()){alert(`먼저 우리 ${josa(petLabel,"을","를")} 인물등록에서 선택하거나 이름을 입력해주세요!`);return;}
     if(!imgBase64){alert(`${petLabel} 사진을 먼저 올려주세요!`);return;}
     if(!consent){alert(`${petLabel}의 동의가 필요해요 🐾`);return;}
     // 결제 후 에러로 재시도하는 경우 — 재결제 X (사용자 요청: "결제 중복"). 재시도는 사전질문도 다시 안 묻는다.
@@ -12430,7 +12430,7 @@ function PetGwansangModal({species,onClose,cart,setCart,onGoShop,addHistory,isLo
         const errMap:Record<number,any>={
           21:{title:`🐾 "${isDog?"멍멍! 강아지":"냐옹! 고양이"}가 아니에요!"`,msg:`우리 ${petLabel} 사진을 올려줘야 해요! 만약 사람이라면 "내 관상보기"로, 아기라면 "우리 아기 관상"으로 가주세요. 사랑스러운 우리 ${petLabel} 얼굴 정면 사진으로 다시 올려주면 천기 AI가 정밀 분석해드릴게요! ${petEmoji}`,guide:[`우리 ${petLabel} 얼굴 정면`,'사람·아기는 "내 관상보기"·"우리 아기 관상"에서!'],tag:isDog?"#댕댕상":"#냥냥상"},
           22:{title:'🌫️ "흐릿해서 안 보여요!"',msg:`우리 ${petLabel}들은 가만히 안 있죠~ 사진이 흔들렸거나 초점이 안 맞아서 천기 AI가 이목구비를 못 잡았어요. ${isDog?"산책 후 평온한 순간이나 간식으로 시선 고정한":"골골송 부르며 누워있는 평온한 순간"} 정면 사진으로 다시 올려주시면, 우리 ${petLabel}의 타고난 매력과 운명을 정밀 분석해드릴게요! ${petEmoji}✨`,guide:["밝은 곳 + 정면 얼굴",isDog?"간식으로 시선 고정 추천":"뒷모습·옆얼굴·눈 감은 사진 X"],tag:isDog?"#댕댕상":"#냥냥상"},
-          23:{title:`${isDog?"🐕🐕":"🐱🐱"} "누구를 볼까요?"`,msg:`여러 마리가 함께 있어서 어느 ${petLabel}를 분석해드려야 할지 헷갈려요! 다둥이 가족이라면 한 마리씩 따로 사진 올려서 각자의 매력 분석받으세요. 큼직하게 한 마리 정면 사진으로 다시 올려주세요 🐾`,guide:["한 마리만 크게","얼굴이 화면 절반 이상"],tag:isDog?"#댕댕상":"#냥냥상"},
+          23:{title:`${isDog?"🐕🐕":"🐱🐱"} "누구를 볼까요?"`,msg:`여러 마리가 함께 있어서 어느 ${josa(petLabel,"을","를")} 분석해드려야 할지 헷갈려요! 다둥이 가족이라면 한 마리씩 따로 사진 올려서 각자의 매력 분석받으세요. 큼직하게 한 마리 정면 사진으로 다시 올려주세요 🐾`,guide:["한 마리만 크게","얼굴이 화면 절반 이상"],tag:isDog?"#댕댕상":"#냥냥상"},
           24:{title:'🙈 "얼굴이 숨었어요!"',msg:`선글라스·안경·모자·종이봉투·옷·이불로 얼굴이 가려져서 천기 AI가 이목구비를 찾다가 포기했어요 ㅋㅋ 우리 ${petLabel} 얼굴이 눈·코·입 훤히 보이는 정면 사진으로 다시 올려주세요! ${petEmoji}`,guide:["눈·코·입 다 보이게","선글라스·안경·모자·코스튬 X","종이봉투·옷·이불 가림 X"],tag:isDog?"#댕댕상":"#냥냥상"},
         };
         const err=errMap[typeId]||errMap[21];
@@ -12869,7 +12869,7 @@ function PetGwansangModal({species,onClose,cart,setCart,onGoShop,addHistory,isLo
 
               {/* 본문 — 아기관상과 동일 (박스 X, 중앙정렬, 단순 텍스트) */}
               <div style={{fontSize:12,color:"#E8E8EC",lineHeight:2,textAlign:"center",padding:"0 12px",marginBottom:30,wordBreak:"keep-all" as any,opacity:0.9}}>
-                {(r.cert_body||`${personName}${_josa(personName,"은는")} 천기가 인증한 귀한 ${petLabel}이에요. 어디를 가든 빛나는 매력으로 사람들의 마음을 사로잡고, 집사에게 평생의 복을 가져다 주는 운명적인 인연이에요. ${personName}와 함께하는 모든 순간이 이 가족에게 가장 큰 행복이 될 거예요.`).replace(/\{nm\}/g,personName)}
+                {(r.cert_body||`${personName}${_josa(personName,"은는")} 천기가 인증한 귀한 ${josa(petLabel,"이","가")}에요. 어디를 가든 빛나는 매력으로 사람들의 마음을 사로잡고, 집사에게 평생의 복을 가져다 주는 운명적인 인연이에요. ${josa(personName,"과","와")} 함께하는 모든 순간이 이 가족에게 가장 큰 행복이 될 거예요.`).replace(/\{nm\}/g,personName)}
               </div>
 
               {/* 해시태그 — cert_tags (4개 형용사) — 아기관상 패턴 */}
@@ -14157,7 +14157,7 @@ function BabyFaceModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLo
               {/* Tab 4: 전생 */}
               {tabIdx===4&&<>
                 <div style={{textAlign:"center",marginBottom:14}}>
-                  <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>🎭 {r.tab5_past?.title||`${mName}·${dName}와 ${nm}의 전생 인연`}</div>
+                  <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>🎭 {r.tab5_past?.title||`${mName}·${josa(dName,"과","와")} ${nm}의 전생 인연`}</div>
                 </div>
                 <div style={{background:"#f8f9fa",borderRadius:12,padding:14,borderLeft:"4px solid #7c3aed",marginBottom:12}}>
                   <div style={{fontSize:12,color:"#555",lineHeight:1.75,wordBreak:"keep-all" as any}}>{r.tab5_past?.body||""}</div>
@@ -14189,7 +14189,7 @@ function BabyFaceModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLo
               {/* Tab 7: 양육 */}
               {tabIdx===7&&<>
                 <div style={{textAlign:"center",marginBottom:14}}>
-                  <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>🍀 {r.tab8_parenting?.title||`${mName}·${dName}를 위한 양육 비방`}</div>
+                  <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>🍀 {r.tab8_parenting?.title||`${mName}·${josa(dName,"을","를")} 위한 양육 비방`}</div>
                 </div>
                 <div style={{background:"#f8f9fa",borderRadius:12,padding:14,borderLeft:"4px solid #059669",marginBottom:12}}>
                   <div style={{fontSize:12,color:"#555",lineHeight:1.75,wordBreak:"keep-all" as any}}>{r.tab8_parenting?.body||""}</div>
@@ -14462,10 +14462,10 @@ function BabyFaceModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLo
       const vdRaw=(result.variants||{})[openVariantId]||{};
       // AI가 variants를 안 줬을 때 폴백 — 빈 카드 절대 X
       const FALLBACK_VARIANTS:any={
-        m90:{balance_type:"감성 아티스트형",fate_body:`엄마를 90% 닮은 ${nm}는 감성과 직관이 뛰어난 아이가 될 거예요. 엄마의 눈매·이마·표현력을 거의 그대로 물려받아 예술/감성 분야에서 빛납니다. 어릴 때부터 음악·그림·글에 끌리고, 사람의 마음을 읽는 능력이 또래보다 빠르게 발달해요.`,changes:`👁️ 눈매: 50:50 → 엄마 95% ↑\n👃 코: 50:50 → 엄마 75% ↑\n🎨 이마: 50:50 → 엄마 95% ↑\n👄 입/턱: 50:50 → 엄마 80% ↑`,jobs:["🎨 예술감독","💆 심리 전문가","⭐ 미디어 스타"],timeline:"20대 초반 예술계 데뷔 · 30대 자기 브랜드 론칭",prophecy:`엄마를 90% 닮은 ${nm}는 감성으로 세상을 움직이는 사람이 될 거예요.`},
-        m70:{balance_type:"균형 감성형",fate_body:`엄마 70% 유형의 ${nm}는 따뜻한 마음에 단단한 의지가 더해진 균형형 아이예요. 엄마의 정서적 풍부함이 베이스가 되면서 아빠의 결단력이 군데군데 빛납니다. 인간관계가 넓고 깊어 어디서든 사랑받아요.`,changes:`👁️ 눈매: 50:50 → 엄마 80% ↑\n👃 코: 50:50 → 엄마 60% ↑\n🎨 이마: 50:50 → 엄마 80% ↑\n👄 입/턱: 50:50 → 엄마 65% ↑`,jobs:["📖 작가","🎓 교육자","🌿 상담사"],timeline:"20대 후반 분야 진입 · 30대 중반 안정 커리어",prophecy:`엄마의 따뜻함에 아빠의 단단함이 스민 균형형 인재가 될 거예요.`},
-        d70:{balance_type:"리더형",fate_body:`아빠 70% 유형의 ${nm}는 카리스마와 추진력을 갖춘 리더 기질의 아이예요. 아빠의 강한 골격과 결단력이 메인이지만, 엄마의 통찰과 공감 능력이 균형을 잡아줍니다. 조직에서 자연스럽게 중심이 되는 형상.`,changes:`👁️ 눈매: 50:50 → 아빠 60% ↑\n👃 코: 50:50 → 아빠 80% ↑\n🎨 이마: 50:50 → 아빠 65% ↑\n👄 입/턱: 50:50 → 아빠 75% ↑`,jobs:["💼 CEO","⚖️ 법조인","🏛️ 공직자"],timeline:"20대 후반 조직 두각 · 30대 후반 리더 포지션",prophecy:`아빠의 강직함에 엄마의 통찰이 더해진 리더가 될 거예요.`},
-        d90:{balance_type:"카리스마형",fate_body:`아빠를 90% 닮은 ${nm}는 강한 카리스마와 야망을 가진 아이가 될 거예요. 아빠의 코·턱·이마를 거의 그대로 물려받아 결단력과 실행력이 압도적입니다. 큰 무대에서 두각을 나타내고 시대를 이끄는 인물이 됩니다.`,changes:`👁️ 눈매: 50:50 → 아빠 70% ↑\n👃 코: 50:50 → 아빠 95% ↑\n🎨 이마: 50:50 → 아빠 85% ↑\n👄 입/턱: 50:50 → 아빠 92% ↑`,jobs:["🏆 사업가","🎯 프로 운동선수","🛡️ 장군·수장"],timeline:"20대 초반 두각 · 30대 정점",prophecy:`아빠를 90% 닮은 ${nm}는 시대를 이끄는 리더가 될 거예요.`},
+        m90:{balance_type:"감성 아티스트형",fate_body:`엄마를 90% 닮은 ${josa(nm,"은","는")} 감성과 직관이 뛰어난 아이가 될 거예요. 엄마의 눈매·이마·표현력을 거의 그대로 물려받아 예술/감성 분야에서 빛납니다. 어릴 때부터 음악·그림·글에 끌리고, 사람의 마음을 읽는 능력이 또래보다 빠르게 발달해요.`,changes:`👁️ 눈매: 50:50 → 엄마 95% ↑\n👃 코: 50:50 → 엄마 75% ↑\n🎨 이마: 50:50 → 엄마 95% ↑\n👄 입/턱: 50:50 → 엄마 80% ↑`,jobs:["🎨 예술감독","💆 심리 전문가","⭐ 미디어 스타"],timeline:"20대 초반 예술계 데뷔 · 30대 자기 브랜드 론칭",prophecy:`엄마를 90% 닮은 ${josa(nm,"은","는")} 감성으로 세상을 움직이는 사람이 될 거예요.`},
+        m70:{balance_type:"균형 감성형",fate_body:`엄마 70% 유형의 ${josa(nm,"은","는")} 따뜻한 마음에 단단한 의지가 더해진 균형형 아이예요. 엄마의 정서적 풍부함이 베이스가 되면서 아빠의 결단력이 군데군데 빛납니다. 인간관계가 넓고 깊어 어디서든 사랑받아요.`,changes:`👁️ 눈매: 50:50 → 엄마 80% ↑\n👃 코: 50:50 → 엄마 60% ↑\n🎨 이마: 50:50 → 엄마 80% ↑\n👄 입/턱: 50:50 → 엄마 65% ↑`,jobs:["📖 작가","🎓 교육자","🌿 상담사"],timeline:"20대 후반 분야 진입 · 30대 중반 안정 커리어",prophecy:`엄마의 따뜻함에 아빠의 단단함이 스민 균형형 인재가 될 거예요.`},
+        d70:{balance_type:"리더형",fate_body:`아빠 70% 유형의 ${josa(nm,"은","는")} 카리스마와 추진력을 갖춘 리더 기질의 아이예요. 아빠의 강한 골격과 결단력이 메인이지만, 엄마의 통찰과 공감 능력이 균형을 잡아줍니다. 조직에서 자연스럽게 중심이 되는 형상.`,changes:`👁️ 눈매: 50:50 → 아빠 60% ↑\n👃 코: 50:50 → 아빠 80% ↑\n🎨 이마: 50:50 → 아빠 65% ↑\n👄 입/턱: 50:50 → 아빠 75% ↑`,jobs:["💼 CEO","⚖️ 법조인","🏛️ 공직자"],timeline:"20대 후반 조직 두각 · 30대 후반 리더 포지션",prophecy:`아빠의 강직함에 엄마의 통찰이 더해진 리더가 될 거예요.`},
+        d90:{balance_type:"카리스마형",fate_body:`아빠를 90% 닮은 ${josa(nm,"은","는")} 강한 카리스마와 야망을 가진 아이가 될 거예요. 아빠의 코·턱·이마를 거의 그대로 물려받아 결단력과 실행력이 압도적입니다. 큰 무대에서 두각을 나타내고 시대를 이끄는 인물이 됩니다.`,changes:`👁️ 눈매: 50:50 → 아빠 70% ↑\n👃 코: 50:50 → 아빠 95% ↑\n🎨 이마: 50:50 → 아빠 85% ↑\n👄 입/턱: 50:50 → 아빠 92% ↑`,jobs:["🏆 사업가","🎯 프로 운동선수","🛡️ 장군·수장"],timeline:"20대 초반 두각 · 30대 정점",prophecy:`아빠를 90% 닮은 ${josa(nm,"은","는")} 시대를 이끄는 리더가 될 거예요.`},
       };
       const fb=FALLBACK_VARIANTS[openVariantId]||{};
       const vd:any={
@@ -19043,7 +19043,7 @@ function _tarotPosMsg(card:any,pos:number,isGood:boolean,personName:string,categ
     `이 위치의 경고는 위기가 아니라 기회예요. ${cat} 영역에서 막혀있던 진짜 원인을 카드가 보여주고 있어요. 그동안 "어쩔 수 없다"고 외면해온 것, 사실은 ${personName}님이 통제할 수 있는 일이에요. 작은 것부터 정리해보세요.`,
     `지금은 잠시 멈춰서 자신을 돌볼 때예요. 무리하게 밀어붙이면 ${cat} 흐름이 더 막혀요. 카드가 보여주는 숨은 기회는 지금이 아니라 충분히 회복한 다음에 와요. 자신을 챙기는 것이 가장 빠른 길이에요.`,
     `다음 한 달은 큰 결정보다 작은 정리에 집중하세요. ${cat} 흐름을 바꿀 준비 기간이에요. 새로운 시도보다 기존에 미뤄온 것들을 끝맺는 데 에너지를 쓰면, 다음 달에 훨씬 가벼운 마음으로 도약할 수 있어요.`,
-    `카드가 ${personName}님께 멈춤의 신호를 보내고 있어요. 잠깐의 휴식이 다음 도약의 발판이 돼요. 오늘은 ${cat}와 관련된 큰 결정을 보류하세요. 대신 작은 자기 돌봄 하나를 실행하세요. 그게 흐름을 바꾸는 시작이에요.`,
+    `카드가 ${personName}님께 멈춤의 신호를 보내고 있어요. 잠깐의 휴식이 다음 도약의 발판이 돼요. 오늘은 ${josa(cat,"과","와")} 관련된 큰 결정을 보류하세요. 대신 작은 자기 돌봄 하나를 실행하세요. 그게 흐름을 바꾸는 시작이에요.`,
     `이 위치의 카드는 "지금 방향이 정답이 아닐 수 있다"고 말해요. ${personName}님이 붙잡고 있는 ${cat} 계획을 한 번 재검토해보세요. 놓아주어야 새 길이 보입니다.`,
     `내면의 태도가 ${cat} 흐름을 막고 있어요. 외부 문제라고 생각했던 것이 사실 ${personName}님의 관점에서 비롯된 경우가 있어요. 시선을 바꾸면 상황이 다르게 보여요.`,
     `주변 사람·환경이 지금 ${personName}님께 방해가 되고 있어요. 거리를 두는 것이 답일 수도 있어요. 나를 지키는 건 이기적인 게 아니라 당연한 거예요.`,
@@ -21008,7 +21008,7 @@ function DreamModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
                 <div style={{background:"rgba(255,255,255,0.75)",borderRadius:16,padding:"14px 16px",marginBottom:result.gender!=="미정"?10:0,boxShadow:"0 4px 14px rgba(0,0,0,0.06)",border:"1px solid rgba(255,255,255,0.9)"}}>
                   <div style={{fontSize:13,color:"#444",lineHeight:1.5,marginBottom:6}}>천기 AI가 전해드려요</div>
                   <div style={{fontSize:18,fontWeight:900,color:result.gender==="아들"?"#1e40af":result.gender==="딸"?"#9d174d":"#854d0e",letterSpacing:-0.3,marginBottom:result.gender!=="미정"?8:0,fontFamily:"'Noto Serif KR','Batang',serif"}}>
-                    {result.gender==="미정"?"🌟 성별 예측 불확실":`"${result.gender}이 올 거예요"`}
+                    {result.gender==="미정"?"🌟 성별 예측 불확실":`"${josa(result.gender,"이","가")} 올 거예요"`}
                   </div>
                   {result.gender!=="미정"&&(
                     <>

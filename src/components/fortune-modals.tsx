@@ -4,6 +4,7 @@ import PAST_LIFE_DB from "../../public/past_life_types.json";
 import { enrichSajuText } from "@/lib/saju-gloss";
 import { ResultCard, formatPersonInfoLine, formatTestDateLine, PersonInfo } from "./ResultCard";
 import { commitPaymentDeduction } from "@/lib/payment-helpers";
+import { josa } from "@/lib/josa";
 
 // ─── 공용 mini 컴포넌트 ────────────────────────────────────────
 function CloseBtn({onClose}:{onClose:()=>void}){
@@ -1204,9 +1205,9 @@ export function PastLifeModal({onClose,cart,setCart,onGoShop,addHistory,isLogged
             </div>
             {/* v736: 현생 업보 3개 — 회색박스강조 패턴 적용 (사용자 컴플레인 "회색박스 모두 왜 없지?") */}
             {[
-              ["💰 재물 업보",`전생에 ${plCompat.name.replace("형","")}로 살면서 가진 것에 집착하는 패턴이 이번 생 재물 흐름에 영향을 줘요. ${plCompat.name}은 재물을 어떻게 다루느냐에 따라 이번 생 재물운이 크게 달라져요.`],
+              ["💰 재물 업보",`전생에 ${josa(plCompat.name.replace("형",""),"으로","로")} 살면서 가진 것에 집착하는 패턴이 이번 생 재물 흐름에 영향을 줘요. ${josa(plCompat.name,"은","는")} 재물을 어떻게 다루느냐에 따라 이번 생 재물운이 크게 달라져요.`],
               ["❤️ 인연 업보",`전생에서 깊은 인연을 맺었던 사람들이 이번 생에 다시 나타나요. 처음 만났는데 오래 알던 것 같은 사람이 있다면, 그 인연을 주목하세요.`],
-              ["🌿 건강 체질",`전생에서 ${plCompat.name.replace("형","")}로 살면서 생긴 신체 패턴이 이번 생에도 이어지고 있어요. 전생의 생활 방식에서 온 취약한 부위가 있어요.`],
+              ["🌿 건강 체질",`전생에서 ${josa(plCompat.name.replace("형",""),"으로","로")} 살면서 생긴 신체 패턴이 이번 생에도 이어지고 있어요. 전생의 생활 방식에서 온 취약한 부위가 있어요.`],
             ].map((r,i)=>(
               <div key={i} style={{marginBottom:10,wordBreak:"keep-all",background:"#f8f9fa",padding:"12px 14px",borderRadius:9,borderLeft:"4px solid #D4AF37"}}>
                 <div style={{fontSize:13,fontWeight:800,color:"#1A3C32",marginBottom:5}}>{r[0]}</div>
@@ -1312,7 +1313,7 @@ export function PastLifeModal({onClose,cart,setCart,onGoShop,addHistory,isLogged
               <div style={{textAlign:"right",fontSize:48,color:"rgba(196,146,42,0.4)",fontFamily:"'Noto Serif KR','Batang','Georgia',serif",lineHeight:0.3,fontWeight:900,marginTop:6}}>”</div>
             </div>
             {/* 천기의 한마디 — Affirm 무지개 박스 (v615: 이번 생 탭 마지막) */}
-            <Affirm name={nm} text={`${nm}님은 우연히 이 세상에 온 게 아니에요. 전생의 ${plCompat.talent[0]}을 이 세상에 꽃피우러 온 사람이에요.`}/>
+            <Affirm name={nm} text={`${nm}님은 우연히 이 세상에 온 게 아니에요. 전생의 ${josa(plCompat.talent[0],"을","를")} 이 세상에 꽃피우러 온 사람이에요.`}/>
           </>}
 
           {/* 푸터 */}

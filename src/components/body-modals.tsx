@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { computeSaju } from "@/lib/saju";
+import { josa } from "@/lib/josa";
 
 // ─── 공용 mini 컴포넌트 ─────────────────────────────────
 function CloseBtn({onClose}:{onClose:()=>void}){
@@ -155,7 +156,7 @@ function SajuCrossSection({sajuData,svcId}:{sajuData:any,svcId:string}){
   // svcId별 교차 풀이
   const crossMap:Record<string,{title:string,items:{label:string,age:string,text:string}[]}>={
     palmistry:{title:"☯️ 사주 × 손금 교차 분석",items:[
-      {label:"❤️ 연애·결혼",age:"32~36세",text:`${ilgan}(${ilOh}) 일간 + 감정선이 강한 손금 = ${ilOh==="목"?"진심으로 깊어지는 사랑":ilOh==="화"?"열정적이고 강렬한 인연":ilOh==="토"?"안정적이고 든든한 동반자":ilOh==="금"?"의리 있는 한결같은 사랑":"지혜로운 운명적 만남"}이 와요. 결혼선과 사주의 부부궁이 만나 ${32+(y%5)}~${36+(y%5)}세에 인연 결정 시기.`},
+      {label:"❤️ 연애·결혼",age:"32~36세",text:`${ilgan}(${ilOh}) 일간 + 감정선이 강한 손금 = ${josa(ilOh==="목"?"진심으로 깊어지는 사랑":ilOh==="화"?"열정적이고 강렬한 인연":ilOh==="토"?"안정적이고 든든한 동반자":ilOh==="금"?"의리 있는 한결같은 사랑":"지혜로운 운명적 만남","이","가")} 와요. 결혼선과 사주의 부부궁이 만나 ${32+(y%5)}~${36+(y%5)}세에 인연 결정 시기.`},
       {label:"💰 재물·직업",age:"38~45세",text:`재물선이 굵어지는 시기와 사주의 재성(財星)이 만나 ${38+(m%4)}~${45+(d%5)}세에 재물 폭발기. ${ilOh==="목"?"전문성·콘텐츠":ilOh==="화"?"미디어·세일즈":ilOh==="토"?"부동산·중개":ilOh==="금"?"금융·법조":"IT·연구"} 분야에서 빛나요.`},
       {label:"💚 건강·수명",age:"50대 이후",text:`생명선이 길고 사주 일간이 ${ilOh}이라면 ${ilOh==="목"||ilOh==="수"?"간·신장":"심장·소화기"} 계통 주의. 50대 이후 건강 관리가 운명을 좌우.`},
       {label:"🌟 인생 흐름",age:"전 인생",text:`운명선과 사주 대운이 만나는 ${30+(y%10)}대 후반이 인생의 황금기. 사주 격국 + 손금이 가리키는 핵심 = ${ilOh==="목"?"성장과 창조":ilOh==="화"?"열정과 표현":ilOh==="토"?"안정과 신뢰":ilOh==="금"?"의리와 결단":"지혜와 직관"}.`},
