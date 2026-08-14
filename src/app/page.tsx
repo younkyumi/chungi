@@ -18357,7 +18357,7 @@ function YesNoTarotModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReques
             <div style={{padding:"10px 16px 12px",textAlign:"center"}}>
               {/* v655: 브랜딩 이모지 제거 (사용자 요청) */}
               <BrandLine>YES/NO 타로</BrandLine>
-              <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>✨ {personName}님의 YES/NO 타로</div>
+              <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>✨ {selectedPerson?.name?`${selectedPerson.name}님의 `:""}YES/NO 타로</div>
               {/* v322 → v707: 검사 정보 v677 표준 통일 */}
               <div style={{fontSize:10,color:"#888",fontWeight:600,marginTop:6,marginBottom:14,lineHeight:1.6}}>
                 <div>{formatPersonInfoLine({name:selectedPerson?.name,birth:selectedPerson?.birth,time:selectedPerson?.time,calendar:selectedPerson?.calendar,gender:selectedPerson?.gender})}</div>
