@@ -3207,6 +3207,50 @@ function PawdongModal({onClose, cart, setCart, onGoShop, addHistory, isLoggedIn,
           const ohEntries=(["목","화","토","금","수"] as const).map(oh=>({oh,v:(userOhang as any)[oh]||0}));
           const sortedLow=[...ohEntries].sort((a,b)=>a.v-b.v);
           const lackA=sortedLow[0].oh;const lackB=sortedLow[1].oh!==lackA?sortedLow[1].oh:sortedLow[2].oh;
+          // ━━━ 파동 3축 + 종합 점수 (v 2026-08-14) ━━━
+          // 인트로가 "이름 파동 종합 점수 / 재물 파동 / 인연 파동 / 사업·직업 파동"을 약속하는데
+          // 결과에 그 축이 통째로 없었다. 로딩 문구도 "파동 점수 산출 중"이라 말만 하고 안 보여줬다.
+          // 계산은 전부 결정론 — 같은 이름·같은 사주면 항상 같은 점수(재분석 흔들림 없음).
+          //   1) 이름이 방출하는 오행 분포(초성+종성)를 센다
+          //   2) 축별 오행 가중치로 기본 점수를 낸다 (오행 상징은 전통 배속 그대로, 창작 아님)
+          //        재물 = 금(수확·결단) 0.5 + 토(축적) 0.3 + 수(유통) 0.2
+          //        인연 = 화(표현·열정) 0.4 + 수(감정) 0.3 + 목(성장) 0.3
+          //        사업 = 목(개척) 0.35 + 토(기반) 0.35 + 금(추진) 0.3
+          //   3) 사주에서 부족한 오행(lackA·lackB)을 이름이 채워주면 그 오행이 기여하는 축에 보너스
+          const emitCount:Record<string,number>={목:0,화:0,토:0,금:0,수:0};
+          nameAnalysis.forEach(n=>{ if(n.choOh)emitCount[n.choOh]++; if(n.jongOh)emitCount[n.jongOh]++; });
+          const emitTotal=Math.max(1,Object.values(emitCount).reduce((a,b)=>a+b,0));
+          const WAVE_W:Record<string,Record<string,number>>={
+            재물:{금:0.5,토:0.3,수:0.2},
+            인연:{화:0.4,수:0.3,목:0.3},
+            사업:{목:0.35,토:0.35,금:0.3},
+          };
+          const waveScore=(axis:string)=>{
+            const w=WAVE_W[axis];
+            const base=Object.entries(w).reduce((s,[oh,k])=>s+(emitCount[oh]/emitTotal)*k,0); // 0~0.5 근처
+            // 부족 오행을 이름이 실제로 채우고 있으면 그 축에 가산
+            const fills=[lackA,lackB].filter(l=>emitCount[l]>0&&w[l]);
+            const bonus=fills.reduce((s,l)=>s+w[l]*0.5,0);
+            return Math.max(62,Math.min(98,Math.round(58+(base+bonus)*80)));
+          };
+          const waveMoney=waveScore("재물"), waveLove=waveScore("인연"), waveBiz=waveScore("사업");
+          const waveTotal=Math.round((waveMoney+waveLove+waveBiz)/3);
+          // 사전질문(preFocus)에서 고른 축을 강조 — 새 섹션을 만들지 않고 기존 축에 표시만 얹는다
+          const focusAxis=preFocus?.includes("재물")?"재물":preFocus?.includes("인연")?"인연":preFocus?.includes("사업")?"사업":null;
+          const WAVE_MSG:Record<string,{hi:string,lo:string}>={
+            재물:{hi:"이름을 부를 때마다 재물 기운이 모이는 소리예요. 돈이 들어오는 자리에 이름이 도와줍니다.",
+                  lo:"재물 쪽 파동이 얇아요. 금(金)·토(土) 자음을 더한 이름이면 훨씬 단단해집니다."},
+            인연:{hi:"사람을 끌어당기는 파동이에요. 먼저 다가가도 잘 받아주는 이름입니다.",
+                  lo:"인연 파동이 약한 편이에요. 화(火)·수(水) 자음이 들어가면 관계가 부드러워집니다."},
+            사업:{hi:"밀고 나가는 힘이 실린 이름이에요. 내 일을 벌이기에 좋은 파동입니다.",
+                  lo:"사업 파동이 낮아요. 목(木)·토(土) 자음으로 기반을 채워주면 추진력이 생깁니다."},
+          };
+          const waveRows=[
+            {axis:"재물",emoji:"💰",score:waveMoney,color:"#B8942E",sub:"이름이 재물운에 미치는 에너지"},
+            {axis:"인연",emoji:"❤️",score:waveLove,color:"#C2185B",sub:"이름이 인연운에 방출하는 파동"},
+            {axis:"사업",emoji:"💼",score:waveBiz,color:"#054D95",sub:"리더십·협업·독립 에너지"},
+          ];
+
           // 성씨 초성 오행 → 부족 오행 A와 상극 시 연결고리 받침 필요
           const surname=nameChars[0]||"";
           const surnameDecomp=decompose(surname);
@@ -3359,6 +3403,53 @@ function PawdongModal({onClose, cart, setCart, onGoShop, addHistory, isLoggedIn,
               </div>
             )}
             {hashFooter}
+          </div>
+
+          {/* ═══ 🌊 이름 파동 점수 ═══ v(2026-08-14) 신설.
+              인트로가 약속한 "종합 점수 / 재물·인연·사업 파동"이 결과에 없어서 추가했다.
+              점수는 이름 자음 오행 + 사주 부족 오행 보완도로만 계산 — 결정론, 재분석해도 고정. */}
+          <div style={cardStyle}>
+            {brandLabel}
+            <div style={{padding:"22px 20px 20px"}}>
+              <div style={{fontSize:15,color:"#054D95",letterSpacing:0.3,fontWeight:800,marginBottom:8,lineHeight:1.4}}>🌊 <strong>{targetName}</strong> 이름 파동 점수</div>
+              <div style={{fontSize:12,color:"#666",marginBottom:16,lineHeight:1.8}}>이름을 부를 때 나오는 소리(자음 오행)가 어느 방향으로 파동을 내보내는지 수치로 본 거예요.</div>
+              {/* 종합 점수 */}
+              <div style={{display:"flex",alignItems:"center",gap:16,marginBottom:18,padding:"16px",background:"linear-gradient(135deg,#f8faff,#f5f3ff)",borderRadius:14,border:"1px solid rgba(5,77,149,0.15)"}}>
+                <div style={{width:86,height:86,borderRadius:"50%",border:"3px solid #054D95",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:"#fff",flexShrink:0}}>
+                  <div style={{fontSize:29,fontWeight:900,color:"#054D95",lineHeight:1,fontFamily:"'Noto Serif KR',serif"}}>{waveTotal}</div>
+                  <div style={{fontSize:10,color:"#aaa",marginTop:2,fontWeight:600}}>/100</div>
+                </div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontSize:11,fontWeight:800,color:"#054D95",letterSpacing:1,marginBottom:5}}>파동 종합 점수</div>
+                  <div style={{fontSize:12,color:"#444",lineHeight:1.75,wordBreak:"keep-all" as any}}>
+                    {waveTotal>=85?<>세 방향 모두 고르게 울리는 이름이에요. 지금 이름을 그대로 쓰셔도 좋습니다.</>
+                     :waveTotal>=72?<>기본 파동은 갖췄어요. 아래에서 약한 축만 보강하면 충분합니다.</>
+                     :<>파동이 한쪽으로 치우쳐 있어요. 아래 <strong>Top 3 맞춤 이름</strong>이 이 균형을 맞춘 결과예요.</>}
+                  </div>
+                </div>
+              </div>
+              {/* 3축 */}
+              {waveRows.map(r=>{
+                const on=focusAxis===r.axis;
+                return (
+                  <div key={r.axis} style={{marginBottom:12,padding:on?"12px 14px":"0",background:on?"rgba(5,77,149,0.05)":"transparent",border:on?"1px solid rgba(5,77,149,0.2)":"none",borderRadius:on?12:0}}>
+                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
+                      <span style={{fontSize:15}}>{r.emoji}</span>
+                      <span style={{fontSize:13,fontWeight:800,color:r.color}}>{r.axis} 파동</span>
+                      {on&&<span style={{fontSize:9,fontWeight:800,color:"#fff",background:"#054D95",padding:"2px 7px",borderRadius:10}}>내가 고른 축</span>}
+                      <span style={{marginLeft:"auto",fontSize:14,fontWeight:900,color:r.color}}>{r.score}</span>
+                    </div>
+                    <div style={{height:8,background:"#eef1f6",borderRadius:5,overflow:"hidden",marginBottom:6}}>
+                      <div style={{height:"100%",width:`${r.score}%`,background:r.color,borderRadius:5}}/>
+                    </div>
+                    <div style={{fontSize:11.5,color:"#555",lineHeight:1.7,wordBreak:"keep-all" as any}}>{r.score>=78?WAVE_MSG[r.axis].hi:WAVE_MSG[r.axis].lo}</div>
+                  </div>
+                );
+              })}
+              <div style={{fontSize:10.5,color:"#888",lineHeight:1.7,marginTop:12,paddingTop:12,borderTop:"1px dashed #e5e5e5",wordBreak:"keep-all" as any}}>
+                💡 점수는 이름의 <strong>자음 오행 분포</strong>와 <strong>내 사주에서 부족한 오행을 얼마나 채워주는지</strong>로 계산돼요. 사주가 같아도 이름이 다르면 점수가 달라집니다.
+              </div>
+            </div>
           </div>
 
           {/* ═══ PAGE 2 ═══ ③ 표면 오행 + 기존 이름 자음 분해 + 왜 한글 발음 박스 */}
