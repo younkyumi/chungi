@@ -21298,7 +21298,35 @@ const _TAEGIL_CONQUERS:any={"목":"토","화":"금","토":"수","금":"목","수
 function _taegilDayGanzhi(dateStr:string){
   const[y,m,d]=dateStr.split("-").map(Number);
   const s=_getSaju(y,m,d);
-  return{cg:s.day.cg,jj:s.day.jj,ohang:_CG_OHANG[s.day.cg],hanja:`${_CG_HANJA[s.day.cg]}${_JJ_HANJA[s.day.jj]}`,kr:`${_CHEONGAN_KR[s.day.cg]}${_JJ_KR[s.day.jj]}`};
+  // v(2026-08-14): monthJj 추가 — 황도흑도 12신 판정에 월지가 필요하다
+  return{cg:s.day.cg,jj:s.day.jj,monthJj:s.month.jj,ohang:_CG_OHANG[s.day.cg],hanja:`${_CG_HANJA[s.day.cg]}${_JJ_HANJA[s.day.jj]}`,kr:`${_CHEONGAN_KR[s.day.cg]}${_JJ_KR[s.day.jj]}`};
+}
+// ━━━ 황도흑도 12신 (v 2026-08-14) ━━━
+// 인트로가 "일간 + 황도길일 + 신살"을 약속하는데 결과에 황도·신살이 아예 없었다.
+// 아래는 전통 택일법 표 그대로다(창작 아님).
+//   월지에 따라 청룡이 붙는 일지가 정해지고, 거기서부터 12신이 순서대로 돈다.
+//   황도 6신(청룡·명당·금궤·천덕·옥당·사명) = 길 / 흑도 6신 = 흉.
+const _HWANGDO_12=["청룡","명당","천형","주작","금궤","천덕","백호","옥당","천뢰","현무","사명","구진"];
+const _HWANGDO_GOOD=new Set(["청룡","명당","금궤","천덕","옥당","사명"]);
+// 월지(0=子…11=亥) → 청룡이 시작하는 일지 index
+//   寅申월→子 / 卯酉월→寅 / 辰戌월→辰 / 巳亥월→午 / 午子월→申 / 未丑월→戌
+const _HWANGDO_START:Record<number,number>={2:0,8:0, 3:2,9:2, 4:4,10:4, 5:6,11:6, 6:8,0:8, 7:10,1:10};
+function _hwangdo(monthJj:number,dayJj:number){
+  const start=_HWANGDO_START[monthJj]??0;
+  const name=_HWANGDO_12[((dayJj-start)%12+12)%12];
+  return{name,good:_HWANGDO_GOOD.has(name)};
+}
+// ━━━ 일진 신살 (전통 표) ━━━
+// 천을귀인: 일간 → 해당 지지 / 역마·도화: 삼합 그룹 → 해당 지지
+const _CHEONEUL:Record<number,number[]>={0:[1,7],4:[1,7],6:[1,7], 1:[0,8],5:[0,8], 2:[11,9],3:[11,9], 7:[2,6], 8:[5,3],9:[5,3]};
+const _YEOKMA:Record<number,number>={2:8,6:8,10:8, 8:2,0:2,4:2, 5:11,9:11,1:11, 11:5,3:5,7:5};
+const _DOHWA:Record<number,number>={2:3,6:3,10:3, 8:9,0:9,4:9, 5:6,9:6,1:6, 11:0,3:0,7:0};
+function _iljinSinsal(personCg:number|null,personJj:number|null,dayJj:number){
+  const out:string[]=[];
+  if(personCg!=null&&(_CHEONEUL[personCg]||[]).includes(dayJj))out.push("천을귀인");
+  if(personJj!=null&&_YEOKMA[personJj]===dayJj)out.push("역마");
+  if(personJj!=null&&_DOHWA[personJj]===dayJj)out.push("도화");
+  return out;
 }
 function _taegilScoreDate(dateStr:string,personOh:string){
   const day=_taegilDayGanzhi(dateStr);
@@ -21308,11 +21336,14 @@ function _taegilScoreDate(dateStr:string,personOh:string){
   else if(_TAEGIL_SANGSAENG[day.ohang]===personOh){base=88;rel="이 날의 기운이 나를 돕는 상생(相生) — 귀인과 도움을 만나기 좋은 날";}
   else if(_TAEGIL_CONQUERS[personOh]===day.ohang){base=64;rel="내가 이 날의 기운을 제압하는 상극(相剋) — 추진력은 있지만 무리하지 않는 게 좋은 날";}
   else{base=45;rel="이 날의 기운이 나를 제압하는 상극(相剋) — 신중하게 움직여야 하는 날";}
+  // v(2026-08-14): 황도길일 가점/감점 — 인트로가 약속한 항목이라 점수에도 실제로 반영한다
+  const hd=_hwangdo(day.monthJj,day.jj);
+  base+=hd.good?6:-6;
   const seed=(dateStr+personOh).split("").reduce((s:number,c:string)=>s+c.charCodeAt(0),0)||1;
   const rng=_seededRng(seed);
   const score=Math.min(99,Math.max(25,Math.round(base+rng()*8-4)));
   const grade=score>=85?"◎":score>=70?"○":score>=55?"△":"✕";
-  return{...day,score,grade,rel};
+  return{...day,score,grade,rel,hwangdo:hd.name,hwangdoGood:hd.good};
 }
 function _taegilBestSijin(personOh:string){
   return _TAEGIL_SIJIN.find(t=>_JJ_OHANG[t.jj]===personOh)||_TAEGIL_SIJIN[5];
@@ -21385,18 +21416,36 @@ function TaegilModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLogi
     const baseRes:any={purpose:p,scores,best:scores[0],detail:null,focus:preFocus};
     // 유료(좋은날찾기)는 이미 결제 완료 → AI 추천 + 상세 해설 자동 언락
     if(!freeOnly){
-      // v(2026-07-14): 추천일 4개도 실제 달력을 스캔해서 찾도록 변경 (이전엔 랜덤 생성한 가짜 날짜)
+      // v(2026-07-14): 추천일도 실제 달력을 스캔해서 찾도록 변경 (이전엔 랜덤 생성한 가짜 날짜)
+      // v(2026-08-14): 인트로 약속대로 **90일**까지 스캔하고 30/60/90 구간을 나눈다.
+      //   예전엔 45일만 봐서 "30일/60일/90일 길일 검색"이 거짓이었고, 추천도 4개라 "TOP 5"도 거짓이었다.
       const recs:any[]=[];
       const today=new Date();
-      for(let i=1;i<=45;i++){
+      // _sajuPillars는 day 필드가 없다 — 일간은 ilgan, 일지는 pillars의 "일주"에서 꺼낸다
+      const pj=selectedPerson?.birth?_sajuPillars(selectedPerson.birth,selectedPerson?.time):null;
+      const personCg=pj?.ilgan??null;
+      const personJj=pj?.pillars?.find((p:any)=>p.label==="일주")?.jj??null;
+      for(let i=1;i<=90;i++){
         const dt=new Date(today);dt.setDate(dt.getDate()+i);
         const ds=`${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}-${String(dt.getDate()).padStart(2,"0")}`;
         if(selectedDates.includes(ds))continue;
         const info=_taegilScoreDate(ds,personOh);
-        recs.push({date:ds,score:info.score});
+        recs.push({date:ds,score:info.score,grade:info.grade,dayAfter:i,
+          hanja:info.hanja,kr:info.kr,hwangdo:info.hwangdo,hwangdoGood:info.hwangdoGood,
+          sinsal:_iljinSinsal(personCg,personJj,info.jj)});
       }
-      recs.sort((a,b)=>b.score-a.score);
-      baseRes.recommended=recs.slice(0,4);
+      const sorted=[...recs].sort((a,b)=>b.score-a.score);
+      baseRes.recommended=sorted.slice(0,5); // 베스트 길일 TOP 5
+      // 구간별 최고일 — "30일 / 60일 / 90일 길일 검색" 약속 이행
+      const pickRange=(from:number,to:number)=>{
+        const inRange=recs.filter(r=>r.dayAfter>from&&r.dayAfter<=to);
+        return inRange.sort((a,b)=>b.score-a.score)[0]||null;
+      };
+      baseRes.ranges=[
+        {label:"30일 이내",best:pickRange(0,30),count:recs.filter(r=>r.dayAfter<=30&&r.grade!=="✕").length},
+        {label:"60일 이내",best:pickRange(30,60),count:recs.filter(r=>r.dayAfter>30&&r.dayAfter<=60&&r.grade!=="✕").length},
+        {label:"90일 이내",best:pickRange(60,90),count:recs.filter(r=>r.dayAfter>60&&r.dayAfter<=90&&r.grade!=="✕").length},
+      ];
       const bestInfo=_taegilScoreDate(scores[0].date,personOh);
       const bestSijin=_taegilBestSijin(personOh);
       const avoidSijin=_taegilAvoidSijin(personOh);
@@ -21719,15 +21768,46 @@ function TaegilModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLogi
             </div>
             {/* 유료만 — AI 추천 더 좋은 날 + 상세 해설 */}
             {!freeOnly&&detailUnlocked&&result.recommended&&result.recommended.length>0&&<>
+              {/* v(2026-08-14): 30일/60일/90일 구간 검색 — 인트로 약속 이행.
+                  예전엔 45일만 스캔해서 "30일/60일/90일 길일 검색"이 사실이 아니었다. */}
+              {result.ranges&&<div style={{padding:"14px 16px"}}>
+                <div style={{fontSize:9,color:"#7A5C00",fontWeight:700,letterSpacing:2,marginBottom:10}}>🔍 30일 · 60일 · 90일 길일 검색</div>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
+                  {result.ranges.map((rg:any)=>(
+                    <div key={rg.label} style={{background:"#fffbe9",border:"1px solid rgba(212,175,55,0.35)",borderRadius:12,padding:"11px 8px",textAlign:"center"}}>
+                      <div style={{fontSize:10,color:"#B8942E",fontWeight:800,marginBottom:5}}>{rg.label}</div>
+                      {rg.best?<>
+                        <div style={{fontSize:12,fontWeight:900,color:"#7A5C00",lineHeight:1.35}}>{rg.best.date.slice(5).replace("-",".")}</div>
+                        <div style={{fontSize:14,fontWeight:900,color:"#16a34a",marginTop:3}}>{rg.best.score}</div>
+                        <div style={{fontSize:9,color:"#888",marginTop:3}}>쓸만한 날 {rg.count}일</div>
+                      </>:<div style={{fontSize:10,color:"#aaa"}}>—</div>}
+                    </div>
+                  ))}
+                </div>
+              </div>}
               <div style={{padding:"14px 16px",background:"#f0fdf4"}}>
-                <div style={{fontSize:9,color:"#166534",fontWeight:700,letterSpacing:2,marginBottom:10}}>🌟 AI가 사주 기반으로 찾은 더 좋은 날</div>
+                <div style={{fontSize:9,color:"#166534",fontWeight:700,letterSpacing:2,marginBottom:10}}>🏆 베스트 길일 TOP 5 — 일진·황도·신살 종합</div>
                 {result.recommended.map((r:any,i:number)=>(
-                  <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:i<result.recommended.length-1?"1px solid #dcfce7":"none"}}>
-                    <div style={{fontSize:12,fontWeight:700,flex:1,color:"#166534"}}>{r.date}</div>
-                    <div style={{width:60,height:5,background:"#dcfce7",borderRadius:3,overflow:"hidden"}}><div style={{height:"100%",width:`${r.score}%`,borderRadius:3,background:"#22c55e"}}/></div>
-                    <div style={{fontSize:12,fontWeight:800,color:"#16a34a"}}>{r.score}점 ◎</div>
+                  <div key={i} style={{padding:"9px 0",borderBottom:i<result.recommended.length-1?"1px solid #dcfce7":"none"}}>
+                    <div style={{display:"flex",alignItems:"center",gap:10}}>
+                      <div style={{fontSize:10,fontWeight:900,color:"#fff",background:"#16a34a",borderRadius:9,minWidth:20,textAlign:"center",padding:"1px 0"}}>{i+1}</div>
+                      <div style={{fontSize:12,fontWeight:700,flex:1,color:"#166534"}}>{r.date}</div>
+                      <div style={{width:52,height:5,background:"#dcfce7",borderRadius:3,overflow:"hidden"}}><div style={{height:"100%",width:`${r.score}%`,borderRadius:3,background:"#22c55e"}}/></div>
+                      <div style={{fontSize:12,fontWeight:800,color:"#16a34a"}}>{r.score}점</div>
+                    </div>
+                    {/* v(2026-08-14): 일간 외에 황도길일·신살도 표시 — 인트로 "☯️ 일간 + 황도길일 + 신살" 이행 */}
+                    <div style={{display:"flex",gap:5,flexWrap:"wrap",marginTop:5,paddingLeft:30}}>
+                      {r.hanja&&<span style={{fontSize:9,fontWeight:700,padding:"2px 7px",borderRadius:9,background:"#fff",border:"1px solid #bbf7d0",color:"#166534"}}>☯️ {r.hanja}({r.kr})일</span>}
+                      {r.hwangdo&&<span style={{fontSize:9,fontWeight:700,padding:"2px 7px",borderRadius:9,background:r.hwangdoGood?"#fef9c3":"#f3f4f6",border:`1px solid ${r.hwangdoGood?"#fde68a":"#e5e7eb"}`,color:r.hwangdoGood?"#92400e":"#888"}}>{r.hwangdoGood?"🌕 황도":"🌑 흑도"} {r.hwangdo}</span>}
+                      {(r.sinsal||[]).map((s:string)=>(
+                        <span key={s} style={{fontSize:9,fontWeight:700,padding:"2px 7px",borderRadius:9,background:"#faf5ff",border:"1px solid #e9d5ff",color:"#7c3aed"}}>✦ {s}</span>
+                      ))}
+                    </div>
                   </div>
                 ))}
+                <div style={{fontSize:9.5,color:"#166534",lineHeight:1.7,marginTop:9,paddingTop:9,borderTop:"1px dashed #bbf7d0",wordBreak:"keep-all" as any}}>
+                  💡 <strong>황도(黃道)</strong>는 전통 택일에서 길한 12신(청룡·명당·금궤·천덕·옥당·사명)이 든 날이에요. <strong>신살</strong>은 내 사주와 그날 일진의 관계예요.
+                </div>
               </div>
               <div style={{padding:"14px 16px"}}>
                 <div style={{fontSize:9,color:"#7A5C00",fontWeight:700,letterSpacing:2,marginBottom:6}}>✦ 이 날이 좋은 이유</div>
