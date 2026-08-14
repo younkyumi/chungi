@@ -16413,10 +16413,48 @@ function _birthSeed(personBirth?:string):number{
   for(let i=0;i<digits.length;i++)h=(h*31+digits.charCodeAt(i))>>>0;
   return h%100000;
 }
-function _calcUnse(loggedIn:boolean,personBirth?:string){
+// ━━━ 오늘의 운세 사전질문 녹여내기 (v 2026-08-14) ━━━
+// 문제: preQ(mood/job/worry)를 다 받아놓고 useState·addHistory에만 넣어서 결과에 0% 반영이었다.
+// 방식: 새 섹션을 만들지 않는다. **"천기의 한마디" 문장 자체를 고른 고민에 맞춰 갈아끼운다.**
+//       (월별운세 focusArea 선례와 동일 — 분량·섹션 수·위치 전부 불변)
+//       "공통 같은데 딱 맞았을 때 오는 신뢰"가 목표라 전용 섹션은 만들지 않는다.
+//       → [[feedback_prequestion_woven_not_section]]
+const _UNSE_WORRY_AREA:Record<string,string>={
+  "돈·재물이 막막해":"money",
+  "사람 때문에 힘들어":"social",
+  "일·커리어가 고민이야":"career",
+  "시험·취업·진학이 걱정돼":"career",
+  "건강이 신경 쓰여":"health",
+  "설레는 일이 생겨서 잠이 안 와!":"love",
+  "좋은 일이 생길 것 같은 기대감":"success",
+  "좋은 인연이 생길 것 같아서!":"love",
+  "뭔가 잘 풀릴 것 같은 느낌!":"vibe",
+};
+// 영역별 한마디 — 기존 _UNSE_LASTWORDS와 길이·말투를 맞췄다(한 줄, 반말 섞인 다정한 톤).
+const _UNSE_WORRY_WORD:Record<string,string[]>={
+  money:["막막할 땐 숫자를 적어보세요. 막연함이 걷히면 길이 보여요","돈은 붙잡을수록 도망가요. 오늘은 새는 구멍부터 막아보기","지금 답답한 건 돈이 없어서가 아니라 계획이 없어서일 수도"],
+  social:["그 사람 때문에 힘든 거, 사실 잘 지내고 싶어서예요","거리를 두는 것도 관계를 지키는 방법이에요. 죄책감 ㄴㄴ","오늘은 설명하려 애쓰지 마요. 시간이 대신 말해줍니다"],
+  career:["지금 정체된 것 같아도 실력은 조용히 쌓이는 중이에요","비교는 그만. 남의 3년 차와 내 1년 차를 재고 있잖아요","결과가 안 보이는 구간이 제일 길어요. 여기만 지나면 됩니다"],
+  health:["몸이 보내는 신호는 늦게 오고 크게 와요. 오늘은 좀 쉬어요","잘 자는 게 오늘 할 수 있는 가장 확실한 개운법이에요","무리해서 번 하루보다 잘 쉰 하루가 더 멀리 갑니다"],
+  love:["설렘은 붙잡는 게 아니라 흘려보내면서 즐기는 거예요","먼저 표현해도 손해 안 봐요. 오늘은 마음이 잘 닿는 날","기대해도 괜찮아요. 그 마음 자체가 이미 좋은 기운이에요"],
+  success:["기대감이 든다는 건 준비가 됐다는 뜻이에요. 믿어보세요","좋은 예감은 대체로 맞아요. 다만 조급함만 빼면 됩니다","오늘 작게 온 행운, 흘려보내지 말고 꼭 붙잡아요"],
+  vibe:["느낌이 좋다면 그게 신호예요. 오늘은 직감 편을 들어주세요","잘 풀릴 것 같을 때 한 발 더 나가면 진짜 풀립니다","괜히 기분 좋은 날은 이유가 있어요. 그대로 가세요"],
+};
+function _unseWovenWord(base:string,preQ:any,rng:()=>number){
+  const w=typeof preQ?.worry==="string"?preQ.worry:"";
+  const area=_UNSE_WORRY_AREA[w];
+  if(!area)return base; // 건너뛰기·"딱히 없어"·기타 → 기존 한마디 그대로
+  const pool=_UNSE_WORRY_WORD[area];
+  return pool[Math.floor(rng()*pool.length)]||base;
+}
+
+function _calcUnse(loggedIn:boolean,personBirth?:string,preQ?:any){
   // v(2026-08-11): + _birthSeed — 이전엔 날짜·로그인여부만 들어가서 같은 날 전 사용자가 같은 운세를 봤음
   const d=new Date(),seed=d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate()+(loggedIn?7777:0)+_birthSeed(loggedIn?personBirth:undefined);
   const rng=_seededRng(seed);
+  // v(2026-08-14): 한마디 교체용 rng는 **별도 시드**로 뽑는다. 메인 rng를 한 번 더 당기면
+  // 그 뒤의 solution·lucky 5종 픽이 통째로 밀려서 사전질문이 사실값을 바꿔버린다(회귀).
+  const wordRng=_seededRng(seed+31337);
   const headline=_pick(_UNSE_HEADLINES,rng);
   const dominant=loggedIn?_getDominantOhang(personBirth):"토";
   const areas=_UNSE_AREAS.map(({id,area,emoji,color,sub})=>{
@@ -16432,7 +16470,7 @@ function _calcUnse(loggedIn:boolean,personBirth?:string){
     spoiler:_pick(_UNSE_SPOILERS,rng),
     spot:_pick(_UNSE_SPOTS,rng),
     guiin:_pick(_UNSE_GUIIN,rng),
-    lastWord:_pick(_UNSE_LASTWORDS,rng),
+    lastWord:_unseWovenWord(_pick(_UNSE_LASTWORDS,rng),preQ,wordRng),
     solution:_pick(_UNSE_SOLUTIONS,rng),
     luckyColor:_pick(_LUCKY_POOL.color,rng),luckyNum:_pick(_LUCKY_POOL.num,rng),luckyDir:_pick(_LUCKY_POOL.dir,rng),luckyFood:_pick(_LUCKY_POOL.food,rng),luckyTime:_pick(_LUCKY_POOL.time,rng),
     luckyAnimal:_pick(_LUCKY_POOL.animal,rng),
@@ -16826,7 +16864,7 @@ function TodayUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest
     luckyTime:preloadResult.luckyTime||"오후 1~3시",
     ohang:preloadResult.ohang||"토",
     ohangColor:_OHANG_COLORS[preloadResult.ohang||"토"]||_OHANG_COLORS["토"]
-  }:_calcUnse(!!isLoggedIn,selectedPerson?.birth);
+  }:_calcUnse(!!isLoggedIn,selectedPerson?.birth,preQ);
 
   // 카운팅 + 기록소 저장: 결과 화면 진입 시 1회만 (사전질문/광고가 아닌 진짜 결과를 본 시점)
   // v(2026-08-12): 비로그인/로그인 카운터 분리 — 비로그인 1회, 로그인 2회.
@@ -16843,7 +16881,7 @@ function TodayUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest
     // 저장되는 값이 전체 공통 운세라, 나중에 로그인해서 그 기록을 열면 개인 운세인 척 남는다.
     if(!isLoggedIn)return;
     // v(2026-08-12): 기록소 이모지를 결과 팝업 제목(🔮)과 일치시킨다. 예전엔 🌙.
-    addHistory?.({icon:"🔮",name:"오늘의 운세",svcId:"today_unse",person:personName,date:new Date().toLocaleDateString("ko-KR"),result:`${unse.headline} (${unse.totalScore}점)`,resultType:{star:unse.star,totalScore:unse.totalScore,headline:unse.headline,ohang:unse.ohang,spoiler:unse.spoiler,lastWord:unse.lastWord,solution:unse.solution,spot:unse.spot,guiin:unse.guiin,areas:unse.areas,_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})},ctx:{preQ}});
+    addHistory?.({icon:"🔮",name:"오늘의 운세",svcId:"today_unse",person:personName,date:new Date().toLocaleDateString("ko-KR"),result:`${unse.headline} (${unse.totalScore}점)`,resultType:{star:unse.star,totalScore:unse.totalScore,headline:unse.headline,ohang:unse.ohang,spoiler:unse.spoiler,lastWord:unse.lastWord,solution:unse.solution,spot:unse.spot,guiin:unse.guiin,areas:unse.areas,_preQ:preQ,_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})},ctx:{preQ}});
   },[step]);
   const handleExpand=(area:string)=>{
     setExpandedArea(expandedArea===area?null:area);
@@ -16959,6 +16997,17 @@ function TodayUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest
               <div>{formatPersonInfoLine({name:isLoggedIn?personName:"공통",birth:selectedPerson?.birth,time:selectedPerson?.time,calendar:selectedPerson?.calendar,gender:selectedPerson?.gender})}</div>
               <div style={{color:"#aaa"}}>{formatTestDateLine(preloadResult?._testDate)}</div>
             </div>
+            {/* v(2026-08-14): 사전질문 반영 배너. 고른 고민이 "천기의 한마디"에 녹아 들어간다.
+                전용 섹션을 새로 만들지 않으므로 분량은 선택 개수와 무관하게 동일하다. */}
+            {(()=>{
+              const _w=typeof (preloadResult?._preQ?.worry ?? preQ?.worry)==="string"?(preloadResult?._preQ?.worry ?? preQ?.worry):"";
+              if(!_w||_w==="skip")return null;
+              const _known=!!_UNSE_WORRY_AREA[_w];
+              return <div style={{marginTop:10,fontSize:11,color:"#B8942E",fontWeight:700,background:"#fffbe9",borderRadius:8,padding:"8px 11px",lineHeight:1.6,border:"1px solid #fde68a",textAlign:"center",wordBreak:"keep-all" as any}}>
+                {_known?<>🎯 <strong>{_w.replace(/^\[기타\]\s*/,"")}</strong> — 이 마음을 중심으로 오늘 흐름을 풀었어요.</>
+                       :<>🎯 특정 고민을 정하지 않고 <strong>오늘 전체 흐름</strong>을 골고루 풀었어요.</>}
+              </div>;
+            })()}
             {/* v407: 사주 고정 정보 chip (일간 + 띠 + 별자리) */}
             {isLoggedIn&&<div style={{display:"flex",gap:5,flexWrap:"wrap",justifyContent:"center",marginTop:10}}>
               {unse.ohang&&<span style={{fontSize:10,fontWeight:700,padding:"3px 8px",borderRadius:12,background:`${unse.ohangColor.hex}15`,color:unse.ohangColor.hex,border:`1px solid ${unse.ohangColor.hex}40`}}>☯️ 내 사주 일간 : {unse.ohang}({({"목":"木","화":"火","토":"土","금":"金","수":"水"} as any)[unse.ohang]||""})</span>}
