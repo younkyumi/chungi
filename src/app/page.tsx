@@ -22091,14 +22091,67 @@ const _WEEK_ADVICE:any={
   수:{w1:"첫째 주는 수(水) 기운의 지혜와 직관이 빛나는 시기예요. 중요한 통찰이 올 수 있어요.",w2:"둘째 주는 건강운이 특히 좋아요. 새로운 운동이나 건강 루틴을 시작하기 좋아요.",w3:"셋째 주는 감정적으로 예민해질 수 있어요. 명상이나 산책으로 마음을 다스리세요.",w4:"넷째 주는 창의적인 활동에 집중하면 좋은 결과가 나와요."},
 };
 const _MONTH_LUCKY={color:["빨간색","초록색","파란색","노란색","보라색","금색"],item:["동쪽 방향 소품","둥근 형태 물건","나무 소재 물건","금속 악세서리","물 관련 소품"],day:["매주 화요일","매주 목요일","홀수 날짜","짝수 날짜","보름 전후"]};
-function _calcMonthly(loggedIn:boolean,personBirth?:string){
+// ━━━ 이달의 운세 사전질문 녹여내기 (v 2026-08-14) ━━━
+// 문제: preQ(focus/weather/expect)를 localStorage·addHistory에만 넣고 렌더·계산에 0% 반영이었다.
+// 방식: 새 섹션 없음. **고른 영역의 "영역별 운" 한 줄을 그 영역 맞춤 문장으로 교체**한다.
+//       점수(score)는 건드리지 않고 문장만 바꾸므로 사실값 불변 + 분량 불변.
+//       고른 개수만큼 줄이 바뀔 뿐 줄 수 자체는 항상 5줄로 같다.
+const _MONTH_FOCUS_AREA:Record<string,string>={
+  "재물·수입·투자":"재물",
+  "연애·결혼·인연":"애정",
+  "직장·사업·커리어":"직업",
+  "시험·취업·진학·자격증":"직업",
+  "건강·체력·멘탈":"건강",
+  "가정·가족 관계":"애정",
+};
+// 점수와 어긋나면 안 되므로 up(4~5점)/down(2~3점) 두 톤을 따로 둔다.
+const _MONTH_FOCUS_TEXT:Record<string,{up:string[],down:string[]}>={
+  재물:{
+    up:["집중하기로 한 만큼 돈 흐름이 열리는 달이에요","목표를 정해둔 덕에 들어올 자리가 또렷해요"],
+    down:["버는 것보다 새는 걸 막는 게 이달의 재물운이에요","지금은 늘리는 달이 아니라 지키는 달이에요"],
+  },
+  애정:{
+    up:["마음 쓴 만큼 관계가 부드러워지는 달이에요","먼저 다가가면 그대로 돌아오는 달이에요"],
+    down:["애쓸수록 엇갈려요. 이달은 여백을 두는 게 나아요","서운함은 담아두세요. 다음 달에 풀리는 결이에요"],
+  },
+  직업:{
+    up:["신경 쓴 쪽에서 성과가 눈에 보이는 달이에요","준비한 걸 꺼내 보이기 좋은 달이에요"],
+    down:["결과가 늦게 오는 구간이에요. 실력은 쌓이는 중","벌이지 말고 하나만 붙잡는 게 이달의 정답이에요"],
+  },
+  건강:{
+    up:["돌보기로 한 만큼 몸이 잘 따라주는 달이에요","루틴을 새로 만들기 좋은 달이에요"],
+    down:["무리하면 바로 표가 나요. 이달은 덜어내세요","잘 자는 것만 지켜도 이달 건강은 넘어갑니다"],
+  },
+  총운:{
+    up:["방향을 정해둔 덕에 전체 흐름이 순해요","고른 쪽으로 기운이 모이는 달이에요"],
+    down:["넓히기보다 정리하는 달이에요","속도를 낮추면 손해가 줄어드는 달이에요"],
+  },
+};
+function _monthWovenAreas(areas:any[],preQ:any,rng:()=>number){
+  const f=preQ?.focus;
+  const picked=(Array.isArray(f)?f:(f?[f]:[])).filter((x:any)=>typeof x==="string");
+  const targets=new Set(picked.map((l:string)=>_MONTH_FOCUS_AREA[l]).filter(Boolean));
+  if(targets.size===0)return areas;
+  return areas.map(a=>{
+    if(!targets.has(a.area))return a;
+    const grp=_MONTH_FOCUS_TEXT[a.area];
+    if(!grp)return a;
+    const pool=(a.score>=4?grp.up:grp.down);
+    return{...a,text:pool[Math.floor(rng()*pool.length)]||a.text};
+  });
+}
+
+function _calcMonthly(loggedIn:boolean,personBirth?:string,preQ?:any){
   // v(2026-08-11): + _birthSeed — 오늘의 운세와 같은 문제였음 (달·로그인여부만 들어가 전 사용자 동일)
   const d=new Date(),seed=d.getFullYear()*100+(d.getMonth()+1)+(loggedIn?500:0)+_birthSeed(loggedIn?personBirth:undefined);
   const rng=_seededRng(seed);
   const headline=_MONTH_HEADLINES[Math.floor(rng()*_MONTH_HEADLINES.length)];
   const dominant=loggedIn?_getDominantOhang(personBirth):"토";
   const areas=_MONTH_AREAS.map(({area,emoji})=>{const opts=_MONTH_MSGS[area];const idx=Math.min(opts.length-1,Math.floor(rng()*opts.length));return{area,emoji,score:opts[idx][0]as number,text:opts[idx][1]as string};});
-  return{headline,areas,
+  // v(2026-08-14): 문장 교체용 rng는 별도 시드. 메인 rng를 당기면 뒤의 lucky 3종이 밀려서
+  // 사전질문이 사실값을 바꾸는 회귀가 생긴다(오늘의 운세와 동일한 주의점).
+  const wovenAreas=_monthWovenAreas(areas,preQ,_seededRng(seed+31337));
+  return{headline,areas:wovenAreas,
     luckyColor:_pick(_MONTH_LUCKY.color,rng),luckyItem:_pick(_MONTH_LUCKY.item,rng),luckyDay:_pick(_MONTH_LUCKY.day,rng),
     weekAdvice:loggedIn?_WEEK_ADVICE[dominant]:null,
     ohang:dominant,ohangColor:_OHANG_COLORS[dominant]};
@@ -22185,7 +22238,7 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
     weekAdvice:preloadResult.weekAdvice||(isLoggedIn?_WEEK_ADVICE[preloadResult.ohang||"토"]:null),
     ohang:preloadResult.ohang||"토",
     ohangColor:_OHANG_COLORS[preloadResult.ohang||"토"]||_OHANG_COLORS["토"]
-  }:_calcMonthly(!!isLoggedIn,selectedPerson?.birth);
+  }:_calcMonthly(!!isLoggedIn,selectedPerson?.birth,preQ);
   const monthLabel=preloadResult?.month||`${new Date().getFullYear()}년 ${new Date().getMonth()+1}월`;
   const starStr=(n:number)=>"★".repeat(n)+"☆".repeat(5-n);
   // DB 토정비결 fetch (해당 월 원문 표시)
@@ -22215,7 +22268,7 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
       // "🔒 주차별 흐름" 잠금이 영영 안 풀리던 무한 반복의 원인이었다.
       if(!isLoggedIn)return;
       // v(2026-08-12): 기록소 이모지를 결과 팝업 제목(🌸)과 일치시킨다. 예전엔 📅.
-      addHistory?.({icon:"🌸",name:"이달의 운세",svcId:"monthly_unse",person:personName,date:new Date().toLocaleDateString("ko-KR"),result:`${monthLabel} ${m.headline.text} (${m.headline.star}/5)`,resultType:{star:m.headline.star,headline:m.headline.text,ohang:m.ohang,areas:m.areas,weekAdvice:m.weekAdvice,month:monthLabel,_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})},ctx:{preQ}});
+      addHistory?.({icon:"🌸",name:"이달의 운세",svcId:"monthly_unse",person:personName,date:new Date().toLocaleDateString("ko-KR"),result:`${monthLabel} ${m.headline.text} (${m.headline.star}/5)`,resultType:{star:m.headline.star,headline:m.headline.text,ohang:m.ohang,areas:m.areas,weekAdvice:m.weekAdvice,month:monthLabel,_preQ:preQ,_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})},ctx:{preQ}});
     }
   },[step,saved,addHistory,personName,m.headline.text,m.headline.star,m.ohang,monthLabel,preQ]);
 
@@ -22333,6 +22386,18 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
               <div>{formatPersonInfoLine({name:isLoggedIn?personName:"공통",birth:selectedPerson?.birth,time:selectedPerson?.time,calendar:selectedPerson?.calendar,gender:selectedPerson?.gender})}</div>
               <div style={{color:"#aaa"}}>{formatTestDateLine(preloadResult?._testDate)}</div>
             </div>
+            {/* v(2026-08-14): 사전질문 반영 배너. 고른 영역의 "영역별 운" 문장이 맞춤으로 바뀐다.
+                전용 섹션을 만들지 않으므로 줄 수는 항상 5줄로 동일하다. */}
+            {(()=>{
+              const _f=preloadResult?._preQ?.focus??preQ?.focus;
+              const _raw=(Array.isArray(_f)?_f:(_f?[_f]:[])).filter((x:any)=>typeof x==="string"&&x&&x!=="skip");
+              if(_raw.length===0)return null;
+              const _hit=_raw.filter((l:string)=>_MONTH_FOCUS_AREA[l]);
+              return <div style={{marginTop:10,fontSize:11,color:"#B8942E",fontWeight:700,background:"#fffbe9",borderRadius:8,padding:"8px 11px",lineHeight:1.6,border:"1px solid #fde68a",textAlign:"center",wordBreak:"keep-all" as any}}>
+                {_hit.length>0?<>🎯 <strong>{_hit.join(" · ")}</strong> 에 집중하기로 한 걸 반영해 풀었어요.</>
+                              :<>🎯 특정 영역을 정하지 않고 <strong>이달 전체 흐름</strong>을 골고루 풀었어요.</>}
+              </div>;
+            })()}
             {/* v407: 사주 고정 정보 chip (일간 + 띠 + 별자리) — 헤더에 표시 */}
             {isLoggedIn&&<div style={{display:"flex",gap:5,flexWrap:"wrap",justifyContent:"center",marginTop:10}}>
               {m.ohang&&<span style={{fontSize:10,fontWeight:700,padding:"3px 8px",borderRadius:12,background:`${m.ohangColor.hex}15`,color:m.ohangColor.hex,border:`1px solid ${m.ohangColor.hex}40`}}>☯️ 내 사주 일간 : {m.ohang}({({"목":"木","화":"火","토":"土","금":"金","수":"水"} as any)[m.ohang]||""})</span>}
