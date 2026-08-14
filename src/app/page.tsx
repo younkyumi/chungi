@@ -178,6 +178,53 @@ function _tarotFocusLine(label:string,verdict:"yes"|"no"|"maybe",cardId:number,i
   return pool[Math.abs((cardId||0)*3+i)%pool.length];
 }
 
+// ━━━ v(2026-08-14) 고른 항목을 "합쳐서 한 답"으로 (사용자 요청) ━━━
+// 처음엔 고른 항목마다 한 줄씩 뽑았는데, 그러면 1개 고른 사람은 1줄 / 5개 고른 사람은 5줄이라
+// **여러 개 고르는 게 유리해 보이는** 문제가 생겼다.
+// 사용자가 원한 형태: "궁금한것1: … / 궁금한것2: …" 가 아니라 "궁금한것 1+2: (합친 한 답)".
+// → 항목별로는 **짧은 절**만 갖고 있다가, 고른 것들을 이어 붙여 한 문장으로 만든다.
+//   몇 개를 고르든 문단 하나로 끝나므로 분량 유·불리가 사라진다.
+const _TAROT_FOCUS_CLAUSE:Record<string,Record<string,string>>={
+  "오늘 재물·금전":{yes:"들어올 자리를 챙기는 것",no:"새는 곳을 먼저 막는 것",maybe:"숫자로 적어 정리하는 것"},
+  "오늘 인연·관계":{yes:"먼저 연락해보는 것",no:"서운함을 하루 담아두는 것",maybe:"상대의 속도를 기다리는 것"},
+  "오늘 일·결정":{yes:"미뤄둔 것을 오늘 끝내는 것",no:"하나만 붙잡는 것",maybe:"기한부터 정해두는 것"},
+  "오늘 컨디션·건강":{yes:"미뤄둔 운동을 시작하는 것",no:"일정 하나를 덜어내는 것",maybe:"잘 자는 것부터 챙기는 것"},
+  "중요한 선택 앞에서":{yes:"오늘 정하고 알리는 것",no:"하루만 더 두고 보는 것",maybe:"되돌릴 수 있는 쪽부터 해보는 것"},
+  "오늘의 종합 흐름":{yes:"벌여둔 것 하나를 매듭짓는 것",no:"넓히지 않고 정리하는 것",maybe:"오르내림을 문제 삼지 않는 것"},
+};
+// 판정별 근거 한 줄(왜 그런지) + 마무리 한 줄. 카드 id로 고정 선택.
+const _TAROT_FOCUS_WHY:Record<string,string[]>={
+  yes:["오늘 뽑힌 카드가 막힌 자리를 열어주는 결이라, 미루던 쪽을 건드리기 좋아요.","카드의 기운이 밖으로 뻗는 날이라 먼저 움직이는 쪽이 유리해요."],
+  no:["오늘 카드는 안으로 모으는 결이라, 벌이는 것보다 지키는 게 남아요.","기운이 아직 여물지 않은 자리예요. 밀어붙이면 되돌리는 데 더 든다고 말하고 있어요."],
+  maybe:["오늘 카드는 아직 한쪽으로 기울지 않았어요. 지금 정하면 나중에 아쉬움이 남는 자리예요.","기운이 오르내리는 날이라, 판단보다 관찰이 잘 맞아요."],
+};
+const _TAROT_FOCUS_CLOSE:Record<string,string[]>={
+  yes:["카드가 그 방향을 밀어주고 있어요.","지금 움직여도 좋다는 신호예요."],
+  no:["카드는 한 박자 늦추라고 말하고 있어요.","서두르지 않는 쪽이 이득인 날이에요."],
+  maybe:["카드는 아직 지켜보라고 하고 있어요.","답을 재촉하지 않는 게 좋아요."],
+};
+// labels가 비면(건너뛰기) 종합 풀이로 답한다 — 사전질문 hint가 "건너뛰면 종합 풀이"라고 약속한다.
+function _tarotFocusMerged(labels:string[],verdict:"yes"|"no"|"maybe",cardId:number){
+  const skipped=labels.length===0;
+  const use=skipped?["오늘의 종합 흐름"]:labels;
+  const clauses=use.map(l=>(_TAROT_FOCUS_CLAUSE[l]||_TAROT_FOCUS_CLAUSE["오늘의 종합 흐름"])[verdict]).filter(Boolean);
+  if(clauses.length===0)return "";
+  const i=Math.abs(cardId||0)%2;
+  const why=(_TAROT_FOCUS_WHY[verdict]||_TAROT_FOCUS_WHY.maybe)[i];
+  const close=(_TAROT_FOCUS_CLOSE[verdict]||_TAROT_FOCUS_CLOSE.maybe)[i];
+  // 라벨은 위쪽 칩에 이미 떠 있다. 본문에서 또 나열하면 중복이고,
+  // 많이 고를수록 문단만 길어져 "여러 개 고르는 게 유리해 보이는" 문제가 그대로 남는다.
+  // → 개수만 말하고 라벨은 칩에 맡긴다. (예전엔 "재물·금전와 인연·관계를…" 처럼 조사도 틀렸다)
+  const CNT=["","한","두","세","네","다섯","여섯"];
+  const lead=skipped
+    ? "특정 영역을 정하지 않으셔서 오늘 흐름을 종합해서 풀었어요."
+    : labels.length===1
+      ? "물어보신 것부터 볼게요."
+      : `${CNT[labels.length]||labels.length} 가지를 함께 물으셨죠.`;
+  const mid=labels.length>=2?" 서로 다른 이야기 같아도 오늘은 한 흐름 위에 있어요." : "";
+  return `${lead} ${why} 오늘은 ${clauses.join(", ")}에 마음을 두세요.${mid} ${close}`;
+}
+
 // ━━━ 타로카드 78장 데이터 ━━━
 const TAROT_78:any[] = [
   // 메이저 아르카나 (22장)
@@ -17730,19 +17777,22 @@ function TodayTarotModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReques
                 <div style={{fontSize:10,fontWeight:700,color:"#9B8FD4",marginBottom:6,letterSpacing:1}}>🔮 카드 의미</div>
                 <div style={{fontSize:12,color:"#555",lineHeight:1.75,wordBreak:"keep-all" as any}}>{todayCard.meaning} 이 카드의 핵심 메시지는 <strong style={{color:"#7A5C00"}}>{_tarotKeyMsg(todayCard.id,isReversed?"no":(todayCard.yesno||"maybe"))}</strong>는 거예요. {personName}님 안에 이미 답이 있으니, 외부보다 내 마음의 소리에 귀 기울여보세요.</div>
               </div>
-              {/* v(2026-08-14): 사전질문에서 고른 관심 영역 — 고른 만큼 줄이 늘어난다(안 고르면 아예 안 나옴) */}
-              {focusList.length>0&&<div style={{background:"#f8f9fa",borderRadius:12,padding:"14px",marginTop:12}}>
-                <div style={{fontSize:10,fontWeight:700,color:"#C8834A",marginBottom:8,letterSpacing:1}}>🎯 {personName}님이 궁금해한 것</div>
-                {focusList.map((f,i)=>(
-                  <div key={f} style={{display:"flex",gap:8,alignItems:"flex-start",marginBottom:i<focusList.length-1?9:0}}>
-                    <span style={{fontSize:14,flexShrink:0,lineHeight:1.5}}>{_TAROT_FOCUS_EMOJI[f]||"✦"}</span>
-                    <div style={{flex:1,minWidth:0}}>
-                      <div style={{fontSize:11,fontWeight:800,color:"#7A5C00",marginBottom:2}}>{f}</div>
-                      <div style={{fontSize:12,color:"#555",lineHeight:1.7,wordBreak:"keep-all" as any}}>{_tarotFocusLine(f,focusVerdict,todayCard.id,i)}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>}
+              {/* v(2026-08-14): 사전질문 반영 — 고른 항목을 **합쳐서 한 답**으로 준다.
+                  항목마다 줄을 나누면 많이 고른 사람이 더 많은 정보를 받아 유·불리가 생긴다(사용자 지적).
+                  몇 개를 고르든 문단 하나. 건너뛰었으면 종합 풀이로 답한다(사전질문 안내가 그렇게 약속함). */}
+              <div style={{background:"#f8f9fa",borderRadius:12,padding:"14px",marginTop:12}}>
+                <div style={{fontSize:10,fontWeight:700,color:"#C8834A",marginBottom:8,letterSpacing:1}}>
+                  🎯 {focusList.length>0?`${personName}님이 궁금해한 것`:"오늘의 종합 풀이"}
+                </div>
+                {focusList.length>0&&<div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:9}}>
+                  {focusList.map(f=>(
+                    <span key={f} style={{fontSize:10,fontWeight:800,color:"#7A5C00",background:"#fffbe9",border:"1px solid rgba(212,175,55,0.4)",borderRadius:20,padding:"3px 9px"}}>
+                      {_TAROT_FOCUS_EMOJI[f]||"✦"} {f}
+                    </span>
+                  ))}
+                </div>}
+                <div style={{fontSize:12,color:"#555",lineHeight:1.85,wordBreak:"keep-all" as any}}>{_tarotFocusMerged(focusList,focusVerdict,todayCard.id)}</div>
+              </div>
             </div>
 
             {/* v338: 무료 분포 — 4영역 운세·행운 5종·럭키 스팟·귀인·천기 한마디 모두 제거.
