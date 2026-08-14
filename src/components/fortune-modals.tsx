@@ -624,7 +624,7 @@ export function NewYearModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedI
         <div style={{marginBottom:10}}>
           <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
           <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-            {[{ic:"📜",name:"토정비결",price:"1,980원",sid:"tojeong"},{ic:"📊",name:"월별 운세",price:"980원",sid:"saju_monthly"},{ic:"🔄",name:"대운 해설",price:"980원",sid:"daeun"},{ic:"☯️",name:"사주 풀이",price:"980원",sid:"saju"},{ic:"🌅",name:"연도별 운세",price:"980원",sid:"yearly_unse"},{ic:"🌙",name:"오늘운세",price:"무료",sid:"today_unse"}].map(cr=>(
+            {[{ic:"📜",name:"토정비결",price:"1,980원",sid:"tojeong"},{ic:"🌙",name:"월별 운세",price:"980원",sid:"saju_monthly"},{ic:"🔄",name:"대운 해설",price:"980원",sid:"daeun"},{ic:"☯️",name:"사주 풀이",price:"980원",sid:"saju"},{ic:"🌅",name:"연도별 운세",price:"980원",sid:"yearly_unse"},{ic:"🔮",name:"오늘운세",price:"무료",sid:"today_unse"}].map(cr=>(
               <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",position:"relative",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(cr.sid,cr.name,cr.ic,cr.price)}>
                 <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
                 <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>
@@ -683,7 +683,7 @@ export function TojeongModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedI
     // v(2026-08-12): 📜 → 📖. 오늘의 명언을 📜로 고정하면서 겹쳤다.
       // 「토정비결」은 실제 책 이름이라 📖가 의미도 맞고 명언의 두루마리와 모양이 갈린다.
       // (🎴·🀄는 화투·마작이라 일본·중국 연상으로 제외. 🎋는 신년 운세가 이미 사용 중)
-      addHistory({icon:"📖",name:"토정비결",svcId:"tojeong",person:nm,result:`${yr}년 ${dbData?.gwe_number?`#${dbData.gwe_number}괘`:GWAE_DATA.name}`,date:new Date().toLocaleDateString("ko-KR"),preQuestions:{focus:ans1,age:ans2},resultType:{_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})}});
+      addHistory({icon:"📜",name:"토정비결",svcId:"tojeong",person:nm,result:`${yr}년 ${dbData?.gwe_number?`#${dbData.gwe_number}괘`:GWAE_DATA.name}`,date:new Date().toLocaleDateString("ko-KR"),preQuestions:{focus:ans1,age:ans2},resultType:{_birth:selectedPerson?.birth,_time:selectedPerson?.time,_testDate:new Date().toLocaleString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})}});
   }
   // DB 토정비결 데이터 fetch (loading → result 전환 시)
   useEffect(()=>{
@@ -717,7 +717,7 @@ export function TojeongModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedI
           </div>
           {/* 역사 박스 */}
           <div style={{background:"rgba(255,255,255,0.04)",borderRadius:10,padding:"10px 12px",marginBottom:14,textAlign:"left",border:"1px solid rgba(212,175,55,0.15)"}}>
-            <div style={{fontSize:10,color:"var(--gold)",fontWeight:800,marginBottom:4,letterSpacing:1}}>📖 토정비결이란?</div>
+            <div style={{fontSize:10,color:"var(--gold)",fontWeight:800,marginBottom:4,letterSpacing:1}}>📜 토정비결이란?</div>
             <div style={{fontSize:11,color:"var(--mist)",lineHeight:1.7}}>조선 중기 학자 이지함(이토정, 1517~1578) 선생이 창안한 한국 전통 운세서. 약 500년간 정월이면 온 조선인이 본 유서 깊은 예언법이에요.</div>
           </div>
           {/* 포인트 — 테두리 제거, 내용 유지 */}
@@ -851,7 +851,7 @@ export function TojeongModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedI
         <div style={{marginBottom:10}}>
           <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
           <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-            {[{ic:"🎋",name:"신년 운세",price:"1,980원",sid:"newyear"},{ic:"📊",name:"월별 운세",price:"980원",sid:"saju_monthly"},{ic:"🔄",name:"대운 해설",price:"980원",sid:"daeun"},{ic:"🌅",name:"연도별 운세",price:"980원",sid:"yearly_unse"},{ic:"☯️",name:"사주 풀이",price:"980원",sid:"saju"},{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"}].map(cr=>(
+            {[{ic:"🎋",name:"신년 운세",price:"1,980원",sid:"newyear"},{ic:"🌙",name:"월별 운세",price:"980원",sid:"saju_monthly"},{ic:"🔄",name:"대운 해설",price:"980원",sid:"daeun"},{ic:"🌅",name:"연도별 운세",price:"980원",sid:"yearly_unse"},{ic:"☯️",name:"사주 풀이",price:"980원",sid:"saju"},{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"}].map(cr=>(
               <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",position:"relative",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(cr.sid,cr.name,cr.ic,cr.price)}>
                 <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
                 <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>
@@ -1331,8 +1331,8 @@ export function PastLifeModal({onClose,cart,setCart,onGoShop,addHistory,isLogged
         {showCollection&&<PastLifeFullModal onClose={()=>setShowCollection(false)} modal={{_curType:plCompat}} helpers={{ResultActions}}/>}
         <FunnelGrid onOpenService={onOpenService} items={[
           {ic:"☯️",sid:"saju",name:"사주 풀이 →",bc:"rgba(212,175,55,0.3)",q:"내 사주 전체"},
-          {ic:"🌟",sid:"gijildo",name:"기질도 →",bc:"rgba(95,196,158,0.3)",q:"전생 기질"},
-          {ic:"👁️",sid:"gwansang_full",name:"내 관상보기 →",bc:"rgba(155,143,212,0.3)",q:"얼굴 흔적"},
+          {ic:"🔯",sid:"gijildo",name:"기질도 →",bc:"rgba(95,196,158,0.3)",q:"전생 기질"},
+          {ic:"🪞",sid:"gwansang_full",name:"내 관상보기 →",bc:"rgba(155,143,212,0.3)",q:"얼굴 흔적"},
           {ic:"🔄",sid:"daeun",name:"대운 해설 →",bc:"rgba(255,107,173,0.3)",q:"10년 흐름"},
         ]}/>
         <ResultActions isLoggedIn={isLoggedIn} onLoginRequest={onLoginRequest||(()=>{})} onShare={()=>{}} captureId="pastlife-capture"/>
@@ -1340,7 +1340,7 @@ export function PastLifeModal({onClose,cart,setCart,onGoShop,addHistory,isLogged
         <div style={{marginBottom:10}}>
           <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
           <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-            {[{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"},{ic:"🌙",name:"오늘운세",price:"무료",sid:"today_unse"},{ic:"🔮",name:"수비학",price:"980원",sid:"numerology"},{ic:"📜",name:"토정비결",price:"1,980원",sid:"tojeong"},{ic:"🌅",name:"연도별 운세",price:"980원",sid:"yearly_unse"},{ic:"🔄",name:"대운 운세",price:"980원",sid:"daeun"}].map(cr=>(
+            {[{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"},{ic:"🔮",name:"오늘운세",price:"무료",sid:"today_unse"},{ic:"🔢",name:"수비학",price:"980원",sid:"numerology"},{ic:"📜",name:"토정비결",price:"1,980원",sid:"tojeong"},{ic:"🌅",name:"연도별 운세",price:"980원",sid:"yearly_unse"},{ic:"🔄",name:"대운 운세",price:"980원",sid:"daeun"}].map(cr=>(
               <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",position:"relative",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(cr.sid,cr.name,cr.ic,cr.price)}>
                 <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
                 <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>
@@ -1698,7 +1698,7 @@ export function DaeunRichModal({onClose,cart,setCart,onGoShop,addHistory,isLogge
         <div style={{marginBottom:10}}>
           <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
           <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-            {[{ic:"☯️",name:"사주 풀이",price:"980원",sid:"saju"},{ic:"📜",name:"토정비결",price:"1,980원",sid:"tojeong"},{ic:"🎋",name:"신년 운세",price:"1,980원",sid:"newyear"},{ic:"📊",name:"월별 운세",price:"980원",sid:"saju_monthly"},{ic:"🌅",name:"연도별 운세",price:"980원",sid:"yearly_unse"},{ic:"⏳",name:"전생 운세",price:"980원",sid:"past_life"}].map(cr=>(
+            {[{ic:"☯️",name:"사주 풀이",price:"980원",sid:"saju"},{ic:"📜",name:"토정비결",price:"1,980원",sid:"tojeong"},{ic:"🎋",name:"신년 운세",price:"1,980원",sid:"newyear"},{ic:"🌙",name:"월별 운세",price:"980원",sid:"saju_monthly"},{ic:"🌅",name:"연도별 운세",price:"980원",sid:"yearly_unse"},{ic:"⏳",name:"전생 운세",price:"980원",sid:"past_life"}].map(cr=>(
               <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",position:"relative",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(cr.sid,cr.name,cr.ic,cr.price)}>
                 <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
                 <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>
@@ -1933,7 +1933,7 @@ export function YearlyRichModal({onClose,cart,setCart,onGoShop,addHistory,isLogg
         <div style={{marginBottom:10}}>
           <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
           <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-            {[{ic:"☯️",name:"사주 풀이",price:"980원",sid:"saju"},{ic:"🎋",name:"신년 운세",price:"1,980원",sid:"newyear"},{ic:"📜",name:"토정비결",price:"1,980원",sid:"tojeong"},{ic:"📊",name:"월별 운세",price:"980원",sid:"saju_monthly"},{ic:"🔄",name:"대운 해설",price:"980원",sid:"daeun"},{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"}].map(cr=>(
+            {[{ic:"☯️",name:"사주 풀이",price:"980원",sid:"saju"},{ic:"🎋",name:"신년 운세",price:"1,980원",sid:"newyear"},{ic:"📜",name:"토정비결",price:"1,980원",sid:"tojeong"},{ic:"🌙",name:"월별 운세",price:"980원",sid:"saju_monthly"},{ic:"🔄",name:"대운 해설",price:"980원",sid:"daeun"},{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"}].map(cr=>(
               <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",position:"relative",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(cr.sid,cr.name,cr.ic,cr.price)}>
                 <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
                 <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>

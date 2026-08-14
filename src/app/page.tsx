@@ -6532,7 +6532,7 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
               titleColor:"#9B8FD4"
             },
             baby_naming:{
-              title:"🍼 아기 이름 짓기",sub:"사주 + 한자 획수 전통 작명",
+              title:"📛 아기 이름 짓기",sub:"사주 + 한자 획수 전통 작명",
               desc:"한국 전통 작명 방식 — 아기 사주의 부족한 오행을 한자 획수와 뜻으로 채워주는 방식이에요. 돌림자(항렬자) 있으면 반영하고, 없으면 전통 한자 / 요즘 유행 / 순한글 / 글로벌 중 원하는 스타일로 추천해드려요.",
               points:["☯️ 아기 사주 분석 + 부족 오행 진단","📜 돌림자(항렬자) 있으면 그대로 반영","🎨 스타일 선택 — 전통/현대식/순한글/글로벌","✨ 추천 이름 TOP 3 (한자 음·뜻·획수 전체 풀이)","💡 파동성명학과 다른 '한자 중심 전통 방식'"],
               btn:"우리 아기 이름 짓기 ("+svc.price+") →",
@@ -6594,7 +6594,7 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
               accent:"#9cb59d"
             },
             lucky_wallpaper:{
-              title:"🌌 AI 행운 배경화면",sub:"부족한 오행 보강해주는 잠금화면",
+              title:"🖼️ AI 행운 배경화면",sub:"부족한 오행 보강해주는 잠금화면",
               desc:"내 사주에서 부족한 오행을 보강하는 색과 기운으로 나만의 잠금화면을 만들어드려요. 하루 수십 번 보는 잠금화면으로 기운을 자연스럽게 충전하세요.",
               points:["🎨 사주 오행 맞춤 컬러","🌌 잠금화면 전용 비율","⚡ 하루 수십 번 기운 충전","✨ 주 1회 갱신 권장"],
               btn:"내 사주에 맞는 맞춤 배경화면 받기 ("+svc.price+") →",
@@ -7308,7 +7308,7 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
             <div style={{marginBottom:10}}>
               <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
               <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-                {[{ic:"🍼",name:"아기 관상",price:"980원",sid:"baby_gwansang"},{ic:"💑",name:"커플 궁합",price:"1,980원",sid:"gwansang_compat"},{ic:"🌙",name:"오늘운세",price:"무료",sid:"today_unse"},{ic:"🐯",name:"띠별 운세",price:"무료",sid:"ddi"},{ic:"🌊",name:"파동성명학",price:"4,800원",sid:"pawdong"},{ic:"👑",name:"조선초상화",price:"1,980원",sid:"joseon_portrait"}].map(cr=>(
+                {[{ic:"🍼",name:"아기 관상",price:"980원",sid:"baby_gwansang"},{ic:"💑",name:"커플 궁합",price:"1,980원",sid:"gwansang_compat"},{ic:"🔮",name:"오늘운세",price:"무료",sid:"today_unse"},{ic:"🐯",name:"띠별 운세",price:"무료",sid:"ddi"},{ic:"🌊",name:"파동성명학",price:"4,800원",sid:"pawdong"},{ic:"👑",name:"조선초상화",price:"1,980원",sid:"joseon_portrait"}].map(cr=>(
                   <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",position:"relative",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(cr.sid,cr.name,cr.ic,cr.price)}>
                     <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
                     <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>
@@ -9185,7 +9185,7 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
           <div style={{marginBottom:10}}>
             <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
             <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-              {(svc.id==="baby_face"?[{ic:"🪞",name:"내 관상보기",price:"980원",sid:"gwansang_full"},{ic:"📸",name:"관상짤",price:"380원",sid:"gwansang_zal"},{ic:"☯️",name:"사주 풀이",price:"980원",sid:"saju"},{ic:"🌊",name:"파동 성명학",price:"4,800원",sid:"pawdong"},{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"}]:[{ic:"🍼",name:"아기 관상",price:"980원",sid:"baby_gwansang"},{ic:"💑",name:"커플 궁합",price:"1,980원",sid:"gwansang_compat"},{ic:"🌙",name:"오늘운세",price:"무료",sid:"today_unse"},{ic:"🐯",name:"띠별 운세",price:"무료",sid:"ddi"},{ic:"🌊",name:"파동성명학",price:"4,800원",sid:"pawdong"},{ic:"👑",name:"조선초상화",price:"1,980원",sid:"joseon_portrait"}]).map(cr=>(
+              {(svc.id==="baby_face"?[{ic:"🪞",name:"내 관상보기",price:"980원",sid:"gwansang_full"},{ic:"📸",name:"관상짤",price:"380원",sid:"gwansang_zal"},{ic:"☯️",name:"사주 풀이",price:"980원",sid:"saju"},{ic:"🌊",name:"파동 성명학",price:"4,800원",sid:"pawdong"},{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"}]:[{ic:"🍼",name:"아기 관상",price:"980원",sid:"baby_gwansang"},{ic:"💑",name:"커플 궁합",price:"1,980원",sid:"gwansang_compat"},{ic:"🔮",name:"오늘운세",price:"무료",sid:"today_unse"},{ic:"🐯",name:"띠별 운세",price:"무료",sid:"ddi"},{ic:"🌊",name:"파동성명학",price:"4,800원",sid:"pawdong"},{ic:"👑",name:"조선초상화",price:"1,980원",sid:"joseon_portrait"}]).map(cr=>(
                 <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",position:"relative",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(cr.sid,cr.name,cr.ic,cr.price)}>
                   <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
                   <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>
@@ -9682,7 +9682,7 @@ function DdiModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLoginRe
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:10}}>
             {[
               {ic:"☯️",q:"내 사주는?",name:"사주 풀이 →",bc:"rgba(155,143,212,0.3)",sid:"saju"},
-              {ic:"🌙",q:"오늘 운세는?",name:"오늘운세 →",bc:"rgba(212,175,55,0.3)",sid:"today_unse"},
+              {ic:"🔮",q:"오늘 운세는?",name:"오늘운세 →",bc:"rgba(212,175,55,0.3)",sid:"today_unse"},
               {ic:"🃏",q:"타로 한 장?",name:"오늘의 타로 →",bc:"rgba(95,196,158,0.3)",sid:"today_tarot"},
               {ic:"📸",q:"내 관상짤은?",name:"관상짤 →",bc:"rgba(199,21,133,0.3)",sid:"gwansang_zal"},
             ].map(ad=>(
@@ -10183,7 +10183,7 @@ function ZodiacModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLogi
             {[
               {ic:"🃏",q:"타로 한 장?",name:"오늘의 타로 →",bc:"rgba(95,196,158,0.3)",sid:"today_tarot"},
               {ic:"☯️",q:"내 사주는?",name:"사주 풀이 →",bc:"rgba(155,143,212,0.3)",sid:"saju"},
-              {ic:"🌙",q:"오늘 운세는?",name:"오늘운세 →",bc:"rgba(212,175,55,0.3)",sid:"today_unse"},
+              {ic:"🔮",q:"오늘 운세는?",name:"오늘운세 →",bc:"rgba(212,175,55,0.3)",sid:"today_unse"},
               {ic:"📸",q:"내 관상짤은?",name:"관상짤 →",bc:"rgba(199,21,133,0.3)",sid:"gwansang_zal"},
             ].map(ad=>(
               <div key={ad.name} style={{background:"#ffffff",borderRadius:12,padding:"12px 8px",border:`2px solid ${ad.bc}`,textAlign:"center",cursor:"pointer",boxShadow:"0 2px 10px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(ad.sid,ad.name.replace(" →",""),ad.ic,"")}>
@@ -10657,7 +10657,7 @@ function BloodModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLogin
           <div style={{marginBottom:10}}>
             <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
             <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-              {[{ic:"🪞",name:"내 관상보기",price:"980원",sid:"gwansang_full"},{ic:"🍼",name:"아기 관상",price:"980원",sid:"baby_gwansang"},{ic:"🌙",name:"오늘운세",price:"무료",sid:"today_unse"},{ic:"🐯",name:"띠별 운세",price:"무료",sid:"ddi"},{ic:"🌊",name:"파동성명학",price:"4,800원",sid:"pawdong"},{ic:"👑",name:"조선초상화",price:"1,980원",sid:"joseon_portrait"}].map(cr=>(
+              {[{ic:"🪞",name:"내 관상보기",price:"980원",sid:"gwansang_full"},{ic:"🍼",name:"아기 관상",price:"980원",sid:"baby_gwansang"},{ic:"🔮",name:"오늘운세",price:"무료",sid:"today_unse"},{ic:"🐯",name:"띠별 운세",price:"무료",sid:"ddi"},{ic:"🌊",name:"파동성명학",price:"4,800원",sid:"pawdong"},{ic:"👑",name:"조선초상화",price:"1,980원",sid:"joseon_portrait"}].map(cr=>(
                 <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",position:"relative",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(cr.sid,cr.name,cr.ic,cr.price)}>
                   <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
                   <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>
@@ -10845,7 +10845,7 @@ function YtypeModal({onClose,cart,setCart,onGoShop,addHistory,onOpenService,prel
           <div style={{marginBottom:10}}>
             <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
             <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-              {[{ic:"🍼",name:"아기 관상",price:"980원",sid:"baby_gwansang"},{ic:"💑",name:"커플 궁합",price:"1,980원",sid:"gwansang_compat"},{ic:"🌙",name:"오늘운세",price:"무료",sid:"today_unse"},{ic:"🐯",name:"띠별 운세",price:"무료",sid:"ddi"},{ic:"🌊",name:"파동성명학",price:"4,800원",sid:"pawdong"},{ic:"👑",name:"조선초상화",price:"1,980원",sid:"joseon_portrait"}].map(cr=>(
+              {[{ic:"🍼",name:"아기 관상",price:"980원",sid:"baby_gwansang"},{ic:"💑",name:"커플 궁합",price:"1,980원",sid:"gwansang_compat"},{ic:"🔮",name:"오늘운세",price:"무료",sid:"today_unse"},{ic:"🐯",name:"띠별 운세",price:"무료",sid:"ddi"},{ic:"🌊",name:"파동성명학",price:"4,800원",sid:"pawdong"},{ic:"👑",name:"조선초상화",price:"1,980원",sid:"joseon_portrait"}].map(cr=>(
                 <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",position:"relative",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(cr.sid,cr.name,cr.ic,cr.price)}>
                   <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
                   <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>
@@ -11055,7 +11055,7 @@ function FaceReadingModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,o
           </div>
           {/* 메인 버튼 — 박스 밖 (B형식) + 관상짤 골드 */}
           {!selectedPerson&&onRequestPerson?
-            <button onClick={()=>{onRequestPerson({id:"gwansang_full",icon:"🔍",name:"내 관상보기",desc:"1.5만+ 맞춤 조합 결과",price:"980원"});onClose();}} className="btn btn-p" style={{background:"linear-gradient(180deg,#D29C44 0%,#AA7B30 100%)",color:"#fff",border:"none",marginTop:10}}>
+            <button onClick={()=>{onRequestPerson({id:"gwansang_full",icon:"🪞",name:"내 관상보기",desc:"1.5만+ 맞춤 조합 결과",price:"980원"});onClose();}} className="btn btn-p" style={{background:"linear-gradient(180deg,#D29C44 0%,#AA7B30 100%)",color:"#fff",border:"none",marginTop:10}}>
               사진으로 내 관상 분석하기 (980원) →
             </button>
           :<button onClick={()=>setStep("upload")} className="btn btn-p" style={{background:"linear-gradient(180deg,#D29C44 0%,#AA7B30 100%)",color:"#fff",border:"none",marginTop:10}}>
@@ -11065,7 +11065,7 @@ function FaceReadingModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,o
         </>}
 
         {step==="upload"&&<>
-          <div className="mt">🔍 내 관상보기</div>
+          <div className="mt">🪞 내 관상보기</div>
           <div className="ms">사진 한 장으로 부위별 관상 분석 · 980원</div>
           <div style={{background:"rgba(0,0,0,0.15)",borderRadius:12,padding:"10px 12px",marginBottom:12,border:"1px solid rgba(212,175,55,0.1)"}}>
             <div style={{fontSize:10,fontWeight:700,color:"var(--gold)",marginBottom:6}}>📸 정확한 분석을 위한 사진 가이드</div>
@@ -11109,7 +11109,7 @@ function FaceReadingModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,o
           </div>
           <button className="btn btn-p" onClick={()=>setStep("questions")} disabled={!imgSrc||!consent}>내 관상 보기 (980원) →</button>
           {prevResult&&<button className="btn btn-g" style={{background:"linear-gradient(180deg,rgba(212,175,55,0.18) 0%,rgba(184,148,46,0.12) 100%)",border:"1px solid rgba(212,175,55,0.45)",color:"var(--gold)",fontWeight:800}} onClick={()=>{setResult(prevResult);setImgSrc(prevImgSrc);setPrevResult(null);setPrevImgSrc(null);setStep("result");}}>← 이전 관상 결과로 돌아가기</button>}
-          <button className="btn btn-g" onClick={()=>{if(onRequestPerson){onRequestPerson({id:"gwansang_full",icon:"🔍",name:"내 관상보기",desc:"",price:"980원"});onClose();}}}>← 이전</button>
+          <button className="btn btn-g" onClick={()=>{if(onRequestPerson){onRequestPerson({id:"gwansang_full",icon:"🪞",name:"내 관상보기",desc:"",price:"980원"});onClose();}}}>← 이전</button>
         </>}
 
         {/* 사전질문 — v3 PreQuestionFlow (다른 모달과 동일 구조: ans 그대로 사용, mapping 제거) */}
@@ -11445,7 +11445,7 @@ function FaceReadingModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,o
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:10}}>
             {[
               {ic:"📸",q:"나는 무슨 상?",name:"관상짤 →",bc:"rgba(212,175,55,0.3)",sid:"gwansang_zal"},
-              {ic:"📜",q:"전생 직업은?",name:"조선 초상화 →",bc:"rgba(155,143,212,0.25)",sid:"joseon_portrait"},
+              {ic:"👑",q:"전생 직업은?",name:"조선 초상화 →",bc:"rgba(155,143,212,0.25)",sid:"joseon_portrait"},
               {ic:"💑",q:"이 사람과 궁합은?",name:"커플 궁합 →",bc:"rgba(255,107,107,0.25)",sid:"gwansang_compat"},
               {ic:"👯",q:"내 베프랑 잘 맞아?",name:"베프 궁합 →",bc:"rgba(95,196,158,0.25)",sid:"bff_compat"},
             ].map(ad=>(
@@ -11753,7 +11753,7 @@ function BabyGwansangModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,
                 </div>
               </div>
               <button className="btn btn-p" onClick={()=>{setImgSrc(null);setImgBase64(null);setStep("upload");}}>📸 사진 다시 올리기</button>
-              {result.id===24&&<button className="btn btn-p" style={{marginTop:8}} onClick={onClose}>🔍 내 관상보기 하러가기 →</button>}
+              {result.id===24&&<button className="btn btn-p" style={{marginTop:8}} onClick={onClose}>🪞 내 관상보기 하러가기 →</button>}
               {result.id===21&&<button className="btn btn-p" style={{marginTop:8}} onClick={onClose}>🐾 멍상·냥상 보러가기 →</button>}
               <button className="btn btn-g" style={{marginTop:8}} onClick={onClose}>닫기</button>
             </>;
@@ -12066,7 +12066,7 @@ function BabyGwansangModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,
           <div style={{marginBottom:10}}>
             <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
             <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-              {[{ic:"🪞",name:"내 관상보기",price:"980원",sid:"gwansang_full"},{ic:"📸",name:"관상짤",price:"380원",sid:"gwansang_zal"},{ic:"🤰",name:"2세 얼굴 예측",price:"4,800원",sid:"baby_face"},{ic:"💑",name:"커플 관상 궁합",price:"1,980원",sid:"gwansang_compat"},{ic:"🌊",name:"파동 성명학",price:"4,800원",sid:"pawdong"},{ic:"☯️",name:"사주 풀이",price:"980원",sid:"saju"},{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"}].map(cr=>(
+              {[{ic:"🪞",name:"내 관상보기",price:"980원",sid:"gwansang_full"},{ic:"📸",name:"관상짤",price:"380원",sid:"gwansang_zal"},{ic:"👶",name:"2세 얼굴 예측",price:"4,800원",sid:"baby_face"},{ic:"💑",name:"커플 관상 궁합",price:"1,980원",sid:"gwansang_compat"},{ic:"🌊",name:"파동 성명학",price:"4,800원",sid:"pawdong"},{ic:"☯️",name:"사주 풀이",price:"980원",sid:"saju"},{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"}].map(cr=>(
                 <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",position:"relative",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(cr.sid,cr.name,cr.ic,cr.price)}>
                   <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
                   <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>
@@ -13303,7 +13303,7 @@ function NumerologyModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,on
         <div style={{marginBottom:10}}>
           <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
           <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-            {[{ic:"🧬",name:"기질도",price:"980원",sid:"gijildo"},{ic:"🧠",name:"뇌과학 분석",price:"4,800원",sid:"psych"},{ic:"⏳",name:"전생 운세",price:"980원",sid:"past_life"},{ic:"📸",name:"관상짤",price:"380원",sid:"gwansang_zal"},{ic:"🔍",name:"나의 천기 리포트",price:"무료",sid:"synthesis"}].map(cr=>(
+            {[{ic:"🔯",name:"기질도",price:"980원",sid:"gijildo"},{ic:"🧠",name:"뇌과학 분석",price:"4,800원",sid:"psych"},{ic:"⏳",name:"전생 운세",price:"980원",sid:"past_life"},{ic:"📸",name:"관상짤",price:"380원",sid:"gwansang_zal"},{ic:"📊",name:"나의 천기 리포트",price:"무료",sid:"synthesis"}].map(cr=>(
               <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(cr.sid,cr.name,cr.ic,cr.price)}>
                 <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
                 <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>
@@ -13582,7 +13582,7 @@ function BabyFaceModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLo
         </>}
 
         {step==="upload"&&<>
-          <div className="mt">🤰 2세 얼굴 & 운명 예측</div>
+          <div className="mt">👶 2세 얼굴 & 운명 예측</div>
           <div className="ms">엄마 + 아빠 사진으로 2세 운명 판독 · 4,800원</div>
           <div style={{background:"rgba(0,0,0,0.15)",borderRadius:12,padding:"10px 12px",marginBottom:12,border:"1px solid rgba(212,175,55,0.1)"}}>
             <div style={{fontSize:10,fontWeight:700,color:"var(--gold)",marginBottom:6}}>📸 정확한 분석을 위한 사진 가이드</div>
@@ -13624,7 +13624,7 @@ function BabyFaceModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLo
         </>}
 
         {step==="loading"&&<>
-          <div className="mt" style={{textAlign:"center"}}>🤰 2세 얼굴 & 운명 분석 중...</div>
+          <div className="mt" style={{textAlign:"center"}}>👶 2세 얼굴 & 운명 분석 중...</div>
           <div className="ms" style={{textAlign:"center"}}>엄마와 아빠의 유전자가 만나고 있어요</div>
           <PhotoMergeLoader duration={20000} leftSrc={imgBase64_1||imgSrc1} rightSrc={imgBase64_2||imgSrc2} leftLabel="엄마" rightLabel="아빠" messages={["유전자를 분석하는 중... 🧬","엄마 닮은 부분을 찾는 중... 👩","아빠 닮은 부분을 찾는 중... 👨","2세의 얼굴을 그리는 중... ✨","9가지 운명을 점지하는 중... 🔮","황금 유전자 인증서를 발행하는 중... 🏆"]}/>
         </>}
@@ -13638,8 +13638,8 @@ function BabyFaceModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLo
           <button className="btn btn-g" onClick={()=>setStep("upload")}>뒤로</button>
         </>}
 
-        {step==="preqs"&&<PreQuestionFlow embedded svcId="baby_face" iconTitle="🤰 2세 얼굴 & 운명 예측" subtitle="더 정확한 분석을 위해" initialQStep={preQStartIdx} initialAnswers={preQA} onComplete={(ans)=>{setPreQStartIdx(0);onPreqsDone(ans);}} onClose={()=>{setPreQStartIdx(0);setStep("upload");}}/>}
-        {step==="pay"&&<><div className="mt">🤰 2세 얼굴 & 운명 예측</div><div className="ms">엄마 × 아빠 사진 합성 + 9탭 운명 분석 · 4,800원</div><PayStepComp price="4,800원" onPay={pay} onBack={()=>{const totalQs=(PRE_Q_CONFIG["baby_face"]||[]).length;setPreQStartIdx(Math.max(0,totalQs-1));setStep("preqs");}} loading={loading} svcId="baby_face" deferred/></>}
+        {step==="preqs"&&<PreQuestionFlow embedded svcId="baby_face" iconTitle="👶 2세 얼굴 & 운명 예측" subtitle="더 정확한 분석을 위해" initialQStep={preQStartIdx} initialAnswers={preQA} onComplete={(ans)=>{setPreQStartIdx(0);onPreqsDone(ans);}} onClose={()=>{setPreQStartIdx(0);setStep("upload");}}/>}
+        {step==="pay"&&<><div className="mt">👶 2세 얼굴 & 운명 예측</div><div className="ms">엄마 × 아빠 사진 합성 + 9탭 운명 분석 · 4,800원</div><PayStepComp price="4,800원" onPay={pay} onBack={()=>{const totalQs=(PRE_Q_CONFIG["baby_face"]||[]).length;setPreQStartIdx(Math.max(0,totalQs-1));setStep("preqs");}} loading={loading} svcId="baby_face" deferred/></>}
 
         {step==="result"&&result&&(()=>{
           if(result._isError){
@@ -14563,7 +14563,7 @@ function GwansangSwipeResult({resultType,personName,imgSrc,hidePhoto,setHidePhot
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:10}}>
           {[
             {ic:"🪞",q:"더 자세히 보고싶다?",name:"내 관상보기 →",bc:"rgba(212,175,55,0.3)",sid:"gwansang_full"},
-            {ic:"📜",q:"전생 직업은?",name:"조선 초상화 →",bc:"rgba(155,143,212,0.25)",sid:"joseon_portrait"},
+            {ic:"👑",q:"전생 직업은?",name:"조선 초상화 →",bc:"rgba(155,143,212,0.25)",sid:"joseon_portrait"},
             {ic:"💑",q:"이 사람과 궁합은?",name:"커플 궁합 →",bc:"rgba(255,107,107,0.25)",sid:"gwansang_compat"},
             {ic:"👯",q:"내 베프랑 잘 맞아?",name:"베프 궁합 →",bc:"rgba(95,196,158,0.25)",sid:"bff_compat"},
           ].map(ad=>(
@@ -14774,7 +14774,7 @@ function GwansangZalModal({onClose,savedPersons,setSavedPersons,cart,setCart,onG
         </>}
 
         {step==="upload"&&<>
-          <div className="mt">🪞 관상짤</div>
+          <div className="mt">📸 관상짤</div>
           <div className="ms">사진 1장 = 1명 = 380원 · 첫 1회 무료!</div>
           {/* 닉네임 입력 */}
           <div style={{marginBottom:10}}>
@@ -15633,7 +15633,7 @@ function LoveCompatModal({svc,onClose,isLoggedIn,cart,setCart,onGoShop,addHistor
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:10}}>
             {[
               {ic:"💑",q:"관상 궁합은?",name:"관상 궁합 →",bc:"rgba(199,21,133,0.3)",sid:"gwansang_compat"},
-              {ic:"👫",q:"베프 궁합은?",name:"베프 궁합 →",bc:"rgba(95,196,158,0.3)",sid:"bff_compat"},
+              {ic:"👯",q:"베프 궁합은?",name:"베프 궁합 →",bc:"rgba(95,196,158,0.3)",sid:"bff_compat"},
               {ic:"☯️",q:"내 사주는?",name:"사주 풀이 →",bc:"rgba(155,143,212,0.3)",sid:"saju"},
               {ic:"🪞",q:"내 관상은?",name:"내 관상보기 →",bc:"rgba(212,175,55,0.3)",sid:"gwansang_full"},
             ].map(ad=>(
@@ -15649,7 +15649,7 @@ function LoveCompatModal({svc,onClose,isLoggedIn,cart,setCart,onGoShop,addHistor
           <div style={{marginBottom:10}}>
             <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
             <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-              {[{ic:"📸",name:"관상짤",price:"380원",sid:"gwansang_zal"},{ic:"🍼",name:"아기 관상",price:"980원",sid:"baby_gwansang"},{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"},{ic:"🌙",name:"오늘운세",price:"무료",sid:"today_unse"},{ic:"🌊",name:"파동성명학",price:"4,800원",sid:"pawdong"},{ic:"👑",name:"조선초상화",price:"1,980원",sid:"joseon_portrait"}].map(cr=>(
+              {[{ic:"📸",name:"관상짤",price:"380원",sid:"gwansang_zal"},{ic:"🍼",name:"아기 관상",price:"980원",sid:"baby_gwansang"},{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"},{ic:"🔮",name:"오늘운세",price:"무료",sid:"today_unse"},{ic:"🌊",name:"파동성명학",price:"4,800원",sid:"pawdong"},{ic:"👑",name:"조선초상화",price:"1,980원",sid:"joseon_portrait"}].map(cr=>(
                 <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",position:"relative",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(cr.sid,cr.name,cr.ic,cr.price)}>
                   <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
                   <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>
@@ -16241,7 +16241,7 @@ function JoseonPortraitModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedI
             <div style={{marginBottom:10}}>
               <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
               <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-                {[{ic:"💑",name:"커플 궁합",price:"1,980원",sid:"gwansang_compat"},{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"},{ic:"🌙",name:"오늘운세",price:"무료",sid:"today_unse"},{ic:"🐯",name:"띠별 운세",price:"무료",sid:"ddi"},{ic:"🌊",name:"파동성명학",price:"4,800원",sid:"pawdong"},{ic:"💭",name:"꿈 해몽",price:"380원",sid:"dream"}].map(cr=>(
+                {[{ic:"💑",name:"커플 궁합",price:"1,980원",sid:"gwansang_compat"},{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"},{ic:"🔮",name:"오늘운세",price:"무료",sid:"today_unse"},{ic:"🐯",name:"띠별 운세",price:"무료",sid:"ddi"},{ic:"🌊",name:"파동성명학",price:"4,800원",sid:"pawdong"},{ic:"💭",name:"꿈 해몽",price:"380원",sid:"dream"}].map(cr=>(
                   <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",position:"relative",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(cr.sid,cr.name,cr.ic,cr.price)}>
                     <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
                     <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>
@@ -16598,7 +16598,7 @@ function DailyQuoteModal({onClose,isLoggedIn,onLoginRequest,addHistory,cart,setC
       // v(2026-08-12): 기록소 이모지를 결과 팝업 제목과 맞춘다.
       // 예전엔 book.cover(책 표지 이모지)라 고른 책마다 달라졌고, 「천기의 말씀」은 🔮이 찍혀서
       // 결과 팝업의 📜와 어긋났다. 기록소는 '어떤 콘텐츠인지'를 보여주는 자리라 콘텐츠 이모지로 고정.
-      addHistory?.({icon:"📜",name:"오늘의 명언",svcId:"daily_quote",person:"나",date:new Date().toLocaleDateString("ko-KR"),result:`「${book.title}」 ${quote.slice(0,30)}`,resultType:{book:book.title,quote,_testDate:new Date().toLocaleDateString("ko-KR")},ctx:{}});
+      addHistory?.({icon:"📖",name:"오늘의 명언",svcId:"daily_quote",person:"나",date:new Date().toLocaleDateString("ko-KR"),result:`「${book.title}」 ${quote.slice(0,30)}`,resultType:{book:book.title,quote,_testDate:new Date().toLocaleDateString("ko-KR")},ctx:{}});
     }
   },[step,saved,addHistory,book.cover,book.title,quote]);
 
@@ -16610,7 +16610,7 @@ function DailyQuoteModal({onClose,isLoggedIn,onLoginRequest,addHistory,cart,setC
           <button onClick={onClose} style={{width:28,height:28,borderRadius:"50%",background:"rgba(255,255,255,0.08)",border:"none",color:"var(--mist)",fontSize:14,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
         </div>
         <div style={{background:"rgba(0,0,0,0.2)",borderRadius:16,padding:"32px 20px",border:"2px solid rgba(212,175,55,0.4)",textAlign:"center",marginBottom:12}}>
-          <div style={{fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",fontSize:20,fontWeight:900,color:"var(--gold)",marginBottom:6}}>📜 오늘의 명언</div>
+          <div style={{fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",fontSize:20,fontWeight:900,color:"var(--gold)",marginBottom:6}}>📖 오늘의 명언</div>
           <div style={{fontSize:13,color:"var(--mist)",marginBottom:18,lineHeight:1.7}}>매일 새로운 한 줄로 마음을 정돈해보세요</div>
 
           <div style={{background:"var(--ink3)",borderRadius:14,padding:"14px",marginBottom:14,border:"1px solid rgba(212,175,55,0.15)"}}>
@@ -16724,7 +16724,7 @@ function DailyQuoteModal({onClose,isLoggedIn,onLoginRequest,addHistory,cart,setC
       <div id="quote-capture" style={{background:"#ffffff",borderRadius:20,overflow:"hidden",border:"1px solid rgba(212,175,55,0.3)",boxShadow:"0 10px 30px rgba(0,0,0,0.06)",marginBottom:12,color:"#333"}}>
         <div style={{padding:"10px 16px 0",textAlign:"center"}}>
           <BrandLine>오늘의 명언</BrandLine>
-          <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35,marginBottom:4}}>📜 오늘의 명언</div>
+          <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35,marginBottom:4}}>📖 오늘의 명언</div>
           {/* v(2026-08-12): 비로그인 부제 — 다른 무료 3종과 문구 규격 통일 */}
           {!isLoggedIn&&<div style={{fontSize:10,color:"#aaa",marginTop:4}}>공통 명언 · 로그인하면 {_QUOTE_BOOKS.filter(b=>!b.isAd).length}권 모두 보기 가능</div>}
           {/* v(2026-08-12): 검사 정보 규격에 맞춘다 — 👤 줄 + 🔍 날짜 줄.
@@ -16791,7 +16791,7 @@ function DailyQuoteModal({onClose,isLoggedIn,onLoginRequest,addHistory,cart,setC
       </div>
       {/* 광고 퍼널 */}
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:10}}>
-        {[{ic:"🌅",sid:"today_unse",name:"오늘운세 →",bc:"rgba(212,175,55,0.3)",q:"오늘 운세는?"},{ic:"🃏",sid:"today_tarot",name:"오늘의 타로 →",bc:"rgba(95,196,158,0.3)",q:"타로 한 장?"},{ic:"☯️",sid:"saju",name:"사주 풀이 →",bc:"rgba(155,143,212,0.3)",q:"내 사주는?"},{ic:"📸",sid:"gwansang_zal",name:"관상짤 →",bc:"rgba(199,21,133,0.3)",q:"내 관상짤?"}].map(ad=>(
+        {[{ic:"🔮",sid:"today_unse",name:"오늘운세 →",bc:"rgba(212,175,55,0.3)",q:"오늘 운세는?"},{ic:"🃏",sid:"today_tarot",name:"오늘의 타로 →",bc:"rgba(95,196,158,0.3)",q:"타로 한 장?"},{ic:"☯️",sid:"saju",name:"사주 풀이 →",bc:"rgba(155,143,212,0.3)",q:"내 사주는?"},{ic:"📸",sid:"gwansang_zal",name:"관상짤 →",bc:"rgba(199,21,133,0.3)",q:"내 관상짤?"}].map(ad=>(
           <div key={ad.sid} style={{background:"#ffffff",borderRadius:12,padding:"12px 8px",border:`2px solid ${ad.bc}`,textAlign:"center",cursor:"pointer",boxShadow:"0 2px 10px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(ad.sid,ad.name.replace(" →",""),ad.ic,"")}>
             <div style={{fontSize:22,marginBottom:4}}>{ad.ic}</div>
             <div style={{fontSize:12,fontWeight:900,color:"#0a1f1a",marginBottom:3}}>{ad.q}</div>
@@ -16804,7 +16804,7 @@ function DailyQuoteModal({onClose,isLoggedIn,onLoginRequest,addHistory,cart,setC
       <div style={{marginBottom:10}}>
         <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
         <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-          {[{ic:"🌙",name:"오늘의 운세",price:"무료",sid:"today_unse"},{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"},{ic:"🌸",name:"이달의 운세",price:"무료",sid:"monthly_unse"},{ic:"☯️",name:"사주 풀이",price:"980원",sid:"saju"},{ic:"🐯",name:"띠별 운세",price:"무료",sid:"ddi"},{ic:"⭐",name:"별자리 운세",price:"무료",sid:"zodiac"}].map(cr=>(
+          {[{ic:"🔮",name:"오늘의 운세",price:"무료",sid:"today_unse"},{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"},{ic:"🌸",name:"이달의 운세",price:"무료",sid:"monthly_unse"},{ic:"☯️",name:"사주 풀이",price:"980원",sid:"saju"},{ic:"🐯",name:"띠별 운세",price:"무료",sid:"ddi"},{ic:"⭐",name:"별자리 운세",price:"무료",sid:"zodiac"}].map(cr=>(
             <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(cr.sid,cr.name,cr.ic,cr.price)}>
               <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
               <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>
@@ -16930,7 +16930,7 @@ function TodayUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest
             <button onClick={onClose} style={{width:28,height:28,borderRadius:"50%",background:"rgba(255,255,255,0.08)",border:"none",color:"var(--mist)",fontSize:14,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
           </div>
           <div style={{background:"rgba(0,0,0,0.2)",borderRadius:16,padding:"32px 20px",border:"2px solid rgba(212,175,55,0.5)",textAlign:"center",marginBottom:12}}>
-            <div style={{fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",fontSize:20,fontWeight:900,color:"#D4AF37",marginBottom:6,lineHeight:1.4}}>🌅 오늘의 운세</div>
+            <div style={{fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",fontSize:20,fontWeight:900,color:"#D4AF37",marginBottom:6,lineHeight:1.4}}>🔮 오늘의 운세</div>
             <div style={{fontSize:12,color:"var(--mist)",marginBottom:16,fontStyle:"italic",lineHeight:1.6}}>&ldquo;오늘 하루, 우주가 보내는 열 가지 메시지&rdquo;</div>
 
             {/* 10영역 그리드 (2x5) */}
@@ -16976,7 +16976,7 @@ function TodayUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest
             </div>
           </div>
           <button onClick={()=>{
-            if(isLoggedIn&&!selectedPerson&&onRequestPerson){onRequestPerson({id:"today_unse",icon:"🌅",name:"오늘의 운세",desc:"",price:"무료"});onClose();return;}
+            if(isLoggedIn&&!selectedPerson&&onRequestPerson){onRequestPerson({id:"today_unse",icon:"🔮",name:"오늘의 운세",desc:"",price:"무료"});onClose();return;}
             setStep(isLoggedIn?"questions":"result");
           }} className="btn btn-p" style={{marginTop:10}}>오늘의 우주 메시지 받기 (무료) →</button>
           <button className="btn btn-g" onClick={onClose}>닫기</button>
@@ -16985,7 +16985,7 @@ function TodayUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest
     }
 
     if(step==="questions"){
-      return(<PreQuestionFlow svcId="today_unse" iconTitle={`🌙 ${personName}님의 오늘의 운세`} onComplete={(ans)=>{setPreQ(ans);setStep("loading");}} onClose={onClose} onBack={()=>{if(onRequestPerson){onRequestPerson({id:"today_unse",icon:"🌅",name:"오늘의 운세",desc:"",price:"무료"});onClose();}else{setStep("info");}}}/>);
+      return(<PreQuestionFlow svcId="today_unse" iconTitle={`🌙 ${personName}님의 오늘의 운세`} onComplete={(ans)=>{setPreQ(ans);setStep("loading");}} onClose={onClose} onBack={()=>{if(onRequestPerson){onRequestPerson({id:"today_unse",icon:"🔮",name:"오늘의 운세",desc:"",price:"무료"});onClose();}else{setStep("info");}}}/>);
     }
     // v290: 분석중 화면
     if(step==="loading"){
@@ -17330,7 +17330,7 @@ function TodayUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest
                 <div style={{fontSize:11,color:"#5a1f1f",lineHeight:1.6}}>남은 무료 1회로 친구 운세를 봐줄 수 있어요!<br/><strong>친구 생일만 알면</strong> 바로 볼 수 있어요</div>
               </div>
               <button style={{padding:"12px 18px",background:"linear-gradient(135deg,#ff6b6b,#ee5a24)",border:"none",borderRadius:12,cursor:"pointer",fontSize:13,fontWeight:800,color:"#fff",flexShrink:0,boxShadow:"0 3px 10px rgba(255,107,107,0.4)",fontFamily:"inherit"}} onClick={()=>{
-                if(onRequestPerson){onRequestPerson({id:"today_unse",icon:"🎁",name:"친구 운세 선물",desc:"친구의 생년월일로 오늘의 운세를 봐주세요!",price:"무료"});onClose();}
+                if(onRequestPerson){onRequestPerson({id:"today_unse",icon:"🔮",name:"친구 운세 선물",desc:"친구의 생년월일로 오늘의 운세를 봐주세요!",price:"무료"});onClose();}
                 else if(onLoginRequest){onClose();onLoginRequest();}
               }}>친구 운세 봐주기 →</button>
             </div>
@@ -17585,7 +17585,7 @@ function TodayTarotModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReques
 
           {/* 광고배너 */}
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:10}}>
-            {[{ic:"✨",q:"YES/NO?",name:"YES/NO 타로 →",bc:"rgba(95,196,158,0.3)",sid:"tarot_yesno"},{ic:"🌙",q:"오늘 운세?",name:"오늘운세 →",bc:"rgba(212,175,55,0.3)",sid:"today_unse"},{ic:"📸",q:"내 관상짤?",name:"관상짤 →",bc:"rgba(199,21,133,0.3)",sid:"gwansang_zal"},{ic:"☯️",q:"내 사주?",name:"사주 풀이 →",bc:"rgba(155,143,212,0.3)",sid:"saju"}].map(ad=>(
+            {[{ic:"✨",q:"YES/NO?",name:"YES/NO 타로 →",bc:"rgba(95,196,158,0.3)",sid:"tarot_yesno"},{ic:"🔮",q:"오늘 운세?",name:"오늘운세 →",bc:"rgba(212,175,55,0.3)",sid:"today_unse"},{ic:"📸",q:"내 관상짤?",name:"관상짤 →",bc:"rgba(199,21,133,0.3)",sid:"gwansang_zal"},{ic:"☯️",q:"내 사주?",name:"사주 풀이 →",bc:"rgba(155,143,212,0.3)",sid:"saju"}].map(ad=>(
               <div key={ad.sid} style={{background:"#ffffff",borderRadius:12,padding:"12px 8px",border:`2px solid ${ad.bc}`,textAlign:"center",cursor:"pointer",boxShadow:"0 2px 10px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(ad.sid,ad.name.replace(" →",""),ad.ic,"")}>
                 <div style={{fontSize:22,marginBottom:4}}>{ad.ic}</div><div style={{fontSize:12,fontWeight:900,color:"#0a1f1a",marginBottom:3}}>{ad.q}</div><div style={{fontSize:9,fontWeight:600,color:"#666"}}>{ad.name}</div>
               </div>))}
@@ -17595,7 +17595,7 @@ function TodayTarotModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReques
           <div style={{marginBottom:10}}>
             <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
             <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-              {[{ic:"❤️",name:"연애 타로",price:"980원",sid:"tarot_love"},{ic:"💰",name:"재물 타로",price:"980원",sid:"tarot_money"},{ic:"💼",name:"진로 타로",price:"980원",sid:"tarot_career"},{ic:"🌿",name:"건강 타로",price:"980원",sid:"tarot_health"},{ic:"🌟",name:"인생 타로",price:"980원",sid:"tarot_life"},{ic:"✨",name:"YES/NO",price:"무료",sid:"tarot_yesno"}].map(cr=>(
+              {[{ic:"💘",name:"연애 타로",price:"980원",sid:"tarot_love"},{ic:"💰",name:"재물 타로",price:"980원",sid:"tarot_money"},{ic:"🧭",name:"진로 타로",price:"980원",sid:"tarot_career"},{ic:"🌿",name:"건강 타로",price:"980원",sid:"tarot_health"},{ic:"🌌",name:"인생 타로",price:"980원",sid:"tarot_life"},{ic:"✨",name:"YES/NO",price:"무료",sid:"tarot_yesno"}].map(cr=>(
                 <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(cr.sid,cr.name,cr.ic,cr.price)}>
                   <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
                   <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>
@@ -18167,7 +18167,7 @@ function MoleModal({onClose,addHistory,cart,setCart,onGoShop,isLoggedIn,onOpenSe
           <div style={{marginBottom:10}}>
             <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
             <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-              {[{ic:"🍼",name:"아기 관상",price:"980원",sid:"baby_gwansang"},{ic:"💑",name:"커플 궁합",price:"1,980원",sid:"gwansang_compat"},{ic:"🌙",name:"오늘운세",price:"무료",sid:"today_unse"},{ic:"🐯",name:"띠별 운세",price:"무료",sid:"ddi"},{ic:"🌊",name:"파동성명학",price:"4,800원",sid:"pawdong"},{ic:"👑",name:"조선초상화",price:"1,980원",sid:"joseon_portrait"}].map(cr=>(
+              {[{ic:"🍼",name:"아기 관상",price:"980원",sid:"baby_gwansang"},{ic:"💑",name:"커플 궁합",price:"1,980원",sid:"gwansang_compat"},{ic:"🔮",name:"오늘운세",price:"무료",sid:"today_unse"},{ic:"🐯",name:"띠별 운세",price:"무료",sid:"ddi"},{ic:"🌊",name:"파동성명학",price:"4,800원",sid:"pawdong"},{ic:"👑",name:"조선초상화",price:"1,980원",sid:"joseon_portrait"}].map(cr=>(
                 <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",position:"relative",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(cr.sid,cr.name,cr.ic,cr.price)}>
                   <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
                   <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>
@@ -18405,7 +18405,7 @@ function YesNoTarotModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReques
           </button>
 
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:10}}>
-            {[{ic:"🃏",q:"오늘의 타로?",name:"오늘의 타로 →",bc:"rgba(95,196,158,0.3)",sid:"today_tarot"},{ic:"🌙",q:"오늘 운세?",name:"오늘운세 →",bc:"rgba(212,175,55,0.3)",sid:"today_unse"},{ic:"📸",q:"내 관상짤?",name:"관상짤 →",bc:"rgba(199,21,133,0.3)",sid:"gwansang_zal"},{ic:"☯️",q:"내 사주?",name:"사주 풀이 →",bc:"rgba(155,143,212,0.3)",sid:"saju"}].map(ad=>(
+            {[{ic:"🃏",q:"오늘의 타로?",name:"오늘의 타로 →",bc:"rgba(95,196,158,0.3)",sid:"today_tarot"},{ic:"🔮",q:"오늘 운세?",name:"오늘운세 →",bc:"rgba(212,175,55,0.3)",sid:"today_unse"},{ic:"📸",q:"내 관상짤?",name:"관상짤 →",bc:"rgba(199,21,133,0.3)",sid:"gwansang_zal"},{ic:"☯️",q:"내 사주?",name:"사주 풀이 →",bc:"rgba(155,143,212,0.3)",sid:"saju"}].map(ad=>(
               <div key={ad.sid} style={{background:"#ffffff",borderRadius:12,padding:"12px 8px",border:`2px solid ${ad.bc}`,textAlign:"center",cursor:"pointer",boxShadow:"0 2px 10px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(ad.sid,ad.name.replace(" →",""),ad.ic,"")}>
                 <div style={{fontSize:22,marginBottom:4}}>{ad.ic}</div><div style={{fontSize:12,fontWeight:900,color:"#0a1f1a",marginBottom:3}}>{ad.q}</div><div style={{fontSize:9,fontWeight:600,color:"#666"}}>{ad.name}</div>
               </div>))}
@@ -18415,7 +18415,7 @@ function YesNoTarotModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReques
           <div style={{marginBottom:10}}>
             <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
             <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-              {[{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"},{ic:"❤️",name:"연애 타로",price:"980원",sid:"tarot_love"},{ic:"💰",name:"재물 타로",price:"980원",sid:"tarot_money"},{ic:"💼",name:"진로 타로",price:"980원",sid:"tarot_career"},{ic:"🌟",name:"인생 타로",price:"980원",sid:"tarot_life"},{ic:"☯️",name:"사주 풀이",price:"980원",sid:"saju"}].map(cr=>(
+              {[{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"},{ic:"💘",name:"연애 타로",price:"980원",sid:"tarot_love"},{ic:"💰",name:"재물 타로",price:"980원",sid:"tarot_money"},{ic:"🧭",name:"진로 타로",price:"980원",sid:"tarot_career"},{ic:"🌌",name:"인생 타로",price:"980원",sid:"tarot_life"},{ic:"☯️",name:"사주 풀이",price:"980원",sid:"saju"}].map(cr=>(
                 <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(cr.sid,cr.name,cr.ic,cr.price)}>
                   <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
                   <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>
@@ -18524,7 +18524,7 @@ const TAROT_SPREAD_CONFIG:Record<string,{
     okList:["기존 저축·예금 점검","고정 지출 정리·구조조정","스킬업 투자 (책·강의)","비상금 마련"],
     ngList:["충동 구매·도박성 투자","대출 늘리기","검증 안 된 코인·주식","감정적인 큰 결정"],
     affirmation:"💫 재물을 끌어당길 힘이 이미 당신 안에 있어요.",
-    cross:[{ic:"🔮",name:"사주 풀이",sid:"saju",price:"980원"},{ic:"✋",name:"손금",sid:"palmistry",price:"1,980원"},{ic:"🔢",name:"수비학",sid:"numerology",price:"980원"},{ic:"📅",name:"좋은 날 찾기",sid:"taegil",price:"980원"}],
+    cross:[{ic:"☯️",name:"사주 풀이",sid:"saju",price:"980원"},{ic:"✋",name:"손금",sid:"palmistry",price:"1,980원"},{ic:"🔢",name:"수비학",sid:"numerology",price:"980원"},{ic:"📅",name:"좋은 날 찾기",sid:"taegil",price:"980원"}],
   },
   tarot_love:{
     icon:"💕",name:"연애 타로",emoji:"💕",accent:"#ed98ac",desc:"3장의 카드가 두 사람 사이의 진짜 흐름·재회 가능성·새 인연을 알려드려요",
@@ -18538,7 +18538,7 @@ const TAROT_SPREAD_CONFIG:Record<string,{
     okList:["솔직한 감정 표현","서로의 시간을 존중","공통 추억 만들기","상대의 입장 이해"],
     ngList:["집착·과한 연락","과거 비교·뒷이야기","SNS 추적","즉흥적 이별 통보"],
     affirmation:"💫 사랑받을 자격이 충분한 사람이에요.",
-    cross:[{ic:"💑",name:"커플 궁합",sid:"gwansang_compat",price:"1,980원"},{ic:"🔮",name:"사주 풀이",sid:"saju",price:"980원"},{ic:"🃏",name:"YES/NO 타로",sid:"tarot_yesno",price:"무료"},{ic:"🌊",name:"파동 성명학",sid:"pawdong",price:"4,800원"}],
+    cross:[{ic:"💑",name:"커플 궁합",sid:"gwansang_compat",price:"1,980원"},{ic:"☯️",name:"사주 풀이",sid:"saju",price:"980원"},{ic:"✨",name:"YES/NO 타로",sid:"tarot_yesno",price:"무료"},{ic:"🌊",name:"파동 성명학",sid:"pawdong",price:"4,800원"}],
   },
   tarot_health:{
     icon:"🌿",name:"건강 타로",emoji:"🌿",accent:"#5FC49E",desc:"3장의 카드가 몸과 마음의 컨디션·놓치고 있는 신호·회복 키워드를 알려드려요",
@@ -18552,7 +18552,7 @@ const TAROT_SPREAD_CONFIG:Record<string,{
     okList:["충분한 수면 (7시간+)","따뜻한 음식·물","가벼운 산책·요가","마음 일기·명상"],
     ngList:["과로·무리한 운동","카페인·야식","감정 억누르기","검진 미루기"],
     affirmation:"💫 몸과 마음을 돌볼 자격이 충분해요.",
-    cross:[{ic:"✋",name:"손금",sid:"palmistry",price:"1,980원"},{ic:"⚫",name:"얼굴 점",sid:"mole",price:"1,980원"},{ic:"🔮",name:"사주 풀이",sid:"saju",price:"980원"},{ic:"🧬",name:"기질도",sid:"gijildo",price:"980원"}],
+    cross:[{ic:"✋",name:"손금",sid:"palmistry",price:"1,980원"},{ic:"⚫",name:"얼굴 점",sid:"mole",price:"1,980원"},{ic:"☯️",name:"사주 풀이",sid:"saju",price:"980원"},{ic:"🔯",name:"기질도",sid:"gijildo",price:"980원"}],
   },
   tarot_career:{
     icon:"💼",name:"진로 타로",emoji:"💼",accent:"#734f38",desc:"5장의 카드가 지금 길의 적합성·기회의 위치·전환 타이밍을 알려드려요",
@@ -18566,7 +18566,7 @@ const TAROT_SPREAD_CONFIG:Record<string,{
     okList:["네트워킹·인연 만들기","스킬 업 (자격증·강의)","포트폴리오 정리","멘토에게 조언 구하기"],
     ngList:["충동적 퇴사","비교에 휘둘리기","근거 없는 도박성 도전","번아웃 무시"],
     affirmation:"💫 당신만의 길이 분명히 있어요.",
-    cross:[{ic:"🔮",name:"사주 풀이",sid:"saju",price:"980원"},{ic:"🧬",name:"기질도",sid:"gijildo",price:"980원"},{ic:"🧠",name:"뇌과학 분석",sid:"psych",price:"4,800원"},{ic:"📅",name:"좋은 날 찾기",sid:"taegil",price:"980원"}],
+    cross:[{ic:"☯️",name:"사주 풀이",sid:"saju",price:"980원"},{ic:"🔯",name:"기질도",sid:"gijildo",price:"980원"},{ic:"🧠",name:"뇌과학 분석",sid:"psych",price:"4,800원"},{ic:"📅",name:"좋은 날 찾기",sid:"taegil",price:"980원"}],
   },
   tarot_life:{
     icon:"🌌",name:"인생 타로",emoji:"🌌",accent:"#7ebdb9",desc:"10장의 켈틱 크로스가 삶의 현재·장애·과거·미래·내면·외부·희망·최종 결과까지 통째로 보여드려요",
@@ -18580,7 +18580,7 @@ const TAROT_SPREAD_CONFIG:Record<string,{
     okList:["자신과의 대화 시간","일기·저널링","장기 비전 그리기","감사 일기"],
     ngList:["남과 비교","결과만 쫓기","번아웃 무시","과거에 매이기"],
     affirmation:"💫 당신의 길은 당신만이 만들 수 있어요.",
-    cross:[{ic:"🔮",name:"사주 풀이",sid:"saju",price:"980원"},{ic:"⏳",name:"전생 운세",sid:"past_life",price:"980원"},{ic:"🔍",name:"나의 천기 리포트",sid:"synthesis",price:"무료"},{ic:"🃏",name:"오늘의 타로",sid:"today_tarot",price:"무료"}],
+    cross:[{ic:"☯️",name:"사주 풀이",sid:"saju",price:"980원"},{ic:"⏳",name:"전생 운세",sid:"past_life",price:"980원"},{ic:"📊",name:"나의 천기 리포트",sid:"synthesis",price:"무료"},{ic:"🃏",name:"오늘의 타로",sid:"today_tarot",price:"무료"}],
   },
 };
 
@@ -19370,7 +19370,7 @@ function TarotSpreadModal({svcId,onClose,cart,setCart,onGoShop,isLoggedIn,onLogi
         <div style={{marginBottom:10}}>
           <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
           <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-            {[{ic:"❤️",name:"연애 타로",price:"980원",sid:"tarot_love"},{ic:"💰",name:"재물 타로",price:"980원",sid:"tarot_money"},{ic:"💼",name:"진로 타로",price:"980원",sid:"tarot_career"},{ic:"🌿",name:"건강 타로",price:"980원",sid:"tarot_health"},{ic:"🌟",name:"인생 타로",price:"980원",sid:"tarot_life"},{ic:"✨",name:"YES/NO",price:"무료",sid:"tarot_yesno"}].filter(c=>c.sid!==svcId).slice(0,6).map(cr=>(
+            {[{ic:"💘",name:"연애 타로",price:"980원",sid:"tarot_love"},{ic:"💰",name:"재물 타로",price:"980원",sid:"tarot_money"},{ic:"🧭",name:"진로 타로",price:"980원",sid:"tarot_career"},{ic:"🌿",name:"건강 타로",price:"980원",sid:"tarot_health"},{ic:"🌌",name:"인생 타로",price:"980원",sid:"tarot_life"},{ic:"✨",name:"YES/NO",price:"무료",sid:"tarot_yesno"}].filter(c=>c.sid!==svcId).slice(0,6).map(cr=>(
               <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(cr.sid,cr.name,cr.ic,cr.price)}>
                 <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
                 <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>
@@ -20487,7 +20487,7 @@ function SajuModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onOp
 
         {/* 크로스셀링 */}
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:10}}>
-          {[{ic:"📅",sid:"saju_monthly",name:"월별 운세 →",bc:"rgba(212,175,55,0.3)",q:"이번 달은?"},{ic:"🔄",sid:"daeun",name:"대운 해설 →",bc:"rgba(155,143,212,0.3)",q:"10년 큰그림"},{ic:"❤️",sid:"love",name:"연애·궁합 →",bc:"rgba(255,107,173,0.3)",q:"인연이 오나"},{ic:"📅",sid:"taegil",name:"좋은 날 찾기 →",bc:"rgba(95,196,158,0.3)",q:"중요한 날"}].map(ad=>(
+          {[{ic:"🌙",sid:"saju_monthly",name:"월별 운세 →",bc:"rgba(212,175,55,0.3)",q:"이번 달은?"},{ic:"🔄",sid:"daeun",name:"대운 해설 →",bc:"rgba(155,143,212,0.3)",q:"10년 큰그림"},{ic:"💌",sid:"love",name:"연애·궁합 →",bc:"rgba(255,107,173,0.3)",q:"인연이 오나"},{ic:"📅",sid:"taegil",name:"좋은 날 찾기 →",bc:"rgba(95,196,158,0.3)",q:"중요한 날"}].map(ad=>(
             <div key={ad.sid} style={{background:"#ffffff",borderRadius:12,padding:"12px 8px",border:`2px solid ${ad.bc}`,textAlign:"center",cursor:"pointer",boxShadow:"0 2px 10px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(ad.sid,ad.name.replace(" →",""),ad.ic,"")}>
               <div style={{fontSize:22,marginBottom:4}}>{ad.ic}</div>
               <div style={{fontSize:12,fontWeight:900,color:"#0a1f1a",marginBottom:3}}>{ad.q}</div>
@@ -21141,14 +21141,14 @@ function DreamModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
           {/* 1. 광고배너 — 모드별 4개로 통일 */}
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:10}}>
             {(mode==="taemong"?[
-              {ic:"🤰",q:"2세 얼굴은?",name:"2세 얼굴 예측 →",bc:"rgba(155,143,212,0.3)",sid:"baby_face"},
+              {ic:"👶",q:"2세 얼굴은?",name:"2세 얼굴 예측 →",bc:"rgba(155,143,212,0.3)",sid:"baby_face"},
               {ic:"🍼",q:"아기 관상은?",name:"우리 아기 관상 →",bc:"rgba(255,183,77,0.3)",sid:"baby_gwansang"},
               {ic:"👪",q:"부모와 궁합은?",name:"부모·자식 궁합 →",bc:"rgba(212,175,55,0.3)",sid:"parent_child_compat"},
-              {ic:"👶",q:"이름은 뭐가 좋을까?",name:"아기 이름 짓기 →",bc:"rgba(155,143,212,0.3)",sid:"baby_naming"},
+              {ic:"📛",q:"이름은 뭐가 좋을까?",name:"아기 이름 짓기 →",bc:"rgba(155,143,212,0.3)",sid:"baby_naming"},
             ]:[
               {ic:"🃏",q:"타로 한 장?",name:"오늘의 타로 →",bc:"rgba(95,196,158,0.3)",sid:"today_tarot"},
               {ic:"☯️",q:"내 사주는?",name:"사주 풀이 →",bc:"rgba(155,143,212,0.3)",sid:"saju"},
-              {ic:"🌙",q:"오늘 운세는?",name:"오늘운세 →",bc:"rgba(212,175,55,0.3)",sid:"today_unse"},
+              {ic:"🔮",q:"오늘 운세는?",name:"오늘운세 →",bc:"rgba(212,175,55,0.3)",sid:"today_unse"},
               {ic:"📸",q:"내 관상짤은?",name:"관상짤 →",bc:"rgba(199,21,133,0.3)",sid:"gwansang_zal"},
             ]).map(ad=>(
               <div key={ad.name} style={{background:"#ffffff",borderRadius:12,padding:"12px 8px",border:`2px solid ${ad.bc}`,textAlign:"center",cursor:"pointer",boxShadow:"0 2px 10px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(ad.sid,ad.name.replace(" →",""),ad.ic,"")}>
@@ -21742,19 +21742,19 @@ function TaegilModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLogi
             {(()=>{
               const p=result.purpose;
               const purposeFunnel:Record<string,any[]>={
-                "결혼":[{ic:"💑",q:"우리 천생연분?",name:"커플 궁합 →",bc:"rgba(255,107,173,0.3)",sid:"gwansang_compat"},{ic:"☯️",q:"두 사주 궁합?",name:"연애운·궁합 →",bc:"rgba(155,143,212,0.3)",sid:"love"},{ic:"👪",q:"양가 케미?",name:"부모·자식 궁합 →",bc:"rgba(212,175,55,0.3)",sid:"parent_child_compat"},{ic:"🎋",q:"결혼할 해?",name:"신년 운세 →",bc:"rgba(95,196,158,0.3)",sid:"newyear"}],
+                "결혼":[{ic:"💑",q:"우리 천생연분?",name:"커플 궁합 →",bc:"rgba(255,107,173,0.3)",sid:"gwansang_compat"},{ic:"💌",q:"두 사주 궁합?",name:"연애운·궁합 →",bc:"rgba(155,143,212,0.3)",sid:"love"},{ic:"👪",q:"양가 케미?",name:"부모·자식 궁합 →",bc:"rgba(212,175,55,0.3)",sid:"parent_child_compat"},{ic:"🎋",q:"결혼할 해?",name:"신년 운세 →",bc:"rgba(95,196,158,0.3)",sid:"newyear"}],
                 "이사":[{ic:"☯️",q:"이사 후 운은?",name:"사주 풀이 →",bc:"rgba(155,143,212,0.3)",sid:"saju"},{ic:"🪞",q:"내 관상으로 본 집?",name:"내 관상보기 →",bc:"rgba(212,175,55,0.3)",sid:"gwansang_full"},{ic:"📜",q:"올해 전체 흐름?",name:"토정비결 →",bc:"rgba(255,107,173,0.3)",sid:"tojeong"},{ic:"🌙",q:"이달 운은?",name:"월별 운세 →",bc:"rgba(95,196,158,0.3)",sid:"saju_monthly"}],
                 "개업":[{ic:"💼",q:"사업 파트너 궁합?",name:"비즈니스 궁합 →",bc:"rgba(212,175,55,0.3)",sid:"biz_gwansang"},{ic:"☯️",q:"내 사업운은?",name:"사주 풀이 →",bc:"rgba(155,143,212,0.3)",sid:"saju"},{ic:"🔄",q:"10년 흐름?",name:"대운 해설 →",bc:"rgba(255,107,173,0.3)",sid:"daeun"},{ic:"🎋",q:"올해 재물운?",name:"신년 운세 →",bc:"rgba(95,196,158,0.3)",sid:"newyear"}],
                 "시험":[{ic:"🧠",q:"내 뇌 특성은?",name:"뇌과학 분석 →",bc:"rgba(155,143,212,0.3)",sid:"psych"},{ic:"🔯",q:"내 기질은?",name:"기질도 →",bc:"rgba(5,77,149,0.3)",sid:"gijildo"},{ic:"☯️",q:"내 학업운은?",name:"사주 풀이 →",bc:"rgba(212,175,55,0.3)",sid:"saju"},{ic:"📝",q:"내 이름의 힘?",name:"이름 풀이 →",bc:"rgba(95,196,158,0.3)",sid:"namereading"}],
                 "출산":[{ic:"🍼",q:"아기 미래는?",name:"우리 아기 관상 →",bc:"rgba(255,107,173,0.3)",sid:"baby_gwansang"},{ic:"🎲",q:"돌잡이 뭐 잡을까?",name:"돌잡이 시뮬레이션 →",bc:"rgba(212,175,55,0.3)",sid:"doljabi_sim"},{ic:"👶",q:"2세 얼굴 미리보기?",name:"2세 얼굴 →",bc:"rgba(155,143,212,0.3)",sid:"baby_face"},{ic:"🤰",q:"태몽 해석?",name:"태몽 해몽 →",bc:"rgba(95,196,158,0.3)",sid:"dream"}],
-                "재회/연락":[{ic:"💘",q:"그 사람 마음은?",name:"연애 타로 →",bc:"rgba(255,107,173,0.3)",sid:"tarot_love"},{ic:"✨",q:"다시 연락할까?",name:"YES/NO 타로 →",bc:"rgba(95,196,158,0.3)",sid:"tarot_yesno"},{ic:"💑",q:"우리 궁합은?",name:"커플 궁합 →",bc:"rgba(212,175,55,0.3)",sid:"gwansang_compat"},{ic:"☯️",q:"이 인연 계속?",name:"연애운·궁합 →",bc:"rgba(155,143,212,0.3)",sid:"love"}],
-                "면접":[{ic:"🧠",q:"내 뇌 능력?",name:"뇌과학 분석 →",bc:"rgba(155,143,212,0.3)",sid:"psych"},{ic:"🔯",q:"내 성격 강점?",name:"기질도 →",bc:"rgba(5,77,149,0.3)",sid:"gijildo"},{ic:"🪞",q:"첫인상은?",name:"내 관상보기 →",bc:"rgba(212,175,55,0.3)",sid:"gwansang_full"},{ic:"💼",q:"직업운은?",name:"진로 타로 →",bc:"rgba(95,196,158,0.3)",sid:"tarot_career"}],
-                "상견례":[{ic:"👪",q:"양가 궁합?",name:"부모·자식 궁합 →",bc:"rgba(212,175,55,0.3)",sid:"parent_child_compat"},{ic:"💑",q:"우리 궁합?",name:"커플 궁합 →",bc:"rgba(255,107,173,0.3)",sid:"gwansang_compat"},{ic:"☯️",q:"우리 둘 사주?",name:"연애운·궁합 →",bc:"rgba(155,143,212,0.3)",sid:"love"},{ic:"🪞",q:"첫인상은?",name:"내 관상보기 →",bc:"rgba(95,196,158,0.3)",sid:"gwansang_full"}],
+                "재회/연락":[{ic:"💘",q:"그 사람 마음은?",name:"연애 타로 →",bc:"rgba(255,107,173,0.3)",sid:"tarot_love"},{ic:"✨",q:"다시 연락할까?",name:"YES/NO 타로 →",bc:"rgba(95,196,158,0.3)",sid:"tarot_yesno"},{ic:"💑",q:"우리 궁합은?",name:"커플 궁합 →",bc:"rgba(212,175,55,0.3)",sid:"gwansang_compat"},{ic:"💌",q:"이 인연 계속?",name:"연애운·궁합 →",bc:"rgba(155,143,212,0.3)",sid:"love"}],
+                "면접":[{ic:"🧠",q:"내 뇌 능력?",name:"뇌과학 분석 →",bc:"rgba(155,143,212,0.3)",sid:"psych"},{ic:"🔯",q:"내 성격 강점?",name:"기질도 →",bc:"rgba(5,77,149,0.3)",sid:"gijildo"},{ic:"🪞",q:"첫인상은?",name:"내 관상보기 →",bc:"rgba(212,175,55,0.3)",sid:"gwansang_full"},{ic:"🧭",q:"직업운은?",name:"진로 타로 →",bc:"rgba(95,196,158,0.3)",sid:"tarot_career"}],
+                "상견례":[{ic:"👪",q:"양가 궁합?",name:"부모·자식 궁합 →",bc:"rgba(212,175,55,0.3)",sid:"parent_child_compat"},{ic:"💑",q:"우리 궁합?",name:"커플 궁합 →",bc:"rgba(255,107,173,0.3)",sid:"gwansang_compat"},{ic:"💌",q:"우리 둘 사주?",name:"연애운·궁합 →",bc:"rgba(155,143,212,0.3)",sid:"love"},{ic:"🪞",q:"첫인상은?",name:"내 관상보기 →",bc:"rgba(95,196,158,0.3)",sid:"gwansang_full"}],
                 "계약":[{ic:"💼",q:"파트너 속마음?",name:"비즈니스 궁합 →",bc:"rgba(212,175,55,0.3)",sid:"biz_gwansang"},{ic:"☯️",q:"내 재물운은?",name:"사주 풀이 →",bc:"rgba(155,143,212,0.3)",sid:"saju"},{ic:"💰",q:"돈 흐름은?",name:"재물 타로 →",bc:"rgba(255,107,173,0.3)",sid:"tarot_money"},{ic:"✨",q:"이 계약 좋을까?",name:"YES/NO 타로 →",bc:"rgba(95,196,158,0.3)",sid:"tarot_yesno"}],
                 "여행":[{ic:"🌅",q:"올해 흐름은?",name:"연도별 운세 →",bc:"rgba(212,175,55,0.3)",sid:"yearly_unse"},{ic:"🌙",q:"이달 운은?",name:"월별 운세 →",bc:"rgba(155,143,212,0.3)",sid:"saju_monthly"},{ic:"🃏",q:"여행 한 장?",name:"오늘의 타로 →",bc:"rgba(255,107,173,0.3)",sid:"today_tarot"},{ic:"📸",q:"여행 관상짤?",name:"관상짤 →",bc:"rgba(95,196,158,0.3)",sid:"gwansang_zal"}],
                 "수술":[{ic:"🌿",q:"내 건강운은?",name:"건강 타로 →",bc:"rgba(95,196,158,0.3)",sid:"tarot_health"},{ic:"☯️",q:"사주로 본 체질?",name:"사주 풀이 →",bc:"rgba(155,143,212,0.3)",sid:"saju"},{ic:"⚫",q:"얼굴 점 풀이?",name:"얼굴 점 →",bc:"rgba(212,175,55,0.3)",sid:"mole"},{ic:"✋",q:"생명선 분석?",name:"손금 →",bc:"rgba(255,107,173,0.3)",sid:"palmistry"}],
               };
-              const funnel=purposeFunnel[p]||[{ic:"☯️",q:"내 사주는?",name:"사주 풀이 →",bc:"rgba(155,143,212,0.3)",sid:"saju"},{ic:"🌙",q:"오늘 운세는?",name:"오늘운세 →",bc:"rgba(212,175,55,0.3)",sid:"today_unse"},{ic:"🃏",q:"타로 한 장?",name:"오늘의 타로 →",bc:"rgba(95,196,158,0.3)",sid:"today_tarot"},{ic:"📸",q:"내 관상짤은?",name:"관상짤 →",bc:"rgba(199,21,133,0.3)",sid:"gwansang_zal"}];
+              const funnel=purposeFunnel[p]||[{ic:"☯️",q:"내 사주는?",name:"사주 풀이 →",bc:"rgba(155,143,212,0.3)",sid:"saju"},{ic:"🔮",q:"오늘 운세는?",name:"오늘운세 →",bc:"rgba(212,175,55,0.3)",sid:"today_unse"},{ic:"🃏",q:"타로 한 장?",name:"오늘의 타로 →",bc:"rgba(95,196,158,0.3)",sid:"today_tarot"},{ic:"📸",q:"내 관상짤은?",name:"관상짤 →",bc:"rgba(199,21,133,0.3)",sid:"gwansang_zal"}];
               return funnel.slice(0,4);
             })().map((ad:any)=>(
               <div key={ad.name} style={{background:"#ffffff",borderRadius:12,padding:"12px 8px",border:`2px solid ${ad.bc}`,textAlign:"center",cursor:"pointer",boxShadow:"0 2px 10px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(ad.sid,ad.name.replace(" →",""),ad.ic,"")}>
@@ -22166,7 +22166,7 @@ function LottoModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
             {[
               {ic:"☯️",q:"내 사주는?",name:"사주 풀이 →",bc:"rgba(155,143,212,0.3)",sid:"saju"},
               {ic:"🃏",q:"타로 한 장?",name:"오늘의 타로 →",bc:"rgba(95,196,158,0.3)",sid:"today_tarot"},
-              {ic:"🌙",q:"오늘 운세는?",name:"오늘운세 →",bc:"rgba(212,175,55,0.3)",sid:"today_unse"},
+              {ic:"🔮",q:"오늘 운세는?",name:"오늘운세 →",bc:"rgba(212,175,55,0.3)",sid:"today_unse"},
               {ic:"📸",q:"내 관상짤은?",name:"관상짤 →",bc:"rgba(199,21,133,0.3)",sid:"gwansang_zal"},
             ].map(ad=>(
               <div key={ad.name} style={{background:"#ffffff",borderRadius:12,padding:"12px 8px",border:`2px solid ${ad.bc}`,textAlign:"center",cursor:"pointer",boxShadow:"0 2px 10px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(ad.sid,ad.name.replace(" →",""),ad.ic,"")}>
@@ -22333,7 +22333,7 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
   // intro 스킵하고 mount 시 바로 인물선택 (이번 달 본 적 있고 인물 미선택 상태)
   useEffect(()=>{
     if(_shouldSkipIntro&&onRequestPerson){
-      onRequestPerson({id:"monthly_unse",icon:"📅",name:"이달의 운세",desc:"",price:"무료"});
+      onRequestPerson({id:"monthly_unse",icon:"🌸",name:"이달의 운세",desc:"",price:"무료"});
       onClose();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -22409,7 +22409,7 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
           <button onClick={onClose} style={{width:28,height:28,borderRadius:"50%",background:"rgba(255,255,255,0.08)",border:"none",color:"var(--mist)",fontSize:14,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
         </div>
         <div style={{background:"rgba(0,0,0,0.2)",borderRadius:16,padding:"32px 20px",border:"2px solid rgba(212,175,55,0.5)",textAlign:"center",marginBottom:12}}>
-          <div style={{fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",fontSize:20,fontWeight:900,color:"#D4AF37",marginBottom:6,lineHeight:1.4}}>📅 이달의 운세</div>
+          <div style={{fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",fontSize:20,fontWeight:900,color:"#D4AF37",marginBottom:6,lineHeight:1.4}}>🌸 이달의 운세</div>
           <div style={{fontSize:12,color:"var(--mist)",marginBottom:16,fontStyle:"italic",lineHeight:1.6}}>&ldquo;한 달 흐름을 4주로 나눠 본 에너지 지도&rdquo;</div>
 
           {/* v406: 주차별 에너지 흐름 차트 박스 삭제 (사용자 요청) */}
@@ -22457,7 +22457,7 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
           </div>
         </div>
         <button onClick={()=>{
-          if(isLoggedIn&&!selectedPerson&&onRequestPerson){onRequestPerson({id:"monthly_unse",icon:"📅",name:"이달의 운세",desc:"",price:"무료"});onClose();return;}
+          if(isLoggedIn&&!selectedPerson&&onRequestPerson){onRequestPerson({id:"monthly_unse",icon:"🌸",name:"이달의 운세",desc:"",price:"무료"});onClose();return;}
           setStep(isLoggedIn?"questions":"result");
         }} className="btn btn-p" style={{marginTop:10}}>이달의 에너지 흐름 보기 (무료) →</button>
         <button className="btn btn-g" style={{marginTop:10}} onClick={onClose}>닫기</button>
@@ -22470,7 +22470,7 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
       setPreQ(ans);setStep("loading"); // v291: 분석중 거쳐서 결과로
       // 1회/월 결과 저장
       try{localStorage.setItem(monthKey,JSON.stringify(ans));}catch{}
-    }} onClose={onClose} onBack={()=>{if(onRequestPerson){onRequestPerson({id:"monthly_unse",icon:"📅",name:"이달의 운세",desc:"",price:"무료"});onClose();}else{setStep("info");}}}/>);
+    }} onClose={onClose} onBack={()=>{if(onRequestPerson){onRequestPerson({id:"monthly_unse",icon:"🌸",name:"이달의 운세",desc:"",price:"무료"});onClose();}else{setStep("info");}}}/>);
   }
   // v291: 분석중 화면
   if(step==="loading"){
@@ -22770,7 +22770,7 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
 
         {/* 광고배너 */}
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:10}}>
-          {[{ic:"🌅",q:"오늘 운세는?",name:"오늘의 운세 →",bc:"rgba(212,175,55,0.3)",sid:"today_unse"},
+          {[{ic:"🔮",q:"오늘 운세는?",name:"오늘의 운세 →",bc:"rgba(212,175,55,0.3)",sid:"today_unse"},
             {ic:"☯️",q:"내 사주는?",name:"사주 풀이 →",bc:"rgba(155,143,212,0.3)",sid:"saju"},
             {ic:"🃏",q:"타로 한 장?",name:"오늘의 타로 →",bc:"rgba(95,196,158,0.3)",sid:"today_tarot"},
             {ic:"🎰",q:"행운 번호?",name:"행운 로또 →",bc:"rgba(199,21,133,0.3)",sid:"lotto"},
@@ -22961,18 +22961,18 @@ function SynthesisModal({onClose, cart, setCart, onGoShop, addHistory, userHisto
 
   // 이용 기록 기반 완성도 계산
   const REPORT_ITEMS = [
-    {id:"saju",      icon:"🔮", label:"사주 풀이",    desc:"운명의 뼈대 (사주 풀이 or 토정비결 or 인생 타로 중 1개 이상)", keys:["사주 풀이","토정비결","인생 타로"],
-      choices:[{sid:"saju",icon:"🔮",name:"사주 풀이",price:"980원"},{sid:"tojeong",icon:"📜",name:"토정비결",price:"1,980원"},{sid:"tarot_life",icon:"🃏",name:"인생 타로",price:"무료"}]},
+    {id:"saju",      icon:"☯️", label:"사주 풀이",    desc:"운명의 뼈대 (사주 풀이 or 토정비결 or 인생 타로 중 1개 이상)", keys:["사주 풀이","토정비결","인생 타로"],
+      choices:[{sid:"saju",icon:"☯️",name:"사주 풀이",price:"980원"},{sid:"tojeong",icon:"📜",name:"토정비결",price:"1,980원"},{sid:"tarot_life",icon:"🌌",name:"인생 타로",price:"무료"}]},
     {id:"gwansang",  icon:"🪞", label:"내 관상보기",  desc:"얼굴에 새겨진 운세", keys:["관상짤","내 관상보기"],
       choices:[{sid:"gwansang_full",icon:"🪞",name:"내 관상보기",price:"980원"},{sid:"gwansang_zal",icon:"📸",name:"관상짤",price:"380원"}]},
     {id:"love",      icon:"💌", label:"연애운·궁합",  desc:"인연의 흐름 (연애운·궁합 or 커플 관상 궁합 or 연애 타로 중 1개 이상)", keys:["연애운·궁합","커플 관상 궁합","관상 궁합","연애 타로"],
-      choices:[{sid:"love",icon:"💌",name:"연애운·궁합",price:"1,980원"},{sid:"gwansang_compat",icon:"💑",name:"커플 관상 궁합",price:"1,980원"},{sid:"tarot_love",icon:"🃏",name:"연애 타로",price:"980원"}]},
-    {id:"gijildo",   icon:"☯️", label:"기질도",       desc:"오행·음양으로 푸는 16가지 동양식 기질",        keys:["기질도"],
-      choices:[{sid:"gijildo",icon:"☯️",name:"기질도 (동양식 16유형)",price:"980원"}]},
+      choices:[{sid:"love",icon:"💌",name:"연애운·궁합",price:"1,980원"},{sid:"gwansang_compat",icon:"💑",name:"커플 관상 궁합",price:"1,980원"},{sid:"tarot_love",icon:"💘",name:"연애 타로",price:"980원"}]},
+    {id:"gijildo",   icon:"🔯", label:"기질도",       desc:"오행·음양으로 푸는 16가지 동양식 기질",        keys:["기질도"],
+      choices:[{sid:"gijildo",icon:"🔯",name:"기질도 (동양식 16유형)",price:"980원"}]},
     {id:"palmistry", icon:"✋", label:"손금·발금",    desc:"신체에 새겨진 운명 (손금 or 발금 or 얼굴 점 or 눈 점 중 1개 이상)", keys:["손금","발금","얼굴 점","눈 점"],
-      choices:[{sid:"palmistry",icon:"✋",name:"손금",price:"1,980원"},{sid:"footreading",icon:"🦶",name:"발금",price:"1,980원"},{sid:"mole",icon:"✨",name:"얼굴 점",price:"1,980원"},{sid:"eye_mole",icon:"👁️",name:"눈 점",price:"1,980원"}]},
+      choices:[{sid:"palmistry",icon:"✋",name:"손금",price:"1,980원"},{sid:"footreading",icon:"🦶",name:"발금",price:"1,980원"},{sid:"mole",icon:"⚫",name:"얼굴 점",price:"1,980원"},{sid:"eye_mole",icon:"👁️",name:"눈 점",price:"1,980원"}]},
     {id:"name",      icon:"✍️", label:"이름 풀이",    desc:"이름의 에너지 (이름 풀이 or 파동 성명학 중 1개 이상)", keys:["이름 풀이","파동 성명학"],
-      choices:[{sid:"namereading",icon:"✍️",name:"이름 풀이",price:"980원"},{sid:"pawdong",icon:"🌊",name:"파동 성명학",price:"4,800원"}]},
+      choices:[{sid:"namereading",icon:"📝",name:"이름 풀이",price:"980원"},{sid:"pawdong",icon:"🌊",name:"파동 성명학",price:"4,800원"}]},
   ];
 
   // 본인 것만 카운팅: 인물등록에서 relation="본인"인 사람의 이름과 매칭
@@ -23081,7 +23081,7 @@ function SynthesisModal({onClose, cart, setCart, onGoShop, addHistory, userHisto
         <div style={{position:"sticky",top:0,display:"flex",justifyContent:"flex-end",marginBottom:-20,zIndex:5}}><button onClick={onClose} style={{width:28,height:28,borderRadius:"50%",background:"rgba(255,255,255,0.08)",border:"none",color:"var(--mist)",fontSize:14,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button></div>
 
         {step==="main"&&<>
-          <div className="mt">🔍 나의 천기 리포트</div>
+          <div className="mt">📊 나의 천기 리포트</div>
           <div className="ms">결제한 콘텐츠를 기반으로 자동 생성돼요.<br/>더 많이 이용할수록 리포트가 풍부해집니다!</div>
 
           {/* 완성도 바 */}
@@ -23175,7 +23175,7 @@ function SynthesisModal({onClose, cart, setCart, onGoShop, addHistory, userHisto
             {/* 상단 브랜딩 */}
             <div style={{padding:"10px 16px 0",textAlign:"center"}}>
               <BrandLine>나의 천기 리포트 · 종합 분석</BrandLine>
-              <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>🔍 나의 천기 리포트</div>
+              <div style={{fontSize:18,fontWeight:900,color:"#1A3C32",fontFamily:"'Noto Serif KR','Batang','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif",lineHeight:1.35}}>📊 나의 천기 리포트</div>
               <div style={{fontSize:10,color:"#888",marginTop:4}}>{new Date().toLocaleDateString("ko-KR")}</div>
               <div style={{display:"inline-flex",alignItems:"center",gap:6,marginTop:8,padding:"4px 12px",borderRadius:14,background:`${tierColor}15`,border:`1px solid ${tierColor}40`}}>
                 <span style={{fontSize:10,fontWeight:800,color:tierColor==="var(--jade)"?"#16a34a":tierColor==="var(--violet)"?"#7c3aed":tierColor==="var(--gold)"?"#B8942E":tierColor==="var(--mist)"?"#888":"#aaa"}}>{tierLabel} {dc}/6</span>
@@ -23302,7 +23302,7 @@ function SynthesisModal({onClose, cart, setCart, onGoShop, addHistory, userHisto
               {ic:"🪞",q:"내 관상은?",name:"내 관상보기 →",bc:"rgba(212,175,55,0.3)",sid:"gwansang_full"},
               {ic:"☯️",q:"내 사주 풀이는?",name:"사주 풀이 →",bc:"rgba(95,196,158,0.25)",sid:"saju"},
               {ic:"⏳",q:"전생 직업은?",name:"전생 운세 →",bc:"rgba(155,143,212,0.25)",sid:"past_life"},
-              {ic:"🧬",q:"내 기질은?",name:"기질도 →",bc:"rgba(255,107,107,0.25)",sid:"gijildo"},
+              {ic:"🔯",q:"내 기질은?",name:"기질도 →",bc:"rgba(255,107,107,0.25)",sid:"gijildo"},
             ].map(ad=>(
               <div key={ad.name} style={{background:"#ffffff",borderRadius:12,padding:"12px 8px",border:`2px solid ${ad.bc}`,textAlign:"center",cursor:"pointer",boxShadow:"0 2px 10px rgba(0,0,0,0.06)"}} onClick={()=>{if(onOpenService){onClose();(onOpenService as any)(ad.sid,ad.name.replace(" →",""),ad.ic,"");}}}>
                 <div style={{fontSize:22,marginBottom:4,fontFamily:"'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif"}}>{ad.ic}</div>
@@ -23413,9 +23413,9 @@ function expandContents(contents:string[]):{svcId:string,count:number}[]{
 
 const SVC_CATS = [
   {id:"gwansang",label:"🪞 관상",items:[
-    {id:"gwansang_zal",       icon:"🪞",name:"관상짤",              desc:"소개팅 상대 관상 분석",              price:"무료/380원",        badge:null,              bdgCls:"",                            free:true, coming:false},
-    {id:"gwansang_full",      icon:"",  name:"내 관상보기",         desc:"1.5만+ 맞춤 조합 결과",                price:"980원",     badge:null,          bdgCls:"bdg-hot",                                coming:false},
-    {id:"joseon_portrait",    icon:"",  name:"조선 초상화",         desc:"조선시대 내 신분은?",                price:"1,980원",   badge:null,          bdgCls:"bdg-pick",                                coming:false},
+    {id:"gwansang_zal",       icon:"📸",name:"관상짤",              desc:"소개팅 상대 관상 분석",              price:"무료/380원",        badge:null,              bdgCls:"",                            free:true, coming:false},
+    {id:"gwansang_full",      icon:"🪞",  name:"내 관상보기",         desc:"1.5만+ 맞춤 조합 결과",                price:"980원",     badge:null,          bdgCls:"bdg-hot",                                coming:false},
+    {id:"joseon_portrait",    icon:"👑",  name:"조선 초상화",         desc:"조선시대 내 신분은?",                price:"1,980원",   badge:null,          bdgCls:"bdg-pick",                                coming:false},
     {id:"gwansang_compat",    icon:"💑",name:"커플 관상 궁합",      desc:"우리는 천생연분일까?",               price:"1,980원",   badge:null,          bdgCls:"bdg-pick",                                coming:false},
     {id:"parent_child_compat",icon:"👪",name:"부모·자식 관상 궁합", desc:"천륜일까??",                            price:"1,980원",   badge:null,          bdgCls:"bdg-pick",                                coming:false},
     {id:"baby_face",          icon:"👶",name:"2세 얼굴 & 운명 예측",desc:"AI가 그려준 우리 2세 얼굴",         price:"4,800원",   badge:"할인중",          bdgCls:"bdg-premium",                            coming:false},
@@ -23462,21 +23462,21 @@ const SVC_CATS = [
     {id:"eye_mole",     icon:"👁️",name:"눈 점",          desc:"눈가의 점 하나가 연애운을 바꾼다?",            price:"1,980원",badge:null,  bdgCls:"",   coming:false},
   ]},
   {id:"personality",label:"🧬 성향 분석",items:[
-    {id:"gijildo",      icon:"🧬",name:"기질도",      desc:"사주는 🐯 백호(ESTJ), 성격은 🌸 난초(INFP)? 동양식 16가지 유형과 내 사주 비교",              price:"980원",  badge:"할인중",      bdgCls:"bdg-hot",    coming:false, _wide:true},
+    {id:"gijildo",      icon:"🔯",name:"기질도",      desc:"사주는 🐯 백호(ESTJ), 성격은 🌸 난초(INFP)? 동양식 16가지 유형과 내 사주 비교",              price:"980원",  badge:"할인중",      bdgCls:"bdg-hot",    coming:false, _wide:true},
     {id:"numerology",   icon:"🔢",name:"수비학",        desc:"해외 인기! 내 영혼의 소울넘버",            price:"980원",badge:"인기",  bdgCls:"bdg-hot",   coming:false},
     {id:"psych",        icon:"🧠",name:"뇌과학 분석 테스트",desc:"고지능·ADHD 등 내 능력은?",                price:"4,800원",badge:"프리미엄", bdgCls:"bdg-premium",coming:false},
   ]},
   {id:"name",label:"✍️ 이름",items:[
     {id:"namereading",  icon:"📝",name:"이름 풀이",    desc:"한자 획수·뜻만으로 푸는 이름 운세",                   price:"980원",  badge:null,       bdgCls:"",           coming:false},
-    {id:"baby_naming",  icon:"🍼",name:"아기 이름 짓기", desc:"사주·관상에 맞는 우리 아기 이름",                price:"1,980원",badge:null,       bdgCls:"",           coming:false},
+    {id:"baby_naming",  icon:"📛",name:"아기 이름 짓기", desc:"사주·관상에 맞는 우리 아기 이름",                price:"1,980원",badge:null,       bdgCls:"",           coming:false},
     {id:"pawdong",      icon:"🌊",name:"파동 성명학", desc:"불려지는 이름대로 내 운명이 바뀐다?",price:"4,800원",badge:"프리미엄", bdgCls:"bdg-premium",coming:false},
   ]},
   {id:"digital",label:"📱 디지털 풍수",items:[
     {id:"lucky_number",   icon:"📱",name:"행운의 번호·비밀번호",desc:"내 사주에 맞는 행운 숫자 6자리 — 폰 비번·도어락·PIN 맞춤 추천", price:"980원",  badge:"신규",bdgCls:"bdg-new",coming:false},
-    {id:"lucky_wallpaper",icon:"🌌",name:"AI 행운 배경화면",    desc:"부족한 오행 보강해주는 나만의 잠금화면 이미지",                  price:"1,980원",badge:"신규",bdgCls:"bdg-new",coming:false},
+    {id:"lucky_wallpaper",icon:"🖼️",name:"AI 행운 배경화면",    desc:"부족한 오행 보강해주는 나만의 잠금화면 이미지",                  price:"1,980원",badge:"신규",bdgCls:"bdg-new",coming:false},
   ]},
   {id:"report",label:"🔍 천기 리포트",items:[
-    {id:"synthesis",    icon:"🔍",name:"나의 천기 리포트",  desc:"🛠️ 대대적 업데이트 중 — 곧 새 모습으로!",       price:"준비중",   badge:"준비중",      bdgCls:"bdg-soon",   free:true, coming:true},
+    {id:"synthesis",    icon:"📊",name:"나의 천기 리포트",  desc:"🛠️ 대대적 업데이트 중 — 곧 새 모습으로!",       price:"준비중",   badge:"준비중",      bdgCls:"bdg-soon",   free:true, coming:true},
     {id:"ytype_intro",  icon:"🐉",name:"12수호신 소개",    desc:"나는 어떤 수호신 유형일까?",             price:"무료",   badge:null,          bdgCls:"",          free:true, coming:false},
   ]},
 ];
@@ -23931,7 +23931,7 @@ function HomePage({onSvc,freePickSignal=0,isLoggedIn,savedPersons,setSavedPerson
       {(()=>{const cs=getCS("gwansang_zal");return isAdmin||!cs||cs.is_public!==false;})()&&(
       <div style={{padding:"0 0 4px"}}>
         <div className="sec"><div className="sec-t">🪞 관상</div></div>
-        <div className="gw-main" style={{opacity:(getCS("gwansang_zal")?.is_public===false||getCS("gwansang_zal")?.is_preparing)?0.55:1,filter:(getCS("gwansang_zal")?.is_public===false||getCS("gwansang_zal")?.is_preparing)?"grayscale(0.3)":"none"}} onClick={()=>{const cs=getCS("gwansang_zal");if(cs?.is_preparing){onSvc({id:"gwansang_zal",icon:"🪞",name:"관상짤",desc:"",price:"무료/380원",coming:false,_coming:true});return;}onSvc({id:"gwansang_zal",icon:"📸",name:"관상짤",desc:"소개팅남 관상 분석",price:"무료/380원",free:true,coming:false});}}>
+        <div className="gw-main" style={{opacity:(getCS("gwansang_zal")?.is_public===false||getCS("gwansang_zal")?.is_preparing)?0.55:1,filter:(getCS("gwansang_zal")?.is_public===false||getCS("gwansang_zal")?.is_preparing)?"grayscale(0.3)":"none"}} onClick={()=>{const cs=getCS("gwansang_zal");if(cs?.is_preparing){onSvc({id:"gwansang_zal",icon:"📸",name:"관상짤",desc:"",price:"무료/380원",coming:false,_coming:true});return;}onSvc({id:"gwansang_zal",icon:"📸",name:"관상짤",desc:"소개팅남 관상 분석",price:"무료/380원",free:true,coming:false});}}>
           {/* v714: cc5ddb4 원본 복원 — auto 105% (height 기준, 박스 가득 채움) + right center.
               v694/v695가 width 45%로 바꿔서 박스 늘어나도 일러스트가 작게 떠있는 것처럼 됨.
               원본은 height 105%라 박스 비율 변해도 일러스트가 자동으로 박스 채움. padding도 원본 20x18. */}
@@ -24286,11 +24286,11 @@ function HomePage({onSvc,freePickSignal=0,isLoggedIn,savedPersons,setSavedPerson
           <div className="ms">매일 무료로 이용할 수 있어요!<br/>원하는 콘텐츠를 선택하세요.</div>
           <div style={{display:"flex",flexDirection:"column",gap:8}}>
             {[
-              {sid:"today_unse",icon:"🌙",name:"오늘의 운세",desc:"10영역 + 귀인·스팟"},
+              {sid:"today_unse",icon:"🔮",name:"오늘의 운세",desc:"10영역 + 귀인·스팟"},
               {sid:"today_tarot",icon:"🃏",name:"오늘의 타로",desc:"매일 한 장의 카드"},
               {sid:"tarot_yesno",icon:"✨",name:"YES/NO 타로",desc:"할까 말까? 단호박 해답"},
-              {sid:"lotto",icon:"🎱",name:"행운 로또 번호",desc:"오늘의 행운 숫자"},
-              {sid:"daily_quote",icon:"📜",name:"오늘의 명언",desc:"하루를 여는 한마디"},
+              {sid:"lotto",icon:"🎰",name:"행운 로또 번호",desc:"오늘의 행운 숫자"},
+              {sid:"daily_quote",icon:"📖",name:"오늘의 명언",desc:"하루를 여는 한마디"},
               {sid:"monthly_unse",icon:"🌸",name:"이달의 운세",desc:"이번 달 흐름 한눈에"},
               {sid:"celeb_compat",icon:"💕",name:"궁합 연예인",desc:"나랑 찰떡인 연예인"},
               {sid:"gwansang_zal",icon:"📸",name:"관상짤 (첫 1회)",desc:"소개팅남 관상 분석"},
@@ -25074,8 +25074,8 @@ function MyPage({isLoggedIn,onLogin,onLogout,savedPersons,setSavedPersons,userHi
       "DAEUN1000":{name:"🌊 대운 개운 굿즈 1,000원 할인",discount:"1,000원",target:"굿즈샵 오행보완/기운회복",minPrice:5000},
       "YEARLY500":{name:"📆 연도별운세 개운 굿즈 500원 할인",discount:"500원",target:"굿즈샵 기운회복/기운보강",minPrice:5000},
       "NATURE500":{name:"🧬 성향 분석 굿즈 500원 할인",discount:"500원",target:"굿즈샵 기질도/수비학",minPrice:5000},
-      "BABY500":{name:"👶 우리 아기 관상 개운 굿즈 500원 할인",discount:"500원",target:"굿즈샵 탄생·수호",minPrice:5000},
-      "BABY2GEN1000":{name:"🍼 2세 얼굴 개운 굿즈 1,000원 할인",discount:"1,000원",target:"굿즈샵 탄생·수호/커플·연애",minPrice:5000},
+      "BABY500":{name:"🍼 우리 아기 관상 개운 굿즈 500원 할인",discount:"500원",target:"굿즈샵 탄생·수호",minPrice:5000},
+      "BABY2GEN1000":{name:"👶 2세 얼굴 개운 굿즈 1,000원 할인",discount:"1,000원",target:"굿즈샵 탄생·수호/커플·연애",minPrice:5000},
       "BIZ500":{name:"💼 비즈니스 관상 굿즈 500원 할인",discount:"500원",target:"굿즈샵 집안수호신/이사·개업",minPrice:5000},
     };
     const found = VALID_CODES[couponInput];
@@ -26224,9 +26224,9 @@ function MyPage({isLoggedIn,onLogin,onLogout,savedPersons,setSavedPersons,userHi
                 }
                 if(info.ctaSvc&&onSvc){
                   const svcMap:Record<string,any>={
-                    gwansang_full:{id:"gwansang_full",icon:"🔍",name:"내 관상보기",desc:"",price:"980원"},
-                    synthesis:{id:"synthesis",icon:"🔍",name:"나의 천기 리포트",desc:"",price:"무료"},
-                    gijildo:{id:"gijildo",icon:"🧬",name:"기질도",desc:"",price:"980원"},
+                    gwansang_full:{id:"gwansang_full",icon:"🪞",name:"내 관상보기",desc:"",price:"980원"},
+                    synthesis:{id:"synthesis",icon:"📊",name:"나의 천기 리포트",desc:"",price:"무료"},
+                    gijildo:{id:"gijildo",icon:"🔯",name:"기질도",desc:"",price:"980원"},
                     saju:{id:"saju",icon:"☯️",name:"사주 풀이",desc:"",price:"980원"},
                   };
                   onSvc(svcMap[info.ctaSvc as string]);
@@ -27434,7 +27434,7 @@ function ArchivePage({userHistory,savedPersons,setSavedPersons,isLoggedIn,onLogi
                       {sid:"doljabi_sim",icon:"🎲",name:"돌잡이",price:"1,980원"},
                       {sid:"parent_child_compat",icon:"👨‍👩‍👧",name:"부모궁합",price:"1,980원"},
                       {sid:"dream",icon:"🤰",name:"태몽",price:"980원"},
-                      {sid:"baby_naming",icon:"📝",name:"이름짓기",price:"1,980원"},
+                      {sid:"baby_naming",icon:"📛",name:"이름짓기",price:"1,980원"},
                     ].map(x=>(
                       <button key={x.sid} onClick={()=>onSvc({id:x.sid,icon:x.icon,name:x.name,desc:"",price:x.price})} style={{padding:"6px 12px",borderRadius:16,background:"#fff",border:"1px solid rgba(255,183,197,0.4)",color:"#FFB7C5",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>{x.icon} {x.name}</button>
                     ))}
@@ -27639,7 +27639,7 @@ function ArchivePage({userHistory,savedPersons,setSavedPersons,isLoggedIn,onLogi
                 {id:"today_unse",icon:"🔮",name:"오늘의 운세",desc:"10영역 + 귀인·스팟",price:"무료"},
                 {id:"today_tarot",icon:"🃏",name:"오늘의 타로",desc:"카드 1장으로 오늘 운",price:"무료"},
                 {id:"gwansang_zal",icon:"📸",name:"관상짤",desc:"사진 1장 3초 분석",price:"무료/380원"},
-                {id:"daily_quote",icon:"📜",name:"오늘의 명언",desc:"하루 1번 마음 정리",price:"무료"},
+                {id:"daily_quote",icon:"📖",name:"오늘의 명언",desc:"하루 1번 마음 정리",price:"무료"},
               ].map(s=>(
                 <div key={s.id} onClick={()=>onSvc?.(s)} style={{background:"var(--ink2)",border:"1px solid rgba(212,175,55,0.2)",borderRadius:12,padding:"12px 10px",textAlign:"center",cursor:"pointer"}}>
                   <div style={{fontSize:24,marginBottom:6}}>{s.icon}</div>
@@ -28319,7 +28319,7 @@ function ArchivePage({userHistory,savedPersons,setSavedPersons,isLoggedIn,onLogi
                 {ic:"☯️",q:"내 사주는?",name:"사주 풀이 →",bc:"rgba(155,143,212,0.3)",sid:"saju"},
                 {ic:"🪞",q:"내 관상은?",name:"내 관상보기 →",bc:"rgba(212,175,55,0.3)",sid:"gwansang_full"},
                 {ic:"🃏",q:"오늘의 카드?",name:"오늘의 타로 →",bc:"rgba(95,196,158,0.3)",sid:"today_tarot"},
-                {ic:"🔍",q:"천기 종합?",name:"나의 천기 리포트 →",bc:"rgba(212,175,55,0.3)",sid:"synthesis"},
+                {ic:"📊",q:"천기 종합?",name:"나의 천기 리포트 →",bc:"rgba(212,175,55,0.3)",sid:"synthesis"},
               ].map(ad=>(
                 <div key={ad.sid} style={{background:"#ffffff",borderRadius:12,padding:"12px 8px",border:`2px solid ${ad.bc}`,textAlign:"center",cursor:"pointer",boxShadow:"0 2px 10px rgba(0,0,0,0.06)"}} onClick={()=>{setViewItem(null);onSvc({id:ad.sid,icon:ad.ic,name:ad.name.replace(" →",""),desc:"",price:"",_fromAd:true});}}>
                   <div style={{fontSize:22,marginBottom:4}}>{ad.ic}</div>
@@ -30198,7 +30198,7 @@ export default function Page(){
       mole:         <MoleModal svcId="mole"     onClose={closeModal} cart={cart} setCart={setCart} onGoShop={goShop} addHistory={addHistory} isLoggedIn={isLoggedIn} selectedPerson={modal._forceIntro?null:selectedPerson} onOpenService={onOpenService} forceIntro={!!modal._forceIntro} onRequestPerson={requestPerson}/>,
       eye_mole:     <MoleModal svcId="eye_mole" onClose={closeModal} cart={cart} setCart={setCart} onGoShop={goShop} addHistory={addHistory} isLoggedIn={isLoggedIn} selectedPerson={modal._forceIntro?null:selectedPerson} onOpenService={onOpenService} forceIntro={!!modal._forceIntro} onRequestPerson={requestPerson}/>,
       pawdong:      <PawdongModal onClose={closeModal} cart={cart} setCart={setCart} onGoShop={goShop} addHistory={addHistory} isLoggedIn={isLoggedIn} selectedPerson={modal._forceIntro?null:selectedPerson} onOpenService={onOpenService} onRequestPerson={requestPerson} onLoginRequest={()=>{setModal(null);setAuthOpen(true);}} forceIntro={!!modal._forceIntro}/>,
-      ytype_intro:  <YtypeIntroModal onClose={closeModal} onBuy={()=>setModal({id:"synthesis",icon:"🔍",name:"나의 천기 리포트",desc:"결제할수록 풍부해지는 내 운명 종합서",price:"무료",coming:false})}/>,
+      ytype_intro:  <YtypeIntroModal onClose={closeModal} onBuy={()=>setModal({id:"synthesis",icon:"📊",name:"나의 천기 리포트",desc:"결제할수록 풍부해지는 내 운명 종합서",price:"무료",coming:false})}/>,
       synthesis:    <SynthesisModal {...props} userHistory={userHistory} savedPersons={savedPersons}/>,
       ddi:          <DdiModal {...props}/>,
       zodiac:       <ZodiacModal {...props}/>,

@@ -578,7 +578,7 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
 
   if(screen==="needBirth") return(
     <div className="ov"><div className="md"><div className="hd"/>
-      <div className="mt">🧬 기질도</div>
+      <div className="mt">🔯 기질도</div>
       <div className="ms">생년월일 정보가 필요합니다</div>
       <div style={{textAlign:"center",padding:"20px 0",fontSize:40}}>📝</div>
       <div style={{fontSize:13,color:"var(--mist)",textAlign:"center",lineHeight:1.7,marginBottom:16}}>
@@ -593,7 +593,7 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
       <div style={{position:"sticky",top:0,display:"flex",justifyContent:"flex-end",marginBottom:-20,zIndex:5}}>
         <button onClick={onClose} style={{width:28,height:28,borderRadius:"50%",background:"rgba(255,255,255,0.08)",border:"none",color:"var(--mist)",fontSize:14,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
       </div>
-      <div className="mt">🧬 기질도 (동양식 16유형)</div>
+      <div className="mt">🔯 기질도 (동양식 16유형)</div>
       <div className="ms">1회 분석 980원 · 테스트 완료! 결제하면 즉시 결과 확인</div>
       <div style={{background:"var(--ink3)",borderRadius:14,padding:"16px",marginBottom:14,textAlign:"center",border:"1px solid rgba(212,175,55,0.1)"}}>
         <div style={{fontSize:13,color:"var(--mist)",lineHeight:1.7}}>✓ 사전질문 + 40문항 테스트 완료<br/>= 16가지 유형 + 4축 비교 + 개운법 풀 리포트</div>
@@ -723,7 +723,7 @@ export default function GijildoModal({onClose,selectedPerson,addHistory,cart,set
         </div>
         <div style={{padding:"0 0 12px"}}>
           <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
-            <span style={{fontSize:10,color:"var(--gold)",letterSpacing:2}}>🧬 기질도 · {personName}</span>
+            <span style={{fontSize:10,color:"var(--gold)",letterSpacing:2}}>🔯 기질도 · {personName}</span>
             <span style={{fontSize:11,color:"var(--mist)"}}>{current+1}/40</span>
           </div>
           <div style={{height:4,background:"rgba(255,255,255,0.06)",borderRadius:4,overflow:"hidden"}}>
