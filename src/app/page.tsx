@@ -18427,6 +18427,49 @@ function YesNoTarotModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReques
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // 5장 스프레드 타로 (재물/연애/건강/진로/인생)
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ━━━ 타로 5종 사전질문 녹여내기 (v 2026-08-14) ━━━
+// 문제: preQ를 Object.values()로 "고른 것" 나열만 하고, 뽑는 카드·해석엔 0% 반영이었다.
+// 방식: 새 섹션 없음. **"전체 N장 풀이 요약" 마지막 문장을 고른 고민 맞춤으로 교체**한다.
+//       원래 그 자리는 cfg.synGood/synBad(콘텐츠당 한 벌 고정)라 누가 봐도 같은 문장이었다.
+//       분량은 한 문장으로 동일. 사전질문을 건너뛰면 기존 synGood/synBad가 그대로 나온다.
+// ⚠️ 카드·길흉 개수 같은 사실값은 절대 안 건드린다. 마지막 조언 한 문장만 갈아끼운다.
+const _TAROT_SP_TAIL:Record<string,{good:string[],bad:string[]}>={
+  money:{
+    good:["막연하게 두지 말고 숫자로 적어보세요. 적는 순간 들어올 자리가 또렷해집니다.","지금 잡은 방향이 맞아요. 규모를 키우기보다 주기를 짧게 가져가세요.","기회는 크게 오지 않고 여러 번 작게 옵니다. 첫 번째를 흘려보내지 마세요."],
+    bad:["버는 쪽보다 새는 쪽을 먼저 보세요. 이달은 그게 수익입니다.","조건이 좋아 보일수록 한 번 더 확인하세요. 급한 제안일수록 그렇습니다.","지금은 늘리는 구간이 아니라 버티는 구간이에요. 버티면 다음이 옵니다."],
+  },
+  love:{
+    good:["망설이는 그 한마디를 먼저 꺼내도 됩니다. 지금은 말이 잘 닿는 때예요.","상대도 비슷한 온도예요. 확인하려 애쓰기보다 그냥 편하게 대해보세요.","관계를 잘 만들려 하지 말고 그냥 자주 마주치세요. 그게 제일 빠릅니다."],
+    bad:["답을 재촉하면 더 멀어져요. 지금은 기다리는 게 움직이는 겁니다.","서운함은 지금 꺼내면 커집니다. 가라앉힌 뒤에 말해도 늦지 않아요.","붙잡을수록 힘들어지는 자리예요. 잠시 거리를 두는 것도 애정입니다."],
+  },
+  health:{
+    good:["몸이 잘 따라주는 구간이에요. 미뤄둔 검진이나 운동을 지금 시작하세요.","회복이 빠른 때입니다. 잘 먹고 잘 자는 것만 지켜도 충분해요.","컨디션 좋을 때 중요한 일을 몰아서 하세요. 그게 체력을 아끼는 법이에요."],
+    bad:["무리하면 바로 신호가 옵니다. 일정 하나만 덜어내세요.","작은 증상이 반복되면 기록해두세요. 패턴이 보이면 원인도 보입니다.","쉬는 걸 미루면 나중에 더 큰 시간으로 갚게 돼요. 지금 쉬세요."],
+  },
+  career:{
+    good:["준비한 걸 꺼내 보이기 좋은 때예요. 먼저 제안하는 쪽이 유리합니다.","지금 방향이 맞아요. 남과 비교하지 말고 속도만 유지하세요.","결정을 미룬 비용이 더 큽니다. 되돌릴 수 있는 것부터 실행하세요."],
+    bad:["지금 확정한 건 뒤집힐 수 있어요. 초안까지만 만들어 두세요.","여러 개를 동시에 벌이면 다 늦어집니다. 하나만 붙잡으세요.","결과가 안 보이는 구간이 제일 깁니다. 여기만 지나면 됩니다."],
+  },
+  life:{
+    good:["방향은 이미 잡혀 있어요. 남은 건 오늘 한 걸음뿐입니다.","고민을 끝낼 재료는 다 모였어요. 정하고 알리세요.","지금의 선택이 다음 계절까지 이어져요. 방향만 맞으면 충분합니다."],
+    bad:["넓히지 말고 정리하세요. 이 구간은 덜어낼수록 가벼워집니다.","무엇을 얻을지보다 무엇을 못 버리는지 적어보세요. 거기에 답이 있어요.","지금 보이는 두 갈래 말고 세 번째 길이 있어요. 서두르지 마세요."],
+  },
+};
+// preQ 키가 콘텐츠마다 다르다(tarot_money만 core, 나머지는 focus).
+function _tarotSpreadFocus(preQ:any):string{
+  const raw=preQ?.focus??preQ?.core;
+  const arr=(Array.isArray(raw)?raw:(raw?[raw]:[])).filter((x:any)=>typeof x==="string"&&x&&x!=="skip");
+  const hit=arr.find((l:string)=>!l.startsWith("[기타]"))||arr[0]||"";
+  return hit.replace(/^\[기타\]\s*/,"");
+}
+function _tarotSpreadTail(category:string,preQ:any,isGood:boolean,seed:number,fallback:string){
+  const focus=_tarotSpreadFocus(preQ);
+  const grp=_TAROT_SP_TAIL[category];
+  if(!focus||!grp)return fallback; // 건너뛰면 기존 synGood/synBad 그대로
+  const pool=isGood?grp.good:grp.bad;
+  return `특히 「${focus}」 쪽을 물으셨죠. ${pool[Math.abs(seed)%pool.length]}`;
+}
+
 const TAROT_SPREAD_CONFIG:Record<string,{
   icon:string,name:string,emoji:string,accent:string,desc:string,
   positions:string[],loading:string[],hashtags:string,
@@ -19050,7 +19093,7 @@ function TarotSpreadModal({svcId,onClose,cart,setCart,onGoShop,isLoggedIn,onLogi
           // 10장 전체 풀이 요약 (카드 이름 + 길흉 + 테마)
           const firstCard=cards[0]?.card?.name||"";
           const lastCard=cards[cards.length-1]?.card?.name||"";
-          const summaryText=`${personName}님의 ${needed}장 카드는 ${goodCount}장이 길한 기운, ${needed-goodCount}장이 주의 기운을 담고 있어요. 첫 번째 '${firstCard}'가 현재의 흐름을 보여주고, 마지막 '${lastCard}'가 다가올 결과를 암시해요. ${isGood?cfg.synGood:cfg.synBad}`;
+          const summaryText=`${personName}님의 ${needed}장 카드는 ${goodCount}장이 길한 기운, ${needed-goodCount}장이 주의 기운을 담고 있어요. 첫 번째 '${firstCard}'가 현재의 흐름을 보여주고, 마지막 '${lastCard}'가 다가올 결과를 암시해요. ${_tarotSpreadTail(cfg.category,preQ,isGood,(cards[0]?.card?.id??0)+needed,isGood?cfg.synGood:cfg.synBad)}`;
           return(
           <div id={`${svcId}-capture`}>
 
