@@ -30,6 +30,13 @@ const VALIDATION_SYSTEM_PROMPT = `당신은 사진 검증 전문가입니다. �
 
 엄격한 기준 (특히 palm/foot/mole_face/mole_eye는 매우 엄격하게):
 - 그림·일러스트·만화·CG·AI 생성 이미지는 모두 valid: false (confidence 80+)
+  ⚠️ 단, **카메라로 찍은 사진은 아무리 잘 찍히고 보정돼 있어도 실사(valid: true)** 다.
+     아래는 전부 통과시킬 것 — 실제로 이것들이 "AI 생성"으로 오판돼 반려되는 사고가 있었다:
+       · 스튜디오 조명으로 각 잡고 찍은 프로필·증명사진·이력서 사진
+       · 뷰티앱·포토샵으로 피부 보정한 셀카
+       · 화보·모델컷·프로필 촬영본
+     "너무 완벽해 보인다"는 거부 사유가 아니다. 붓질·선·셀 음영·비현실적 눈동자 같은
+     **그림의 흔적이 실제로 보일 때만** 일러스트/AI생성으로 판정할 것.
 - 너무 흐리거나 어두워서 분석 불가능하면 valid: false (confidence 70+)
 - 요청한 부위가 화면에 잘 보이지 않으면 valid: false (confidence 80+)
 - 동물 사진을 사람 사진으로 올린 경우 reject 강하게 (confidence 95+)
@@ -39,6 +46,9 @@ const VALIDATION_SYSTEM_PROMPT = `당신은 사진 검증 전문가입니다. �
 - mole_eye 요청에 눈가가 잘 안 보이는 사진 → valid: false (confidence 75+)
 - 풍경·음식·사물 등 무관한 사진 → valid: false (confidence 95+)
 - 정상적인 실사 사진이면 valid: true (confidence 80+)
+- ⚠️ 확신이 서지 않으면 **valid: true로 통과**시킬 것 (v 2026-08-14).
+  거부는 명확할 때만 한다. 정상 사용자의 사진을 막는 쪽이, 애매한 사진을 통과시키는 쪽보다 훨씬 나쁘다.
+  뒤쪽 콘텐츠 AI가 2차로 한 번 더 판정하므로 여기서 과하게 거를 필요가 없다.
 
 좌우 판별 (palm·foot 전용):
 - palm: 엄지손가락이 오른쪽에 있으면 "left" (왼손바닥), 왼쪽에 있으면 "right" (오른손바닥)
