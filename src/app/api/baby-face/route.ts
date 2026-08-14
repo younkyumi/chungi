@@ -180,6 +180,9 @@ export async function POST(request: NextRequest) {
       babyName = "우리 아기",
       momName = "엄마",
       dadName = "아빠",
+      // v(2026-08-14): 사전질문 수신 — 예전엔 PreQuestionFlow가 답을 다 받아놓고 API로 안 보냈다.
+      // (내관상보기는 questions로 보내는데 2세얼굴만 누락. 설계 판단이 아니라 빠뜨린 것)
+      questions = {},
     } = body;
 
     if (!imageData1 || !imageData2)
@@ -193,12 +196,27 @@ export async function POST(request: NextRequest) {
     const firstName = getFriendlyName(babyName);
     const friendlyName = getNameWithParticle(firstName);
 
+    // v(2026-08-14): 사전질문 컨텍스트. 내관상보기(face-reading-premium)와 동일 원칙 —
+    // 고른 관심사는 해당 탭 서술을 더 깊게 푸는 데만 쓰고, 사실값(닮은 비율·점수·IQ·등급)은
+    // 사진과 babySeed로 고정된 값이라 사전질문에 절대 흔들리면 안 된다.
+    const _q = (v: unknown) => Array.isArray(v) ? v.filter(Boolean).join(", ") : (v ? String(v) : "");
+    const focusText = _q(questions?.focus) || "전체";
+    const questionContext = `
+사전질문 답변:
+- 가장 궁금한 것: ${focusText}
+- 그 밖의 응답: ${Object.entries(questions || {}).filter(([k]) => k !== "focus").map(([k, v]) => `${k}=${_q(v)}`).join(" / ") || "미응답"}
+
+⚠️ 사전질문 역할 (CRITICAL): 위에서 고른 관심사에 해당하는 탭만 2~3줄 더 깊게 풀어줘.
+   새 섹션을 만들지 말고 기존 탭 본문 안에 자연스럽게 녹여낼 것. 고른 개수와 상관없이 전체 분량은 동일하게.
+⚠️ 사실값 불변 (CRITICAL): dna_mix 비율, 각종 점수·등급·IQ, 닮은 부위 판정은 오직 두 사진에서 읽은
+   관찰값이다. 사전질문이 달라져도 이 값들은 절대 바뀌지 않는다.`;
+
     const reqBody = JSON.stringify({
       systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
       contents: [{ parts: [
         { inlineData: { mimeType: resolvedType1, data: base64Image1 } },
         { inlineData: { mimeType: resolvedType2, data: base64Image2 } },
-        { text: `첫 번째 사진은 엄마(${momName}), 두 번째 사진은 아빠(${dadName})입니다. 이 두 사람의 이목구비를 분석해서 2세(${babyName})의 얼굴 특징과 운명을 예측해줘. 풀네임: ${babyName}, 엄마: ${momName}, 아빠: ${dadName}. {nm}="${friendlyName}", {full}="${babyName}", {mom}="${momName}", {dad}="${dadName}"으로 치환. JSON만 출력. 사람이 아니면 에러 type_id 반환.` }
+        { text: `첫 번째 사진은 엄마(${momName}), 두 번째 사진은 아빠(${dadName})입니다. 이 두 사람의 이목구비를 분석해서 2세(${babyName})의 얼굴 특징과 운명을 예측해줘. 풀네임: ${babyName}, 엄마: ${momName}, 아빠: ${dadName}. {nm}="${friendlyName}", {full}="${babyName}", {mom}="${momName}", {dad}="${dadName}"으로 치환.\n${questionContext}\nJSON만 출력. 사람이 아니면 에러 type_id 반환.` }
       ]}],
       generationConfig: { temperature: 0.8, maxOutputTokens: 16384, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 1024 } },
     });

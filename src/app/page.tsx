@@ -13422,7 +13422,9 @@ function BabyFaceModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLo
       const timeout=setTimeout(()=>controller.abort(),120000);
       const res=await fetch("/api/baby-face",{
         method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({imageData1:imgBase64_1,imageData2:imgBase64_2,babyName,momName,dadName}),
+        // v(2026-08-14): questions 추가 — 사전질문을 다 받아놓고 API로 안 보내던 누락 fix.
+        // (내관상보기는 questions로 보내는데 2세얼굴만 빠져 있었음)
+        body:JSON.stringify({imageData1:imgBase64_1,imageData2:imgBase64_2,babyName,momName,dadName,questions:preQA}),
         signal:controller.signal,
       });
       clearTimeout(timeout);
