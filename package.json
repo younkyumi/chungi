@@ -4,13 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/check-gemini-config.mjs && node scripts/check-prequestion.mjs && node scripts/check-ai-fields.mjs",
+    "prebuild": "node scripts/check-gemini-config.mjs && node scripts/check-prequestion.mjs && node scripts/check-ai-fields.mjs && node scripts/check-josa.mjs",
     "build": "next build",
     "check:gemini": "node scripts/check-gemini-config.mjs",
     "check:preq": "node scripts/check-prequestion.mjs",
     "check:ai": "node scripts/check-ai-fields.mjs",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "check:josa": "node scripts/check-josa.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.80.0",
