@@ -29,8 +29,10 @@ export function formatPersonInfoLine(p: PersonInfoData): string {
   return `👤 ${name} : ${p.birth}${time}${calendar}${gender}`;
 }
 
-// opts.label: 기본 "분석" / 손금·발금·관상 등 일부 콘텐츠는 "검사".
-// opts.useDateOnly: true면 시·분 빼고 날짜만 (toLocaleDateString) — "검사" 라벨 변종에서 자주 씀.
+// opts.label: 기본 "분석". v(2026-08-14) 사용자 요청으로 "검사" 라벨은 전부 폐지 —
+//   띠별·별자리·혈액형·오늘의타로·예스노타로 5곳이 "검사"였고 전부 "분석"으로 통일했다.
+//   새 콘텐츠에서도 label을 넘기지 말 것(넘기면 다시 표기가 갈린다).
+// opts.useDateOnly: true면 시·분 빼고 날짜만 (toLocaleDateString).
 // opts.suffix: " · 🤚 왼손" 같은 추가 표시 (라벨 앞에 붙음).
 export function formatTestDateLine(
   testDate?: string,

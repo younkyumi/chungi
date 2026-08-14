@@ -227,7 +227,7 @@ function getSystemPrompt(serviceType: string): string {
 
 반드시 아래 구조로 응답하세요:
 
-🌙 **꿈 해몽 결과**
+💭 **꿈 해몽 결과**
 
 🔑 **핵심 상징 분석**
 - 꿈에 등장한 주요 상징 각각의 의미

@@ -64,6 +64,83 @@ import FACE_DB from "@/data/face-reading-db.json";
 const css =
 `@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css');@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700;900&display=swap');@import url('https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap');*{box-sizing:border-box;margin:0;padding:0;}:root{--ink:#1A3C32;--ink2:#1E4A3D;--ink3:#234F42;--ink4:#2A5A4D;--gold:#D4AF37;--gold2:#E8C86A;--gold3:#B8942E;--blush:#8B2929;--jade:#5FC49E;--violet:#9B8FD4;--coral:#8B2929;--mist:#A8C4B8;--white:#F4F1E1;--r:18px;}html,body{background:var(--ink);color:var(--white);font-family:'Pretendard','Apple SD Gothic Neo','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;-webkit-tap-highlight-color:transparent;overflow-x:hidden;}.app{max-width:430px;margin:0 auto;min-height:100dvh;background:var(--ink);}.topnav{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:13px 18px;padding-top:max(13px, env(safe-area-inset-top, 13px));background:rgba(26,60,50,0.93);backdrop-filter:blur(16px);border-bottom:1px solid rgba(212,175,55,0.1);}.logo-wrap{display:flex;flex-direction:column;}.logo-main{font-family:'Noto Serif KR','Batang',serif;font-size:20px;font-weight:900;color:var(--gold);letter-spacing:2px;}.logo-sub{font-size:9px;color:var(--mist);letter-spacing:1px;margin-top:1px;}.nav-r{display:flex;gap:8px;align-items:center;}.nbtn{font-size:11px;padding:6px 13px;border-radius:20px;border:none;cursor:pointer;font-family:inherit;font-weight:700;transition:all .18s;}.nb-o{background:transparent;border:1px solid rgba(212,175,55,0.3);color:var(--gold);}.nb-f{background:var(--gold);color:var(--ink);}.btab{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:100;display:flex;background:rgba(26,60,50,0.97);backdrop-filter:blur(16px);border-top:1px solid rgba(212,175,55,0.07);padding-bottom:env(safe-area-inset-bottom,0);}.ti{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 0 8px;cursor:pointer;color:rgba(168,196,184,0.38);border:none;background:none;font-family:inherit;transition:color .18s;}.ti.on{color:var(--gold);}.ti-ic{font-size:19px;}.ti-lb{font-size:9px;font-weight:700;}.page{padding:64px 0 16px;min-height:100dvh;}.btn{display:block;width:100%;padding:14px;border-radius:var(--r);border:none;cursor:pointer;font-family:inherit;font-size:14px;font-weight:700;transition:all .2s;}.btn-p{background:linear-gradient(135deg,var(--gold),var(--gold3));color:var(--ink);box-shadow:0 4px 16px rgba(212,175,55,0.25);}.btn-p:active{transform:scale(0.98);}.btn-g{background:transparent;border:1px solid rgba(212,175,55,0.25);color:var(--gold);margin-top:9px;}.btn-sm{padding:10px;font-size:13px;border-radius:12px;}.btn-coral{background:linear-gradient(135deg,var(--coral),#e05c38);color:#fff;}.btn-violet{background:linear-gradient(135deg,var(--violet),#7a6db8);color:#fff;}.ov{position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:200;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(6px);animation:fi .18s;}@keyframes fi{from{opacity:0}to{opacity:1}}.md{background:var(--ink2);border-radius:24px 24px 0 0;padding:22px 20px 40px;width:100%;max-width:430px;border-top:1px solid rgba(212,175,55,0.12);animation:su .22s ease-out;max-height:92dvh;overflow-y:auto;overflow-x:hidden;}@keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}.hd{width:36px;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;margin:0 auto 20px;}.mt{font-family:'Noto Serif KR','Batang',serif;font-size:19px;font-weight:900;margin-bottom:5px;}.ms{font-size:12px;color:var(--mist);margin-bottom:18px;line-height:1.6;}.lbl{font-size:11px;color:var(--mist);margin-bottom:5px;display:block;font-weight:700;}.inp{width:100%;padding:12px 14px;background:var(--ink3);border:1px solid rgba(255,255,255,0.07);border-radius:12px;color:var(--white);font-family:inherit;font-size:14px;outline:none;transition:border-color .18s;margin-bottom:12px;}.inp:focus{border-color:rgba(212,175,55,0.38);}.inp::placeholder{color:rgba(168,196,184,0.28);}.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}.tag{display:inline-flex;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;}.tg{background:rgba(212,175,55,0.12);color:var(--gold);border:1px solid rgba(212,175,55,0.2);}.tb{background:rgba(139,41,41,0.12);color:var(--blush);border:1px solid rgba(139,41,41,0.2);}.tj{background:rgba(95,196,158,0.12);color:var(--jade);border:1px solid rgba(95,196,158,0.2);}.tv{background:rgba(155,143,212,0.12);color:var(--violet);border:1px solid rgba(155,143,212,0.2);}.tc{background:rgba(139,41,41,0.12);color:var(--coral);border:1px solid rgba(139,41,41,0.2);}.tag-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;}.upzone{border:2px dashed rgba(212,175,55,0.22);border-radius:16px;padding:26px 16px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:14px;}.upzone:hover{border-color:rgba(212,175,55,0.5);}.prev-img{width:100%;height:180px;object-fit:contain;border-radius:14px;margin-bottom:14px;}.pay-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}.pay-opt{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;background:var(--ink3);border:1px solid rgba(255,255,255,0.06);border-radius:12px;cursor:pointer;transition:all .18s;}.pay-opt.on{border-color:rgba(212,175,55,0.45);background:rgba(212,175,55,0.06);}.pay-l{display:flex;align-items:center;gap:10px;}.pay-name{font-size:13px;font-weight:700;}.pay-desc{font-size:11px;color:var(--mist);}.radio{width:17px;height:17px;border-radius:50%;border:2px solid rgba(168,196,184,0.2);flex-shrink:0;}.radio.on{background:var(--gold);border-color:var(--gold);}.price-box{background:var(--ink3);border-radius:14px;padding:14px 15px;margin-bottom:14px;}.pr{display:flex;justify-content:space-between;font-size:13px;color:var(--mist);margin-bottom:5px;}.pr.tot{font-size:15px;font-weight:900;color:var(--white);border-top:1px solid rgba(255,255,255,0.06);padding-top:10px;margin:6px 0 0;}.pr.tot span:last-child{color:var(--gold);}.res-card{background:var(--ink3);border-radius:16px;padding:16px;margin-bottom:10px;border:1px solid rgba(212,175,55,0.08);}.res-lbl{font-size:10px;color:var(--gold);margin-bottom:6px;font-weight:700;letter-spacing:0.6px;}.res-val{font-size:13px;line-height:1.75;color:var(--mist);}.score-bar{height:7px;background:rgba(255,255,255,0.06);border-radius:4px;margin-top:7px;overflow:hidden;}.score-fill{height:100%;border-radius:4px;background:linear-gradient(to right,var(--gold3),var(--gold2));}.succ{text-align:center;padding:22px 16px 12px;}.succ-icon{font-size:52px;animation:pop .35s ease-out;margin-bottom:10px;}@keyframes pop{from{transform:scale(0.4);opacity:0}to{transform:scale(1);opacity:1}}.succ-title{font-family:'Noto Serif KR','Batang',serif;font-size:20px;font-weight:900;margin-bottom:4px;}.succ-sub{font-size:12px;color:var(--mist);line-height:1.7;margin-bottom:14px;}.share-row{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:12px 0;}.sh-btn{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 6px;border-radius:13px;background:var(--ink3);border:1px solid rgba(255,255,255,0.06);cursor:pointer;}.sh-btn:active{transform:scale(0.95);}.sh-ic{font-size:20px;}.sh-lb{font-size:10px;color:var(--mist);font-weight:600;}.dots{display:flex;gap:5px;justify-content:center;padding:16px;}.dot{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:b 1.1s ease-in-out infinite;}.dot:nth-child(2){animation-delay:.18s}.dot:nth-child(3){animation-delay:.36s}@keyframes b{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-7px);opacity:1}}.goods-rec{background:var(--ink2);border:1px solid rgba(212,175,55,0.2);border-radius:14px;padding:10px;margin-bottom:14px;animation:slideUp .3s ease-out;box-shadow:0 2px 8px rgba(0,0,0,0.06);}@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}.goods-rec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}.goods-rec-title{font-size:11px;font-weight:900;color:var(--gold);}.goods-rec-see-all{font-size:11px;color:#B8942E;cursor:pointer;font-weight:700;}.goods-rec-sub{font-size:10px;color:var(--mist);margin-bottom:12px;line-height:1.5;}.goods-rec-scroll{display:flex;gap:9px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}.goods-rec-scroll::-webkit-scrollbar{display:none;}.goods-mini-card{flex-shrink:0;width:76px;background:var(--ink3);border-radius:13px;overflow:hidden;border:1px solid rgba(212,175,55,0.2);cursor:pointer;transition:all .2s;}.goods-mini-card:active{transform:scale(0.96);}.goods-mini-img{height:52px;display:flex;align-items:center;justify-content:center;font-size:22px;}.goods-mini-info{padding:5px 6px;}.goods-mini-name{font-size:8px;font-weight:700;margin-bottom:2px;line-height:1.3;color:var(--white);}.goods-mini-price{font-size:9px;font-weight:900;color:#B8942E;}.goods-mini-add{width:100%;padding:3px;border:none;background:rgba(212,175,55,0.15);color:var(--gold);font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;border-top:1px solid rgba(212,175,55,0.25);}.goods-mini-add:hover{background:rgba(212,175,55,0.25);}.pay-done-ov{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:300;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px);animation:fi .2s;}.pay-done-md{background:var(--ink2);border-radius:24px 24px 0 0;padding:24px 20px 44px;width:100%;max-width:430px;border-top:2px solid rgba(212,175,55,0.2);animation:su .25s ease-out;max-height:88dvh;overflow-y:auto;}.pdc-icon{font-size:52px;text-align:center;margin-bottom:12px;animation:pop .35s ease-out;}.pdc-title{font-family:'Noto Serif KR','Batang',serif;font-size:20px;font-weight:900;text-align:center;margin-bottom:4px;}.pdc-sub{font-size:12px;color:var(--mist);text-align:center;margin-bottom:20px;line-height:1.6;}.pdc-section-title{font-size:12px;font-weight:900;color:var(--gold);margin-bottom:10px;display:flex;align-items:center;gap:6px;}.pdc-section-title::after{content:'';flex:1;height:1px;background:rgba(212,175,55,0.15);}.pdc-goods-row{display:flex;gap:9px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}.pdc-goods-row::-webkit-scrollbar{display:none;}.pdc-goods-item{flex-shrink:0;width:110px;background:var(--ink3);border-radius:14px;overflow:hidden;border:1px solid rgba(212,175,55,0.12);cursor:pointer;transition:all .2s;}.pdc-goods-item:active{transform:scale(0.96);}.pdc-goods-img{height:80px;display:flex;align-items:center;justify-content:center;font-size:32px;}.pdc-goods-info{padding:8px 9px;}.pdc-goods-name{font-size:10px;font-weight:700;margin-bottom:3px;line-height:1.35;}.pdc-goods-price{font-size:12px;font-weight:900;color:var(--gold);}.pdc-reason{background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.12);border-radius:12px;padding:11px 13px;margin:12px 0;font-size:11px;color:var(--mist);line-height:1.6;}.pdc-reason strong{color:var(--gold2);}.custom-banner{margin:0 18px 12px;background:linear-gradient(135deg,rgba(212,175,55,0.1),rgba(155,143,212,0.07));border:1px solid rgba(212,175,55,0.18);border-radius:16px;padding:14px 16px;cursor:pointer;transition:all .2s;}.custom-banner:active{transform:scale(0.98);}.cb-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}.cb-title{font-size:12px;font-weight:900;color:var(--gold);}.cb-badge{font-size:9px;font-weight:700;background:rgba(212,175,55,0.15);color:var(--gold2);padding:2px 8px;border-radius:10px;border:1px solid rgba(212,175,55,0.25);}.cb-tags{display:flex;gap:6px;flex-wrap:wrap;}.hero{padding:22px 18px 18px;position:relative;overflow:hidden;background-image:url('/img/gemini (3)_2.png');background-size:95%;background-repeat:no-repeat;background-position:top right;}.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% -10%,rgba(212,175,55,0.13) 0%,transparent 65%);pointer-events:none;}.hero-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;background:rgba(212,175,55,0.1);border:1px solid rgba(212,175,55,0.22);font-size:11px;color:var(--gold);margin-bottom:12px;}.hero-title{font-family:'Noto Serif KR','Batang',serif;font-size:24px;font-weight:900;line-height:1.3;margin-bottom:8px;letter-spacing:-0.5px;}.hero-title em{font-style:normal;color:var(--gold);}.hero-sub{font-size:12px;color:var(--mist);line-height:1.7;margin-bottom:16px;font-weight:300;}.stats-row{display:flex;background:var(--ink2);border-radius:14px;border:1px solid rgba(255,255,255,0.05);overflow:hidden;margin-bottom:16px;}.stat{flex:1;text-align:center;padding:12px 0;}.stat:not(:last-child){border-right:1px solid rgba(255,255,255,0.05);}.stat-num{font-size:16px;font-weight:900;color:var(--gold2);}.stat-lbl{font-size:9px;color:var(--mist);margin-top:2px;}.today-sec{padding:0 18px 4px;}.today-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;}.lucky-bar{display:flex;align-items:center;gap:10px;background:var(--ink2);border:1px solid rgba(255,255,255,0.05);border-radius:14px;padding:11px 14px;margin-bottom:9px;}.lucky-color-chip{width:28px;height:28px;border-radius:8px;flex-shrink:0;border:2px solid rgba(255,255,255,0.15);}.today-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px;}.td-card{border-radius:16px;padding:14px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,0.06);}.td-card:active{transform:scale(0.97);}.td-card.wide{grid-column:1/-1;display:flex;align-items:center;gap:14px;}.td-free-badge{position:absolute;top:8px;right:8px;font-size:9px;font-weight:700;background:rgba(95,196,158,0.2);color:var(--jade);padding:2px 7px;border-radius:10px;border:1px solid rgba(95,196,158,0.3);}.td-icon{font-size:26px;margin-bottom:7px;}.td-card.wide .td-icon{font-size:32px;margin-bottom:0;flex-shrink:0;}.td-name{font-size:12px;font-weight:700;margin-bottom:2px;}.td-value{font-size:11px;color:var(--mist);margin-top:3px;line-height:1.5;}.quote-card{background:linear-gradient(135deg,rgba(155,143,212,0.1),rgba(212,175,55,0.06));border:1px solid rgba(155,143,212,0.18);border-radius:16px;padding:14px 16px;margin-bottom:9px;cursor:pointer;}.gw-main{margin:0 18px 4px;border-radius:20px;overflow:hidden;cursor:pointer;transition:all .2s;}.gw-main:active{transform:scale(0.98);}.gw-bg{background:linear-gradient(135deg,rgba(139,41,41,0.14),rgba(212,175,55,0.09));border:1px solid rgba(139,41,41,0.22);border-radius:20px;padding:18px 16px;}.gw-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}.gw-label{font-size:11px;font-weight:700;color:var(--blush);}.gw-badge{font-size:9px;font-weight:700;background:rgba(139,41,41,0.2);color:var(--blush);padding:3px 9px;border-radius:20px;border:1px solid rgba(139,41,41,0.3);}.gw-title{font-size:17px;font-weight:900;margin-bottom:5px;}.gw-desc{font-size:11px;color:var(--mist);line-height:1.6;margin-bottom:12px;}.gw-examples{display:flex;gap:6px;flex-wrap:wrap;}.gw-ex{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;background:rgba(139,41,41,0.1);color:var(--blush);border:1px solid rgba(139,41,41,0.18);}.sec{padding:14px 18px 4px;}.sec-t{font-size:14px;font-weight:900;margin-bottom:11px;display:flex;align-items:center;gap:7px;}.sec-t::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(212,175,55,0.15),transparent);}.divider{height:8px;background:var(--ink);}.svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:0 18px 4px;}.svc-card{background:var(--ink2);border:1px solid rgba(255,255,255,0.05);border-radius:var(--r);padding:15px 13px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}.svc-card:active{transform:scale(0.97);}.svc-card.coming{opacity:0.55;cursor:default;}.svc-ic{font-size:26px;margin-bottom:7px;}.svc-name{font-size:12px;font-weight:700;margin-bottom:2px;}.svc-desc{font-size:10px;color:var(--mist);line-height:1.5;}.svc-price{display:inline-block;margin-top:6px;font-size:11px;font-weight:700;color:var(--gold);background:rgba(212,175,55,0.1);padding:2px 8px;border-radius:20px;}.svc-price.free{color:var(--gold);background:rgba(212,175,55,0.1);}.svc-price.soon{color:var(--violet);background:rgba(155,143,212,0.1);}.svc-bdg{position:absolute;top:8px;right:8px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;}.bdg-hot{background:rgba(220,53,69,0.18);color:#DC3545;border:1px solid rgba(220,53,69,0.28);}.bdg-new{background:rgba(255,193,7,0.18);color:#FFC107;border:1px solid rgba(255,193,7,0.28);}.bdg-free{background:rgba(95,196,158,0.15);color:#5FC49E;border:1px solid rgba(95,196,158,0.25);}.bdg-premium{background:rgba(74,144,217,0.15);color:#4A90D9;border:1px solid rgba(74,144,217,0.25);}.bdg-best{background:rgba(255,140,0,0.18);color:#FF8C00;border:1px solid rgba(255,140,0,0.28);}.bdg-event{background:rgba(199,21,133,0.18);color:#C71585;border:1px solid rgba(199,21,133,0.28);}.bdg-chungi{background:rgba(139,92,246,0.15);color:#8B5CF6;border:1px solid rgba(139,92,246,0.25);}.bdg-paid{background:rgba(150,150,150,0.15);color:#888;border:1px solid rgba(150,150,150,0.25);}.bdg-none{display:none;}.bdg-cool{background:rgba(0,180,216,0.15);color:#00B4D8;border:1px solid rgba(0,180,216,0.25);}.bdg-pick{background:rgba(255,107,107,0.15);color:#ff6b6b;border:1px solid rgba(255,107,107,0.25);}.bdg-recommend{background:rgba(46,196,134,0.15);color:#2EC486;border:1px solid rgba(46,196,134,0.25);}.bdg-fact{background:rgba(0,0,0,0.8);color:#F4F1E1;border:1px solid rgba(255,255,255,0.2);}.bdg-soon{background:rgba(155,143,212,0.15);color:var(--violet);border:1px solid rgba(155,143,212,0.25);}.bdg-firstfree{background:rgba(6,182,212,0.15);color:#06B6D4;border:1px solid rgba(6,182,212,0.25);}.rv-wrap{overflow:hidden;margin-bottom:4px;}.rv-track{display:flex;gap:9px;animation:scroll 24s linear infinite;width:max-content;}@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}.rv-card{flex-shrink:0;width:185px;background:var(--ink2);border:1px solid rgba(255,255,255,0.05);border-radius:13px;padding:12px 13px;}.rv-stars{color:var(--gold);font-size:10px;margin-bottom:4px;}.rv-text{font-size:11px;color:var(--mist);line-height:1.6;}.rv-author{font-size:10px;color:rgba(168,196,184,0.32);margin-top:5px;}.ddi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}.ddi-item{background:var(--ink3);border-radius:14px;padding:11px 6px;text-align:center;border:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:all .18s;}.ddi-item.sel{border-color:rgba(212,175,55,0.45);background:rgba(212,175,55,0.08);}.zodiac-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}.zc-item{background:var(--ink3);border-radius:14px;padding:11px 6px;text-align:center;border:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:all .18s;}.zc-item.sel{border-color:rgba(155,143,212,0.5);background:rgba(155,143,212,0.08);}.blood-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}.blood-item{background:var(--ink3);border-radius:16px;padding:16px 8px;text-align:center;border:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:all .18s;}.blood-item.sel{border-color:rgba(139,41,41,0.5);background:rgba(139,41,41,0.08);}.goods-cat-scroll{display:flex;gap:7px;padding:0 18px 12px;overflow-x:auto;scrollbar-width:none;position:relative;mask-image:linear-gradient(to right,transparent 0px,black 14px,black calc(100% - 30px),transparent 100%);-webkit-mask-image:linear-gradient(to right,transparent 0px,black 14px,black calc(100% - 30px),transparent 100%);}.goods-cat-scroll::-webkit-scrollbar{display:none;}.drag-scroll{}.drag-scroll:active{cursor:grabbing;}.gcat-btn{flex-shrink:0;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid rgba(255,255,255,0.07);background:transparent;color:var(--mist);cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .18s;}.gcat-btn.on{background:rgba(212,175,55,0.12);color:var(--gold);border-color:rgba(212,175,55,0.28);}.goods-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:0 14px 24px;}.gc{background:var(--ink2);border-radius:var(--r);overflow:hidden;border:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:all .2s;}.gc:active{transform:scale(0.97);}.gc-img{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:32px;position:relative;}.gc-badge-tl{position:absolute;top:7px;left:7px;font-size:9px;font-weight:900;padding:2px 7px;border-radius:10px;}.gc-badge-tr{position:absolute;top:7px;right:7px;background:rgba(212,175,55,0.9);color:var(--ink);font-size:9px;font-weight:900;padding:2px 7px;border-radius:10px;}.gc-info{padding:7px 8px;}.gc-cat-lbl{font-size:8px;color:var(--mist);font-weight:700;margin-bottom:2px;}.gc-name{font-size:10px;font-weight:700;margin-bottom:4px;line-height:1.35;}.gc-price{font-size:11px;font-weight:900;color:var(--gold);}.gc-orig{font-size:10px;color:rgba(168,196,184,0.32);text-decoration:line-through;margin-left:4px;}.my-top{padding:24px 18px 14px;text-align:center;}.my-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,rgba(212,175,55,0.2),rgba(139,41,41,0.2));border:2px solid rgba(212,175,55,0.28);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px;}.my-name{font-size:17px;font-weight:900;margin-bottom:3px;}.my-email{font-size:12px;color:var(--mist);}.my-stats{display:flex;background:var(--ink2);border-radius:14px;margin:12px 18px;border:1px solid rgba(255,255,255,0.05);}.my-stat{flex:1;text-align:center;padding:12px 0;}.my-stat:not(:last-child){border-right:1px solid rgba(255,255,255,0.05);}.my-stat-num{font-size:15px;font-weight:900;color:var(--gold2);}.my-stat-lbl{font-size:10px;color:var(--mist);margin-top:2px;}.my-menu{padding:0 18px;}.my-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;}.my-row-l{display:flex;align-items:center;gap:10px;font-size:13px;}.my-row-r{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mist);}.my-badge{background:rgba(139,41,41,0.15);color:var(--blush);font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;}.auth-div{display:flex;align-items:center;gap:10px;margin:14px 0;color:rgba(168,196,184,0.28);font-size:11px;}.auth-div::before,.auth-div::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.05);}.social-btn{width:100%;padding:13px;border-radius:12px;border:1px solid rgba(255,255,255,0.07);background:var(--ink3);color:var(--white);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:8px;}.kakao{background:#FAE100;color:#3B1B1B;border-color:#FAE100;}.google{background:#fff;color:#333;border-color:#ddd;}.person-card{display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--ink3);border-radius:13px;border:1px solid rgba(255,255,255,0.06);margin-bottom:7px;cursor:pointer;}.person-avatar{width:38px;height:38px;border-radius:50%;background:var(--ink4);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}.tarot-card{width:120px;height:190px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid rgba(212,175,55,0.3);background:linear-gradient(135deg,var(--ink3),var(--ink2));cursor:pointer;transition:all .4s;flex-shrink:0;}.tarot-card.flipped{background:linear-gradient(135deg,rgba(155,143,212,0.2),rgba(212,175,55,0.15));}.lotto-balls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0;}.lotto-ball{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;flex-shrink:0;}.ytype-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}.ytype-item{background:var(--ink3);border-radius:12px;padding:10px 6px;text-align:center;border:1px solid rgba(255,255,255,0.05);}@keyframes ballPop{from{transform:scale(0.3);opacity:0}to{transform:scale(1);opacity:1}}@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.15);opacity:0.7}}@keyframes laserScan{0%{top:0%;opacity:0}20%{opacity:1}80%{opacity:1}100%{top:100%;opacity:0}}@keyframes faceStylize{0%,20%{opacity:0;transform:translate(-50%,-50%) scale(0.9)}50%,80%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0}}`
 
+// ━━━ 타로 핵심 메시지 풀 (v 2026-08-14) ━━━
+// 문제: "핵심 메시지"가 카드가 아니라 판정(yes/no/maybe · 정/역방향)에만 붙어 있어서
+//       서로 다른 카드를 뽑아도 결론 한 줄이 글자까지 똑같이 나왔다.
+//       (예스노 3장 전부 "흐름을 따라 나아가라" / 오늘의타로 2장 전부 "잠시 멈추고 내면을 다지라")
+// 해결: 판정별 풀에서 **카드 id로 고정 선택**한다. 카드가 다르면 문장이 다르고,
+//       같은 카드는 언제 뽑아도 같은 문장 → 재분석 흔들림 없음(FIXED 원칙 유지).
+const _TAROT_KEYMSG:Record<string,string[]>={
+  yes:["흐름을 따라 나아가라","망설임을 접고 먼저 손을 내밀라","지금 이 타이밍을 잡으라","마음이 기우는 쪽을 믿으라","한 걸음 크게 내디디라","준비된 것을 꺼내 보이라","문이 열렸으니 들어서라","속도를 올려도 좋다","맺으려던 것을 매듭지으라","네 편이 되어줄 사람에게 기대라","작게 시작해서 넓혀가라","눈앞의 기회를 흘려보내지 말라"],
+  no:["잠시 멈추고 돌아보라","붙잡고 있던 것을 놓아주라","한 발 물러서서 판을 다시 보라","서두름이 화를 부르니 늦추라","지금은 지키는 것이 이기는 것이다","감정이 가라앉은 뒤에 결정하라","무리한 확장을 접고 안을 단단히 하라","거절도 답이 될 수 있음을 기억하라","끝난 것을 인정하고 정리하라","혼자 짊어지지 말고 덜어내라","조건이 갖춰질 때까지 기다리라","같은 방식을 반복하지 말라"],
+  maybe:["균형을 잡고 천천히 가라","답을 재촉하지 말고 지켜보라","두 갈래 중 덜 화려한 쪽을 살펴보라","머리보다 직관을 먼저 들으라","질문을 한 번 더 다듬으라","가진 정보로는 이르니 하나만 더 확인하라","흔들리는 마음 자체가 신호임을 보라","서로 다른 두 가지를 함께 품으라","시간에게 판단을 맡기라","작은 시험부터 해보고 정하라","주변의 소리를 참고하되 휘둘리지 말라","지금은 고르는 때가 아니라 익히는 때다"],
+};
+// 예스노 "카드의 답변" 마무리 2문장도 판정당 한 벌 고정이라 YES 카드끼리 결론이 똑같았다. 같은 방식으로 흩뿌린다.
+const _TAROT_TAIL:Record<string,string[]>={
+  yes:["마음이 향하는 방향대로 한 걸음 내디뎌도 좋은 타이밍이에요. 머뭇거리지 말고 행동으로 옮겨보세요.","재고 따지느라 미룬 그 일, 오늘 먼저 말을 꺼내보세요. 반응이 생각보다 좋을 거예요.","완벽해지길 기다리지 말고 지금 가진 것으로 시작하세요. 하면서 다듬으면 됩니다.","도와줄 사람이 가까이 있어요. 혼자 끌어안지 말고 한 명에게만 먼저 얘기해보세요.","벌여둔 것 중 하나를 매듭지으면 나머지도 같이 풀려요. 제일 가까운 것부터 끝내세요.","기회처럼 보이는 게 실제로 기회예요. 재확인만 하고 잡으세요."],
+  no:["지금은 잠시 멈추고 흐름을 살필 때예요. 조급함을 내려놓으면 다른 길이 보일 거예요.","밀어붙이면 손해가 커지는 자리예요. 오늘은 지키는 쪽을 택하세요.","감정이 올라온 상태로 답하지 마세요. 하루만 묵혀도 판단이 달라집니다.","놓지 못한 게 발목을 잡고 있어요. 정리부터 하면 길이 열려요.","조건이 아직 안 맞았어요. 억지로 맞추려 들면 더 어긋납니다.","같은 방식으로 한 번 더 시도하는 건 권하지 않아요. 방법을 바꿔야 할 때예요."],
+  maybe:["확실한 답은 아직. 마음의 중심을 잡고 천천히 흐름을 따라가세요. 시간이 답을 알려줄 거예요.","질문이 조금 넓어요. 정말 궁금한 한 가지로 좁히면 답이 또렷해집니다.","정보 하나가 비어 있어요. 그것만 확인되면 스스로 답을 알게 될 거예요.","둘 중 하나를 고르는 문제가 아닐 수 있어요. 둘 다 품는 길을 살펴보세요.","작게 시험해보고 정하세요. 전부 걸지 않아도 되는 일이에요.","망설임 자체가 답의 일부예요. 무엇이 걸리는지 먼저 적어보세요."],
+};
+// 카드 id로 고정 선택 (id 그대로 쓰면 인접 카드가 같은 문장을 받으므로 소수배로 흩뿌린다)
+function _tarotKeyMsg(cardId:number,verdict:"yes"|"no"|"maybe"){
+  const pool=_TAROT_KEYMSG[verdict]||_TAROT_KEYMSG.maybe;
+  return pool[Math.abs((cardId||0)*7+3)%pool.length];
+}
+function _tarotTail(cardId:number,verdict:"yes"|"no"|"maybe"){
+  const pool=_TAROT_TAIL[verdict]||_TAROT_TAIL.maybe;
+  return pool[Math.abs((cardId||0)*5+1)%pool.length];
+}
+// 메이저 아르카나 22장이 "인생의 큰 흐름을 짚어주는 카드" 한 문장으로 전부 동일했던 것 보완.
+// 메이저의 3단 여정(0~7 출발 / 8~14 시련·전환 / 15~21 각성·완성) 구분은 타로 통설이라 창작이 아니다.
+function _majorStageDesc(id:number){
+  if(id<=7)  return "메이저 아르카나 22장 중 여정의 문을 여는 앞자락(0~7)에 놓인 카드로, 시작과 선택의 결을 짚어주는 카드";
+  if(id<=14) return "메이저 아르카나 22장 중 시련과 전환을 지나는 가운데 토막(8~14)에 놓인 카드로, 버티고 방향을 트는 결을 짚어주는 카드";
+  return "메이저 아르카나 22장 중 각성과 완성으로 향하는 끝자락(15~21)에 놓인 카드로, 매듭과 도약의 결을 짚어주는 카드";
+}
+
+// ━━━ 오늘의 타로 사전질문(focus) 반영 데이터 (v 2026-08-14) ━━━
+// 문제: "오늘 카드에서 가장 궁금한 건?"을 6개 다 골라도, 1개만 골라도 결과 텍스트가 글자까지 같았다.
+//       onPreqsDone이 답을 기록소 ctx에만 넣고 렌더는 아예 안 읽고 있었음.
+// 해결: 고른 항목마다 한 줄씩 뽑아준다. 문장은 (판정 × 카드 id)로 고정 선택 → 재분석해도 안 흔들림.
+const _TAROT_FOCUS_EMOJI:Record<string,string>={"오늘 재물·금전":"💰","오늘 인연·관계":"❤️","오늘 일·결정":"💼","오늘 컨디션·건강":"🌿","중요한 선택 앞에서":"🎯","오늘의 종합 흐름":"🌟"};
+const _TAROT_FOCUS:Record<string,Record<string,string[]>>={
+  "오늘 재물·금전":{
+    yes:["들어올 자리가 열려 있어요. 미뤄둔 정산이나 청구를 오늘 처리하세요.","작은 수입이 생길 수 있어요. 놓치기 쉬운 환급·정산부터 챙기세요.","돈 이야기를 먼저 꺼내기 좋은 날이에요. 조건을 분명히 말해도 통합니다."],
+    no:["지출이 새는 자리가 있어요. 오늘 큰 결제는 하루만 미루세요.","수익보다 방어가 유리한 날이에요. 새 투자보다 기존 정리가 낫습니다.","싸 보이는 게 제일 비싼 날이에요. 충동 구매를 조심하세요."],
+    maybe:["금액보다 조건을 다시 보세요. 숫자는 맞는데 기간이 어긋날 수 있어요.","확정된 돈과 예상하는 돈을 나눠 적어보세요. 판단이 쉬워집니다.","한 곳에서 답이 오면 그때 움직이세요. 지금은 견적만 모을 때."],
+  },
+  "오늘 인연·관계":{
+    yes:["먼저 연락해도 좋은 날이에요. 짧은 안부 한 줄이 흐름을 엽니다.","오래 미룬 말을 꺼내기 좋아요. 상대도 기다리고 있었을 거예요.","새로 만나는 자리에서 좋은 인상이 남아요. 자연스럽게 두세요."],
+    no:["오늘 오간 말은 평소보다 세게 박혀요. 확인 없이 단정하지 마세요.","서운함을 오늘 꺼내면 커집니다. 하루만 담아두세요.","거리를 좁히려 애쓸수록 밀려나요. 잠시 여백을 두세요."],
+    maybe:["상대의 침묵이 거절은 아니에요. 한 번만 더 기다려보세요.","말보다 상황이 엉킨 자리예요. 사실 관계부터 맞춰보세요.","기대치를 서로 다르게 잡고 있어요. 원하는 걸 먼저 말해보세요."],
+  },
+  "오늘 일·결정":{
+    yes:["결재·제출·발송을 오늘 끝내세요. 통과가 수월한 흐름이에요.","맡겨진 것보다 반 발 더 나가도 좋아요. 그 반 발이 평가로 돌아옵니다.","보고나 제안을 먼저 여세요. 주도권을 잡기 좋은 날이에요."],
+    no:["오늘 확정한 건 다시 뒤집힐 수 있어요. 초안까지만 만들어 두세요.","급한 요청일수록 한 번 더 확인하세요. 놓친 조건이 있습니다.","동시에 벌이면 다 늦어져요. 하나만 붙잡으세요."],
+    maybe:["결정 자체보다 기한을 먼저 정하세요. 언제까지인지가 답을 만듭니다.","두 안 다 살아 있어요. 되돌릴 수 있는 쪽부터 해보세요.","한 사람의 확인이 빠져 있어요. 그 답을 듣고 정하세요."],
+  },
+  "오늘 컨디션·건강":{
+    yes:["몸이 잘 따라주는 날이에요. 미뤄둔 운동이나 검진을 오늘 하세요.","회복이 빠른 흐름이에요. 잘 먹고 잘 자면 그대로 올라옵니다.","기운이 도는 날이니 바깥 공기를 쐬어보세요. 머리가 같이 맑아져요."],
+    no:["무리하면 바로 표가 나는 날이에요. 일정 하나를 덜어내세요.","목·어깨·눈처럼 늘 쓰는 곳이 먼저 신호를 보내요. 중간중간 끊어 쉬세요.","카페인과 늦은 끼니를 줄이세요. 오늘은 채우는 것보다 비우는 게 나아요."],
+    maybe:["피로가 몸이 아니라 마음에서 온 걸 수 있어요. 원인을 나눠 보세요.","좋았다 나빴다 하는 날이에요. 컨디션 좋을 때 중요한 걸 몰아 하세요.","작은 증상이 반복되면 기록해두세요. 패턴이 보이면 답도 보입니다."],
+  },
+  "중요한 선택 앞에서":{
+    yes:["고민을 끝낼 재료는 이미 모였어요. 오늘 정하고 통보하세요.","마음이 먼저 기운 쪽이 맞아요. 근거는 나중에 따라옵니다.","선택을 미룬 비용이 더 커지는 자리예요. 결정하는 편이 낫습니다."],
+    no:["오늘 고르면 아쉬움이 남아요. 마감이 아니라면 하루만 더 두세요.","남이 밀어붙이는 속도에 맞추지 마세요. 그 속도가 함정이에요.","지금 보이는 두 갈래 말고 세 번째 길이 있어요. 서두르지 마세요."],
+    maybe:["무엇을 얻을지보다 무엇을 못 버리는지를 적어보세요. 거기 답이 있어요.","되돌릴 수 있는 선택과 없는 선택을 나누세요. 순서가 달라집니다.","조건 하나만 바뀌면 답이 뒤집히는 상태예요. 그 조건부터 확인하세요."],
+  },
+  "오늘의 종합 흐름":{
+    yes:["전체적으로 밀어주는 날이에요. 벌여둔 것 중 하나를 매듭지으세요.","막히던 자리가 풀리는 흐름이에요. 다시 두드려볼 만합니다.","오늘 한 선택이 다음 주까지 이어져요. 방향만 맞으면 됩니다."],
+    no:["오늘은 넓히는 날이 아니라 정리하는 날이에요. 벌인 것부터 줄이세요.","흐름을 거스르면 배로 힘들어요. 속도를 낮추면 손해가 줄어요.","새로 시작한 일은 오늘 판단하지 마세요. 지금 보이는 게 전부가 아니에요."],
+    maybe:["오르내림이 있는 날이에요. 기복 자체를 문제 삼지 마세요.","좋은 일과 성가신 일이 같이 옵니다. 순서만 정하면 충분해요.","크게 움직이지 않아도 되는 날이에요. 자리를 지키는 것도 전략입니다."],
+  },
+};
+function _tarotFocusLine(label:string,verdict:"yes"|"no"|"maybe",cardId:number,i:number){
+  const grp=_TAROT_FOCUS[label]||_TAROT_FOCUS["오늘의 종합 흐름"];
+  const pool=grp[verdict]||grp.maybe;
+  return pool[Math.abs((cardId||0)*3+i)%pool.length];
+}
+
 // ━━━ 타로카드 78장 데이터 ━━━
 const TAROT_78:any[] = [
   // 메이저 아르카나 (22장)
@@ -1152,7 +1229,11 @@ function PhotoMergeLoader({duration=15000,leftSrc,rightSrc,leftLabel,rightLabel,
   );
 }
 
-function ResultActions({isLoggedIn, onLoginRequest, onShare, captureId}:{isLoggedIn?:boolean,onLoginRequest?:()=>void,onShare?:()=>void,captureId?:string}){
+// v(2026-08-14): dailyReset — 1일 1회 무료 콘텐츠 6종만 넘기는 갱신 안내.
+// 안 넘기면 아무것도 안 그리므로 나머지 콘텐츠는 영향 없음(기본 동작 불변).
+// 대상: 오늘의타로 · 예스노타로 · 이달의운세 · 오늘의명언 · 행운로또 · 궁합연예인
+// 제외: 오늘의운세(1일 2회) / 띠·별·혈액형(무제한) / 12수호신(공지) / 관상짤(첫 1회 무료 후 유료)
+function ResultActions({isLoggedIn, onLoginRequest, onShare, captureId, dailyReset}:{isLoggedIn?:boolean,onLoginRequest?:()=>void,onShare?:()=>void,captureId?:string,dailyReset?:string}){
   const[capturing,setCapturing]=useState(false);
   const rootRef=useRef<HTMLDivElement>(null);
   // 캡처 대상 element 결정 — captureId 우선, fallback: 가장 가까운 .md 모달 본문
@@ -1320,6 +1401,7 @@ function ResultActions({isLoggedIn, onLoginRequest, onShare, captureId}:{isLogge
         </div>
       </div>
       <div style={{fontSize:10,color:"var(--mist)",textAlign:"center",padding:"6px 10px",background:"rgba(212,175,55,0.06)",borderRadius:8,border:"1px solid rgba(212,175,55,0.12)"}}>📋 이 결과는 <strong style={{color:"var(--gold)"}}>기록소</strong>에서 언제든 다시 볼 수 있어요</div>
+      {dailyReset&&<div style={{fontSize:10,color:"var(--mist)",textAlign:"center",padding:"6px 10px",marginTop:6,background:"rgba(255,255,255,0.04)",borderRadius:8,border:"1px solid rgba(255,255,255,0.08)"}}>🌙 {dailyReset}</div>}
     </div>
   );
 }
@@ -3665,7 +3747,7 @@ function PawdongModal({onClose, cart, setCart, onGoShop, addHistory, isLoggedIn,
           <div style={{marginBottom:10}}>
             <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
             <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-              {[{ic:"🍼",name:"아기 관상",price:"980원",sid:"baby_gwansang"},{ic:"💑",name:"커플 궁합",price:"1,980원",sid:"gwansang_compat"},{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"},{ic:"🐯",name:"띠별 운세",price:"무료",sid:"ddi"},{ic:"🌙",name:"꿈 해몽",price:"380원",sid:"dream"},{ic:"👑",name:"조선초상화",price:"1,980원",sid:"joseon_portrait"}].map(cr=>(
+              {[{ic:"🍼",name:"아기 관상",price:"980원",sid:"baby_gwansang"},{ic:"💑",name:"커플 궁합",price:"1,980원",sid:"gwansang_compat"},{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"},{ic:"🐯",name:"띠별 운세",price:"무료",sid:"ddi"},{ic:"💭",name:"꿈 해몽",price:"380원",sid:"dream"},{ic:"👑",name:"조선초상화",price:"1,980원",sid:"joseon_portrait"}].map(cr=>(
                 <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",position:"relative",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(cr.sid,cr.name,cr.ic,cr.price)}>
                   <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
                   <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>
@@ -5399,7 +5481,7 @@ function DoljabiSimModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,on
         <div style={{marginBottom:10}}>
           <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
           <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-            {[{ic:"🍼",name:"아기 관상",price:"980원",sid:"baby_gwansang"},{ic:"👶",name:"2세 얼굴",price:"4,800원",sid:"baby_face"},{ic:"🌙",name:"태몽 해몽",price:"980원",sid:"dream"},{ic:"☯️",name:"사주 풀이",price:"980원",sid:"saju"},{ic:"🌊",name:"파동 성명학",price:"4,800원",sid:"pawdong"},{ic:"📝",name:"이름 풀이",price:"980원",sid:"namereading"}].map(cr=>(
+            {[{ic:"🍼",name:"아기 관상",price:"980원",sid:"baby_gwansang"},{ic:"👶",name:"2세 얼굴",price:"4,800원",sid:"baby_face"},{ic:"🤰",name:"태몽 해몽",price:"980원",sid:"dream"},{ic:"☯️",name:"사주 풀이",price:"980원",sid:"saju"},{ic:"🌊",name:"파동 성명학",price:"4,800원",sid:"pawdong"},{ic:"📝",name:"이름 풀이",price:"980원",sid:"namereading"}].map(cr=>(
               <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(cr.sid,cr.name,cr.ic,cr.price)}>
                 <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
                 <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>
@@ -9076,7 +9158,7 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
             {(svc.id==="baby_face"?[
               {ic:"🍼",q:"낳은 후 관상은?",name:"우리 아기 관상 →",bc:"rgba(255,183,77,0.25)",sid:"baby_gwansang"},
               {ic:"👪",q:"엄마아빠랑 궁합은?",name:"부모-자식 궁합 →",bc:"rgba(212,175,55,0.3)",sid:"parent_child_compat"},
-              {ic:"🌙",q:"태몽은 뭐였어요?",name:"태몽 해몽 →",bc:"rgba(199,21,133,0.25)",sid:"dream"},
+              {ic:"🤰",q:"태몽은 뭐였어요?",name:"태몽 해몽 →",bc:"rgba(199,21,133,0.25)",sid:"dream"},
               {ic:"📝",q:"이 이름 괜찮을까?",name:"이름 풀이 →",bc:"rgba(95,196,158,0.3)",sid:"namereading"},
             ]:[
               {ic:"🪞",q:"내 관상은?",name:"내 관상보기 →",bc:"rgba(212,175,55,0.3)",sid:"gwansang_full"},
@@ -9091,7 +9173,8 @@ function SvcModal({svc, onClose, isLoggedIn, cart, setCart, onGoShop, addHistory
               </div>
             ))}
           </div>
-          <ResultActions isLoggedIn={isLoggedIn} onLoginRequest={() => {}} onShare={()=>{}}/>
+          {/* v(2026-08-14): SvcModal은 여러 콘텐츠 공용 → 궁합연예인(1일 1회)일 때만 갱신 안내 */}
+          <ResultActions isLoggedIn={isLoggedIn} onLoginRequest={() => {}} onShare={()=>{}} dailyReset={svc.id==="celeb_compat"?"내일 자정이 지나면 다시 볼 수 있어요":undefined}/>
           {/* 3. 이것도 해볼래요 */}
           <div style={{marginBottom:10}}>
             <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
@@ -9322,7 +9405,7 @@ function DdiModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLoginRe
               {/* v432: 검사 정보 — 인물 등록 시 이름 + 띠, 미등록 시 띠만 */}
               <div style={{fontSize:10,color:"#888",fontWeight:600,marginTop:6,lineHeight:1.6}}>
                 <div>👤 {selectedPerson?.name?`${selectedPerson.name} (${d.id}띠 ${d.emoji})`:`${d.id}띠 ${d.emoji}`}</div>
-                <div style={{color:"#aaa"}}>{formatTestDateLine(preloadResult?._testDate,{label:"검사",useDateOnly:true})}</div>
+                <div style={{color:"#aaa"}}>{formatTestDateLine(preloadResult?._testDate,{useDateOnly:true})}</div>
               </div>
             </div>
             {/* v352: 종합 점수 — 배경 강조 컬러 제거, 화이트 + 박스 테두리로 강조 */}
@@ -9610,7 +9693,7 @@ function DdiModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLoginRe
           <div style={{marginBottom:10}}>
             <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
             <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-              {[{ic:"🪞",name:"내 관상보기",price:"980원",sid:"gwansang_full"},{ic:"🍼",name:"아기 관상",price:"980원",sid:"baby_gwansang"},{ic:"💑",name:"커플 궁합",price:"1,980원",sid:"gwansang_compat"},{ic:"🌊",name:"파동성명학",price:"4,800원",sid:"pawdong"},{ic:"🌙",name:"꿈 해몽",price:"380원",sid:"dream"},{ic:"👑",name:"조선초상화",price:"1,980원",sid:"joseon_portrait"}].map(cr=>(
+              {[{ic:"🪞",name:"내 관상보기",price:"980원",sid:"gwansang_full"},{ic:"🍼",name:"아기 관상",price:"980원",sid:"baby_gwansang"},{ic:"💑",name:"커플 궁합",price:"1,980원",sid:"gwansang_compat"},{ic:"🌊",name:"파동성명학",price:"4,800원",sid:"pawdong"},{ic:"💭",name:"꿈 해몽",price:"380원",sid:"dream"},{ic:"👑",name:"조선초상화",price:"1,980원",sid:"joseon_portrait"}].map(cr=>(
                 <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",position:"relative",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(cr.sid,cr.name,cr.ic,cr.price)}>
                   <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
                   <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>
@@ -9804,7 +9887,7 @@ function ZodiacModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLogi
               {/* v432: 검사 정보 — 인물 등록 시 이름 + 별자리, 미등록 시 별자리만 */}
               <div style={{fontSize:10,color:"#888",fontWeight:600,marginTop:6,lineHeight:1.6}}>
                 <div>👤 {selectedPerson?.name?`${selectedPerson.name} (${z.id} ${z.icon})`:`${z.id} ${z.icon}`}</div>
-                <div style={{color:"#aaa"}}>{formatTestDateLine(preloadResult?._testDate,{label:"검사",useDateOnly:true})}</div>
+                <div style={{color:"#aaa"}}>{formatTestDateLine(preloadResult?._testDate,{useDateOnly:true})}</div>
               </div>
             </div>
             {/* v352: 종합 점수 — 배경 강조 컬러 제거, 박스 테두리로 강조 */}
@@ -10110,7 +10193,7 @@ function ZodiacModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLogi
           <div style={{marginBottom:10}}>
             <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
             <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-              {[{ic:"🪞",name:"내 관상보기",price:"980원",sid:"gwansang_full"},{ic:"🍼",name:"아기 관상",price:"980원",sid:"baby_gwansang"},{ic:"💑",name:"커플 궁합",price:"1,980원",sid:"gwansang_compat"},{ic:"🐯",name:"띠별 운세",price:"무료",sid:"ddi"},{ic:"🌊",name:"파동성명학",price:"4,800원",sid:"pawdong"},{ic:"🌙",name:"꿈 해몽",price:"380원",sid:"dream"}].map(cr=>(
+              {[{ic:"🪞",name:"내 관상보기",price:"980원",sid:"gwansang_full"},{ic:"🍼",name:"아기 관상",price:"980원",sid:"baby_gwansang"},{ic:"💑",name:"커플 궁합",price:"1,980원",sid:"gwansang_compat"},{ic:"🐯",name:"띠별 운세",price:"무료",sid:"ddi"},{ic:"🌊",name:"파동성명학",price:"4,800원",sid:"pawdong"},{ic:"💭",name:"꿈 해몽",price:"380원",sid:"dream"}].map(cr=>(
                 <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",position:"relative",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(cr.sid,cr.name,cr.ic,cr.price)}>
                   <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
                   <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>
@@ -10274,7 +10357,7 @@ function BloodModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLogin
               {/* v322: 검사 정보 */}
               <div style={{fontSize:10,color:"#888",fontWeight:600,marginTop:6,lineHeight:1.6}}>
                 <div>👤 {selectedPerson?.name?`${selectedPerson.name} (${b.type}형 🩸)`:`${b.type}형 🩸`}</div>
-                <div style={{color:"#aaa"}}>{formatTestDateLine(preloadResult?._testDate,{label:"검사",useDateOnly:true})}</div>
+                <div style={{color:"#aaa"}}>{formatTestDateLine(preloadResult?._testDate,{useDateOnly:true})}</div>
               </div>
             </div>
             {/* v352: 종합 점수 — 배경 강조 컬러 제거, 박스 테두리로 강조 */}
@@ -11953,7 +12036,7 @@ function BabyGwansangModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:10}}>
             {[
               {ic:"👪",q:"엄마아빠랑 궁합은?",name:"부모-자식 궁합 →",bc:"rgba(212,175,55,0.3)",sid:"parent_child_compat"},
-              {ic:"🌙",q:"태몽은 뭐였어요?",name:"태몽 해몽 →",bc:"rgba(199,21,133,0.25)",sid:"dream"},
+              {ic:"🤰",q:"태몽은 뭐였어요?",name:"태몽 해몽 →",bc:"rgba(199,21,133,0.25)",sid:"dream"},
               {ic:"🎲",q:"돌잡이 뭘 잡을까?",name:"돌잡이 시뮬레이션 →",bc:"rgba(245,200,66,0.3)",sid:"doljabi_sim"},
               {ic:"📝",q:"이 이름 괜찮을까?",name:"이름 풀이 →",bc:"rgba(95,196,158,0.3)",sid:"namereading"},
             ].map(ad=>(
@@ -14054,7 +14137,7 @@ function BabyFaceModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLo
             {[
               {ic:"🍼",q:"낳은 후 관상은?",name:"우리 아기 관상 →",bc:"rgba(255,183,77,0.3)",sid:"baby_gwansang"},
               {ic:"👪",q:"엄마아빠랑 궁합은?",name:"부모-자식 궁합 →",bc:"rgba(212,175,55,0.3)",sid:"parent_child_compat"},
-              {ic:"🌙",q:"태몽은 뭐였어요?",name:"태몽 해몽 →",bc:"rgba(199,21,133,0.25)",sid:"dream"},
+              {ic:"🤰",q:"태몽은 뭐였어요?",name:"태몽 해몽 →",bc:"rgba(199,21,133,0.25)",sid:"dream"},
               {ic:"📝",q:"이 이름 괜찮을까?",name:"이름 풀이 →",bc:"rgba(95,196,158,0.3)",sid:"namereading"},
             ].map(ad=>(
               <div key={ad.name} style={{background:"#ffffff",borderRadius:12,padding:"12px 8px",border:`2px solid ${ad.bc}`,textAlign:"center",cursor:"pointer",boxShadow:"0 2px 10px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(ad.sid,ad.name.replace(" →",""),ad.ic,"")}>
@@ -16113,7 +16196,7 @@ function JoseonPortraitModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedI
             <div style={{marginBottom:10}}>
               <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
               <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-                {[{ic:"💑",name:"커플 궁합",price:"1,980원",sid:"gwansang_compat"},{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"},{ic:"🌙",name:"오늘운세",price:"무료",sid:"today_unse"},{ic:"🐯",name:"띠별 운세",price:"무료",sid:"ddi"},{ic:"🌊",name:"파동성명학",price:"4,800원",sid:"pawdong"},{ic:"🌙",name:"꿈 해몽",price:"380원",sid:"dream"}].map(cr=>(
+                {[{ic:"💑",name:"커플 궁합",price:"1,980원",sid:"gwansang_compat"},{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"},{ic:"🌙",name:"오늘운세",price:"무료",sid:"today_unse"},{ic:"🐯",name:"띠별 운세",price:"무료",sid:"ddi"},{ic:"🌊",name:"파동성명학",price:"4,800원",sid:"pawdong"},{ic:"💭",name:"꿈 해몽",price:"380원",sid:"dream"}].map(cr=>(
                   <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",position:"relative",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>onOpenService?.(cr.sid,cr.name,cr.ic,cr.price)}>
                     <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
                     <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>
@@ -16633,7 +16716,7 @@ function DailyQuoteModal({onClose,isLoggedIn,onLoginRequest,addHistory,cart,setC
           </div>
         ))}
       </div>
-      <ResultActions isLoggedIn={isLoggedIn} onLoginRequest={onLoginRequest||(() => {})} onShare={()=>{}} captureId="quote-capture"/>
+      <ResultActions isLoggedIn={isLoggedIn} onLoginRequest={onLoginRequest||(() => {})} onShare={()=>{}} captureId="quote-capture" dailyReset="내일 자정이 지나면 새로운 명언이 도착해요"/>
       {/* ✨ 이것도 해볼래요? */}
       <div style={{marginBottom:10}}>
         <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
@@ -17222,6 +17305,15 @@ function TodayTarotModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReques
   const isReversed=preloadResult?!!preloadResult.isReversed:rng0()>0.65;
   const isGood=todayCard.yesno==="yes"&&!isReversed;
   const reading=preloadResult?.reading||(isGood?_TAROT_GOOD[cardSeed%_TAROT_GOOD.length]:_TAROT_BAD[cardSeed%_TAROT_BAD.length]);
+  // v(2026-08-14): 사전질문(focus) 결과 반영 — 예전엔 답을 기록소 ctx에만 넣고 화면은 안 읽었다.
+  // 기록소 재열람(preloadResult)에서도 같은 섹션이 나오도록 resultType에 preQ를 함께 저장한다.
+  const[preqAns,setPreqAns]=useState<any>(preloadResult?.preQ||null);
+  const focusVerdict:"yes"|"no"|"maybe"=isReversed?"no":((todayCard.yesno||"maybe") as any);
+  const focusList:string[]=(()=>{
+    const f=preqAns?.focus;
+    const arr=Array.isArray(f)?f:(f?[f]:[]);
+    return arr.filter((x:any)=>typeof x==="string"&&x.trim()&&x!=="skip");
+  })();
 
   useEffect(()=>{if(step==="shuffle"){const t=setTimeout(()=>setStep("spread"),1500);return()=>clearTimeout(t);}},[step]);
   function pickCard(idx:number){
@@ -17230,8 +17322,9 @@ function TodayTarotModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReques
     setTimeout(()=>setStep("preqs"),900);
   }
   function onPreqsDone(ans:any){
+    setPreqAns(ans);
     setStep("result");
-    addHistory?.({icon:"🃏",name:"오늘의 타로",svcId:"today_tarot",person:personName,date:new Date().toLocaleDateString("ko-KR"),result:`${todayCard.name}${isReversed?" (역)":""}`,resultType:{name:todayCard.name,isReversed,card:todayCard,reading,_testDate:new Date().toLocaleDateString("ko-KR")},ctx:{focus:ans?.focus,mood:ans?.mood}});
+    addHistory?.({icon:"🃏",name:"오늘의 타로",svcId:"today_tarot",person:personName,date:new Date().toLocaleDateString("ko-KR"),result:`${todayCard.name}${isReversed?" (역)":""}`,resultType:{name:todayCard.name,isReversed,card:todayCard,reading,preQ:ans,_testDate:new Date().toLocaleDateString("ko-KR")},ctx:{focus:ans?.focus,mood:ans?.mood}});
     try{localStorage.setItem(todayKey,JSON.stringify({done:true}));}catch{}
   }
 
@@ -17329,7 +17422,7 @@ function TodayTarotModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReques
               <div style={{fontSize:10,color:"#888",fontWeight:600,marginTop:6,lineHeight:1.6}}>
                 <div>{formatPersonInfoLine({name:personName,birth:selectedPerson?.birth,time:selectedPerson?.time,calendar:selectedPerson?.calendar,gender:selectedPerson?.gender})}</div>
                 {!selectedPerson?.birth&&<div>👤 {personName}</div>}
-                <div style={{color:"#aaa"}}>{formatTestDateLine(preloadResult?._testDate,{label:"검사",useDateOnly:true})}</div>
+                <div style={{color:"#aaa"}}>{formatTestDateLine(preloadResult?._testDate,{useDateOnly:true})}</div>
               </div>
             </div>
 
@@ -17360,12 +17453,25 @@ function TodayTarotModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReques
               {/* v333: 🃏 카드 해석 박스 — 카드 장면·상징 설명 */}
               <div style={{background:"#f8f9fa",borderRadius:12,padding:"14px",marginBottom:12,borderLeft:"4px solid #C8834A"}}>
                 <div style={{fontSize:10,fontWeight:700,color:"#C8834A",marginBottom:6,letterSpacing:1}}>🃏 카드 해석</div>
-                <div style={{fontSize:12,color:"#555",lineHeight:1.75,wordBreak:"keep-all" as any}}><strong style={{color:"#7A5C00"}}>{todayCard.name}</strong>{isReversed?" (역방향)":""} — 서양 타로의 <em style={{color:"#888"}}>{todayCard.std}</em>에 해당하는 조선 타로예요. {todayCard.suit==="major"?"메이저 아르카나 22장 중 한 장으로, 인생의 큰 흐름을 짚어주는 카드":todayCard.suit==="wand"?"완드(불 기운) — 열정·창조·행동의 결":todayCard.suit==="cup"?"컵(물 기운) — 감정·인연·치유의 결":todayCard.suit==="sword"?"소드(바람 기운) — 사고·판단·결단의 결":"펜타클(흙 기운) — 재물·물질·안정의 결"}. {todayCard.yesno==="yes"?"긍정의 기운":todayCard.yesno==="no"?"성찰의 기운":"중립의 기운"}이 강하게 흐르는 장면이에요.</div>
+                <div style={{fontSize:12,color:"#555",lineHeight:1.75,wordBreak:"keep-all" as any}}><strong style={{color:"#7A5C00"}}>{todayCard.name}</strong>{isReversed?" (역방향)":""} — 서양 타로의 <em style={{color:"#888"}}>{todayCard.std}</em>에 해당하는 조선 타로예요. {todayCard.suit==="major"?_majorStageDesc(todayCard.id):todayCard.suit==="wand"?"완드(불 기운) — 열정·창조·행동의 결":todayCard.suit==="cup"?"컵(물 기운) — 감정·인연·치유의 결":todayCard.suit==="sword"?"소드(바람 기운) — 사고·판단·결단의 결":"펜타클(흙 기운) — 재물·물질·안정의 결"}. {todayCard.yesno==="yes"?"긍정의 기운":todayCard.yesno==="no"?"성찰의 기운":"중립의 기운"}이 강하게 흐르는 장면이에요.</div>
               </div>
               <div style={{background:"#f8f9fa",borderRadius:12,padding:"14px",borderLeft:"4px solid #9B8FD4"}}>
                 <div style={{fontSize:10,fontWeight:700,color:"#9B8FD4",marginBottom:6,letterSpacing:1}}>🔮 카드 의미</div>
-                <div style={{fontSize:12,color:"#555",lineHeight:1.75,wordBreak:"keep-all" as any}}>{todayCard.meaning} 이 카드의 핵심 메시지는 <strong style={{color:"#7A5C00"}}>{isGood?"흐름을 따라 자연스럽게":"잠시 멈추고 내면을 다지라"}</strong>는 거예요. {personName}님 안에 이미 답이 있으니, 외부보다 내 마음의 소리에 귀 기울여보세요.</div>
+                <div style={{fontSize:12,color:"#555",lineHeight:1.75,wordBreak:"keep-all" as any}}>{todayCard.meaning} 이 카드의 핵심 메시지는 <strong style={{color:"#7A5C00"}}>{_tarotKeyMsg(todayCard.id,isReversed?"no":(todayCard.yesno||"maybe"))}</strong>는 거예요. {personName}님 안에 이미 답이 있으니, 외부보다 내 마음의 소리에 귀 기울여보세요.</div>
               </div>
+              {/* v(2026-08-14): 사전질문에서 고른 관심 영역 — 고른 만큼 줄이 늘어난다(안 고르면 아예 안 나옴) */}
+              {focusList.length>0&&<div style={{background:"#f8f9fa",borderRadius:12,padding:"14px",marginTop:12}}>
+                <div style={{fontSize:10,fontWeight:700,color:"#C8834A",marginBottom:8,letterSpacing:1}}>🎯 {personName}님이 궁금해한 것</div>
+                {focusList.map((f,i)=>(
+                  <div key={f} style={{display:"flex",gap:8,alignItems:"flex-start",marginBottom:i<focusList.length-1?9:0}}>
+                    <span style={{fontSize:14,flexShrink:0,lineHeight:1.5}}>{_TAROT_FOCUS_EMOJI[f]||"✦"}</span>
+                    <div style={{flex:1,minWidth:0}}>
+                      <div style={{fontSize:11,fontWeight:800,color:"#7A5C00",marginBottom:2}}>{f}</div>
+                      <div style={{fontSize:12,color:"#555",lineHeight:1.7,wordBreak:"keep-all" as any}}>{_tarotFocusLine(f,focusVerdict,todayCard.id,i)}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>}
             </div>
 
             {/* v338: 무료 분포 — 4영역 운세·행운 5종·럭키 스팟·귀인·천기 한마디 모두 제거.
@@ -17383,8 +17489,6 @@ function TodayTarotModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReques
             📚 78장 조선 타로 전체 도감 보기 (오늘 뽑힌 카드 포함)
           </button>
 
-          <div style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:12,padding:"9px",marginBottom:10,textAlign:"center"}}><span style={{fontSize:10,color:"var(--mist)"}}>🌙 내일 자정이 지나면 새로운 카드가 뽑혀요</span></div>
-
           {/* 광고배너 */}
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:10}}>
             {[{ic:"✨",q:"YES/NO?",name:"YES/NO 타로 →",bc:"rgba(95,196,158,0.3)",sid:"tarot_yesno"},{ic:"🌙",q:"오늘 운세?",name:"오늘운세 →",bc:"rgba(212,175,55,0.3)",sid:"today_unse"},{ic:"📸",q:"내 관상짤?",name:"관상짤 →",bc:"rgba(199,21,133,0.3)",sid:"gwansang_zal"},{ic:"☯️",q:"내 사주?",name:"사주 풀이 →",bc:"rgba(155,143,212,0.3)",sid:"saju"}].map(ad=>(
@@ -17392,7 +17496,7 @@ function TodayTarotModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReques
                 <div style={{fontSize:22,marginBottom:4}}>{ad.ic}</div><div style={{fontSize:12,fontWeight:900,color:"#0a1f1a",marginBottom:3}}>{ad.q}</div><div style={{fontSize:9,fontWeight:600,color:"#666"}}>{ad.name}</div>
               </div>))}
           </div>
-          <ResultActions isLoggedIn={isLoggedIn} onLoginRequest={onLoginRequest||(() => {})} onShare={()=>{}} captureId="tarot-capture"/>
+          <ResultActions isLoggedIn={isLoggedIn} onLoginRequest={onLoginRequest||(() => {})} onShare={()=>{}} captureId="tarot-capture" dailyReset="내일 자정이 지나면 새로운 카드가 뽑혀요"/>
           {/* ✨ 이것도 해볼래요? */}
           <div style={{marginBottom:10}}>
             <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
@@ -18163,7 +18267,7 @@ function YesNoTarotModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReques
               {/* v322 → v707: 검사 정보 v677 표준 통일 */}
               <div style={{fontSize:10,color:"#888",fontWeight:600,marginTop:6,marginBottom:14,lineHeight:1.6}}>
                 <div>{formatPersonInfoLine({name:selectedPerson?.name,birth:selectedPerson?.birth,time:selectedPerson?.time,calendar:selectedPerson?.calendar,gender:selectedPerson?.gender})}</div>
-                <div style={{color:"#aaa"}}>{formatTestDateLine(preloadResult?._testDate,{label:"검사",useDateOnly:true})}</div>
+                <div style={{color:"#aaa"}}>{formatTestDateLine(preloadResult?._testDate,{useDateOnly:true})}</div>
               </div>
               <div style={{background:"linear-gradient(135deg,#f5f3ff,#faf5ff)",borderRadius:12,padding:"14px 16px",border:"1px solid rgba(155,143,212,0.25)",textAlign:"left"}}>
                 <div style={{fontSize:10,fontWeight:800,color:"#9B8FD4",letterSpacing:2,marginBottom:6}}>✦ 나의 질문</div>
@@ -18183,20 +18287,20 @@ function YesNoTarotModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReques
             <div style={{padding:"14px 16px"}}>
               <div style={{background:"#f8f9fa",borderRadius:12,padding:"12px",marginBottom:12,borderLeft:`4px solid ${answer.color}`}}>
                 <div style={{fontSize:10,fontWeight:700,color:answer.color,marginBottom:4,letterSpacing:1}}>✦ 카드의 답변</div>
-                <div style={{fontSize:12,color:"#555",lineHeight:1.75,wordBreak:"keep-all" as any}}>{answer.msg} {selectedPerson?.name||"당신"}님이 던진 질문에 카드는 <strong style={{color:answer.color}}>{answer.answer==="YES"?"긍정의 신호":answer.answer==="NO"?"신중하라는 신호":"중립의 흐름"}</strong>을 보내고 있어요. {answer.answer==="YES"?"마음이 향하는 방향대로 한 걸음 내디뎌도 좋은 타이밍이에요. 머뭇거리지 말고 행동으로 옮겨보세요.":answer.answer==="NO"?"지금은 잠시 멈추고 흐름을 살필 때예요. 조급함을 내려놓으면 다른 길이 보일 거예요.":"확실한 답은 아직. 마음의 중심을 잡고 천천히 흐름을 따라가세요. 시간이 답을 알려줄 거예요."}</div>
+                <div style={{fontSize:12,color:"#555",lineHeight:1.75,wordBreak:"keep-all" as any}}>{answer.msg} {selectedPerson?.name||"당신"}님이 던진 질문에 카드는 <strong style={{color:answer.color}}>{answer.answer==="YES"?"긍정의 신호":answer.answer==="NO"?"신중하라는 신호":"중립의 흐름"}</strong>을 보내고 있어요. {_tarotTail(answer.id,answer.answer==="YES"?"yes":answer.answer==="NO"?"no":"maybe")}</div>
               </div>
               {/* v333: 🃏 카드 해석 박스 — 카드 장면·상징 설명 */}
               <div style={{background:"#f8f9fa",borderRadius:12,padding:"12px",marginBottom:12,borderLeft:"4px solid #C8834A"}}>
                 <div style={{fontSize:10,fontWeight:700,color:"#C8834A",marginBottom:4,letterSpacing:1}}>🃏 카드 해석</div>
-                <div style={{fontSize:12,color:"#555",lineHeight:1.75,wordBreak:"keep-all" as any}}><strong style={{color:"#7A5C00"}}>{answer.name}</strong>{answer.std?<> — 서양 타로의 <em style={{color:"#888"}}>{answer.std}</em>에 해당하는 조선 타로</>:""}예요. {answer.suit==="major"?"메이저 아르카나 22장 중 한 장으로, 인생의 큰 흐름을 짚어주는 카드":answer.suit==="wand"?"완드(불 기운) — 열정·창조·행동의 결":answer.suit==="cup"?"컵(물 기운) — 감정·인연·치유의 결":answer.suit==="sword"?"소드(바람 기운) — 사고·판단·결단의 결":answer.suit==="pentacle"?"펜타클(흙 기운) — 재물·물질·안정의 결":"카드의 신비로운 기운"}이에요. 카드 안에 담긴 장면이 {selectedPerson?.name||"당신"}님의 질문에 답하고 있어요.</div>
+                <div style={{fontSize:12,color:"#555",lineHeight:1.75,wordBreak:"keep-all" as any}}><strong style={{color:"#7A5C00"}}>{answer.name}</strong>{answer.std?<> — 서양 타로의 <em style={{color:"#888"}}>{answer.std}</em>에 해당하는 조선 타로</>:""}예요. {answer.suit==="major"?_majorStageDesc(answer.id):answer.suit==="wand"?"완드(불 기운) — 열정·창조·행동의 결":answer.suit==="cup"?"컵(물 기운) — 감정·인연·치유의 결":answer.suit==="sword"?"소드(바람 기운) — 사고·판단·결단의 결":answer.suit==="pentacle"?"펜타클(흙 기운) — 재물·물질·안정의 결":"카드의 신비로운 기운"}이에요. 카드 안에 담긴 장면이 {selectedPerson?.name||"당신"}님의 질문에 답하고 있어요.</div>
               </div>
               <div style={{background:"#f8f9fa",borderRadius:12,padding:"12px",borderLeft:"4px solid #9B8FD4"}}>
                 <div style={{fontSize:10,fontWeight:700,color:"#9B8FD4",marginBottom:4,letterSpacing:1}}>🔮 카드 의미</div>
-                <div style={{fontSize:12,color:"#555",lineHeight:1.75,wordBreak:"keep-all" as any}}>{answer.meaning} 이 카드의 핵심 메시지는 <strong style={{color:answer.color}}>{answer.answer==="YES"?"흐름을 따라 나아가라":answer.answer==="NO"?"잠시 멈추고 돌아보라":"균형을 잡고 천천히 가라"}</strong>는 거예요. {selectedPerson?.name||"당신"}님 안에 이미 답이 있으니, 카드의 신호를 마음의 나침반으로 삼아보세요.</div>
+                <div style={{fontSize:12,color:"#555",lineHeight:1.75,wordBreak:"keep-all" as any}}>{answer.meaning} 이 카드의 핵심 메시지는 <strong style={{color:answer.color}}>{_tarotKeyMsg(answer.id,answer.answer==="YES"?"yes":answer.answer==="NO"?"no":"maybe")}</strong>는 거예요. {selectedPerson?.name||"당신"}님 안에 이미 답이 있으니, 카드의 신호를 마음의 나침반으로 삼아보세요.</div>
               </div>
             </div>
             <div style={{display:"flex",justifyContent:"space-between",padding:"10px 16px 10px",marginTop:14,fontSize:9,color:"#aaa",fontWeight:600,letterSpacing:0.3,borderTop:"1px solid #f0f0f0"}}>
-              <span>#천기타로 #예스노타로 #핵폭타로 #지금바로답 #무료타로</span>
+              <span>#천기타로 #예스노타로 #팩폭타로 #지금바로답 #무료타로</span>
               <span style={{fontWeight:600}}>🌐 천기.kr</span>
             </div>
           </div>
@@ -18212,7 +18316,7 @@ function YesNoTarotModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReques
                 <div style={{fontSize:22,marginBottom:4}}>{ad.ic}</div><div style={{fontSize:12,fontWeight:900,color:"#0a1f1a",marginBottom:3}}>{ad.q}</div><div style={{fontSize:9,fontWeight:600,color:"#666"}}>{ad.name}</div>
               </div>))}
           </div>
-          <ResultActions isLoggedIn={isLoggedIn} onLoginRequest={onLoginRequest||(() => {})} onShare={()=>{}} captureId="yesno-capture"/>
+          <ResultActions isLoggedIn={isLoggedIn} onLoginRequest={onLoginRequest||(() => {})} onShare={()=>{}} captureId="yesno-capture" dailyReset="내일 자정이 지나면 새로운 카드를 뽑을 수 있어요"/>
           {/* ✨ 이것도 해볼래요? */}
           <div style={{marginBottom:10}}>
             <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
@@ -20311,7 +20415,7 @@ function DreamModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
         {/* 모드 선택 — 내관상보기 스타일 인트로 */}
         {step==="choose"&&<>
           <div style={{background:"rgba(0,0,0,0.2)",borderRadius:16,padding:"32px 20px",border:"2px solid rgba(212,175,55,0.4)",textAlign:"center",marginBottom:12}}>
-            <div style={{fontFamily:"'Noto Serif KR','Batang',serif",fontSize:20,fontWeight:900,color:"var(--gold)",marginBottom:6}}>🌙 꿈 · 태몽 해몽</div>
+            <div style={{fontFamily:"'Noto Serif KR','Batang',serif",fontSize:20,fontWeight:900,color:"var(--gold)",marginBottom:6}}>🌠 꿈 · 태몽 해몽</div>
             <div style={{fontSize:12,color:"var(--mist)",marginBottom:18,lineHeight:1.7}}>"내가 꾼 꿈은 무슨 의미일까?"<br/>전통 해몽 + AI가 풀어드려요</div>
 
             {/* 모드 안내 카드 — 가격 표시 제거 (하단 버튼에만 표시) */}
@@ -20419,7 +20523,7 @@ function DreamModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
           const isTm=mode==="taemong";
           const msgs=isTm?taemongLoadingMsgs:dreamLoadingMsgs;
           return <div style={{textAlign:"center",padding:"40px 20px"}}>
-            <div style={{fontSize:64,marginBottom:18,filter:"drop-shadow(0 6px 18px rgba(212,175,55,0.4))"}}>{isTm?"👶":"🌙"}</div>
+            <div style={{fontSize:64,marginBottom:18,filter:"drop-shadow(0 6px 18px rgba(212,175,55,0.4))"}}>{isTm?"🤰":"💭"}</div>
             <div style={{fontSize:18,fontWeight:900,color:"var(--gold)",fontFamily:"'Noto Serif KR',serif",marginBottom:8}}>{isTm?"태몽":"꿈"} 분석 중</div>
             <div style={{fontSize:12,color:"var(--mist)",marginBottom:22,minHeight:18}}>{msgs[loadMsgIdx]||msgs[0]}</div>
             <div style={{height:8,background:"rgba(255,255,255,0.06)",borderRadius:6,marginBottom:8,overflow:"hidden",border:"1px solid rgba(212,175,55,0.15)"}}>
@@ -21449,7 +21553,7 @@ function TaegilModal({onClose,cart,setCart,onGoShop,addHistory,isLoggedIn,onLogi
                 "이사":[{ic:"☯️",q:"이사 후 운은?",name:"사주 풀이 →",bc:"rgba(155,143,212,0.3)",sid:"saju"},{ic:"🪞",q:"내 관상으로 본 집?",name:"내 관상보기 →",bc:"rgba(212,175,55,0.3)",sid:"gwansang_full"},{ic:"📜",q:"올해 전체 흐름?",name:"토정비결 →",bc:"rgba(255,107,173,0.3)",sid:"tojeong"},{ic:"🌙",q:"이달 운은?",name:"월별 운세 →",bc:"rgba(95,196,158,0.3)",sid:"saju_monthly"}],
                 "개업":[{ic:"💼",q:"사업 파트너 궁합?",name:"비즈니스 궁합 →",bc:"rgba(212,175,55,0.3)",sid:"biz_gwansang"},{ic:"☯️",q:"내 사업운은?",name:"사주 풀이 →",bc:"rgba(155,143,212,0.3)",sid:"saju"},{ic:"🔄",q:"10년 흐름?",name:"대운 해설 →",bc:"rgba(255,107,173,0.3)",sid:"daeun"},{ic:"🎋",q:"올해 재물운?",name:"신년 운세 →",bc:"rgba(95,196,158,0.3)",sid:"newyear"}],
                 "시험":[{ic:"🧠",q:"내 뇌 특성은?",name:"뇌과학 분석 →",bc:"rgba(155,143,212,0.3)",sid:"psych"},{ic:"🔯",q:"내 기질은?",name:"기질도 →",bc:"rgba(5,77,149,0.3)",sid:"gijildo"},{ic:"☯️",q:"내 학업운은?",name:"사주 풀이 →",bc:"rgba(212,175,55,0.3)",sid:"saju"},{ic:"📝",q:"내 이름의 힘?",name:"이름 풀이 →",bc:"rgba(95,196,158,0.3)",sid:"namereading"}],
-                "출산":[{ic:"🍼",q:"아기 미래는?",name:"우리 아기 관상 →",bc:"rgba(255,107,173,0.3)",sid:"baby_gwansang"},{ic:"🎲",q:"돌잡이 뭐 잡을까?",name:"돌잡이 시뮬레이션 →",bc:"rgba(212,175,55,0.3)",sid:"doljabi_sim"},{ic:"👶",q:"2세 얼굴 미리보기?",name:"2세 얼굴 →",bc:"rgba(155,143,212,0.3)",sid:"baby_face"},{ic:"🌙",q:"태몽 해석?",name:"태몽 해몽 →",bc:"rgba(95,196,158,0.3)",sid:"dream"}],
+                "출산":[{ic:"🍼",q:"아기 미래는?",name:"우리 아기 관상 →",bc:"rgba(255,107,173,0.3)",sid:"baby_gwansang"},{ic:"🎲",q:"돌잡이 뭐 잡을까?",name:"돌잡이 시뮬레이션 →",bc:"rgba(212,175,55,0.3)",sid:"doljabi_sim"},{ic:"👶",q:"2세 얼굴 미리보기?",name:"2세 얼굴 →",bc:"rgba(155,143,212,0.3)",sid:"baby_face"},{ic:"🤰",q:"태몽 해석?",name:"태몽 해몽 →",bc:"rgba(95,196,158,0.3)",sid:"dream"}],
                 "재회/연락":[{ic:"💘",q:"그 사람 마음은?",name:"연애 타로 →",bc:"rgba(255,107,173,0.3)",sid:"tarot_love"},{ic:"✨",q:"다시 연락할까?",name:"YES/NO 타로 →",bc:"rgba(95,196,158,0.3)",sid:"tarot_yesno"},{ic:"💑",q:"우리 궁합은?",name:"커플 궁합 →",bc:"rgba(212,175,55,0.3)",sid:"gwansang_compat"},{ic:"☯️",q:"이 인연 계속?",name:"연애운·궁합 →",bc:"rgba(155,143,212,0.3)",sid:"love"}],
                 "면접":[{ic:"🧠",q:"내 뇌 능력?",name:"뇌과학 분석 →",bc:"rgba(155,143,212,0.3)",sid:"psych"},{ic:"🔯",q:"내 성격 강점?",name:"기질도 →",bc:"rgba(5,77,149,0.3)",sid:"gijildo"},{ic:"🪞",q:"첫인상은?",name:"내 관상보기 →",bc:"rgba(212,175,55,0.3)",sid:"gwansang_full"},{ic:"💼",q:"직업운은?",name:"진로 타로 →",bc:"rgba(95,196,158,0.3)",sid:"tarot_career"}],
                 "상견례":[{ic:"👪",q:"양가 궁합?",name:"부모·자식 궁합 →",bc:"rgba(212,175,55,0.3)",sid:"parent_child_compat"},{ic:"💑",q:"우리 궁합?",name:"커플 궁합 →",bc:"rgba(255,107,173,0.3)",sid:"gwansang_compat"},{ic:"☯️",q:"우리 둘 사주?",name:"연애운·궁합 →",bc:"rgba(155,143,212,0.3)",sid:"love"},{ic:"🪞",q:"첫인상은?",name:"내 관상보기 →",bc:"rgba(95,196,158,0.3)",sid:"gwansang_full"}],
@@ -21879,7 +21983,7 @@ function LottoModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginRequest,onO
               </div>
             ))}
           </div>
-          <ResultActions isLoggedIn={isLoggedIn} onLoginRequest={onLoginRequest||(() => {})} onShare={()=>{}}/>
+          <ResultActions isLoggedIn={isLoggedIn} onLoginRequest={onLoginRequest||(() => {})} onShare={()=>{}} dailyReset="내일 자정이 지나면 새로운 번호가 뽑혀요"/>
           {/* 3. 이것도 해볼래요 */}
           <div style={{marginBottom:10}}>
             <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
@@ -22421,7 +22525,7 @@ function MonthlyUnseModal({onClose,cart,setCart,onGoShop,isLoggedIn,onLoginReque
           ))}
         </div>
 
-        <ResultActions isLoggedIn={isLoggedIn} onLoginRequest={onLoginRequest||(()=>{})} onShare={()=>{}} captureId="monthly-capture"/>
+        <ResultActions isLoggedIn={isLoggedIn} onLoginRequest={onLoginRequest||(()=>{})} onShare={()=>{}} captureId="monthly-capture" dailyReset="내일 자정이 지나면 다시 볼 수 있어요"/>
         {/* ✨ 이것도 해볼래요? (NEW — 누락 보강) */}
         <div style={{marginBottom:10}}>
           <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
@@ -22969,7 +23073,7 @@ function SynthesisModal({onClose, cart, setCart, onGoShop, addHistory, userHisto
           <div style={{marginBottom:10}}>
             <div style={{fontSize:11,fontWeight:700,color:"var(--mist)",marginBottom:6}}>✨ 이것도 해볼래요?</div>
             <div className="goods-cat-scroll drag-scroll" style={{display:"flex",gap:8,paddingBottom:4,padding:"0 0 4px"}}>
-              {[{ic:"💑",name:"커플 궁합",price:"1,980원",sid:"gwansang_compat"},{ic:"🐯",name:"띠별 운세",price:"무료",sid:"ddi"},{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"},{ic:"🌊",name:"파동 성명학",price:"4,800원",sid:"pawdong"},{ic:"👑",name:"조선 초상화",price:"1,980원",sid:"joseon_portrait"},{ic:"🌙",name:"꿈 해몽",price:"380원",sid:"dream"}].map(cr=>(
+              {[{ic:"💑",name:"커플 궁합",price:"1,980원",sid:"gwansang_compat"},{ic:"🐯",name:"띠별 운세",price:"무료",sid:"ddi"},{ic:"🃏",name:"오늘의 타로",price:"무료",sid:"today_tarot"},{ic:"🌊",name:"파동 성명학",price:"4,800원",sid:"pawdong"},{ic:"👑",name:"조선 초상화",price:"1,980원",sid:"joseon_portrait"},{ic:"💭",name:"꿈 해몽",price:"380원",sid:"dream"}].map(cr=>(
                 <div key={cr.name} style={{flexShrink:0,width:100,background:"#ffffff",borderRadius:12,padding:"10px 8px",border:"1px solid rgba(212,175,55,0.4)",textAlign:"center",cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}} onClick={()=>{if(onOpenService){onClose();(onOpenService as any)(cr.sid,cr.name,cr.ic,cr.price);}}}>
                   <div style={{fontSize:22,marginBottom:4}}>{cr.ic}</div>
                   <div style={{fontSize:11,fontWeight:900,marginBottom:2,color:"#0a1f1a"}}>{cr.name}</div>
@@ -23451,7 +23555,7 @@ function RecentResultsWidget({userHistory,onSvc,onGoArchive}:{userHistory:any[],
   );
 }
 
-function HomePage({onSvc,isLoggedIn,savedPersons,setSavedPersons,cart,setCart,onGoShop,onGoTickets,addHistory,userHistory,contentSettings=[],isAdmin=false,openGlobalPay,onGoArchive,onGoMyPage}:any){
+function HomePage({onSvc,freePickSignal=0,isLoggedIn,savedPersons,setSavedPersons,cart,setCart,onGoShop,onGoTickets,addHistory,userHistory,contentSettings=[],isAdmin=false,openGlobalPay,onGoArchive,onGoMyPage}:any){
   function getCS(id:string){return contentSettings.find((s:any)=>s.content_id===id)||null;}
   const [specialItems,setSpecialItems] = useState(() => {
     try { const s = localStorage.getItem('chungi_special_items_v4'); if (s){const p=JSON.parse(s);if(p.length>=15)return p;} } catch {}
@@ -23469,6 +23573,9 @@ function HomePage({onSvc,isLoggedIn,savedPersons,setSavedPersons,cart,setCart,on
   const[gwanzalOpen,setGwanzalOpen]=useState(false);
   const[todayModal,setTodayModal]=useState<any>(null);
   const[freePickOpen,setFreePickOpen]=useState(false);
+  // v(2026-08-14): 무료 12종 목록에서 연 콘텐츠를 닫으면 Page가 신호를 올려준다 → 목록 재오픈.
+  // 초기값 0은 무시(첫 렌더에 목록이 저절로 뜨면 안 됨).
+  useEffect(()=>{if(freePickSignal>0)setFreePickOpen(true);},[freePickSignal]);
 
   // ② 맞춤 배너 — 이용 기록 기반
   const personalGoods = getPersonalizedGoods(userHistory);
@@ -23932,7 +24039,7 @@ function HomePage({onSvc,isLoggedIn,savedPersons,setSavedPersons,cart,setCart,on
               {sid:"blood",icon:"🩸",name:"혈액형 운세",desc:"A·B·O·AB 오늘 운세"},
             ].map(item=>(
               <div key={item.sid} style={{display:"flex",alignItems:"center",gap:10,padding:"11px 14px",background:"var(--ink3)",borderRadius:12,border:"1px solid rgba(255,255,255,0.06)",cursor:"pointer",transition:"all .18s"}}
-                onClick={()=>{setFreePickOpen(false);onSvc({id:item.sid,icon:item.icon,name:item.name,desc:item.desc,price:"무료",free:true,coming:false});}}>
+                onClick={()=>{setFreePickOpen(false);onSvc({id:item.sid,icon:item.icon,name:item.name,desc:item.desc,price:"무료",free:true,coming:false,_fromFreePick:true});}}>
                 <span style={{fontSize:20,flexShrink:0}}>{item.icon}</span>
                 <div style={{flex:1}}>
                   <div style={{fontSize:13,fontWeight:700}}>{item.name}</div>
@@ -24808,7 +24915,7 @@ function MyPage({isLoggedIn,onLogin,onLogout,savedPersons,setSavedPersons,userHi
     {date:"2026.03.31", name:"오늘의 운세", result:"종합운 85점 · 금전운 ★★★★", icon:"☀️"},
     {date:"2026.03.30", name:"사주 풀이", result:"화형 기질 · 직업운 ★★★★★", icon:"🔮"},
     {date:"2026.03.29", name:"연애 타로", result:"THE LOVERS 정방향", icon:"🃏"},
-    {date:"2026.03.28", name:"꿈 · 태몽 해몽", result:"길몽 · 재물운 상승", icon:"🌙"},
+    {date:"2026.03.28", name:"꿈 · 태몽 해몽", result:"길몽 · 재물운 상승", icon:"🌠"},
   ];
   const SAMPLE_OTHERS_HISTORY = [
     {date:"2026.03.30", name:"관상짤 (김민수)", result:"도화살 92점 · 재물운 68점", icon:"📸"},
@@ -29164,6 +29271,11 @@ export default function Page(){
   // 모달 스택 — 퍼널/크로스셀에서 새 모달 열어도 닫으면 이전 모달 복원
   const[modalStack,setModalStack]=useState<any[]>([]);
   const modal=modalStack[modalStack.length-1]||null;
+  // v(2026-08-14): "무료 콘텐츠 12종" 목록에서 들어간 콘텐츠는 닫을 때 홈이 아니라 그 목록으로 되돌린다.
+  // 목록 모달(freePickOpen)은 HomePage 지역 state라 modalStack에 안 실린다. 그래서 스택이 비는 순간
+  // 신호를 한 번 보내 HomePage가 목록을 다시 열게 한다. (닫자마자 홈으로 튕겨서 이탈하던 문제)
+  const[freePickReturn,setFreePickReturn]=useState(false);
+  const[freePickSignal,setFreePickSignal]=useState(0);
   // setModal(svc) = 새 콘텐츠 시작 = 스택 전체 리셋 (1개로)
   // setModal(null) = 모두 닫기
   const setModal=(s:any)=>{
@@ -29499,6 +29611,10 @@ export default function Page(){
   const[personStep,setPersonStep]=useState<1|2|3>(1); // 1명째 or 2명째 or 3명째 선택
 
   function handleSvc(svc){
+    // v(2026-08-14): 진입 출처 기록 — 무료 12종 목록에서 왔으면 닫을 때 그 목록으로 되돌린다.
+    // 여기서 매번 덮어써야 다른 경로(홈 카드·검색·퍼널)로 들어온 다음 닫을 때 목록이 잘못 뜨지 않는다.
+    // (인물 선택 왕복은 handleSvc를 다시 안 타므로 그 사이엔 값이 유지된다)
+    setFreePickReturn(!!svc?._fromFreePick);
     // ⚠️ 광고퍼널/추천에서 svc 가격·아이콘·이름이 ""인 경우 SVC_CATS에서 lookup → fallback
     // (안 그러면 "커플 궁합 보기 () →" 처럼 가격 빈 채로 자체 모달 진입)
     if(svc&&svc.id&&(!svc.price||!svc.icon||!svc.name)){
@@ -29686,6 +29802,8 @@ export default function Page(){
       }
       if(next.length===0){
         setOverlayModal(null);setSelectedPerson(null);setSelectedPerson2(null);setSelectedPerson3(null);
+        // 무료 12종 목록에서 들어온 흐름이면 홈으로 튕기지 말고 목록을 다시 띄운다
+        if(freePickReturn){setFreePickSignal(v=>v+1);setFreePickReturn(false);}
       }
       return next;
     });
@@ -29868,7 +29986,7 @@ export default function Page(){
           </div>
         </nav>
 
-        {tab==="home"  &&<HomePage onSvc={handleSvc} isLoggedIn={isLoggedIn} savedPersons={savedPersons} setSavedPersons={setSavedPersons} cart={cart} setCart={setCart} onGoShop={goShop} onGoTickets={()=>setTab("tickets")} addHistory={addHistory} userHistory={userHistory} contentSettings={contentSettings} isAdmin={isAdmin} openGlobalPay={openGlobalPay} onGoArchive={()=>setTab("archive")} onGoMyPage={()=>setTab("my")}/>}
+        {tab==="home"  &&<HomePage onSvc={handleSvc} freePickSignal={freePickSignal} isLoggedIn={isLoggedIn} savedPersons={savedPersons} setSavedPersons={setSavedPersons} cart={cart} setCart={setCart} onGoShop={goShop} onGoTickets={()=>setTab("tickets")} addHistory={addHistory} userHistory={userHistory} contentSettings={contentSettings} isAdmin={isAdmin} openGlobalPay={openGlobalPay} onGoArchive={()=>setTab("archive")} onGoMyPage={()=>setTab("my")}/>}
         {tab==="goods" &&<GoodsPage cart={cart} setCart={setCart} userHistory={userHistory} onGoHome={()=>setTab("home")}/>}
         {tab==="archive" &&<ArchivePage userHistory={userHistory} savedPersons={savedPersons} setSavedPersons={setSavedPersons} isLoggedIn={isLoggedIn} onLogin={()=>setAuthOpen(true)} cart={cart} setCart={setCart} onSvc={(svc:any)=>{setTab("home");handleSvc(svc);}} onGoTickets={()=>setTab("tickets")} openGlobalPay={openGlobalPay}/>}
         {tab==="tickets" &&<TicketsPage onBuy={openGlobalPay}/>}
